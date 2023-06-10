@@ -1,5 +1,14 @@
 import { RouterModule, Routes } from "@angular/router";
+import { PageComponent } from "./page/page.component";
+import { HangmanComponent } from "./games/hangman/hangman.component";
+import { FlagComponent } from "./games/flag/flag.component";
+import { DefinitionComponent } from "./games/definition/definition.component";
 
-const routes: Routes = [];
+const routes: Routes = [
+    {path: '', component: PageComponent},
+    {path: 'hangman', component: HangmanComponent},
+    {path: 'flag', component: FlagComponent},
+    {path: 'definition', component: DefinitionComponent}
+];
 
 export const appRouter = RouterModule.forRoot(routes)

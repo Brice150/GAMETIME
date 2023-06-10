@@ -1,0 +1,65 @@
+<div class="player">
+    <span class="name">{{playerName}}</span>
+    <span class="victory-number">{{victoryNumber}}</span>
+    <i class='bx bxs-medal'></i>
+</div>
+
+<div class="main-container">
+    <div class="container">
+        <div class="title">
+            <img [src]="imagePath + 'logo.png'" alt="Logo">
+            <h1><span class="subtitle">Game</span> Time</h1>
+        </div>
+        <span class="description">Guess a word in various games !</span>
+        <nav>
+            <div class="game" (mouseover)="trigger(0)">
+                <div class="show-hide">
+                    <i class='bx bx-body'></i>
+                    <span class="game-title">Hangman</span>
+                </div>
+                <div *ngIf="isHovering[0]" class="buttons">
+                    <a title="Solo" [routerLink]="['/hangman']" [queryParams]="{ mode: 'solo' }">
+                        <i class='bx bxs-user'></i>
+                        <span>Solo</span>
+                    </a>
+                    <a title="Multi" [routerLink]="['/hangman']" [queryParams]="{ mode: 'multi' }">
+                        <i class='bx bxs-group'></i>
+                        <span>Multi</span>
+                    </a>
+                </div>
+            </div>
+            <div class="game" (mouseover)="trigger(1)">
+                <div class="show-hide">
+                    <i class='bx bxs-flag'></i>
+                    <span class="game-title">Flag</span>
+                </div>
+                <div *ngIf="isHovering[1]" class="buttons">
+                    <a title="Solo" [routerLink]="['/flag']" [queryParams]="{ mode: 'solo' }">
+                        <i class='bx bxs-user'></i>
+                        <span>Solo</span>
+                    </a>
+                    <a title="Multi" [routerLink]="['/flag']" [queryParams]="{ mode: 'multi' }">
+                        <i class='bx bxs-group'></i>
+                        <span>Multi</span>
+                    </a>
+                </div>
+            </div>
+            <div class="game" (mouseover)="trigger(2)">
+                <div class="show-hide">
+                    <i class='bx bxs-book'></i>
+                    <span class="game-title">Definition</span>
+                </div>
+                <div *ngIf="isHovering[2]" class="buttons">
+                    <a title="Solo" [routerLink]="['/definition']" [queryParams]="{ mode: 'solo' }">
+                        <i class='bx bxs-user'></i>
+                        <span>Solo</span>
+                    </a>
+                    <a title="Multi" [routerLink]="['/definition']" [queryParams]="{ mode: 'multi' }">
+                        <i class='bx bxs-group'></i>
+                        <span>Multi</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </div>
+</div>
