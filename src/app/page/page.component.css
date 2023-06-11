@@ -19,6 +19,9 @@
 .player {
     position: absolute;
     right: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .victory-number {
@@ -106,7 +109,7 @@ nav .game:hover {
             inset -5px -5px 16px #48566b;
 }
 
-nav .game .show-hide i {
+nav .game .game-title i {
     font-size: 25px;
     margin-right: 20px;
     color: var(--primary);
@@ -118,14 +121,14 @@ nav .game .game-title {
     width: 120px;
 }
 
-.show-hide {
+.game-title {
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .buttons {
-    margin-top: 15px;
+    margin-top: 20px;
     display: flex;
     align-items: center;
     justify-content: space-evenly;

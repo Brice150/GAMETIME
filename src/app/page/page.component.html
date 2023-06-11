@@ -7,11 +7,11 @@
         <span class="description">Guess a word in various games !</span>
         <nav>
             <div class="game" (mouseover)="trigger(0)">
-                <div class="player">
+                <div *ngIf="!isHovering[0]" class="player">
                     <span class="victory-number">{{victoryNumber[0]}}</span>
                     <i class='bx bxs-medal'></i>
                 </div>
-                <div class="show-hide">
+                <div class="game-title">
                     <i class='bx bx-body'></i>
                     <span class="game-title">Hangman</span>
                 </div>
@@ -27,11 +27,11 @@
                 </div>
             </div>
             <div class="game" (mouseover)="trigger(1)">
-                <div class="player">
+                <div *ngIf="!isHovering[1]" class="player">
                     <span class="victory-number">{{victoryNumber[1]}}</span>
                     <i class='bx bxs-medal'></i>
                 </div>
-                <div class="show-hide">
+                <div class="game-title">
                     <i class='bx bxs-flag'></i>
                     <span class="game-title">Flag</span>
                 </div>
@@ -47,11 +47,11 @@
                 </div>
             </div>
             <div class="game" (mouseover)="trigger(2)">
-                <div class="player">
+                <div *ngIf="!isHovering[2]" class="player">
                     <span class="victory-number">{{victoryNumber[2]}}</span>
                     <i class='bx bxs-medal'></i>
                 </div>
-                <div class="show-hide">
+                <div class="game-title">
                     <i class='bx bxs-book'></i>
                     <span class="game-title">Definition</span>
                 </div>

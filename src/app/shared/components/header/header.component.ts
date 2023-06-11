@@ -8,4 +8,5 @@ import { Component, Input } from '@angular/core';
 export class HeaderComponent {
   @Input() logo!: string;
   @Input() game!: string;
+  @Input() victory!: number;
 }

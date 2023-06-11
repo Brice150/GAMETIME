@@ -1,1 +1,8 @@
-input here
+<div class="main-container">
+    <div class="container">
+        <form>
+            <input [attr.maxlength]="maxlength" (keydown)="onKeyDown($event)">
+            <span class="placeholder">{{wordToFind}}</span>
+        </form>
+    </div>
+</div>

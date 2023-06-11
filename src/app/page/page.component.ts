@@ -8,11 +8,19 @@ import { environment } from 'src/environments/environment';
 })
 export class PageComponent implements OnInit {
   imagePath: string = environment.imagePath;
-  victoryNumber: number[] = [24, 2, 13];
+  victoryNumber: number[] = [];
   isHovering: boolean[] = [true, false, false];
   
   ngOnInit() {
-    
+    let testValues = [13, 21, 3];
+    localStorage.setItem('victoryNumber', JSON.stringify(testValues));
+
+    let storedValue = localStorage.getItem('victoryNumber');
+    if (storedValue !== null) {
+      this.victoryNumber = JSON.parse(storedValue);
+    } else {
+      this.victoryNumber = [0, 0, 0];
+    }
   }
 
   trigger(gameIndex: number) {

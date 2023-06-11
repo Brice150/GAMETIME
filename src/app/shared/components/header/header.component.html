@@ -1,6 +1,14 @@
 <div class="container">
+    <a title="Home" routerLink="/">
+        <i class='bx bxs-home'></i>
+        <span>Home</span>
+    </a>
     <div class="title">
         <i [class]="logo"></i>
         <h1>{{game}}</h1>
+    </div>
+    <div class="player">
+        <span class="victory-number">{{victory}}</span>
+        <i class='bx bxs-medal'></i>
     </div>
 </div>

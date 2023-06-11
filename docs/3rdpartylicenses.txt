@@ -1,10 +1,10 @@
-@angular/animations
-MIT
-
 @angular/common
 MIT
 
 @angular/core
+MIT
+
+@angular/forms
 MIT
 
 @angular/platform-browser
