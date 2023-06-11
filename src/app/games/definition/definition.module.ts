@@ -1,14 +1,14 @@
-import { CommonModule } from "@angular/common";
+import { SharedModule } from "src/app/shared/shared.module";
 import { DefinitionComponent } from "./definition.component";
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
 
 @NgModule({
     declarations: [DefinitionComponent],
     imports: [
-      CommonModule, 
-      BrowserAnimationsModule
+      CommonModule,
+      SharedModule
     ],
     exports: [DefinitionComponent]
   })
-  export class PageModule { }
+  export class DefinitionModule { }

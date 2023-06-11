@@ -1,14 +1,14 @@
 import { CommonModule } from "@angular/common";
 import { HangmanComponent } from "./hangman.component";
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from "@angular/core";
+import { SharedModule } from "src/app/shared/shared.module";
 
 @NgModule({
     declarations: [HangmanComponent],
     imports: [
-      CommonModule, 
-      BrowserAnimationsModule
+      CommonModule,
+      SharedModule
     ],
     exports: [HangmanComponent]
   })
-  export class PageModule { }
+  export class HangmanModule { }

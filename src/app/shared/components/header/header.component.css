@@ -1,0 +1,26 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: var(--text);
+}
+
+.title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.title h1 {
+    font-size: 35px;
+    font-weight: 800;
+    text-transform: capitalize;
+    text-align: center;
+}
+
+.title i {
+    margin-right: 20px;
+    font-size: 40px;
+    color: var(--primary);
+}
