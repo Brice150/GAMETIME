@@ -1,8 +1,14 @@
 <div class="main-container">
     <div class="container">
-        <form>
-            <input [attr.maxlength]="maxlength" (keydown)="onKeyDown($event)">
+        <div class="previous-container" *ngFor="let try of tries">
+            <div class="previous">
+                {{try}}
+            </div>
+        </div>
+        <form (ngSubmit)="submitForm()">
+            <input [attr.maxlength]="maxlength" (keydown)="onKeyDown($event)" [(ngModel)]="inputValue" [ngModelOptions]="{standalone: true}">
             <span class="placeholder">{{wordToFind}}</span>
+            <button type="submit">Submit</button>
         </form>
     </div>
 </div>
