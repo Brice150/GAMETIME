@@ -34,13 +34,18 @@ export class MainInputComponent implements OnInit {
         console.log("You win");
       }
       else {
-        let letters = [];
+        let yellow = [];
+        let red = [];
         for (let i = 0; i < this.response.length; i++) {
-          if (this.inputValue.includes(this.response[i])) {
-            letters.push(this.response[i]);
+          if (this.inputValue[i] == this.response[i]) {
+            red.push(this.response[i]);
+          }
+          else if (this.inputValue.includes(this.response[i])) {
+            yellow.push(this.response[i]);
           }
         }
-        console.log(letters);
+        console.log("yellow : ", yellow);
+        console.log("red : ", red);
       }
       this.tries.push(this.inputValue);
       this.inputValue = null;

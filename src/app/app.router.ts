@@ -1,12 +1,12 @@
 import { RouterModule, Routes } from "@angular/router";
 import { PageComponent } from "./page/page.component";
-import { HangmanComponent } from "./games/hangman/hangman.component";
 import { FlagComponent } from "./games/flag/flag.component";
 import { DefinitionComponent } from "./games/definition/definition.component";
+import { MotusComponent } from "./games/motus/motus.component";
 
 const routes: Routes = [
     {path: '', component: PageComponent},
-    {path: 'hangman', component: HangmanComponent},
+    {path: 'motus', component: MotusComponent},
     {path: 'flag', component: FlagComponent},
     {path: 'definition', component: DefinitionComponent}
 ];

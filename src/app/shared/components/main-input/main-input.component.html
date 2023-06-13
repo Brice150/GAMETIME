@@ -8,7 +8,7 @@
         <form (ngSubmit)="submitForm()">
             <input [attr.maxlength]="maxlength" (keydown)="onKeyDown($event)" [(ngModel)]="inputValue" [ngModelOptions]="{standalone: true}">
             <span class="placeholder">{{wordToFind}}</span>
-            <button type="submit">Submit</button>
+            <button class="submit" type="submit">Submit</button>
         </form>
     </div>
 </div>

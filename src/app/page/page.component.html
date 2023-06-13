@@ -12,15 +12,15 @@
                     <i class='bx bxs-medal'></i>
                 </div>
                 <div class="game-title">
-                    <i class='bx bx-body'></i>
-                    <span class="game-title">Hangman</span>
+                    <i class='bx bx-check-square'></i>
+                    <span class="game-title">Motus</span>
                 </div>
                 <div *ngIf="isHovering[0]" class="buttons">
-                    <a title="Solo" [routerLink]="['/hangman']" [queryParams]="{ mode: 'solo' }">
+                    <a title="Solo" [routerLink]="['/motus']" [queryParams]="{ mode: 'solo' }">
                         <i class='bx bxs-user'></i>
                         <span>Solo</span>
                     </a>
-                    <a title="Multi" [routerLink]="['/hangman']" [queryParams]="{ mode: 'multi' }">
+                    <a title="Multi" [routerLink]="['/motus']" [queryParams]="{ mode: 'multi' }">
                         <i class='bx bxs-group'></i>
                         <span>Multi</span>
                     </a>

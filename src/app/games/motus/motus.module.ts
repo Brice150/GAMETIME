@@ -1,14 +1,14 @@
 import { CommonModule } from "@angular/common";
-import { HangmanComponent } from "./hangman.component";
+import { MotusComponent } from "./motus.component";
 import { NgModule } from "@angular/core";
 import { SharedModule } from "src/app/shared/shared.module";
 
 @NgModule({
-    declarations: [HangmanComponent],
+    declarations: [MotusComponent],
     imports: [
       CommonModule,
       SharedModule
     ],
-    exports: [HangmanComponent]
+    exports: [MotusComponent]
   })
-  export class HangmanModule { }
+  export class MotusModule { }

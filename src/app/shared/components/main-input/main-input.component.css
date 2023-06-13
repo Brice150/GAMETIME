@@ -3,19 +3,21 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
 }
 
 .container {
     display: flex;
     justify-content: center;
     align-items: center;
-    max-width: 500px;
+    flex-direction: column-reverse;
+    max-width: 400px;
     width: 100%;
 }
 
 form {
     position: relative;
+    margin-top: 10px;
+    width: 100%;
 }
 
 input {
@@ -52,6 +54,33 @@ input {
     pointer-events: none;
     top: -3px;
     white-space: nowrap;
+}
+
+.submit {
+    display: none;
+}
+
+.previous-container {
+    width: 100%;
+}
+
+.previous {
+    color: var(--text);
+    margin: 10px 0;
+    font-size: 30px;
+    font-weight: 500;
+    padding: 12px;
+    border: none;
+    box-shadow:  5px 5px 16px #12161b,
+             -5px -5px 16px #48566b;
+    background: var(--background);
+    border-radius: 10px;
+    height: 30px;
+    letter-spacing: 10px;
+    text-transform: uppercase;
+    outline: none;
+    font-family: monospace;
+    width: 100%;
 }
 
 @media screen and (max-width: 500px) {

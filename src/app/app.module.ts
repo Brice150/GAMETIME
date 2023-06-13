@@ -3,9 +3,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { appRouter } from './app.router';
 import { PageModule } from './page/page.module';
-import { HangmanModule } from './games/hangman/hangman.module';
 import { FlagModule } from './games/flag/flag.module';
 import { DefinitionModule } from './games/definition/definition.module';
+import { MotusModule } from './games/motus/motus.module';
 
 @NgModule({
   declarations: [
@@ -15,7 +15,7 @@ import { DefinitionModule } from './games/definition/definition.module';
     BrowserModule,
     appRouter,
     PageModule,
-    HangmanModule,
+    MotusModule,
     FlagModule,
     DefinitionModule
   ],

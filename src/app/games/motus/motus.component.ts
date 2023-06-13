@@ -4,10 +4,10 @@ import { words } from 'src/app/shared/data/words';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './hangman.component.html',
-  styleUrls: ['./hangman.component.css']
+  templateUrl: './motus.component.html',
+  styleUrls: ['./motus.component.css']
 })
-export class HangmanComponent implements OnInit {
+export class MotusComponent implements OnInit {
   mode!: string;
   victory: number = 0;
   response!: string;
