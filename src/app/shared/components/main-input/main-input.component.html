@@ -2,7 +2,9 @@
     <div class="container">
         <div class="previous-container" *ngFor="let try of tries">
             <div class="previous">
-                {{try}}
+                <span class="letter" *ngFor="let letter of try; let i = index" [ngStyle]="getLetterStyle(letter, i)">
+                    {{ letter }}
+                </span>
             </div>
         </div>
         <form (ngSubmit)="submitForm()">

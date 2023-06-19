@@ -10,7 +10,7 @@ export class MainInputComponent implements OnInit {
   wordToFind!: string;
   maxlength!: number;
   inputValue!: string | null;
-  tries: string[] = [];
+  tries: string[][] = [];
 
   ngOnInit() {
     if (this.response) {
@@ -33,22 +33,23 @@ export class MainInputComponent implements OnInit {
       if (this.inputValue === this.response) {
         console.log("You win");
       }
-      else {
-        let yellow = [];
-        let red = [];
-        for (let i = 0; i < this.response.length; i++) {
-          if (this.inputValue[i] == this.response[i]) {
-            red.push(this.response[i]);
-          }
-          else if (this.inputValue.includes(this.response[i])) {
-            yellow.push(this.response[i]);
-          }
-        }
-        console.log("yellow : ", yellow);
-        console.log("red : ", red);
-      }
-      this.tries.push(this.inputValue);
+      this.tries.push(Array.from(this.inputValue));
       this.inputValue = null;
+    }
+  }
+
+  getLetterStyle(letter: string, i: number) {
+    if (this.response[i] == letter.toLowerCase()) {
+      return {
+        'color': 'red'
+      };
+    }
+    else if (this.response.includes(letter.toLowerCase())) {
+      return {
+        'color': 'yellow'
+      };
+    } else {
+      return {};
     }
   }
 }
