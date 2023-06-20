@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-main-input',
@@ -11,8 +11,10 @@ export class MainInputComponent implements OnInit {
   maxlength!: number;
   inputValue!: string | null;
   tries: string[][] = [];
+  @Output() winEvent = new EventEmitter<void>();
 
   ngOnInit() {
+    //this.response="couru";
     if (this.response) {
       this.wordToFind = this.response.replace(/[A-Za-z]/g, "_");
       this.maxlength = this.response.length;
@@ -31,9 +33,12 @@ export class MainInputComponent implements OnInit {
   submitForm() {
     if (this.inputValue && this.inputValue.length === this.maxlength) {
       if (this.inputValue === this.response) {
-        console.log("You win");
+        this.winEvent.emit();
+        this.tries = [];
       }
-      this.tries.push(Array.from(this.inputValue));
+      else {
+        this.tries.push(Array.from(this.inputValue));
+      }
       this.inputValue = null;
     }
   }
@@ -44,12 +49,16 @@ export class MainInputComponent implements OnInit {
         'color': 'red'
       };
     }
-    else if (this.response.includes(letter.toLowerCase())) {
+    else if (this.isYellowLetter(letter, i)) {
       return {
         'color': 'yellow'
       };
     } else {
       return {};
     }
+  }
+
+  isYellowLetter(letter: string, i: number): boolean {
+    return false;
   }
 }

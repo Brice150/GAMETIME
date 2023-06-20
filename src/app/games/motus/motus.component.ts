@@ -21,12 +21,27 @@ export class MotusComponent implements OnInit {
       this.mode = params['mode'];
     });
 
-    let storedValue = localStorage.getItem('victoryNumber');
+    let storedValue: string | null = localStorage.getItem('victoryNumber');
     if (storedValue !== null) {
       this.victory = JSON.parse(storedValue)[0];
     }
 
+    this.newWord();
+  }
+
+  newWord() {
     let randomIndex = Math.floor(Math.random() * words.length);
     this.response = words[randomIndex];
+  }
+
+  handleWinEvent() {
+    let storedValue: string | null = localStorage.getItem('victoryNumber');
+    if (storedValue !== null) {
+      let victories: number[] = JSON.parse(storedValue);
+      victories[0] = victories[0] + 1;
+      localStorage.setItem('victoryNumber', JSON.stringify(victories));
+      this.victory = victories[0];
+    }
+    this.newWord();
   }
 }

@@ -26,6 +26,10 @@ export class FlagComponent implements OnInit {
       this.victory = JSON.parse(storedValue)[1];
     }
 
+    this.newWord();
+  }
+
+  newWord() {
     let randomIndex = Math.floor(Math.random() * countries.length);
     this.response = countries[randomIndex].name;
   }

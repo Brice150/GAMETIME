@@ -25,7 +25,11 @@ export class DefinitionComponent implements OnInit {
     if (storedValue !== null) {
       this.victory = JSON.parse(storedValue)[2];
     }
+    
+    this.newWord();
+  }
 
+  newWord() {
     let randomIndex = Math.floor(Math.random() * words.length);
     this.response = words[randomIndex];
   }
