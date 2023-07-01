@@ -33,4 +33,15 @@ export class DefinitionComponent implements OnInit {
     let randomIndex = Math.floor(Math.random() * words.length);
     this.response = words[randomIndex];
   }
+
+  handleWinEvent() {
+    let storedValue: string | null = localStorage.getItem('victoryNumber');
+    if (storedValue !== null) {
+      let victories: number[] = JSON.parse(storedValue);
+      victories[2] = victories[2] + 1;
+      localStorage.setItem('victoryNumber', JSON.stringify(victories));
+      this.victory = victories[2];
+    }
+    this.newWord();
+  }
 }

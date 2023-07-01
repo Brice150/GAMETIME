@@ -2,7 +2,7 @@
     <div class="container">
         <div class="previous-container" *ngFor="let try of tries">
             <div class="previous">
-                <span class="letter" *ngFor="let letter of try; let i = index" [ngStyle]="getLetterStyle(letter, i)">
+                <span class="letter" *ngFor="let letter of try.letter; let i = index" [ngClass]="{ 'red': try.isRed[i], 'yellow': try.isYellow[i] }">
                     {{ letter }}
                 </span>
             </div>

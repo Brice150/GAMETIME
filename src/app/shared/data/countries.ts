@@ -1,4 +1,4 @@
-import { Country } from "./country";
+import { Country } from "../../core/interfaces/country";
 
 export const countries: Country[] = [ 
   { name: 'Afghanistan', code: 'AF' },

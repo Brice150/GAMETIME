@@ -1,2 +1,2 @@
 <app-header [game]="'definition'" [logo]="'bx bxs-book'" [victory]="victory"></app-header>
-<app-main-input [response]="response"></app-main-input>
+<app-main-input [response]="response" (winEvent)="handleWinEvent()"></app-main-input>

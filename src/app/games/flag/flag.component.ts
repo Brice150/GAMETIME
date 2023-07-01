@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { countries } from 'src/app/shared/data/country/countries';
+import { countries } from 'src/app/shared/data/countries';
 
 @Component({
   selector: 'app-root',
@@ -32,5 +32,16 @@ export class FlagComponent implements OnInit {
   newWord() {
     let randomIndex = Math.floor(Math.random() * countries.length);
     this.response = countries[randomIndex].name;
+  }
+
+  handleWinEvent() {
+    let storedValue: string | null = localStorage.getItem('victoryNumber');
+    if (storedValue !== null) {
+      let victories: number[] = JSON.parse(storedValue);
+      victories[1] = victories[1] + 1;
+      localStorage.setItem('victoryNumber', JSON.stringify(victories));
+      this.victory = victories[1];
+    }
+    this.newWord();
   }
 }

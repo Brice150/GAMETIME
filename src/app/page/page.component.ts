@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
 export class PageComponent implements OnInit {
   imagePath: string = environment.imagePath;
   victoryNumber: number[] = [];
-  isHovering: boolean[] = [true, false, false];
+  isActive: boolean[] = [true, false, false];
   
   ngOnInit() {
     let storedValue = localStorage.getItem('victoryNumber');
@@ -22,7 +22,7 @@ export class PageComponent implements OnInit {
   }
 
   trigger(gameIndex: number) {
-    this.isHovering.fill(false);
-    this.isHovering[gameIndex] = true;
+    this.isActive.fill(false);
+    this.isActive[gameIndex] = true;
   }
 }

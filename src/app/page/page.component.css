@@ -102,9 +102,10 @@ nav .game {
     width: 100%;
     border-radius: 10px;
     transition: 0.5s ease;
+    cursor: pointer;
 }
 
-nav .game:hover {
+nav .game.active {
     box-shadow: inset 5px 5px 16px #12161b,
             inset -5px -5px 16px #48566b;
 }

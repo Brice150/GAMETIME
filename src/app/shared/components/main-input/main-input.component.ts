@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Try } from 'src/app/core/interfaces/try';
 
 @Component({
   selector: 'app-main-input',
@@ -10,11 +11,10 @@ export class MainInputComponent implements OnInit {
   wordToFind!: string;
   maxlength!: number;
   inputValue!: string | null;
-  tries: string[][] = [];
+  tries: Try[] = [];
   @Output() winEvent = new EventEmitter<void>();
 
   ngOnInit() {
-    //this.response="couru";
     if (this.response) {
       this.wordToFind = this.response.replace(/[A-Za-z]/g, "_");
       this.maxlength = this.response.length;
@@ -32,33 +32,45 @@ export class MainInputComponent implements OnInit {
 
   submitForm() {
     if (this.inputValue && this.inputValue.length === this.maxlength) {
-      if (this.inputValue === this.response) {
+      if (this.inputValue.toLocaleLowerCase() === this.response.toLocaleLowerCase()) {
         this.winEvent.emit();
         this.tries = [];
       }
       else {
-        this.tries.push(Array.from(this.inputValue));
+        this.createTry();
       }
       this.inputValue = null;
     }
   }
 
-  getLetterStyle(letter: string, i: number) {
-    if (this.response[i] == letter.toLowerCase()) {
-      return {
-        'color': 'red'
-      };
+  createTry() {
+    const newTry: Try = {
+      letter: Array.from(this.inputValue!),
+      isRed: Array.from({ length: this.inputValue!.length }, () => false),
+      isYellow: Array.from({ length: this.inputValue!.length }, () => false)
+    };
+    const letterCountMap = new Map<string, number>();
+    for (let letter of this.response) {
+      if (letterCountMap.has(letter)) {
+        letterCountMap.set(letter, letterCountMap.get(letter)! + 1);
+      } else {
+        letterCountMap.set(letter, 1);
+      }
     }
-    else if (this.isYellowLetter(letter, i)) {
-      return {
-        'color': 'yellow'
-      };
-    } else {
-      return {};
+    for (let i = 0; i < this.inputValue!.length; i++) {
+      let letter = this.inputValue![i];
+      if (letter === this.response[i]) {
+        letterCountMap.set(letter, letterCountMap.get(letter)! - 1);
+        newTry.isRed[i] = true;
+      }
     }
-  }
-
-  isYellowLetter(letter: string, i: number): boolean {
-    return false;
+    for (let i = 0; i < this.inputValue!.length; i++) {  
+      let letter = this.inputValue![i];
+      if (this.response.includes(letter) && letterCountMap.get(letter) !== 0) {
+          letterCountMap.set(letter, letterCountMap.get(letter)! - 1);
+          newTry.isYellow[i] = true;
+      }
+    }
+    this.tries.push(newTry);
   }
 }
