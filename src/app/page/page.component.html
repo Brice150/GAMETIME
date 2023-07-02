@@ -7,9 +7,15 @@
         <span class="description">Guess a word in various games !</span>
         <nav>
             <div class="game" (click)="trigger(0); $event.stopPropagation" [ngClass]="{ 'active': isActive[0] }">
-                <div *ngIf="!isActive[0]" class="player">
-                    <span class="victory-number">{{victoryNumber[0]}}</span>
-                    <i class='bx bxs-medal'></i>
+                <div class="medals">
+                    <div class="gold">
+                        <span class="victory-number">{{victories.gold[0]}}</span>
+                        <i class='bx bxs-medal'></i>
+                    </div>
+                    <div class="silver">
+                        <span class="victory-number">{{victories.silver[0]}}</span>
+                        <i class='bx bxs-medal'></i>
+                    </div>
                 </div>
                 <div class="game-title">
                     <i class='bx bx-check-square'></i>
@@ -27,9 +33,15 @@
                 </div>
             </div>
             <div class="game" (click)="trigger(1); $event.stopPropagation" [ngClass]="{ 'active': isActive[1] }">
-                <div *ngIf="!isActive[1]" class="player">
-                    <span class="victory-number">{{victoryNumber[1]}}</span>
-                    <i class='bx bxs-medal'></i>
+                <div class="medals">
+                    <div class="gold">
+                        <span class="victory-number">{{victories.gold[1]}}</span>
+                        <i class='bx bxs-medal'></i>
+                    </div>
+                    <div class="silver">
+                        <span class="victory-number">{{victories.silver[1]}}</span>
+                        <i class='bx bxs-medal'></i>
+                    </div>
                 </div>
                 <div class="game-title">
                     <i class='bx bxs-flag'></i>
@@ -41,26 +53,6 @@
                         <span>Solo</span>
                     </a>
                     <a title="Multi" [routerLink]="['/flag']" [queryParams]="{ mode: 'multi' }">
-                        <i class='bx bxs-group'></i>
-                        <span>Multi</span>
-                    </a>
-                </div>
-            </div>
-            <div class="game" (click)="trigger(2); $event.stopPropagation" [ngClass]="{ 'active': isActive[2] }">
-                <div *ngIf="!isActive[2]" class="player">
-                    <span class="victory-number">{{victoryNumber[2]}}</span>
-                    <i class='bx bxs-medal'></i>
-                </div>
-                <div class="game-title">
-                    <i class='bx bxs-book'></i>
-                    <span class="game-title">Definition</span>
-                </div>
-                <div *ngIf="isActive[2]" class="buttons">
-                    <a title="Solo" [routerLink]="['/definition']" [queryParams]="{ mode: 'solo' }">
-                        <i class='bx bxs-user'></i>
-                        <span>Solo</span>
-                    </a>
-                    <a title="Multi" [routerLink]="['/definition']" [queryParams]="{ mode: 'multi' }">
                         <i class='bx bxs-group'></i>
                         <span>Multi</span>
                     </a>

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Victories } from 'src/app/core/interfaces/victories';
 import { words } from 'src/app/shared/data/words';
 
 @Component({
@@ -9,8 +10,9 @@ import { words } from 'src/app/shared/data/words';
 })
 export class MotusComponent implements OnInit {
   mode!: string;
-  victory: number = 0;
+  victories!: Victories;
   response!: string;
+  medals!: number[];
 
   constructor(
     private route: ActivatedRoute
@@ -21,10 +23,11 @@ export class MotusComponent implements OnInit {
       this.mode = params['mode'];
     });
 
-    let storedValue: string | null = localStorage.getItem('victoryNumber');
+    let storedValue: string | null = localStorage.getItem('victories');
     if (storedValue !== null) {
-      this.victory = JSON.parse(storedValue)[0];
+      this.victories = JSON.parse(storedValue);
     }
+    this.medals = [this.victories.gold[0], this.victories.silver[0]];
 
     this.newWord();
   }
@@ -34,14 +37,25 @@ export class MotusComponent implements OnInit {
     this.response = words[randomIndex];
   }
 
-  handleWinEvent() {
-    let storedValue: string | null = localStorage.getItem('victoryNumber');
+  handleWinEvent(medalsWon: number) {
+    let storedValue: string | null = localStorage.getItem('victories');
     if (storedValue !== null) {
-      let victories: number[] = JSON.parse(storedValue);
-      victories[0] = victories[0] + 1;
-      localStorage.setItem('victoryNumber', JSON.stringify(victories));
-      this.victory = victories[0];
+      let victories: Victories = JSON.parse(storedValue);
+      if (victories.silver[0] + medalsWon < 10) {
+        victories.silver[0] = victories.silver[0] + medalsWon;
+      }
+      else {
+        victories.gold[0] = victories.gold[0] + 1;
+        victories.silver[0] = victories.silver[0] + medalsWon - 10;
+      }
+      localStorage.setItem('victories', JSON.stringify(victories));
+      this.victories = victories;
+      this.medals = [victories.gold[0], victories.silver[0]];
     }
+    this.newWord();
+  }
+
+  handleLostEvent() {
     this.newWord();
   }
 }

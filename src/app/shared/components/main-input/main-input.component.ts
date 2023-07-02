@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
 import { Try } from 'src/app/core/interfaces/try';
+import { emojies } from '../../data/emojis';
 
 @Component({
   selector: 'app-main-input',
@@ -12,12 +13,21 @@ export class MainInputComponent implements OnInit {
   maxlength!: number;
   inputValue!: string | null;
   tries: Try[] = [];
-  @Output() winEvent = new EventEmitter<void>();
+  @Output() winEvent = new EventEmitter<number>();
+  @Output() lostEvent = new EventEmitter<void>();
+  emojiClass: string = emojies[1].emojiClass;
+  emojiStyle: { [klass: string]: any; } = emojies[1].emojiStyle;
 
   ngOnInit() {
     if (this.response) {
-      this.wordToFind = this.response.replace(/[A-Za-z]/g, "_");
+      this.wordToFind = this.response.charAt(0).toLowerCase() + this.response.slice(1).replace(/[A-Za-z]/g, "_");
       this.maxlength = this.response.length;
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges) {  
+    if (!changes['response'].firstChange) {
+      this.ngOnInit();
     }
   }
 
@@ -28,22 +38,26 @@ export class MainInputComponent implements OnInit {
     if (!isAllowedCharacter) {
       event.preventDefault();
     }
+
+    const inputValue = (event.target as HTMLInputElement).value;
+    if (inputValue.length === 0 && key !== this.response.charAt(0).toLowerCase()) {
+      event.preventDefault();
+    }
   }
 
   submitForm() {
     if (this.inputValue && this.inputValue.length === this.maxlength) {
-      if (this.inputValue.toLocaleLowerCase() === this.response.toLocaleLowerCase()) {
-        this.winEvent.emit();
-        this.tries = [];
+      if (this.inputValue.toLowerCase() === this.response.toLowerCase()) {
+        this.reset(true);
       }
       else {
-        this.createTry();
+        this.addTry();        
       }
       this.inputValue = null;
     }
   }
 
-  createTry() {
+  addTry() {
     const newTry: Try = {
       letter: Array.from(this.inputValue!),
       isRed: Array.from({ length: this.inputValue!.length }, () => false),
@@ -72,5 +86,38 @@ export class MainInputComponent implements OnInit {
       }
     }
     this.tries.push(newTry);
+    this.emojiClass = emojies[this.tries.length+1].emojiClass;
+    this.emojiStyle = emojies[this.tries.length+1].emojiStyle;
+    if (this.tries.length > 5) {
+      this.reset(false);
+    }
+  }
+
+  reset(gameWon: boolean) {
+    let medalsWon: number = 1;
+    if (this.tries.length < 2) {
+      medalsWon = 3;
+    }
+    else if (this.tries.length < 4) {
+      medalsWon = 2;
+    }
+    const response: Try = {
+      letter: Array.from(this.response),
+      isRed: Array.from({ length: this.response!.length }, () => true),
+      isYellow: Array.from({ length: this.response!.length }, () => false)
+    };
+    this.tries = [];
+    this.tries.push(response);
+    setTimeout(() => {
+      if (gameWon) {
+        this.winEvent.emit(medalsWon);
+      }
+      else {
+        this.lostEvent.emit();
+      }
+      this.tries = [];
+      this.emojiClass = emojies[1].emojiClass;
+      this.emojiStyle = emojies[1].emojiStyle;
+    }, 2000);
   }
 }

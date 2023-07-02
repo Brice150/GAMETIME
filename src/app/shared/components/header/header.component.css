@@ -24,10 +24,17 @@
     color: var(--primary);
 }
 
-.player {
+.medals {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.medals .gold, .silver {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 10px;
 }
 
 .victory-number {
@@ -36,9 +43,16 @@
     font-weight: 600;
 }
 
-.player i {
+.medals i {
     font-size: 32px;
+}
+
+.medals .gold i {
     color: var(--secondary);
+}
+
+.medals .silver i {
+    color: var(--text);
 }
 
 a {

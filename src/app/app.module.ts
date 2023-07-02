@@ -4,7 +4,6 @@ import { AppComponent } from './app.component';
 import { appRouter } from './app.router';
 import { PageModule } from './page/page.module';
 import { FlagModule } from './games/flag/flag.module';
-import { DefinitionModule } from './games/definition/definition.module';
 import { MotusModule } from './games/motus/motus.module';
 
 @NgModule({
@@ -16,8 +15,7 @@ import { MotusModule } from './games/motus/motus.module';
     appRouter,
     PageModule,
     MotusModule,
-    FlagModule,
-    DefinitionModule
+    FlagModule
   ],
   bootstrap: [AppComponent]
 })

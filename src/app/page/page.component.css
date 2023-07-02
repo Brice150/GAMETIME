@@ -16,12 +16,13 @@
     width: 100%;
 }
 
-.player {
+.medals {
     position: absolute;
     right: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: row;
 }
 
 .victory-number {
@@ -30,9 +31,23 @@
     font-weight: 500;
 }
 
-.player i {
+.medals .gold, .silver {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 5px;
+}
+
+.medals i {
     font-size: 25px;
+}
+
+.medals .gold i {
     color: var(--secondary);
+}
+
+.medals .silver i {
+    color: var(--text);
 }
 
 .title {
@@ -108,6 +123,14 @@ nav .game {
 nav .game.active {
     box-shadow: inset 5px 5px 16px #12161b,
             inset -5px -5px 16px #48566b;
+}
+
+nav .game.active .medals {
+    flex-direction: column;
+}
+
+nav .game.active .medals .gold, .silver {
+    margin: 5px 0;
 }
 
 nav .game .game-title i {

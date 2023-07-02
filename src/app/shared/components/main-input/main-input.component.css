@@ -101,6 +101,14 @@ input {
     color: red;
 }
 
+.container i {
+    font-size: 40px;
+    box-shadow:  5px 5px 16px #12161b,
+             -5px -5px 16px #48566b;
+    background: var(--background);
+    border-radius: 50%;
+}
+
 @media screen and (max-width: 500px) {
     .placeholder, input, .previous {
         letter-spacing: 6px;

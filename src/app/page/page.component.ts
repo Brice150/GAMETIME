@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { environment } from 'src/environments/environment';
+import { Victories } from '../core/interfaces/victories';
 
 @Component({
   selector: 'app-root',
@@ -8,16 +9,20 @@ import { environment } from 'src/environments/environment';
 })
 export class PageComponent implements OnInit {
   imagePath: string = environment.imagePath;
-  victoryNumber: number[] = [];
-  isActive: boolean[] = [true, false, false];
+  victories!: Victories;
+  isActive: boolean[] = [true, false];
   
   ngOnInit() {
-    let storedValue = localStorage.getItem('victoryNumber');
+    let storedValue = localStorage.getItem('victories');
     if (storedValue !== null) {
-      this.victoryNumber = JSON.parse(storedValue);
+      this.victories = JSON.parse(storedValue);
     } else {
-      this.victoryNumber = [0, 0, 0];
-      localStorage.setItem('victoryNumber', JSON.stringify(this.victoryNumber));
+      this.victories = {
+        game: ['motus', 'flag'],
+        gold: [0, 0],
+        silver: [0, 0]
+      };
+      localStorage.setItem('victories', JSON.stringify(this.victories));
     }
   }
 

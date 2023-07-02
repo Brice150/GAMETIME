@@ -1,2 +1,5 @@
-<app-header [game]="'flag'" [logo]="'bx bxs-flag'" [victory]="victory"></app-header>
-<app-main-input [response]="response" (winEvent)="handleWinEvent()"></app-main-input>
+<app-header [game]="'flag'" [logo]="'bx bxs-flag'" [medals]="medals"></app-header>
+<div class="container">
+    <img [src]="flagApi" alt="flag">
+</div>
+<app-main-input [response]="response" (winEvent)="handleWinEvent($event)" (lostEvent)="handleLostEvent()"></app-main-input>
