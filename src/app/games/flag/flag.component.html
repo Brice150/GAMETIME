@@ -1,5 +1,5 @@
 <app-header [game]="'flag'" [logo]="'bx bxs-flag'" [medals]="medals"></app-header>
 <div class="container">
-    <img [src]="flagApi" alt="flag">
+    <img [src]="flagApi">
 </div>
 <app-main-input [response]="response" (winEvent)="handleWinEvent($event)" (lostEvent)="handleLostEvent()"></app-main-input>
