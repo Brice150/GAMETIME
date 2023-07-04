@@ -5,6 +5,7 @@ import { appRouter } from './app.router';
 import { PageModule } from './page/page.module';
 import { FlagModule } from './games/flag/flag.module';
 import { MotusModule } from './games/motus/motus.module';
+import { MultiModule } from './games/multi/multi.module';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { MotusModule } from './games/motus/motus.module';
     appRouter,
     PageModule,
     MotusModule,
-    FlagModule
+    FlagModule,
+    MultiModule
   ],
   bootstrap: [AppComponent]
 })

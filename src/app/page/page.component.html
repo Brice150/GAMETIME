@@ -7,13 +7,33 @@
         <span class="description">Guess a word in various games !</span>
         <nav>
             <div class="game" (click)="trigger(0); $event.stopPropagation" [ngClass]="{ 'active': isActive[0] }">
+                <div class="game-title">
+                    <i class='bx bxs-user-rectangle'></i>
+                    <span class="game-title">{{user.username}}</span>
+                </div>
+                <div *ngIf="isActive[0]" class="buttons">
+                    <a title="Modify">
+                        <i class='bx bxs-edit-alt'></i>
+                        <span>Modify</span>
+                    </a>
+                    <a title="Learn">
+                        <i class='bx bxs-book'></i>
+                        <span>Learn</span>
+                    </a>
+                    <a title="Delete">
+                        <i class='bx bxs-trash'></i>
+                        <span>Delete</span>
+                    </a>
+                </div>
+            </div>
+            <div class="game" (click)="trigger(1); $event.stopPropagation" [ngClass]="{ 'active': isActive[1] }">
                 <div class="medals">
                     <div class="gold">
-                        <span class="victory-number">{{victories.gold[0]}}</span>
+                        <span class="victory-number">{{user.victories.gold[0]}}</span>
                         <i class='bx bxs-medal'></i>
                     </div>
                     <div class="silver">
-                        <span class="victory-number">{{victories.silver[0]}}</span>
+                        <span class="victory-number">{{user.victories.silver[0]}}</span>
                         <i class='bx bxs-medal'></i>
                     </div>
                 </div>
@@ -21,25 +41,25 @@
                     <i class='bx bx-check-square'></i>
                     <span class="game-title">Motus</span>
                 </div>
-                <div *ngIf="isActive[0]" class="buttons">
-                    <a title="Solo" [routerLink]="['/motus']" [queryParams]="{ mode: 'solo' }">
+                <div *ngIf="isActive[1]" class="buttons">
+                    <a title="Solo" [routerLink]="['/motus']">
                         <i class='bx bxs-user'></i>
                         <span>Solo</span>
                     </a>
-                    <a title="Multi" [routerLink]="['/motus']" [queryParams]="{ mode: 'multi' }">
+                    <a title="Multi" [routerLink]="['/multi']" [queryParams]="{ game: 'motus' }">
                         <i class='bx bxs-group'></i>
                         <span>Multi</span>
                     </a>
                 </div>
             </div>
-            <div class="game" (click)="trigger(1); $event.stopPropagation" [ngClass]="{ 'active': isActive[1] }">
+            <div class="game" (click)="trigger(2); $event.stopPropagation" [ngClass]="{ 'active': isActive[2] }">
                 <div class="medals">
                     <div class="gold">
-                        <span class="victory-number">{{victories.gold[1]}}</span>
+                        <span class="victory-number">{{user.victories.gold[1]}}</span>
                         <i class='bx bxs-medal'></i>
                     </div>
                     <div class="silver">
-                        <span class="victory-number">{{victories.silver[1]}}</span>
+                        <span class="victory-number">{{user.victories.silver[1]}}</span>
                         <i class='bx bxs-medal'></i>
                     </div>
                 </div>
@@ -47,12 +67,12 @@
                     <i class='bx bxs-flag'></i>
                     <span class="game-title">Flag</span>
                 </div>
-                <div *ngIf="isActive[1]" class="buttons">
-                    <a title="Solo" [routerLink]="['/flag']" [queryParams]="{ mode: 'solo' }">
+                <div *ngIf="isActive[2]" class="buttons">
+                    <a title="Solo" [routerLink]="['/flag']">
                         <i class='bx bxs-user'></i>
                         <span>Solo</span>
                     </a>
-                    <a title="Multi" [routerLink]="['/flag']" [queryParams]="{ mode: 'multi' }">
+                    <a title="Multi" [routerLink]="['/multi']" [queryParams]="{ game: 'flag' }">
                         <i class='bx bxs-group'></i>
                         <span>Multi</span>
                     </a>

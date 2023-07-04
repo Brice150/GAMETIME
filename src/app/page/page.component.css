@@ -159,7 +159,7 @@ nav .game .game-title {
     width: 100%;
 }
 
-.buttons a {
+a {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -173,18 +173,18 @@ nav .game .game-title {
     transition: 0.5s ease;
 }
 
-.buttons a:hover {
+a:hover {
     box-shadow: inset 5px 5px 16px #12161b,
             inset -5px -5px 16px #48566b;
 }
 
-.buttons a i {
+a i {
     font-size: 25px;
     margin-right: 10px;
     color: var(--text);
 }
 
-.buttons a span {
+a span {
     font-size: 20px;
     font-weight: 500;
 }

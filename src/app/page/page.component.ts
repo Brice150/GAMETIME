@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { Victories } from '../core/interfaces/victories';
+import { v4 as uuidv4 } from 'uuid';
+import { User } from '../core/interfaces/user';
 
 @Component({
   selector: 'app-root',
@@ -9,21 +10,23 @@ import { Victories } from '../core/interfaces/victories';
 })
 export class PageComponent implements OnInit {
   imagePath: string = environment.imagePath;
-  victories!: Victories;
-  isActive: boolean[] = [true, false];
+  isActive: boolean[] = [true, false, false];
+  user: User = {} as User;
   
   ngOnInit() {
-    let storedValue = localStorage.getItem('victories');
-    if (storedValue !== null) {
-      this.victories = JSON.parse(storedValue);
+    let storedUser: string | null = localStorage.getItem('user');
+    if (storedUser !== null) {
+      this.user = JSON.parse(storedUser);
     } else {
-      this.victories = {
+      const randomString = uuidv4().substring(0,4);
+      this.user.username = `User#${randomString}`;
+      this.user.victories = {
         game: ['motus', 'flag'],
         gold: [0, 0],
         silver: [0, 0]
       };
-      localStorage.setItem('victories', JSON.stringify(this.victories));
-    }
+      localStorage.setItem('user', JSON.stringify(this.user));
+    }    
   }
 
   trigger(gameIndex: number) {

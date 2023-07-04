@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Victories } from 'src/app/core/interfaces/victories';
+import { User } from 'src/app/core/interfaces/user';
 import { words } from 'src/app/shared/data/words';
 
 @Component({
@@ -10,24 +9,18 @@ import { words } from 'src/app/shared/data/words';
 })
 export class MotusComponent implements OnInit {
   mode!: string;
-  victories!: Victories;
   response!: string;
   medals!: number[];
+  user: User = {} as User;
 
-  constructor(
-    private route: ActivatedRoute
-  ) {}
+  constructor() {}
 
   ngOnInit() {
-    this.route.queryParams.subscribe(params => {
-      this.mode = params['mode'];
-    });
-
-    let storedValue: string | null = localStorage.getItem('victories');
-    if (storedValue !== null) {
-      this.victories = JSON.parse(storedValue);
-    }
-    this.medals = [this.victories.gold[0], this.victories.silver[0]];
+    let storedUser: string | null = localStorage.getItem('user');
+    if (storedUser !== null) {
+      this.user = JSON.parse(storedUser);
+    }  
+    this.medals = [this.user.victories.gold[0], this.user.victories.silver[0]];
 
     this.newWord();
   }
@@ -38,20 +31,20 @@ export class MotusComponent implements OnInit {
   }
 
   handleWinEvent(medalsWon: number) {
-    let storedValue: string | null = localStorage.getItem('victories');
-    if (storedValue !== null) {
-      let victories: Victories = JSON.parse(storedValue);
-      if (victories.silver[0] + medalsWon < 10) {
-        victories.silver[0] = victories.silver[0] + medalsWon;
+    let storedUser: string | null = localStorage.getItem('user');
+    if (storedUser !== null) {
+      this.user = JSON.parse(storedUser);
+      if (this.user.victories.silver[0] + medalsWon < 10) {
+        this.user.victories.silver[0] = this.user.victories.silver[0] + medalsWon;
       }
       else {
-        victories.gold[0] = victories.gold[0] + 1;
-        victories.silver[0] = victories.silver[0] + medalsWon - 10;
+        this.user.victories.gold[0] = this.user.victories.gold[0] + 1;
+        this.user.victories.silver[0] = this.user.victories.silver[0] + medalsWon - 10;
       }
-      localStorage.setItem('victories', JSON.stringify(victories));
-      this.victories = victories;
-      this.medals = [victories.gold[0], victories.silver[0]];
+      localStorage.setItem('user', JSON.stringify(this.user));
+      this.medals = [this.user.victories.gold[0], this.user.victories.silver[0]];
     }
+    
     this.newWord();
   }
 
