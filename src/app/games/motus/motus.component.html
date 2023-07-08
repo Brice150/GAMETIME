@@ -1,2 +1,2 @@
 <app-header [game]="'motus'" [logo]="'bx bx-check-square'" [medals]="medals"></app-header>
-<app-main-input [response]="response" (winEvent)="handleWinEvent($event)" (lostEvent)="handleLostEvent()"></app-main-input>
+<app-main-input [response]="response" [gameName]="'motus'" (winEvent)="handleWinEvent($event)" (lostEvent)="handleLostEvent()"></app-main-input>

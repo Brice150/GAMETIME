@@ -20,6 +20,39 @@ h1 {
     margin-bottom: 30px;
 }
 
+mat-accordion {
+    margin-bottom: 20px;
+}
+
+mat-expansion-panel-header i {
+    font-size: 25px;
+    margin-right: 10px;
+    color: black;
+}
+
+mat-expansion-panel-header span {
+    font-size: 20px;
+    font-weight: 500;
+    color: black;
+}
+
+mat-expansion-panel .pictures {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+mat-expansion-panel .pictures img {
+    border-radius: 10px;
+}
+
+ul li {
+    margin: 1px;
+    font-size: 15px;
+    font-weight: 500;
+    color: black;
+}
+
 .buttons {
     width: 100%;
     display: flex;
@@ -63,3 +96,4 @@ a span {
 a:link, a:visited {
     color: black;
 }
+

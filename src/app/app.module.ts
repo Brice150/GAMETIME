@@ -7,6 +7,7 @@ import { FlagModule } from './games/flag/flag.module';
 import { MotusModule } from './games/motus/motus.module';
 import { MultiModule } from './games/multi/multi.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     MotusModule,
     FlagModule,
     MultiModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    ToastrModule.forRoot()
   ],
   bootstrap: [AppComponent]
 })

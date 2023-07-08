@@ -7,6 +7,7 @@ import { FormsModule } from "@angular/forms";
 import { MatDialogModule } from "@angular/material/dialog";
 import { ConfirmationDialogComponent } from "./components/confirmation-dialog/confirmation-dialog.component";
 import { LearnDialogComponent } from "./components/learn-dialog/learn-dialog.component";
+import { MatExpansionModule } from '@angular/material/expansion';
 
 @NgModule({
     declarations: [MainInputComponent, HeaderComponent, ConfirmationDialogComponent, LearnDialogComponent],
@@ -14,7 +15,8 @@ import { LearnDialogComponent } from "./components/learn-dialog/learn-dialog.com
         CommonModule,
         RouterModule,
         FormsModule,
-        MatDialogModule
+        MatDialogModule,
+        MatExpansionModule
     ],
     exports: [MainInputComponent, HeaderComponent, ConfirmationDialogComponent, LearnDialogComponent]
 })

@@ -1,8 +1,82 @@
 <div mat-dialog-content class="container">
     <h1>Learn how to play !</h1>
+    <mat-accordion>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <i class='bx bxs-user-rectangle'></i>
+              <span>Account</span>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div class="expansion-content">
+            <div class="pictures">
+                <img [src]="imagePath + 'account.png'">
+            </div>
+            <ul>
+                <li>Change your username</li>
+                <li>Learn more how to use the app</li>
+                <li>Delete your account (username and medals !)</li>
+            </ul>
+          </div>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <i class='bx bxs-game'></i>
+              <span>Games</span>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div class="expansion-content">
+            <div class="pictures">
+                <img [src]="imagePath + 'games.png'">
+            </div>
+            <ul>
+                <li>Select a game to play</li>
+                <li>Motus makes you guess a word with first letter as hint</li>
+                <li>Flag makes you guess a country name based on his flag</li>
+            </ul>
+          </div>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <i class='bx bxs-joystick-alt'></i>
+                <span>Play</span>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <div class="expansion-content">
+                <div class="pictures">
+                    <img [src]="imagePath + 'play.png'">
+                </div>
+                <ul>
+                    <li>Try to find the french word in less than 6 tries</li>
+                    <li>A red letter is a correct letter at the right place</li>
+                    <li>A gold letter is a correct letter at the wrong place</li>
+                </ul>
+            </div>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <i class='bx bxs-medal'></i>
+                <span>Medals</span>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <div class="expansion-content">
+                <div class="pictures">
+                    <img [src]="imagePath + 'medals.png'">
+                </div>
+                <ul>
+                    <li>Earn medals while playing games</li>
+                    <li>The lesser the number of try the more silver medals you win</li>
+                    <li>10 silver medals = 1 gold medal</li>
+                </ul>
+            </div>
+        </mat-expansion-panel>
+    </mat-accordion>
     <div class="buttons">
         <a class="cancel" title="cancel" (click)="cancel()">
-            <i class='bx bxs-game'></i>
+            <i class='bx bxs-hand-right'></i>
             <span>Let's play</span>
         </a>
     </div>

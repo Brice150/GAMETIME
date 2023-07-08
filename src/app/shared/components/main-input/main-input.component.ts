@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
 import { Try } from 'src/app/core/interfaces/try';
 import { emojies } from '../../data/emojis';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-main-input',
@@ -9,6 +10,8 @@ import { emojies } from '../../data/emojis';
 })
 export class MainInputComponent implements OnInit {
   @Input() response!: string;
+  @Input() showFirstLetter: boolean = true;
+  @Input() gameName!: string;
   wordToFind!: string;
   maxlength!: number;
   inputValue!: string | null;
@@ -18,9 +21,16 @@ export class MainInputComponent implements OnInit {
   emojiClass: string = emojies[1].emojiClass;
   emojiStyle: { [klass: string]: any; } = emojies[1].emojiStyle;
 
+  constructor(private toastr: ToastrService) {}
+
   ngOnInit() {
     if (this.response) {
-      this.wordToFind = this.response.charAt(0).toLowerCase() + this.response.slice(1).replace(/[A-Za-z]/g, "_");
+      if (this.showFirstLetter) {
+        this.wordToFind = this.response.charAt(0).toLowerCase() + this.response.slice(1).replace(/[A-Za-z]/g, "_");
+      }
+      else {
+        this.wordToFind = this.response.replace(/[A-Za-z]/g, "_");
+      }
       this.maxlength = this.response.length;
     }
   }
@@ -39,9 +49,11 @@ export class MainInputComponent implements OnInit {
       event.preventDefault();
     }
 
-    const inputValue = (event.target as HTMLInputElement).value;
-    if (inputValue.length === 0 && key !== this.response.charAt(0).toLowerCase()) {
-      event.preventDefault();
+    if (this.showFirstLetter) {
+      const inputValue = (event.target as HTMLInputElement).value;
+      if (inputValue.length === 0 && key !== this.response.charAt(0).toLowerCase()) {
+        event.preventDefault();
+      }
     }
   }
 
@@ -108,6 +120,16 @@ export class MainInputComponent implements OnInit {
     };
     this.tries = [];
     this.tries.push(response);
+    if (gameWon) {
+      this.toastr.success("You won", this.gameName.toUpperCase(), {
+        positionClass: "toast-bottom-center" 
+      });
+    }
+    else {
+      this.toastr.error("You lost", this.gameName.toUpperCase(), {
+        positionClass: "toast-bottom-center" 
+      });
+    }
     setTimeout(() => {
       if (gameWon) {
         this.winEvent.emit(medalsWon);

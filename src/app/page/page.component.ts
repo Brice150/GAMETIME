@@ -5,6 +5,7 @@ import { User } from '../core/interfaces/user';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { LearnDialogComponent } from '../shared/components/learn-dialog/learn-dialog.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-root',
@@ -16,7 +17,10 @@ export class PageComponent implements OnInit {
   isActive: boolean[] = [true, false, false];
   user: User = {} as User;
 
-  constructor(public dialog: MatDialog) {}
+  constructor(
+    public dialog: MatDialog,
+    private toastr: ToastrService
+    ) {}
   
   ngOnInit() {
     let storedUser: string | null = localStorage.getItem('user');
@@ -54,11 +58,29 @@ export class PageComponent implements OnInit {
   }
 
   changeName() {
-    localStorage.setItem('user', JSON.stringify(this.user));
+    if (this.user.username.length > 10) {
+      this.toastr.error("Username too long", "ACCOUNT", {
+        positionClass: "toast-bottom-center" 
+      });
+    }
+    else if (this.user.username.length < 5) {
+      this.toastr.error("Username too short", "ACCOUNT", {
+        positionClass: "toast-bottom-center" 
+      });
+    }
+    else {
+      localStorage.setItem('user', JSON.stringify(this.user));
+      this.toastr.info("Account modified", "ACCOUNT", {
+        positionClass: "toast-bottom-center" 
+      });
+    }
   }
 
   deleteAccount() {
     localStorage.removeItem('user');
     this.ngOnInit();
+    this.toastr.info("Account deleted", "ACCOUNT", {
+      positionClass: "toast-bottom-center" 
+    });
   }
 }

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-learn-dialog',
@@ -7,6 +8,8 @@ import { MatDialogRef } from '@angular/material/dialog';
   styleUrls: ['./learn-dialog.component.css']
 })
 export class LearnDialogComponent {
+  imagePath: string = environment.imagePath + "/learn/";
+
   constructor(public dialogRef: MatDialogRef<LearnDialogComponent>) {}
 
   cancel(): void {
