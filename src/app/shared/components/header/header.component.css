@@ -3,6 +3,7 @@
     justify-content: space-around;
     align-items: center;
     color: var(--text);
+    margin-top: 20px;
 }
 
 .title {
@@ -16,6 +17,8 @@
     font-weight: 800;
     text-transform: capitalize;
     text-align: center;
+    padding: 0;
+    margin: 0;
 }
 
 .title i {
@@ -92,6 +95,9 @@ a:link, a:visited {
 @media screen and (max-width: 500px) {
     .container {
         flex-direction: column;
-        margin-top: 20px;
+    }
+
+    .title {
+        margin: 20px 0;
     }
 }

@@ -52,7 +52,7 @@ input {
     font-family: monospace;
     width: 100%;
     pointer-events: none;
-    top: -3px;
+    top: 5px;
     left: 0;
     white-space: nowrap;
 }
