@@ -7,7 +7,7 @@
                 </span>
             </div>
         </div>
-        <form (ngSubmit)="submitForm()">
+        <form (ngSubmit)="submitAnswer()">
             <input [attr.maxlength]="maxlength" (keydown)="onKeyDown($event)" [(ngModel)]="inputValue" [ngModelOptions]="{standalone: true}">
             <span class="placeholder">{{wordToFind}}</span>
             <button class="submit" type="submit">Submit</button>

@@ -33,4 +33,13 @@ export class PageComponent implements OnInit {
     this.isActive.fill(false);
     this.isActive[gameIndex] = true;
   }
+
+  changeName() {
+    localStorage.setItem('user', JSON.stringify(this.user));
+  }
+
+  deleteAccount() {
+    localStorage.removeItem('user');
+    this.ngOnInit();
+  }
 }

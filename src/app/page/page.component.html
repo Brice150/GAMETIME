@@ -6,26 +6,26 @@
         </div>
         <span class="description">Guess a word in various games !</span>
         <nav>
-            <div class="game" (click)="trigger(0); $event.stopPropagation" [ngClass]="{ 'active': isActive[0] }">
+            <form (ngSubmit)="changeName()" class="game" (click)="trigger(0); $event.stopPropagation" [ngClass]="{ 'active': isActive[0] }">
                 <div class="game-title">
                     <i class='bx bxs-user-rectangle'></i>
-                    <span class="game-title">{{user.username}}</span>
+                    <input [(ngModel)]="user.username" [ngModelOptions]="{standalone: true}">
                 </div>
                 <div *ngIf="isActive[0]" class="buttons">
-                    <a title="Modify">
+                    <button title="Modify" type="submit">
                         <i class='bx bxs-edit-alt'></i>
                         <span>Modify</span>
-                    </a>
+                    </button>
                     <a title="Learn">
                         <i class='bx bxs-book'></i>
                         <span>Learn</span>
                     </a>
-                    <a title="Delete">
+                    <a title="Delete" (click)="deleteAccount()">
                         <i class='bx bxs-trash'></i>
                         <span>Delete</span>
                     </a>
                 </div>
-            </div>
+            </form>
             <div class="game" (click)="trigger(1); $event.stopPropagation" [ngClass]="{ 'active': isActive[1] }">
                 <div class="medals">
                     <div class="gold">
@@ -39,7 +39,7 @@
                 </div>
                 <div class="game-title">
                     <i class='bx bx-check-square'></i>
-                    <span class="game-title">Motus</span>
+                    <span>Motus</span>
                 </div>
                 <div *ngIf="isActive[1]" class="buttons">
                     <a title="Solo" [routerLink]="['/motus']">
@@ -65,7 +65,7 @@
                 </div>
                 <div class="game-title">
                     <i class='bx bxs-flag'></i>
-                    <span class="game-title">Flag</span>
+                    <span>Flag</span>
                 </div>
                 <div *ngIf="isActive[2]" class="buttons">
                     <a title="Solo" [routerLink]="['/flag']">

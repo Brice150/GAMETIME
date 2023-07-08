@@ -45,7 +45,7 @@ export class MainInputComponent implements OnInit {
     }
   }
 
-  submitForm() {
+  submitAnswer() {
     if (this.inputValue && this.inputValue.length === this.maxlength) {
       if (this.inputValue.toLowerCase() === this.response.toLowerCase()) {
         this.reset(true);
