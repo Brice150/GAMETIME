@@ -10,6 +10,7 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    width: 80%;
 }
 
 h1 {
@@ -41,6 +42,7 @@ h1 {
     transition: 0.5s ease;
     border: none;
     color: black;
+    width: 100px;
 }
 
 .buttons .cancel:hover, .delete:hover {
@@ -62,4 +64,20 @@ a span {
 
 a:link, a:visited {
     color: black;
+}
+
+@media screen and (max-width: 500px) {
+    .buttons {
+        flex-direction: column;
+    }
+
+    .buttons .cancel, .delete {
+        margin: 10px 0;
+    }
+}
+
+@media screen and (min-width: 600px) {
+    .container {
+        width: 500px;
+    }
 }

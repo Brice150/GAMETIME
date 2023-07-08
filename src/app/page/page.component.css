@@ -152,6 +152,7 @@ nav .game .game-title {
     align-items: center;
     justify-content: space-evenly;
     width: 100%;
+    flex-wrap: wrap;
 }
 
 a, button {
@@ -217,4 +218,14 @@ input {
     font-weight: 500;
     width: 100px;
     padding: 0;
+}
+
+@media screen and (max-width: 500px) {
+    a, button {
+        margin: 10px;
+    }
+
+    .buttons.column {
+        flex-direction: column;
+    }
 }

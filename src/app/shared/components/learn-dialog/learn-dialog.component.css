@@ -10,6 +10,7 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    width: 80%;
 }
 
 h1 {
@@ -22,6 +23,7 @@ h1 {
 
 mat-accordion {
     margin-bottom: 20px;
+    width: 100%;
 }
 
 mat-expansion-panel-header i {
@@ -44,6 +46,15 @@ mat-expansion-panel .pictures {
 
 mat-expansion-panel .pictures img {
     border-radius: 10px;
+}
+
+mat-expansion-panel .pictures img:not(.small) {
+    width: 100%;
+    height: auto;
+}
+
+ul {
+    padding-left: 10px;
 }
 
 ul li {
@@ -97,3 +108,19 @@ a:link, a:visited {
     color: black;
 }
 
+@media screen and (max-width: 500px) {
+    .container {
+        padding: 10px;
+    }
+
+    mat-expansion-panel .pictures .small {
+        width: 80%;
+        height: auto;
+    }
+}
+
+@media screen and (min-width: 700px) {
+    .container {
+        width: 600px;
+    }
+}
