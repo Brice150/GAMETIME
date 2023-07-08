@@ -1,0 +1,65 @@
+.container {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--text);
+    padding: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+h1 {
+    color: black;
+    text-align: center;
+    font-size: 23px;
+    font-weight: 600;
+    margin-bottom: 30px;
+}
+
+.buttons {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.buttons .cancel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    cursor: pointer;
+    padding: 12px;
+    background: var(--text);
+    box-shadow:  5px 5px 9px #d1d1d1,
+    -5px -5px 9px #ffffff;
+    border-radius: 10px;
+    transition: 0.5s ease;
+    border: none;
+    color: black;
+}
+
+.buttons .cancel:hover {
+    box-shadow: inset 5px 5px 9px #d1d1d1,
+    inset -5px -5px 9px #ffffff;
+}
+
+a i {
+    font-size: 25px;
+    margin-right: 10px;
+    color: black;
+}
+
+a span {
+    font-size: 20px;
+    font-weight: 500;
+    color: black;
+}
+
+a:link, a:visited {
+    color: black;
+}

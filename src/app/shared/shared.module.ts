@@ -4,14 +4,18 @@ import { MainInputComponent } from "./components/main-input/main-input.component
 import { HeaderComponent } from "./components/header/header.component";
 import { RouterModule } from "@angular/router";
 import { FormsModule } from "@angular/forms";
+import { MatDialogModule } from "@angular/material/dialog";
+import { ConfirmationDialogComponent } from "./components/confirmation-dialog/confirmation-dialog.component";
+import { LearnDialogComponent } from "./components/learn-dialog/learn-dialog.component";
 
 @NgModule({
-    declarations: [MainInputComponent, HeaderComponent],
+    declarations: [MainInputComponent, HeaderComponent, ConfirmationDialogComponent, LearnDialogComponent],
     imports: [
         CommonModule,
         RouterModule,
-        FormsModule
+        FormsModule,
+        MatDialogModule
     ],
-    exports: [MainInputComponent, HeaderComponent]
+    exports: [MainInputComponent, HeaderComponent, ConfirmationDialogComponent, LearnDialogComponent]
 })
 export class SharedModule {}
