@@ -25,6 +25,9 @@ export class MainInputComponent implements OnInit {
 
   ngOnInit() {
     if (this.response) {
+      this.tries = [];
+      this.emojiClass = emojies[1].emojiClass;
+      this.emojiStyle = emojies[1].emojiStyle;
       if (this.showFirstLetter) {
         this.wordToFind = this.response.charAt(0).toLowerCase() + this.response.slice(1).replace(/[A-Za-z]/g, "_");
       }
