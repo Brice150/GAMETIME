@@ -58,15 +58,23 @@ export class MainInputComponent implements OnInit {
   }
 
   submitAnswer() {
-    if (this.inputValue && this.inputValue.length === this.maxlength) {
+    if (this.inputValue 
+      && this.inputValue.length === this.maxlength
+      && (this.showFirstLetter && this.inputValue.startsWith(this.wordToFind.charAt(0)))
+      && /^[A-Za-z]+$/.test(this.inputValue)) {
       if (this.inputValue.toLowerCase() === this.response.toLowerCase()) {
         this.reset(true);
       }
       else {
         this.addTry();        
       }
-      this.inputValue = null;
     }
+    else {
+      this.toastr.error("Input invalid", this.gameName.toUpperCase(), {
+        positionClass: "toast-bottom-center" 
+      });
+    }
+    this.inputValue = null;
   }
 
   addTry() {

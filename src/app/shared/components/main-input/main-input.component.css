@@ -18,6 +18,10 @@ form {
     position: relative;
     margin-top: 10px;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 input {
@@ -35,7 +39,7 @@ input {
     text-transform: uppercase;
     outline: none;
     font-family: monospace;
-    width: 100%;
+    width: 90%;
 }
 
 .placeholder {
@@ -53,8 +57,8 @@ input {
     width: 100%;
     pointer-events: none;
     top: 5px;
-    left: 0;
     white-space: nowrap;
+    width: 90%;
 }
 
 .submit {
@@ -62,7 +66,10 @@ input {
 }
 
 .previous-container {
-    width: 100%;
+    width: 96%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .previous {
@@ -113,5 +120,17 @@ input {
 @media screen and (max-width: 500px) {
     .placeholder, input, .previous {
         letter-spacing: 6px;
+    }
+}
+
+@media screen and (max-width: 390px) {
+    .previous-container {
+        width: 97%;
+    }
+}
+
+@media screen and (max-width: 340px) {
+    .previous-container {
+        width: 98%;
     }
 }

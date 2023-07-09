@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-root',
@@ -9,11 +10,16 @@ import { ActivatedRoute } from '@angular/router';
 export class MultiComponent implements OnInit {
   game!: string;
 
-  constructor(private route : ActivatedRoute) {}
+  constructor(
+    private route : ActivatedRoute,
+    private toastr: ToastrService) {}
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
       this.game = params['game'];
+    });
+    this.toastr.error("Work in progress", "Multiplayer", {
+      positionClass: "toast-bottom-center" 
     });
   }
 }
