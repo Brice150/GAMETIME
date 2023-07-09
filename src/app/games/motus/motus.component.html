@@ -1,2 +1,8 @@
 <app-header [game]="'motus'" [logo]="'bx bx-check-square'" [medals]="medals"></app-header>
+<div class="container">
+    <mat-slider min="5" max="13" step="1" discrete (change)="changeWordLength()">
+        <input matSliderThumb [(ngModel)]="wordLength">
+    </mat-slider>
+    <span>Word length</span>
+</div>
 <app-main-input [response]="response" [gameName]="'motus'" (winEvent)="handleWinEvent($event)" (lostEvent)="handleLostEvent()"></app-main-input>

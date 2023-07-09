@@ -1,0 +1,19 @@
+.container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-bottom: -30px;
+}
+
+.container mat-slider {
+    width: 80%;
+    max-width: 300px;
+}
+
+.container span {
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--text);
+}

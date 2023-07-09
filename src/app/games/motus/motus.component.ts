@@ -12,6 +12,7 @@ export class MotusComponent implements OnInit {
   response!: string;
   medals!: number[];
   user: User = {} as User;
+  wordLength: number = 5;
 
   constructor() {}
 
@@ -25,9 +26,14 @@ export class MotusComponent implements OnInit {
     this.newWord();
   }
 
+  changeWordLength() {
+    this.newWord();
+  }
+
   newWord() {
-    let randomIndex = Math.floor(Math.random() * words.length);
-    this.response = words[randomIndex];
+    const wordsFixedLength = words.filter(word => word.length === this.wordLength);
+    let randomIndex = Math.floor(Math.random() * wordsFixedLength.length);
+    this.response = wordsFixedLength[randomIndex];
   }
 
   handleWinEvent(medalsWon: number) {

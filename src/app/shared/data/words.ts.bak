@@ -46,6 +46,7 @@ export const words: string[] = [
 "aboli",
 "abolir",
 "abolition",
+
 "abomination",
 "abominer",
 "abondamment",
@@ -171,6 +172,7 @@ export const words: string[] = [
 "accessibles",
 "accession",
 "accessoire",
+
 "accessoires",
 "accident",
 "accidente",
@@ -188,6 +190,7 @@ export const words: string[] = [
 "accompagne",
 "accompagnee",
 "accompagnees",
+
 "accompagnent",
 "accompagner",
 "accompagnes",
@@ -376,7 +379,9 @@ export const words: string[] = [
 "admettent",
 "admettre",
 "adminicule",
+
 "administratif",
+
 "administrer",
 "administres",
 "admirable",
@@ -528,6 +533,7 @@ export const words: string[] = [
 "agents",
 "agglomerat",
 "agglomeration",
+
 "aggravation",
 "aggrave",
 "aggravee",
@@ -554,6 +560,7 @@ export const words: string[] = [
 "agraire",
 "agrandi",
 "agrandir",
+
 "agrarien",
 "agreable",
 "agreablement",
@@ -814,6 +821,7 @@ export const words: string[] = [
 "ambiguete",
 "ambiguetes",
 "ambitieuse",
+
 "ambitieuses",
 "ambitieux",
 "ambition",
@@ -856,6 +864,7 @@ export const words: string[] = [
 "amertume",
 "amethyste",
 "ameublement",
+
 "amiable",
 "amiante",
 "amibe",
@@ -913,6 +922,7 @@ export const words: string[] = [
 "analgesique",
 "analogie",
 "analogique",
+
 "analogue",
 "analogues",
 "analphabete",
@@ -923,6 +933,7 @@ export const words: string[] = [
 "analyste",
 "analystes",
 "analytique",
+
 "anamnese",
 "ananas",
 "anapeste",
@@ -953,6 +964,7 @@ export const words: string[] = [
 "andouille",
 "androgeneses",
 "aneantir",
+
 "anecdote",
 "anecdotique",
 "anemie",
@@ -1075,6 +1087,7 @@ export const words: string[] = [
 "anticiper",
 "anticlerical",
 "anticlinal",
+
 "anticorps",
 "anticyclone",
 "antidrogue",
@@ -1100,6 +1113,7 @@ export const words: string[] = [
 "antisemitisme",
 "antiseptique",
 "antisocial",
+
 "antithese",
 "antonyme",
 "anxiete",
@@ -1237,6 +1251,7 @@ export const words: string[] = [
 "apprete",
 "appreter",
 "appris",
+
 "apprivoiser",
 "approbation",
 "approche",
@@ -1253,6 +1268,7 @@ export const words: string[] = [
 "approuvee",
 "approuvent",
 "approuver",
+
 "approximative",
 "appui",
 "appuis",
@@ -1309,6 +1325,7 @@ export const words: string[] = [
 "architecte",
 "architectes",
 "architectural",
+
 "architecture",
 "archives",
 "archiviste",
@@ -1340,6 +1357,7 @@ export const words: string[] = [
 "aride",
 "aristocrate",
 "aristocratie",
+
 "arithmetique",
 "armada",
 "armateur",
@@ -1401,6 +1419,7 @@ export const words: string[] = [
 "arrogance",
 "arrogant",
 "arrondi",
+
 "arrose",
 "arroser",
 "arsenal",
@@ -1426,6 +1445,7 @@ export const words: string[] = [
 "artiste",
 "artistes",
 "artistique",
+
 "artistiques",
 "arythmie",
 "asbeste",
@@ -1463,7 +1483,9 @@ export const words: string[] = [
 "assaillants",
 "assaillir",
 "assainir",
+
 "assaisonne",
+
 "assaisonner",
 "assassin",
 "assassinat",
@@ -1583,6 +1605,7 @@ export const words: string[] = [
 "ateliers",
 "athee",
 "atheisme",
+
 "athlete",
 "athletique",
 "athletisme",
@@ -1690,6 +1713,7 @@ export const words: string[] = [
 "audience",
 "audiovisuel",
 "audiovisuelle",
+
 "audiovisuels",
 "audit",
 "auditeur",
@@ -1738,6 +1762,7 @@ export const words: string[] = [
 "authenticite",
 "authentifier",
 "authentique",
+
 "autobus",
 "autocar",
 "autocephale",
@@ -1754,6 +1779,7 @@ export const words: string[] = [
 "automation",
 "automatique",
 "automatiques",
+
 "automatiser",
 "automnal",
 "automne",
@@ -1761,6 +1787,7 @@ export const words: string[] = [
 "automobiles",
 "automobilisme",
 "automobiliste",
+
 "autonome",
 "autonomes",
 "autonomie",
@@ -1880,6 +1907,7 @@ export const words: string[] = [
 "avril",
 "axiome",
 "ayant",
+
 "azeri",
 "azeris",
 "azimut",
@@ -1966,6 +1994,7 @@ export const words: string[] = [
 "ballot",
 "ballottage",
 "balneaire",
+
 "balourd",
 "balsamique",
 "balte",
@@ -2254,6 +2283,7 @@ export const words: string[] = [
 "biologique",
 "biologiques",
 "biologistes",
+
 "bipede",
 "bique",
 "biquet",
@@ -2445,6 +2475,7 @@ export const words: string[] = [
 "boulevards",
 "bouleverse",
 "bouleverse",
+
 "bouleverser",
 "boulez",
 "boulonner",
@@ -2642,6 +2673,7 @@ export const words: string[] = [
 "bureaucrate",
 "bureaucrates",
 "bureaucratie",
+
 "bureautique",
 "bureaux",
 "burin",
@@ -2844,6 +2876,7 @@ export const words: string[] = [
 "capital",
 "capitale",
 "capitales",
+
 "capitalisme",
 "capitaliste",
 "capitalistes",
@@ -2968,6 +3001,7 @@ export const words: string[] = [
 "cataracte",
 "catastrophe",
 "catastrophes",
+
 "catechisme",
 "categorie",
 "categories",
@@ -3052,6 +3086,7 @@ export const words: string[] = [
 "central",
 "centrale",
 "centrales",
+
 "centralisee",
 "centralisme",
 "centraux",
@@ -3438,11 +3473,13 @@ export const words: string[] = [
 "cinoche",
 "cinquantaine",
 "cinquante",
+
 "cinquantieme",
 "cinquieme",
 "cintre",
 "circonference",
 "circonspect",
+
 "circonstance",
 "circonstances",
 "circuit",
@@ -3522,6 +3559,7 @@ export const words: string[] = [
 "classes",
 "classes",
 "classicisme",
+
 "classique",
 "classiques",
 "claudicant",
@@ -3618,7 +3656,9 @@ export const words: string[] = [
 "colin",
 "colis",
 "collaborateur",
+
 "collaboration",
+
 "collabore",
 "collaborer",
 "collant",
@@ -3630,8 +3670,10 @@ export const words: string[] = [
 "collectifs",
 "collection",
 "collectionner",
+
 "collections",
 "collective",
+
 "collectives",
 "collectivite",
 "collectivites",
@@ -3737,6 +3779,7 @@ export const words: string[] = [
 "commercial",
 "commerciale",
 "commerciales",
+
 "commerciaux",
 "commere",
 "commette",
@@ -3757,11 +3800,13 @@ export const words: string[] = [
 "commun",
 "communal",
 "communautaire",
+
 "communaute",
 "communautes",
 "commune",
 "communes",
 "communication",
+
 "communion",
 "communique",
 "communiquer",
@@ -3821,6 +3866,7 @@ export const words: string[] = [
 "complaisance",
 "complaisant",
 "complement",
+
 "complet",
 "complete",
 "complete",
@@ -3914,6 +3960,7 @@ export const words: string[] = [
 "concede",
 "conceder",
 "concentration",
+
 "concentre",
 "concentre",
 "concentree",
@@ -3998,6 +4045,7 @@ export const words: string[] = [
 "condamner",
 "condamnes",
 "condense",
+
 "condescendant",
 "condiment",
 "condition",
@@ -4017,6 +4065,7 @@ export const words: string[] = [
 "confection",
 "confederal",
 "confederation",
+
 "confedere",
 "confer",
 "confere",
@@ -4035,6 +4084,7 @@ export const words: string[] = [
 "confidence",
 "confidences",
 "confidentiel",
+
 "confie",
 "confie",
 "confiee",
@@ -4197,6 +4247,7 @@ export const words: string[] = [
 "considerait",
 "considerant",
 "consideration",
+
 "considere",
 "considere",
 "consideree",
@@ -4300,6 +4351,7 @@ export const words: string[] = [
 "contempler",
 "contemporain",
 "contemporaine",
+
 "contemporains",
 "contenait",
 "contenance",
@@ -4322,6 +4374,7 @@ export const words: string[] = [
 "conter",
 "contes",
 "contestataire",
+
 "contestation",
 "conteste",
 "conteste",
@@ -4361,8 +4414,10 @@ export const words: string[] = [
 "contraction",
 "contractuelle",
 "contradiction",
+
 "contraignant",
 "contraignante",
+
 "contraindre",
 "contraint",
 "contrainte",
@@ -4383,6 +4438,7 @@ export const words: string[] = [
 "contrats",
 "contravention",
 "contre",
+
 "contrebande",
 "contrecarrer",
 "contreceur",
@@ -4431,10 +4487,12 @@ export const words: string[] = [
 "convaincus",
 "convalescence",
 "convenable",
+
 "convenait",
 "convenir",
 "convention",
 "conventionnel",
+
 "conventions",
 "convenu",
 "convenus",
@@ -4514,6 +4572,7 @@ export const words: string[] = [
 "corollaire",
 "corporation",
 "corporel",
+
 "corps",
 "corpulence",
 "corpulent",
@@ -4524,10 +4583,13 @@ export const words: string[] = [
 "correctionnel",
 "corrections",
 "correlatif",
+
 "correle",
 "correspond",
 "correspondait",
+
 "correspondant",
+
 "correspondent",
 "correspondre",
 "corridor",
@@ -4610,6 +4672,7 @@ export const words: string[] = [
 "coupures",
 "courage",
 "courageuse",
+
 "courageux",
 "couramment",
 "courant",
@@ -4889,6 +4952,7 @@ export const words: string[] = [
 "culture",
 "culturel",
 "culturelle",
+
 "culturelles",
 "culturels",
 "cultures",
@@ -4918,6 +4982,7 @@ export const words: string[] = [
 "cynegetique",
 "cynique",
 "cynisme",
+
 "dague",
 "dahlia",
 "daigner",
@@ -4931,6 +4996,7 @@ export const words: string[] = [
 "dandy",
 "danger",
 "dangereuse",
+
 "dangereuses",
 "dangereux",
 "dangers",
@@ -5102,6 +5168,7 @@ export const words: string[] = [
 "decollage",
 "decolle",
 "decoller",
+
 "decolore",
 "decolorer",
 "decombres",
@@ -5224,6 +5291,7 @@ export const words: string[] = [
 "definitifs",
 "definition",
 "definitive",
+
 "definitives",
 "defis",
 "deflorer",
@@ -5245,6 +5313,7 @@ export const words: string[] = [
 "degets",
 "degauchir",
 "degauchissage",
+
 "degel",
 "degenerer",
 "degoter",
@@ -5316,6 +5385,7 @@ export const words: string[] = [
 "delivree",
 "delivrer",
 "delivres",
+
 "deloyal",
 "deloyaute",
 "delta",
@@ -5373,6 +5443,7 @@ export const words: string[] = [
 "demie",
 "demis",
 "demission",
+
 "demissionne",
 "demissionne",
 "demissionner",
@@ -5387,6 +5458,7 @@ export const words: string[] = [
 "demode",
 "demodes",
 "demographique",
+
 "demoiselle",
 "demolir",
 "demolition",
@@ -5444,6 +5516,7 @@ export const words: string[] = [
 "depart",
 "departement",
 "departemental",
+
 "departements",
 "departir",
 "departs",
@@ -5465,6 +5538,7 @@ export const words: string[] = [
 "depeches",
 "depeindre",
 "depeint",
+
 "depend",
 "dependait",
 "dependance",
@@ -5590,6 +5664,7 @@ export const words: string[] = [
 "desagrement",
 "desalterer",
 "desamorcer",
+
 "desapprouvant",
 "desapprouver",
 "desargente",
@@ -5641,6 +5716,7 @@ export const words: string[] = [
 "designee",
 "designer",
 "designes",
+
 "desintegrer",
 "desinteresse",
 "desinteresser",
@@ -5807,6 +5883,7 @@ export const words: string[] = [
 "developpee",
 "developpees",
 "developpement",
+
 "developpent",
 "developper",
 "developpes",
@@ -6012,6 +6089,7 @@ export const words: string[] = [
 "discerner",
 "disciple",
 "disciples",
+
 "discipline",
 "disciplines",
 "discorde",
@@ -6025,6 +6103,7 @@ export const words: string[] = [
 "discretes",
 "discretion",
 "discrets",
+
 "discrimine",
 "discriminer",
 "disculper",
@@ -6152,6 +6231,7 @@ export const words: string[] = [
 "diversifier",
 "diversite",
 "divertir",
+
 "dividendes",
 "divin",
 "divine",
@@ -6298,6 +6378,7 @@ export const words: string[] = [
 "draguer",
 "dragueur",
 "dramatique",
+
 "dramatiques",
 "dramatiser",
 "dramaturge",
@@ -6388,6 +6469,7 @@ export const words: string[] = [
 "ecarter",
 "ecartes",
 "ecarts",
+
 "ecervele",
 "echafaud",
 "echafaudage",
@@ -6460,6 +6542,7 @@ export const words: string[] = [
 "economie",
 "economies",
 "economique",
+
 "economiques",
 "economiser",
 "economiseur",
@@ -6709,6 +6792,7 @@ export const words: string[] = [
 "embaument",
 "embaumer",
 "embellie",
+
 "embetant",
 "embetement",
 "embeter",
@@ -6721,11 +6805,13 @@ export const words: string[] = [
 "embonpoint",
 "embouchure",
 "embouteillage",
+
 "embranchement",
 "embraser",
 "embrasse",
 "embrasser",
 "embrasure",
+
 "embrouiller",
 "embryon",
 "embryons",
@@ -6821,6 +6907,7 @@ export const words: string[] = [
 "empresse",
 "emprise",
 "emprisonne",
+
 "emprisonner",
 "emprisonnes",
 "emprunt",
@@ -6853,6 +6940,7 @@ export const words: string[] = [
 "encombre",
 "encombrement",
 "encontre",
+
 "encore",
 "encourage",
 "encourage",
@@ -6971,10 +7059,12 @@ export const words: string[] = [
 "enregistre",
 "enregistree",
 "enregistrees",
+
 "enregistrer",
 "enregistres",
 "enrichi",
 "enrichir",
+
 "enreler",
 "enrouler",
 "ensanglante",
@@ -7130,6 +7220,7 @@ export const words: string[] = [
 "epais",
 "epaisse",
 "epaisseur",
+
 "epargnants",
 "epargne",
 "epargne",
@@ -7355,6 +7446,7 @@ export const words: string[] = [
 "etablir",
 "etablis",
 "etablissement",
+
 "etablit",
 "etage",
 "etagere",
@@ -7398,6 +7490,7 @@ export const words: string[] = [
 "ethnie",
 "ethnique",
 "ethniques",
+
 "etincelle",
 "etions",
 "etiquette",
@@ -7476,6 +7569,7 @@ export const words: string[] = [
 "evanescent",
 "evangelique",
 "evangile",
+
 "evaporation",
 "evaporer",
 "evase",
@@ -7491,6 +7585,7 @@ export const words: string[] = [
 "eventualite",
 "eventuel",
 "eventuelle",
+
 "eventuelles",
 "eventuels",
 "eveque",
@@ -7561,6 +7656,7 @@ export const words: string[] = [
 "excepte",
 "exception",
 "exceptionnel",
+
 "exceptionnels",
 "exceptions",
 "exces",
@@ -7586,6 +7682,7 @@ export const words: string[] = [
 "excommunier",
 "excrement",
 "excursion",
+
 "excuse",
 "excuser",
 "excuses",
@@ -7659,6 +7756,7 @@ export const words: string[] = [
 "experiences",
 "experimental",
 "experimentale",
+
 "experimente",
 "experimenter",
 "experimentes",
@@ -7766,6 +7864,7 @@ export const words: string[] = [
 "extraire",
 "extrait",
 "extraits",
+
 "extreme",
 "extremement",
 "extremes",
@@ -7790,6 +7889,7 @@ export const words: string[] = [
 "fabuleux",
 "faces",
 "facetie",
+
 "facettes",
 "feche",
 "fecher",
@@ -8126,6 +8226,7 @@ export const words: string[] = [
 "finances",
 "financier",
 "financiere",
+
 "financieres",
 "financiers",
 "finasserie",
@@ -8241,9 +8342,11 @@ export const words: string[] = [
 "fonciers",
 "fonction",
 "fonctionnaire",
+
 "fonctionnant",
 "fonctionne",
 "fonctionne",
+
 "fonctionnent",
 "fonctionner",
 "fonctions",
@@ -8438,6 +8541,7 @@ export const words: string[] = [
 "franchir",
 "franchise",
 "franchissant",
+
 "franchit",
 "franciscain",
 "franco",
@@ -8477,6 +8581,7 @@ export const words: string[] = [
 "french",
 "frenesie",
 "frenetique",
+
 "frequemment",
 "frequence",
 "frequences",
@@ -8708,6 +8813,7 @@ export const words: string[] = [
 "generale",
 "generalement",
 "generales",
+
 "generalise",
 "generalisee",
 "generaliser",
@@ -8898,6 +9004,7 @@ export const words: string[] = [
 "gouvernail",
 "gouvernants",
 "gouvernement",
+
 "gouvernements",
 "gouverner",
 "gouverneur",
@@ -9105,6 +9212,7 @@ export const words: string[] = [
 "habitue",
 "habituel",
 "habituelle",
+
 "habituelles",
 "habituels",
 "habitues",
@@ -9112,6 +9220,7 @@ export const words: string[] = [
 "hache",
 "hacher",
 "hachette",
+
 "haillon",
 "haine",
 "haineux",
@@ -9218,6 +9327,7 @@ export const words: string[] = [
 "heritiers",
 "hermes",
 "hermetique",
+
 "heroene",
 "heroeque",
 "heroesme",
@@ -9266,6 +9376,7 @@ export const words: string[] = [
 "historien",
 "historiens",
 "historique",
+
 "historiques",
 "histrion",
 "hiver",
@@ -9407,6 +9518,7 @@ export const words: string[] = [
 "hypertension",
 "hypertonie",
 "hypnotiser",
+
 "hypocrisie",
 "hypocrite",
 "hypodermique",
@@ -9423,6 +9535,7 @@ export const words: string[] = [
 "ideale",
 "ideaux",
 "idees",
+
 "identifie",
 "identifier",
 "identifies",
@@ -9551,6 +9664,7 @@ export const words: string[] = [
 "imper",
 "imperatif",
 "imperatifs",
+
 "imperatrice",
 "imperceptible",
 "imperfectif",
@@ -9630,6 +9744,7 @@ export const words: string[] = [
 "imprecis",
 "imprenable",
 "impression",
+
 "impressionne",
 "impressionner",
 "imprevisible",
@@ -9737,10 +9852,12 @@ export const words: string[] = [
 "incompletude",
 "inconcevable",
 "inconciliable",
+
 "inconfort",
 "inconfortable",
 "incongru",
 "incongruite",
+
 "inconnu",
 "inconnue",
 "inconnues",
@@ -9754,6 +9871,7 @@ export const words: string[] = [
 "inconstance",
 "inconstant",
 "incontestable",
+
 "inconvenance",
 "inconvenant",
 "inconvenient",
@@ -9782,6 +9900,7 @@ export const words: string[] = [
 "incurver",
 "indecence",
 "indecent",
+
 "indecis",
 "indecision",
 "indefini",
@@ -9795,6 +9914,7 @@ export const words: string[] = [
 "indemnite",
 "indemnites",
 "indeniable",
+
 "independance",
 "independant",
 "independante",
@@ -9817,6 +9937,7 @@ export const words: string[] = [
 "indienne",
 "indiennes",
 "indiens",
+
 "indifference",
 "indifferent",
 "indifferents",
@@ -9842,15 +9963,18 @@ export const words: string[] = [
 "indiscretion",
 "indiscutable",
 "indispensable",
+
 "indisposition",
 "indissoluble",
 "individu",
+
 "individuel",
 "individuelle",
 "individuelles",
 "individuels",
 "individus",
 "indivis",
+
 "indivisible",
 "indolemment",
 "indolence",
@@ -9861,6 +9985,7 @@ export const words: string[] = [
 "induire",
 "induit",
 "indulgence",
+
 "industrie",
 "industriel",
 "industrielle",
@@ -9886,6 +10011,7 @@ export const words: string[] = [
 "inertie",
 "inestimable",
 "inevitable",
+
 "inevitables",
 "inexact",
 "inexerce",
@@ -9932,6 +10058,7 @@ export const words: string[] = [
 "infirmite",
 "inflammation",
 "inflation",
+
 "inflechir",
 "inflexible",
 "inflige",
@@ -9943,6 +10070,7 @@ export const words: string[] = [
 "influent",
 "influer",
 "infonde",
+
 "information",
 "informations",
 "informatique",
@@ -9959,6 +10087,7 @@ export const words: string[] = [
 "infoutu",
 "infraction",
 "infractions",
+
 "infructueux",
 "ingenierie",
 "ingenieur",
@@ -9986,6 +10115,7 @@ export const words: string[] = [
 "inhumer",
 "inimaginable",
 "inimitie",
+
 "ininterrompu",
 "inique",
 "iniquite",
@@ -10006,6 +10136,7 @@ export const words: string[] = [
 "injure",
 "injures",
 "injurier",
+
 "injurieux",
 "injuste",
 "injustement",
@@ -10013,6 +10144,7 @@ export const words: string[] = [
 "injustices",
 "injustifie",
 "inlassable",
+
 "innocence",
 "innocent",
 "innocenter",
@@ -10046,6 +10178,7 @@ export const words: string[] = [
 "inquisition",
 "insalubre",
 "insatiable",
+
 "insatisfait",
 "insature",
 "inscription",
@@ -10110,6 +10243,7 @@ export const words: string[] = [
 "instances",
 "instant",
 "instantane",
+
 "instants",
 "instar",
 "instauration",
@@ -10126,6 +10260,7 @@ export const words: string[] = [
 "instituteur",
 "instituteurs",
 "institution",
+
 "institutions",
 "institutrice",
 "instituts",
@@ -10137,6 +10272,7 @@ export const words: string[] = [
 "instrument",
 "instruments",
 "insucces",
+
 "insuffisance",
 "insuffisances",
 "insuffisant",
@@ -10150,6 +10286,7 @@ export const words: string[] = [
 "insulte",
 "insulter",
 "insupportable",
+
 "insurges",
 "insurmontable",
 "insurrection",
@@ -10175,10 +10312,12 @@ export const words: string[] = [
 "integrite",
 "intellect",
 "intellectuel",
+
 "intellectuels",
 "intelligence",
 "intelligent",
 "intelligente",
+
 "intemperant",
 "intempestif",
 "intenable",
@@ -10196,6 +10335,7 @@ export const words: string[] = [
 "intentions",
 "inter",
 "intercesseur",
+
 "interdiction",
 "interdire",
 "interdisant",
@@ -10228,20 +10368,25 @@ export const words: string[] = [
 "interjection",
 "interlineaire",
 "interlocuteur",
+
 "interloque",
 "intermediaire",
+
 "interminable",
 "interminables",
 "international",
+
 "interne",
 "interne",
 "interner",
 "internes",
+
 "interpelle",
 "interpellees",
 "interpeller",
 "interpelles",
 "interpretatif",
+
 "interprete",
 "interprete",
 "interpretee",
@@ -10251,6 +10396,7 @@ export const words: string[] = [
 "interrogateur",
 "interrogatif",
 "interrogation",
+
 "interroge",
 "interroge",
 "interrogees",
@@ -10265,6 +10411,7 @@ export const words: string[] = [
 "intersection",
 "interstice",
 "interstitiel",
+
 "intertropical",
 "interurbain",
 "intervallaire",
@@ -10327,6 +10474,7 @@ export const words: string[] = [
 "invalidite",
 "invariabilite",
 "invariable",
+
 "invasion",
 "invectiver",
 "inventaire",
@@ -10347,9 +10495,11 @@ export const words: string[] = [
 "investies",
 "investigateur",
 "investigation",
+
 "investiguer",
 "investir",
 "investis",
+
 "investissent",
 "investisseurs",
 "investit",
@@ -10413,7 +10563,9 @@ export const words: string[] = [
 "irresolu",
 "irresolution",
 "irresponsable",
+
 "irreverence",
+
 "irreversible",
 "irrevocable",
 "irriguer",
@@ -10550,6 +10702,7 @@ export const words: string[] = [
 "journalisme",
 "journaliste",
 "journalistes",
+
 "journaux",
 "journee",
 "journees",
@@ -10648,6 +10801,7 @@ export const words: string[] = [
 "laboratoire",
 "laboratoires",
 "laborieuse",
+
 "laborieuses",
 "laborieux",
 "labour",
@@ -10880,6 +11034,7 @@ export const words: string[] = [
 "liberal",
 "liberale",
 "liberales",
+
 "liberalisme",
 "liberalite",
 "liberation",
@@ -11113,6 +11268,7 @@ export const words: string[] = [
 "luttes",
 "lutteur",
 "luxation",
+
 "luxer",
 "luxueusement",
 "luxueux",
@@ -11173,6 +11329,7 @@ export const words: string[] = [
 "magnetique",
 "magnificence",
 "magnifique",
+
 "magnifiques",
 "magnitude",
 "magouille",
@@ -11267,6 +11424,7 @@ export const words: string[] = [
 "malignite",
 "malin",
 "malingre",
+
 "malle",
 "malmener",
 "malotru",
@@ -11308,6 +11466,7 @@ export const words: string[] = [
 "manifestant",
 "manifestants",
 "manifestation",
+
 "manifeste",
 "manifeste",
 "manifestee",
@@ -11480,6 +11639,7 @@ export const words: string[] = [
 "materiaux",
 "materiel",
 "materielle",
+
 "materielles",
 "materiels",
 "maternel",
@@ -11531,10 +11691,12 @@ export const words: string[] = [
 "mechant",
 "mechants",
 "meche",
+
 "meconnaetre",
 "meconnu",
 "meconnus",
 "mecontent",
+
 "mecontents",
 "mecreant",
 "medaille",
@@ -11719,6 +11881,7 @@ export const words: string[] = [
 "metallique",
 "metalliques",
 "metallurgie",
+
 "metamorphose",
 "metamorphoser",
 "metamorphoses",
@@ -11865,6 +12028,7 @@ export const words: string[] = [
 "minutes",
 "minutie",
 "minutieuse",
+
 "mioche",
 "mioches",
 "miracle",
@@ -11878,6 +12042,7 @@ export const words: string[] = [
 "miserables",
 "misere",
 "misericorde",
+
 "mises",
 "misogyne",
 "missile",
@@ -11893,6 +12058,7 @@ export const words: string[] = [
 "mitoyen",
 "mitraillette",
 "mitre",
+
 "mixte",
 "mixtes",
 "moabite",
@@ -12140,10 +12306,12 @@ export const words: string[] = [
 "multiforme",
 "multimedia",
 "multimedias",
+
 "multipartisme",
 "multiple",
 "multiples",
 "multipliant",
+
 "multiplicite",
 "multiplie",
 "multiplie",
@@ -12289,6 +12457,7 @@ export const words: string[] = [
 "neant",
 "nebuleuse",
 "necessaire",
+
 "necessaires",
 "necessitant",
 "necessite",
@@ -12647,6 +12816,7 @@ export const words: string[] = [
 "offices",
 "officiel",
 "officielle",
+
 "officielles",
 "officiels",
 "officier",
@@ -12705,6 +12875,7 @@ export const words: string[] = [
 "operateurs",
 "operation",
 "operationnel",
+
 "operations",
 "opere",
 "opere",
@@ -12842,6 +13013,7 @@ export const words: string[] = [
 "osselet",
 "ossements",
 "osseux",
+
 "ostentatoire",
 "ostraciser",
 "ostracisme",
@@ -12931,6 +13103,7 @@ export const words: string[] = [
 "paleontologie",
 "palestinien",
 "palestinienne",
+
 "palestiniens",
 "paletot",
 "palette",
@@ -12997,6 +13170,7 @@ export const words: string[] = [
 "paradis",
 "paradoxal",
 "paradoxale",
+
 "paradoxe",
 "paragraphe",
 "paraissaient",
@@ -13071,6 +13245,7 @@ export const words: string[] = [
 "parlee",
 "parlement",
 "parlementaire",
+
 "parlementer",
 "parlements",
 "parlent",
@@ -13114,6 +13289,7 @@ export const words: string[] = [
 "participant",
 "participants",
 "participation",
+
 "participe",
 "participe",
 "participent",
@@ -13121,6 +13297,7 @@ export const words: string[] = [
 "participera",
 "participeront",
 "particularite",
+
 "particule",
 "particules",
 "particulier",
@@ -13302,6 +13479,7 @@ export const words: string[] = [
 "peintures",
 "pejoratif",
 "pejorative",
+
 "pekin",
 "pelage",
 "peler",
@@ -13346,6 +13524,7 @@ export const words: string[] = [
 "penis",
 "penitence",
 "penitentiaire",
+
 "penne",
 "pensaient",
 "pensait",
@@ -13424,6 +13603,7 @@ export const words: string[] = [
 "periode",
 "periodes",
 "periodique",
+
 "periodiques",
 "peripetie",
 "peripeties",
@@ -13560,6 +13740,7 @@ export const words: string[] = [
 "pharaons",
 "phare",
 "phares",
+
 "pharmacie",
 "pharmacien",
 "pharmacologie",
@@ -13570,6 +13751,7 @@ export const words: string[] = [
 "philanthrope",
 "philatelie",
 "philatelique",
+
 "philippines",
 "philo",
 "philologie",
@@ -13580,6 +13762,7 @@ export const words: string[] = [
 "philosophes",
 "philosophie",
 "philosophique",
+
 "phones",
 "phono",
 "phonographe",
@@ -13592,11 +13775,13 @@ export const words: string[] = [
 "photographie",
 "photographier",
 "photographies",
+
 "photos",
 "phototype",
 "phototypie",
 "phrase",
 "phraseologie",
+
 "phraser",
 "phrases",
 "phrenologie",
@@ -13908,6 +14093,7 @@ export const words: string[] = [
 "ponction",
 "ponctualite",
 "ponctuel",
+
 "ponctuelles",
 "ponderer",
 "poney",
@@ -13964,6 +14150,7 @@ export const words: string[] = [
 "positif",
 "positifs",
 "position",
+
 "positions",
 "positive",
 "positivement",
@@ -14102,6 +14289,7 @@ export const words: string[] = [
 "precaire",
 "precarite",
 "precaution",
+
 "precautions",
 "precedant",
 "precede",
@@ -14121,6 +14309,7 @@ export const words: string[] = [
 "precieux",
 "precipice",
 "precipitation",
+
 "precipite",
 "precipiter",
 "precis",
@@ -14150,6 +14339,7 @@ export const words: string[] = [
 "prediction",
 "predilection",
 "predire",
+
 "predit",
 "predominance",
 "predominer",
@@ -14213,6 +14403,7 @@ export const words: string[] = [
 "preoccupant",
 "preoccupante",
 "preoccupation",
+
 "preoccupe",
 "preoccupe",
 "preoccupent",
@@ -14236,6 +14427,7 @@ export const words: string[] = [
 "preposer",
 "prepositif",
 "preposition",
+
 "preretraite",
 "preretraites",
 "preretraites",
@@ -14280,6 +14472,7 @@ export const words: string[] = [
 "president",
 "presidente",
 "presidentiel",
+
 "presidents",
 "presider",
 "presidium",
@@ -14380,6 +14573,7 @@ export const words: string[] = [
 "princesse",
 "principal",
 "principale",
+
 "principales",
 "principaute",
 "principaux",
@@ -14398,6 +14592,7 @@ export const words: string[] = [
 "prisonniers",
 "prisons",
 "privatisation",
+
 "privatisee",
 "privatisees",
 "privatiser",
@@ -14486,6 +14681,7 @@ export const words: string[] = [
 "professeurs",
 "profession",
 "professionnel",
+
 "professions",
 "profil",
 "profile",
@@ -14657,6 +14853,7 @@ export const words: string[] = [
 "protestante",
 "protestantes",
 "protestants",
+
 "protestation",
 "protestations",
 "proteste",
@@ -14692,6 +14889,7 @@ export const words: string[] = [
 "provisionner",
 "provisions",
 "provisoire",
+
 "provisoires",
 "provocateur",
 "provocation",
@@ -14720,15 +14918,18 @@ export const words: string[] = [
 "pseudonyme",
 "psychanalyse",
 "psychanalyste",
+
 "psyche",
 "psychiatre",
 "psychiatres",
 "psychiatrie",
 "psychiatrique",
+
 "psychisme",
 "psychodrame",
 "psychologie",
 "psychologique",
+
 "psychologues",
 "psychose",
 "puant",
@@ -14810,6 +15011,7 @@ export const words: string[] = [
 "qualifiait",
 "qualifiant",
 "qualification",
+
 "qualifie",
 "qualifie",
 "qualifiee",
@@ -14932,6 +15134,7 @@ export const words: string[] = [
 "radicale",
 "radicalement",
 "radicales",
+
 "radicaux",
 "radier",
 "radieux",
@@ -14970,12 +15173,14 @@ export const words: string[] = [
 "raisonnement",
 "raisonner",
 "raisons",
+
 "rajide",
 "rajoute",
 "rajouter",
 "ralenti",
 "ralentie",
 "ralentir",
+
 "ralentit",
 "reler",
 "rallie",
@@ -15044,6 +15249,7 @@ export const words: string[] = [
 "rapproche",
 "rapprochee",
 "rapprochement",
+
 "rapprochent",
 "rapprocher",
 "rapsode",
@@ -15063,6 +15269,7 @@ export const words: string[] = [
 "rassemble",
 "rassemblees",
 "rassemblement",
+
 "rassemblent",
 "rassembler",
 "rassembles",
@@ -15108,6 +15315,7 @@ export const words: string[] = [
 "ravissement",
 "ravisseur",
 "ravisseurs",
+
 "ravitailler",
 "ravitailleur",
 "raviver",
@@ -15123,6 +15331,7 @@ export const words: string[] = [
 "reactif",
 "reaction",
 "reactionnaire",
+
 "reactions",
 "reaffirme",
 "reaffirme",
@@ -15205,6 +15414,7 @@ export const words: string[] = [
 "recipient",
 "reciprocite",
 "reciproque",
+
 "recit",
 "recital",
 "recitation",
@@ -15222,11 +15432,13 @@ export const words: string[] = [
 "reclassement",
 "reclus",
 "reclusion",
+
 "reeoit",
 "reeoivent",
 "recolte",
 "recolter",
 "recoltes",
+
 "recommande",
 "recommande",
 "recommander",
@@ -15238,6 +15450,7 @@ export const words: string[] = [
 "recompenser",
 "recomposition",
 "recompter",
+
 "reconcilier",
 "reconduction",
 "reconduit",
@@ -15246,6 +15459,7 @@ export const words: string[] = [
 "reconfortant",
 "reconforter",
 "reconnaissait",
+
 "reconnaissant",
 "reconnaissent",
 "reconnaet",
@@ -15258,6 +15472,7 @@ export const words: string[] = [
 "reconquete",
 "reconstitue",
 "reconstituer",
+
 "reconstruire",
 "reconversion",
 "reconverti",
@@ -15275,6 +15490,7 @@ export const words: string[] = [
 "recreation",
 "recreer",
 "recreer",
+
 "recrudescence",
 "recrues",
 "recrute",
@@ -15329,6 +15545,7 @@ export const words: string[] = [
 "rediger",
 "rediges",
 "redire",
+
 "redite",
 "redondance",
 "redonner",
@@ -15458,6 +15675,7 @@ export const words: string[] = [
 "reglee",
 "reglement",
 "reglementaire",
+
 "reglements",
 "regler",
 "regles",
@@ -15493,6 +15711,7 @@ export const words: string[] = [
 "regulieres",
 "reguliers",
 "regurgiter",
+
 "rehabiliter",
 "reine",
 "reins",
@@ -15553,6 +15772,7 @@ export const words: string[] = [
 "relief",
 "relier",
 "religieuse",
+
 "religieuses",
 "religieux",
 "religion",
@@ -15575,6 +15795,7 @@ export const words: string[] = [
 "rembarrer",
 "remblai",
 "remboursement",
+
 "rembourser",
 "rembourses",
 "remede",
@@ -15699,12 +15920,14 @@ export const words: string[] = [
 "renouvele",
 "renouvelee",
 "renouveler",
+
 "renovateur",
 "renovateurs",
 "renovation",
 "renove",
 "renover",
 "renseignement",
+
 "renseigner",
 "rentabiliser",
 "rentabilite",
@@ -15728,6 +15951,7 @@ export const words: string[] = [
 "renvoye",
 "renvoyer",
 "renvoyes",
+
 "reorganiser",
 "reouverture",
 "repand",
@@ -15807,11 +16031,13 @@ export const words: string[] = [
 "reprendre",
 "reprennent",
 "represailles",
+
 "representait",
 "representant",
 "representante",
 "representants",
 "representatif",
+
 "represente",
 "represente",
 "representee",
@@ -15819,6 +16045,7 @@ export const words: string[] = [
 "representent",
 "representer",
 "representera",
+
 "representes",
 "repression",
 "repressive",
@@ -15917,6 +16144,7 @@ export const words: string[] = [
 "resonner",
 "resoudre",
 "respect",
+
 "respectable",
 "respectant",
 "respecte",
@@ -15928,6 +16156,7 @@ export const words: string[] = [
 "respectes",
 "respectif",
 "respectifs",
+
 "respectives",
 "respects",
 "respectueux",
@@ -15935,6 +16164,7 @@ export const words: string[] = [
 "respire",
 "respirer",
 "resplendir",
+
 "responsable",
 "responsables",
 "resquillant",
@@ -15953,6 +16183,7 @@ export const words: string[] = [
 "ressort",
 "ressortir",
 "ressortissant",
+
 "ressource",
 "ressources",
 "ressusciter",
@@ -15999,6 +16230,7 @@ export const words: string[] = [
 "resurrection",
 "retabli",
 "retablir",
+
 "retaper",
 "retard",
 "retarde",
@@ -16008,6 +16240,7 @@ export const words: string[] = [
 "retention",
 "retentir",
 "retentissant",
+
 "retenu",
 "retenue",
 "retenues",
@@ -16047,7 +16280,9 @@ export const words: string[] = [
 "retraites",
 "retraites",
 "retranche",
+
 "retrecir",
+
 "retribuer",
 "retribution",
 "retrograde",
@@ -16089,6 +16324,7 @@ export const words: string[] = [
 "reussite",
 "reussites",
 "revait",
+
 "revaloriser",
 "revanchard",
 "revanche",
@@ -16117,6 +16353,7 @@ export const words: string[] = [
 "revenait",
 "revenant",
 "revendication",
+
 "revendiquant",
 "revendique",
 "revendique",
@@ -16192,6 +16429,7 @@ export const words: string[] = [
 "rigoler",
 "rigolo",
 "rigoureuse",
+
 "rigoureux",
 "rigueur",
 "rincer",
@@ -16890,6 +17128,7 @@ export const words: string[] = [
 "significatifs",
 "signification",
 "significative",
+
 "signifie",
 "signifie",
 "signifier",
@@ -16915,6 +17154,7 @@ export const words: string[] = [
 "simples",
 "simplet",
 "simplicite",
+
 "simplifier",
 "simulacre",
 "simulation",
@@ -16930,6 +17170,7 @@ export const words: string[] = [
 "singularite",
 "singulier",
 "singuliere",
+
 "sinistre",
 "sinistree",
 "sinistres",
@@ -17003,6 +17244,7 @@ export const words: string[] = [
 "soleil",
 "solennel",
 "solennelle",
+
 "solidaire",
 "solidaires",
 "solidarite",
@@ -17040,6 +17282,7 @@ export const words: string[] = [
 "somnolence",
 "somnolent",
 "somnoler",
+
 "somptueux",
 "somptuosite",
 "sonagramme",
@@ -17126,6 +17369,7 @@ export const words: string[] = [
 "souhaitee",
 "souhaitent",
 "souhaiter",
+
 "souhaiterait",
 "souhaitons",
 "souhaits",
@@ -17217,6 +17461,7 @@ export const words: string[] = [
 "souvent",
 "souverain",
 "souveraine",
+
 "souverainete",
 "souverains",
 "souviennent",
@@ -17236,6 +17481,7 @@ export const words: string[] = [
 "speciale",
 "specialement",
 "speciales",
+
 "specialise",
 "specialisee",
 "specialisees",
@@ -17251,11 +17497,13 @@ export const words: string[] = [
 "specificites",
 "specifie",
 "specifique",
+
 "specifiques",
 "specimen",
 "spectacle",
 "spectacles",
 "spectaculaire",
+
 "spectateur",
 "spectateurs",
 "spectatrice",
@@ -17415,6 +17663,7 @@ export const words: string[] = [
 "substances",
 "substantiel",
 "substantielle",
+
 "substantiels",
 "substantif",
 "substituer",
@@ -17437,6 +17686,7 @@ export const words: string[] = [
 "successif",
 "successifs",
 "succession",
+
 "successives",
 "succinct",
 "succinctement",
@@ -17510,6 +17760,7 @@ export const words: string[] = [
 "superbement",
 "superbes",
 "supercherie",
+
 "superficie",
 "superficiel",
 "superflu",
@@ -17530,6 +17781,7 @@ export const words: string[] = [
 "suppleant",
 "suppleer",
 "supplement",
+
 "suppliant",
 "supplication",
 "supplice",
@@ -17576,6 +17828,7 @@ export const words: string[] = [
 "surenchere",
 "surencheres",
 "surencherir",
+
 "seres",
 "surestimer",
 "serete",
@@ -17629,6 +17882,7 @@ export const words: string[] = [
 "survivant",
 "survivants",
 "survivre",
+
 "susceptible",
 "susceptibles",
 "suscitant",
@@ -17661,6 +17915,7 @@ export const words: string[] = [
 "symbole",
 "symboles",
 "symbolique",
+
 "symboliques",
 "symbolise",
 "sympa",
@@ -17737,6 +17992,7 @@ export const words: string[] = [
 "talus",
 "tambour",
 "tambourinage",
+
 "tambouriner",
 "tambours",
 "tamis",
@@ -17807,6 +18063,7 @@ export const words: string[] = [
 "tchadien",
 "tchadiens",
 "tchador",
+
 "tcheque",
 "tcheques",
 "technicien",
@@ -17816,9 +18073,11 @@ export const words: string[] = [
 "techniquement",
 "techniques",
 "technocratie",
+
 "technologie",
 "technologies",
 "technologique",
+
 "technologiste",
 "technologue",
 "teigneux",
@@ -17839,6 +18098,7 @@ export const words: string[] = [
 "telephonique",
 "telephoniques",
 "telescope",
+
 "televise",
 "televisee",
 "televisees",
@@ -17933,6 +18193,7 @@ export const words: string[] = [
 "terminee",
 "terminer",
 "terminologie",
+
 "terminus",
 "terne",
 "ternir",
@@ -17995,6 +18256,7 @@ export const words: string[] = [
 "theoriquement",
 "theoriques",
 "therapeutique",
+
 "therapie",
 "thermometre",
 "thesauriser",
@@ -18201,6 +18463,7 @@ export const words: string[] = [
 "tracts",
 "tradition",
 "traditionnel",
+
 "traditionnels",
 "traditions",
 "traducteur",
@@ -18263,6 +18526,7 @@ export const words: string[] = [
 "tranches",
 "tranchet",
 "tranquille",
+
 "tranquilles",
 "tranquilliser",
 "tranquillite",
@@ -18277,6 +18541,7 @@ export const words: string[] = [
 "transfert",
 "transferts",
 "transformant",
+
 "transforme",
 "transforme",
 "transformee",
@@ -18528,6 +18793,7 @@ export const words: string[] = [
 "ulcere",
 "ulcerer",
 "ulterieure",
+
 "ultimatum",
 "ultime",
 "ultimes",
@@ -18560,6 +18826,7 @@ export const words: string[] = [
 "universel",
 "universelle",
 "universitaire",
+
 "universite",
 "universites",
 "urbain",
@@ -18876,6 +19143,7 @@ export const words: string[] = [
 "vieilli",
 "vieillir",
 "vieillis",
+
 "viendra",
 "viendrait",
 "viendront",
@@ -18898,6 +19166,7 @@ export const words: string[] = [
 "vigneron",
 "vignoble",
 "vigoureuse",
+
 "vigoureux",
 "vigueur",
 "vilain",
@@ -19047,6 +19316,7 @@ export const words: string[] = [
 "volige",
 "volitif",
 "volontaire",
+
 "volontaires",
 "volontariste",
 "volonte",
