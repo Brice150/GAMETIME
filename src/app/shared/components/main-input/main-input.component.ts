@@ -24,12 +24,15 @@ export class MainInputComponent implements OnInit {
   constructor(private toastr: ToastrService) {}
 
   ngOnInit() {
+    console.log("éèâäï".normalize("NFD").replace(/\p{Diacritic}/gu, ""));
+    
     if (this.response) {
+      this.response = this.response.toUpperCase();
       this.tries = [];
       this.emojiClass = emojies[1].emojiClass;
       this.emojiStyle = emojies[1].emojiStyle;
       if (this.showFirstLetter) {
-        this.wordToFind = this.response.charAt(0).toLowerCase() + this.response.slice(1).replace(/[A-Za-z]/g, "_");
+        this.wordToFind = this.response.charAt(0) + this.response.slice(1).replace(/[A-Za-z]/g, "_");
       }
       else {
         this.wordToFind = this.response.replace(/[A-Za-z]/g, "_");
@@ -45,35 +48,42 @@ export class MainInputComponent implements OnInit {
   }
 
   onKeyDown(event: KeyboardEvent) {
-    const key = event.key;
-    const isAllowedCharacter = /^[A-Za-z]+$/.test(key);
-  
+    const key = event.key.toUpperCase();
+    const isAllowedCharacter = /^[A-Z]+$/.test(key);
+
     if (!isAllowedCharacter) {
       event.preventDefault();
     }
 
     if (this.showFirstLetter) {
       const inputValue = (event.target as HTMLInputElement).value;
-      if (inputValue.length === 0 && key !== this.response.charAt(0).toLowerCase()) {
+      if (inputValue.length === 0 && key !== this.response.charAt(0)) {
         event.preventDefault();
       }
     }
   }
 
   submitAnswer() {
-    if (this.inputValue 
-      && this.inputValue.length === this.maxlength
-      && (this.showFirstLetter && this.inputValue.startsWith(this.wordToFind.charAt(0)))
-      && /^[A-Za-z]+$/.test(this.inputValue)) {
-      if (this.inputValue.toLowerCase() === this.response.toLowerCase()) {
-        this.reset(true);
+    if (this.inputValue) {
+      this.inputValue = this.inputValue.normalize("NFD").replace(/\p{Diacritic}/gu, "").toUpperCase();
+      if (this.inputValue.length === this.maxlength
+        && (!this.showFirstLetter || this.inputValue.startsWith(this.response.charAt(0)))
+        && /^[A-Z]+$/.test(this.inputValue)) {
+        if (this.inputValue === this.response) {
+          this.reset(true);
+        }
+        else {
+          this.addTry();        
+        }
       }
       else {
-        this.addTry();        
+        this.toastr.error("Input invalid", this.gameName.toUpperCase(), {
+          positionClass: "toast-bottom-center" 
+        });
       }
     }
     else {
-      this.toastr.error("Input invalid", this.gameName.toUpperCase(), {
+      this.toastr.error("Input empty", this.gameName.toUpperCase(), {
         positionClass: "toast-bottom-center" 
       });
     }
