@@ -59,18 +59,18 @@ export class PageComponent implements OnInit {
 
   changeName() {
     if (this.user.username.length > 10) {
-      this.toastr.error("Username too long", "ACCOUNT", {
+      this.toastr.error("Nom trop long", "COMPTE", {
         positionClass: "toast-bottom-center" 
       });
     }
     else if (this.user.username.length < 5) {
-      this.toastr.error("Username too short", "ACCOUNT", {
+      this.toastr.error("Nom trop court", "COMPTE", {
         positionClass: "toast-bottom-center" 
       });
     }
     else {
       localStorage.setItem('user', JSON.stringify(this.user));
-      this.toastr.info("Account modified", "ACCOUNT", {
+      this.toastr.info("Compte modifié", "COMPTE", {
         positionClass: "toast-bottom-center" 
       });
     }
@@ -79,7 +79,7 @@ export class PageComponent implements OnInit {
   deleteAccount() {
     localStorage.removeItem('user');
     this.ngOnInit();
-    this.toastr.info("Account deleted", "ACCOUNT", {
+    this.toastr.info("Compte supprimé", "COMPTE", {
       positionClass: "toast-bottom-center" 
     });
   }

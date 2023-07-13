@@ -77,13 +77,13 @@ export class MainInputComponent implements OnInit {
         }
       }
       else {
-        this.toastr.error("Input invalid", this.gameName.toUpperCase(), {
+        this.toastr.error("Tentative invalide", this.gameName.toUpperCase(), {
           positionClass: "toast-bottom-center" 
         });
       }
     }
     else {
-      this.toastr.error("Input empty", this.gameName.toUpperCase(), {
+      this.toastr.error("Tentative vide", this.gameName.toUpperCase(), {
         positionClass: "toast-bottom-center" 
       });
     }
@@ -142,12 +142,12 @@ export class MainInputComponent implements OnInit {
     this.tries = [];
     this.tries.push(response);
     if (gameWon) {
-      this.toastr.success("You won", this.gameName.toUpperCase(), {
+      this.toastr.success("Gagné", this.gameName.toUpperCase(), {
         positionClass: "toast-bottom-center" 
       });
     }
     else {
-      this.toastr.error("You lost", this.gameName.toUpperCase(), {
+      this.toastr.error("Perdu", this.gameName.toUpperCase(), {
         positionClass: "toast-bottom-center" 
       });
     }

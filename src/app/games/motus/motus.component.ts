@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from 'src/app/core/interfaces/user';
-import { words } from 'src/app/shared/data/words';
+import { words } from 'src/app/shared/data/frenchWords';
 
 @Component({
   selector: 'app-root',

@@ -1,11 +1,11 @@
 <div mat-dialog-content class="container">
-    <h1>Learn how to play !</h1>
+    <h1>Comment jouer</h1>
     <mat-accordion>
         <mat-expansion-panel>
           <mat-expansion-panel-header>
             <mat-panel-title>
               <i class='bx bxs-user-rectangle'></i>
-              <span>Account</span>
+              <span>Compte</span>
             </mat-panel-title>
           </mat-expansion-panel-header>
           <div class="expansion-content">
@@ -13,9 +13,9 @@
                 <img [src]="imagePath + 'account.png'">
             </div>
             <ul>
-                <li>Change your username</li>
-                <li>Learn more how to use the app</li>
-                <li>Delete your account (username and medals !)</li>
+                <li>Changez votre nom d'utilisateur</li>
+                <li>Apprenez à utiliser l'application</li>
+                <li>Supprimez votre compte (nom et médailles !)</li>
             </ul>
           </div>
         </mat-expansion-panel>
@@ -23,7 +23,7 @@
           <mat-expansion-panel-header>
             <mat-panel-title>
               <i class='bx bxs-game'></i>
-              <span>Games</span>
+              <span>Jeux</span>
             </mat-panel-title>
           </mat-expansion-panel-header>
           <div class="expansion-content">
@@ -31,9 +31,9 @@
                 <img [src]="imagePath + 'games.png'">
             </div>
             <ul>
-                <li>Select a game to play</li>
-                <li>Motus makes you guess a word with first letter as hint</li>
-                <li>Flag makes you guess a country name based on his flag</li>
+                <li>Choisissez un jeu</li>
+                <li>Dans Motus, devinez un mot avec sa première lettre</li>
+                <li>Dans Drapeau, devinez un pays avec son drapeau</li>
             </ul>
           </div>
         </mat-expansion-panel>
@@ -41,7 +41,7 @@
             <mat-expansion-panel-header>
               <mat-panel-title>
                 <i class='bx bxs-joystick-alt'></i>
-                <span>Play</span>
+                <span>Objectif</span>
               </mat-panel-title>
             </mat-expansion-panel-header>
             <div class="expansion-content">
@@ -49,9 +49,9 @@
                     <img [src]="imagePath + 'play.png'">
                 </div>
                 <ul>
-                    <li>Try to find the french word in less than 6 tries</li>
-                    <li>A red letter is a correct letter at the right place</li>
-                    <li>A gold letter is a correct letter at the wrong place</li>
+                    <li>Trouvez un mot français en moins de 6 tentatives</li>
+                    <li>Une lettre rouge indique une bonne lettre au bon endroit</li>
+                    <li>Une lettre jaune indique une bonne lettre au mauvais endroit</li>
                 </ul>
             </div>
         </mat-expansion-panel>
@@ -59,7 +59,7 @@
             <mat-expansion-panel-header>
               <mat-panel-title>
                 <i class='bx bxs-medal'></i>
-                <span>Medals</span>
+                <span>Médailles</span>
               </mat-panel-title>
             </mat-expansion-panel-header>
             <div class="expansion-content">
@@ -67,9 +67,9 @@
                     <img class="small" [src]="imagePath + 'medals.png'">
                 </div>
                 <ul>
-                    <li>Earn medals while playing games</li>
-                    <li>The lesser the number of try the more silver medals you win</li>
-                    <li>10 silver medals = 1 gold medal</li>
+                    <li>Gagnez des médailles en jouant</li>
+                    <li>Moins il y a de tentatives plus la récompense est grande</li>
+                    <li>10 médailles d'argent = 1 médaille d'or</li>
                 </ul>
             </div>
         </mat-expansion-panel>
@@ -77,7 +77,7 @@
     <div class="buttons">
         <a class="cancel" title="cancel" (click)="cancel()">
             <i class='bx bxs-hand-right'></i>
-            <span>Let's play</span>
+            <span>C'est parti</span>
         </a>
     </div>
 </div>

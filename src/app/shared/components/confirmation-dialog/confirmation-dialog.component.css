@@ -42,7 +42,7 @@ h1 {
     transition: 0.5s ease;
     border: none;
     color: black;
-    width: 100px;
+    width: 130px;
 }
 
 .buttons .cancel:hover, .delete:hover {

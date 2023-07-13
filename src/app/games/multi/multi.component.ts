@@ -18,7 +18,7 @@ export class MultiComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       this.game = params['game'];
     });
-    this.toastr.error("Work in progress", "Multiplayer", {
+    this.toastr.error("Travail en cours...", "Multijoueur", {
       positionClass: "toast-bottom-center" 
     });
   }

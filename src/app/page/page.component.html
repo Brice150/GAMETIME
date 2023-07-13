@@ -4,7 +4,7 @@
             <img [src]="imagePath + 'logo.png'" alt="Logo">
             <h1><span class="subtitle">Game</span> Time</h1>
         </div>
-        <span class="description">Guess a word in various games !</span>
+        <span class="description">Trouvez un mot de différentes manières !</span>
         <nav>
             <form (ngSubmit)="changeName()" class="game" (click)="trigger(0); $event.stopPropagation" [ngClass]="{ 'active': isActive[0] }">
                 <div class="game-title">
@@ -14,15 +14,15 @@
                 <div *ngIf="isActive[0]" class="buttons">
                     <button title="Modify" type="submit">
                         <i class='bx bxs-edit-alt'></i>
-                        <span>Modify</span>
+                        <span>Modifier</span>
                     </button>
                     <a title="Learn" (click)="openLearnDialog()">
                         <i class='bx bxs-book'></i>
-                        <span>Learn</span>
+                        <span>Apprendre</span>
                     </a>
                     <a title="Delete" (click)="openConfirmationDialog()">
                         <i class='bx bxs-trash'></i>
-                        <span>Delete</span>
+                        <span>Supprimer</span>
                     </a>
                 </div>
             </form>
@@ -65,7 +65,7 @@
                 </div>
                 <div class="game-title">
                     <i class='bx bxs-flag'></i>
-                    <span>Flag</span>
+                    <span>Drapeau</span>
                 </div>
                 <div *ngIf="isActive[2]" class="buttons column">
                     <a title="Solo" [routerLink]="['/flag']">

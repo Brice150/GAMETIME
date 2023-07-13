@@ -12,13 +12,13 @@
     align-items: center;
     flex-direction: column;
     color: var(--text);
-    max-width: 500px;
+    max-width: 700px;
     width: 100%;
 }
 
 .medals {
     position: absolute;
-    right: 20px;
+    right: 30px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -220,7 +220,7 @@ input {
     padding: 0;
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 550px) {
     a, button {
         margin: 10px;
     }
