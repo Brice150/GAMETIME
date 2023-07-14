@@ -5,7 +5,6 @@ import { appRouter } from './app.router';
 import { PageModule } from './page/page.module';
 import { FlagModule } from './games/flag/flag.module';
 import { MotusModule } from './games/motus/motus.module';
-import { MultiModule } from './games/multi/multi.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 
@@ -19,7 +18,6 @@ import { ToastrModule } from 'ngx-toastr';
     PageModule,
     MotusModule,
     FlagModule,
-    MultiModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot()
   ],

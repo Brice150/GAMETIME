@@ -43,12 +43,8 @@
                 </div>
                 <div *ngIf="isActive[1]" class="buttons column">
                     <a title="Solo" [routerLink]="['/motus']">
-                        <i class='bx bxs-user'></i>
-                        <span>Solo</span>
-                    </a>
-                    <a title="Multi" [routerLink]="['/multi']" [queryParams]="{ game: 'motus' }">
-                        <i class='bx bxs-group'></i>
-                        <span>Multi</span>
+                        <i class='bx bxs-joystick'></i>
+                        <span>Jouer</span>
                     </a>
                 </div>
             </div>
@@ -68,13 +64,9 @@
                     <span>Drapeau</span>
                 </div>
                 <div *ngIf="isActive[2]" class="buttons column">
-                    <a title="Solo" [routerLink]="['/flag']">
-                        <i class='bx bxs-user'></i>
-                        <span>Solo</span>
-                    </a>
-                    <a title="Multi" [routerLink]="['/multi']" [queryParams]="{ game: 'flag' }">
-                        <i class='bx bxs-group'></i>
-                        <span>Multi</span>
+                    <a title="Solo" [routerLink]="['/drapeau']">
+                        <i class='bx bxs-joystick'></i>
+                        <span>Jouer</span>
                     </a>
                 </div>
             </div>

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from 'src/app/core/interfaces/user';
-import { countries } from 'src/app/shared/data/frenchCountries';
+import { countries } from 'src/app/shared/data/countries';
 
 @Component({
   selector: 'app-root',
