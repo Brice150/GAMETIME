@@ -3,8 +3,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { appRouter } from './app.router';
 import { PageModule } from './page/page.module';
-import { FlagModule } from './games/flag/flag.module';
-import { MotusModule } from './games/motus/motus.module';
+import { FlagModule } from './games/letters/flag/flag.module';
+import { MotusModule } from './games/letters/motus/motus.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 

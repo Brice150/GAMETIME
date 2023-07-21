@@ -8,5 +8,5 @@ import { Component, Input } from '@angular/core';
 export class HeaderComponent {
   @Input() logo!: string;
   @Input() game!: string;
-  @Input() medals!: number[];
+  @Input() medals!: number;
 }

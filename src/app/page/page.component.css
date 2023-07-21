@@ -6,7 +6,7 @@
 }
 
 .container {
-    position: relative;
+    
     display: flex;
     justify-content: center;
     align-items: center;
@@ -16,13 +16,19 @@
     width: 100%;
 }
 
+.link {
+    position: relative;
+    padding-top: 45px;
+    width: 130px;
+}
+
 .medals {
     position: absolute;
-    right: 30px;
     display: flex;
-    justify-content: center;
+    justify-content: space-evenly;
     align-items: center;
-    flex-direction: row;
+    top: 10px;
+    width: 100%;
 }
 
 .victory-number {
@@ -31,11 +37,10 @@
     font-weight: 500;
 }
 
-.medals .gold, .silver {
+.medals .gold {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0 5px;
 }
 
 .medals i {
@@ -44,10 +49,6 @@
 
 .medals .gold i {
     color: var(--secondary);
-}
-
-.medals .silver i {
-    color: var(--text);
 }
 
 .title {
@@ -125,14 +126,6 @@ nav .game.active {
             inset -5px -5px 16px #48566b;
 }
 
-nav .game.active .medals {
-    flex-direction: column;
-}
-
-nav .game.active .medals .gold, .silver {
-    margin: 5px 0;
-}
-
 nav .game .game-title i {
     font-size: 25px;
     margin-right: 20px;
@@ -181,6 +174,10 @@ a i {
     color: var(--text);
 }
 
+.link .medals i {
+    margin: 0;
+}
+
 button i {
     font-size: 25px;
     margin-right: 10px;
@@ -220,7 +217,7 @@ input {
     padding: 0;
 }
 
-@media screen and (max-width: 550px) {
+@media screen and (max-width: 600px) {
     a, button {
         margin: 10px;
     }

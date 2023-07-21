@@ -1,0 +1,5 @@
+<app-header [game]="'drapeau'" [logo]="'bx bxs-flag'" [medals]="medals"></app-header>
+<div class="container">
+    <img [src]="flagApi">
+</div>
+<app-main-input [response]="response" [showFirstLetter]="false" [gameName]="'drapeau'" (winEvent)="handleWinEvent()" (lostEvent)="handleLostEvent()"></app-main-input>

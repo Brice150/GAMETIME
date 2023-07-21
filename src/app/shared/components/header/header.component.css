@@ -33,11 +33,10 @@
     align-items: center;
 }
 
-.medals .gold, .silver {
+.medals .gold {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0 10px;
 }
 
 .victory-number {
@@ -52,10 +51,6 @@
 
 .medals .gold i {
     color: var(--secondary);
-}
-
-.medals .silver i {
-    color: var(--text);
 }
 
 a {
