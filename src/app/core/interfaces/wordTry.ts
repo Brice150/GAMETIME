@@ -1,4 +1,4 @@
-export interface Try {
+export interface WordTry {
   letter: string[];
   isRed: boolean[];
   isYellow: boolean[];

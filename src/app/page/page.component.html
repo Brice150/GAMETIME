@@ -70,7 +70,7 @@
                     <span>Chiffres</span>
                 </div>
                 <div *ngIf="isActive[2]" class="buttons column">
-                    <a class="link" title="Calcul" (click)="workInProgress()">
+                    <a class="link" title="Calcul" [routerLink]="['/price']">
                         <div class="medals">
                             <div class="gold">
                                 <span class="victory-number">{{user.victories.gold[3]}}</span>

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
-import { Try } from 'src/app/core/interfaces/try';
+import { WordTry } from 'src/app/core/interfaces/wordTry';
 import { emojies } from '../../data/emojis';
 import { ToastrService } from 'ngx-toastr';
 
@@ -16,7 +16,7 @@ export class WordInputComponent implements OnInit {
   wordToFind!: string;
   maxlength!: number;
   inputValue!: string | null;
-  tries: Try[] = [];
+  tries: WordTry[] = [];
   @Output() winEvent = new EventEmitter<number>();
   @Output() lostEvent = new EventEmitter<void>();
   emojiClass: string = emojies[1].emojiClass;
@@ -92,7 +92,7 @@ export class WordInputComponent implements OnInit {
   }
 
   addTry() {
-    const newTry: Try = {
+    const newTry: WordTry = {
       letter: Array.from(this.inputValue!),
       isRed: Array.from({ length: this.inputValue!.length }, () => false),
       isYellow: Array.from({ length: this.inputValue!.length }, () => false)
@@ -128,14 +128,7 @@ export class WordInputComponent implements OnInit {
   }
 
   reset(gameWon: boolean) {
-    let medalsWon: number = 1;
-    if (this.tries.length < 2) {
-      medalsWon = 3;
-    }
-    else if (this.tries.length < 4) {
-      medalsWon = 2;
-    }
-    const response: Try = {
+    const response: WordTry = {
       letter: Array.from(this.response),
       isRed: Array.from({ length: this.response!.length }, () => true),
       isYellow: Array.from({ length: this.response!.length }, () => false)
@@ -154,7 +147,7 @@ export class WordInputComponent implements OnInit {
     }
     setTimeout(() => {
       if (gameWon) {
-        this.winEvent.emit(medalsWon);
+        this.winEvent.emit();
       }
       else {
         this.lostEvent.emit();

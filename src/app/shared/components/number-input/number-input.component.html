@@ -1,0 +1,23 @@
+<div class="main-container">
+    <div class="container">
+        <div class="previous-container" *ngFor="let try of tries">
+            <div class="previous" [ngClass]="{ 'red': try.isResult}">
+                {{try.number}}
+                <div *ngIf="!try.isResult" class="sign" [ngClass]="{'greater': try.isGreater, 'red': !try.isGreater}">
+                    <i *ngIf="try.isGreater && try.isBigGap && !try.isCloseGap" class='bx bxs-up-arrow-circle'></i>
+                    <i *ngIf="try.isGreater && !try.isBigGap && !try.isCloseGap" class='bx bxs-right-top-arrow-circle'></i>
+                    <i *ngIf="try.isGreater && !try.isBigGap && try.isCloseGap" class='bx bxs-right-arrow-circle'></i>
+                    <i *ngIf="!try.isGreater && !try.isBigGap && try.isCloseGap" class='bx bxs-right-arrow-circle'></i>
+                    <i *ngIf="!try.isGreater && !try.isBigGap && !try.isCloseGap" class='bx bxs-right-down-arrow-circle'></i>
+                    <i *ngIf="!try.isGreater && try.isBigGap && !try.isCloseGap" class='bx bxs-down-arrow-circle'></i>
+                </div>
+            </div>
+        </div>
+        <form (ngSubmit)="submitAnswer()">
+            <input [attr.maxlength]="maxlength" (keydown)="onKeyDown($event)" [(ngModel)]="inputValue" [ngModelOptions]="{standalone: true}">
+            <span class="placeholder">{{wordToFind}}</span>
+            <button class="submit" type="submit">Submit</button>
+        </form>
+        <i [ngClass]="emojiClass" [ngStyle]="emojiStyle"></i>
+    </div>
+</div>

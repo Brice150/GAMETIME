@@ -33,7 +33,7 @@ Frontend : Angular
       ### Juste Prix
 
   - Find a number
-  - Hint : + or - signs
+  - Hint : green arrow if +, red arrow if -
 
 </details>
 

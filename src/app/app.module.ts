@@ -8,6 +8,7 @@ import { MotusModule } from './games/letters/motus/motus.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { MeliMeloModule } from './games/letters/melimelo/melimelo.module';
+import { PriceModule } from './games/digits/price/price.module';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { MeliMeloModule } from './games/letters/melimelo/melimelo.module';
     MotusModule,
     FlagModule,
     MeliMeloModule,
+    PriceModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot()
   ],

@@ -8,9 +8,10 @@ import { MatDialogModule } from "@angular/material/dialog";
 import { ConfirmationDialogComponent } from "./components/confirmation-dialog/confirmation-dialog.component";
 import { LearnDialogComponent } from "./components/learn-dialog/learn-dialog.component";
 import { MatExpansionModule } from '@angular/material/expansion';
+import { NumberInputComponent } from "./components/number-input/number-input.component";
 
 @NgModule({
-    declarations: [WordInputComponent, HeaderComponent, ConfirmationDialogComponent, LearnDialogComponent],
+    declarations: [WordInputComponent, NumberInputComponent, HeaderComponent, ConfirmationDialogComponent, LearnDialogComponent],
     imports: [
         CommonModule,
         RouterModule,
@@ -18,6 +19,6 @@ import { MatExpansionModule } from '@angular/material/expansion';
         MatDialogModule,
         MatExpansionModule
     ],
-    exports: [WordInputComponent, HeaderComponent, ConfirmationDialogComponent, LearnDialogComponent]
+    exports: [WordInputComponent, NumberInputComponent, HeaderComponent, ConfirmationDialogComponent, LearnDialogComponent]
 })
 export class SharedModule {}
