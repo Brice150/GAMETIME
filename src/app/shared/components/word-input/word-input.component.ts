@@ -79,13 +79,13 @@ export class WordInputComponent implements OnInit {
       }
       else {
         this.toastr.error("Tentative invalide", this.gameName.toUpperCase(), {
-          positionClass: "toast-bottom-center" 
+          positionClass: "toast-top-center" 
         });
       }
     }
     else {
       this.toastr.error("Tentative vide", this.gameName.toUpperCase(), {
-        positionClass: "toast-bottom-center" 
+        positionClass: "toast-top-center" 
       });
     }
     this.inputValue = null;
@@ -137,12 +137,12 @@ export class WordInputComponent implements OnInit {
     this.tries.push(response);
     if (gameWon) {
       this.toastr.success("Gagné", this.gameName.toUpperCase(), {
-        positionClass: "toast-bottom-center" 
+        positionClass: "toast-top-center" 
       });
     }
     else {
       this.toastr.error("Perdu", this.gameName.toUpperCase(), {
-        positionClass: "toast-bottom-center" 
+        positionClass: "toast-top-center" 
       });
     }
     setTimeout(() => {
