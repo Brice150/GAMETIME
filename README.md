@@ -25,12 +25,12 @@ Frontend : Angular
   - Find a country
   - Hint : flag, red and yellow letter colors
 
-    ### Meli Melo
+  ### Meli Melo
 
   - Find a word
   - Hint : not in order letters, red letter color
 
-      ### Juste Prix
+  ### Juste Prix
 
   - Find a number
   - Hint : green arrow if +, red arrow if -
