@@ -4,13 +4,14 @@ import { emojies } from '../../data/emojis';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
-  selector: 'app-main-input',
-  templateUrl: './main-input.component.html',
-  styleUrls: ['./main-input.component.css']
+  selector: 'app-word-input',
+  templateUrl: './word-input.component.html',
+  styleUrls: ['./word-input.component.css']
 })
-export class MainInputComponent implements OnInit {
+export class WordInputComponent implements OnInit {
   @Input() response!: string;
   @Input() showFirstLetter: boolean = true;
+  @Input() showYellowLetter: boolean = true;
   @Input() gameName!: string;
   wordToFind!: string;
   maxlength!: number;

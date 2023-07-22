@@ -1,6 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
-import { MainInputComponent } from "./components/main-input/main-input.component";
+import { WordInputComponent } from "./components/word-input/word-input.component";
 import { HeaderComponent } from "./components/header/header.component";
 import { RouterModule } from "@angular/router";
 import { FormsModule } from "@angular/forms";
@@ -10,7 +10,7 @@ import { LearnDialogComponent } from "./components/learn-dialog/learn-dialog.com
 import { MatExpansionModule } from '@angular/material/expansion';
 
 @NgModule({
-    declarations: [MainInputComponent, HeaderComponent, ConfirmationDialogComponent, LearnDialogComponent],
+    declarations: [WordInputComponent, HeaderComponent, ConfirmationDialogComponent, LearnDialogComponent],
     imports: [
         CommonModule,
         RouterModule,
@@ -18,6 +18,6 @@ import { MatExpansionModule } from '@angular/material/expansion';
         MatDialogModule,
         MatExpansionModule
     ],
-    exports: [MainInputComponent, HeaderComponent, ConfirmationDialogComponent, LearnDialogComponent]
+    exports: [WordInputComponent, HeaderComponent, ConfirmationDialogComponent, LearnDialogComponent]
 })
 export class SharedModule {}

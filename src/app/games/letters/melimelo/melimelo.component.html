@@ -1,0 +1,11 @@
+<app-header [game]="'meli melo'" [logo]="'bx bxs-grid'" [medals]="medals"></app-header>
+<div class="container">
+    <mat-slider min="5" max="13" step="1" discrete (change)="changeWordLength()">
+        <input matSliderThumb [(ngModel)]="wordLength">
+    </mat-slider>
+    <span>Taille du mot</span>
+    <div class="mixed-word-container">
+        <span class="mixed-word">{{mixedWord}}</span>
+    </div>
+</div>
+<app-word-input [response]="response" [gameName]="'meli melo'" [showYellowLetter]="false" [showFirstLetter]="false" (winEvent)="handleWinEvent()" (lostEvent)="handleLostEvent()"></app-word-input>

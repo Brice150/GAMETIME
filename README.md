@@ -13,18 +13,27 @@ Frontend : Angular
 
   - Handle your account and learn how to play
   - Choose to play to various games
+  - Earn medals while playing
 
   ### Motus
 
-  - Select word lendth and try to guess the word
-  - Previous tries will show if a letter is correct or not
-  - Earn medals if you found the word in less than 6 tries
+  - Find a word
+  - Hint : first letter, red and yellow letter colors
 
   ### Drapeau
 
-  - Try to guess a country name based on his flag
-  - Previous tries will show if a letter is correct or not
-  - Earn medals if you found the word in less than 6 tries
+  - Find a country
+  - Hint : flag, red and yellow letter colors
+
+    ### Meli Melo
+
+  - Find a word
+  - Hint : not in order letters, red letter color
+
+      ### Juste Prix
+
+  - Find a number
+  - Hint : + or - signs
 
 </details>
 

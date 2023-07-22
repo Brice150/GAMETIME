@@ -22,8 +22,8 @@
         <mat-expansion-panel>
           <mat-expansion-panel-header>
             <mat-panel-title>
-              <i class='bx bxs-game'></i>
-              <span>Jeux</span>
+              <i class='bx bxs-folder-open'></i>
+              <span>Catégories</span>
             </mat-panel-title>
           </mat-expansion-panel-header>
           <div class="expansion-content">
@@ -38,21 +38,24 @@
           </div>
         </mat-expansion-panel>
         <mat-expansion-panel>
-            <mat-expansion-panel-header>
-              <mat-panel-title>
-                <i class='bx bxs-joystick-alt'></i>
-                <span>Objectif</span>
-              </mat-panel-title>
-            </mat-expansion-panel-header>
-            <div class="expansion-content">
-                <div class="pictures">
-                    <img [src]="imagePath + 'play.png'">
-                </div>
-                <ul>
-                    <li>Trouvez le mot, pays ou nombre en moins de 6 tentatives</li>
-                    <li>Des indices comme la couleur des lettres peuvent aider</li>
-                </ul>
-            </div>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <i class='bx bxs-game'></i>
+              <span>Jeux</span>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div class="expansion-content">
+            <ul>
+                <li>Motus</li>
+                Trouvez un mot, indices : première lettre, couleurs rouge et jaune
+                <li>Drapeau</li>
+                Trouvez un pays, indices : drapeau, couleurs rouge et jaune
+                <li>Meli Melo</li>
+                Trouvez un mot, indices : lettres mélangées et couleur rouge
+                <li>Juste Prix</li>
+                Trouvez un nombre, indices : signes + ou -
+            </ul>
+          </div>
         </mat-expansion-panel>
         <mat-expansion-panel>
             <mat-expansion-panel-header>
@@ -67,7 +70,6 @@
                 </div>
                 <ul>
                     <li>Gagnez des médailles en jouant</li>
-                    <li>Moins il y a de tentatives plus la récompense est grande</li>
                 </ul>
             </div>
         </mat-expansion-panel>
