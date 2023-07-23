@@ -28,7 +28,7 @@
             </form>
             <div class="game" (click)="trigger(1); $event.stopPropagation" [ngClass]="{ 'active': isActive[1] }">
                 <div class="game-title">
-                    <i class='bx bxs-book-content'></i>
+                    <i class='bx bx-sort-a-z'></i>
                     <span>Lettres</span>
                 </div>
                 <div *ngIf="isActive[1]" class="buttons column">
@@ -66,11 +66,11 @@
             </div>
             <div class="game" (click)="trigger(2); $event.stopPropagation" [ngClass]="{ 'active': isActive[2] }">
                 <div class="game-title">
-                    <i class='bx bx-math'></i>
+                    <i class='bx bx-infinite'></i>
                     <span>Chiffres</span>
                 </div>
                 <div *ngIf="isActive[2]" class="buttons column">
-                    <a class="link" title="Calcul" [routerLink]="['/price']">
+                    <a class="link" title="Juste Prix" [routerLink]="['/price']">
                         <div class="medals">
                             <div class="gold">
                                 <span class="victory-number">{{user.victories.gold[3]}}</span>
@@ -79,6 +79,16 @@
                         </div>
                         <i class='bx bxs-badge-dollar'></i>
                         <span>Juste Prix</span>
+                    </a>
+                    <a class="link" title="Calcul" [routerLink]="['/calcul']">
+                        <div class="medals">
+                            <div class="gold">
+                                <span class="victory-number">{{user.victories.gold[4]}}</span>
+                                <i class='bx bxs-medal'></i>
+                            </div>
+                        </div>
+                        <i class='bx bx-math'></i>
+                        <span>Calcul</span>
                     </a>
                 </div>
             </div>

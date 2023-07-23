@@ -11,6 +11,8 @@ import { ToastrService } from 'ngx-toastr';
 export class NumberInputComponent implements OnInit {
   @Input() response!: string;
   @Input() gameName!: string;
+  @Input() rounded: boolean = true;
+  @Input() moreChances: boolean = false;
   wordToFind!: string;
   maxlength!: number;
   inputValue!: string | null;
@@ -55,10 +57,12 @@ export class NumberInputComponent implements OnInit {
 
   submitAnswer() {
     let inputValueAsNumber = parseInt(this.inputValue!);
-    const remainder = inputValueAsNumber % 5;
-    inputValueAsNumber -= remainder;
-    if (remainder > 2) {
-      inputValueAsNumber += 5;
+    if (this.rounded) {
+      const remainder = inputValueAsNumber % 5;
+      inputValueAsNumber -= remainder;
+      if (remainder > 2) {
+        inputValueAsNumber += 5;
+      }
     }
     this.inputValue = inputValueAsNumber.toString();
     if (this.inputValue) {
@@ -102,17 +106,26 @@ export class NumberInputComponent implements OnInit {
       isResult: false
     };
     this.tries.push(newTry);
-    if (this.isSecondChance) {
-      this.tryCount +=1 ;
-      this.emojiClass = emojies[this.tryCount].emojiClass;
-      this.emojiStyle = emojies[this.tryCount].emojiStyle;
-      this.isSecondChance = false;
+    if (this.moreChances) {
+      if (this.isSecondChance) {
+        this.tryCount +=1 ;
+        this.emojiClass = emojies[this.tryCount].emojiClass;
+        this.emojiStyle = emojies[this.tryCount].emojiStyle;
+        this.isSecondChance = false;
+      }
+      else {
+        this.isSecondChance = true;
+      }
+      if (this.tries.length > 11) {
+        this.reset(false);
+      }
     }
     else {
-      this.isSecondChance = true;
-    }
-    if (this.tries.length > 11) {
-      this.reset(false);
+      this.emojiClass = emojies[this.tries.length+1].emojiClass;
+      this.emojiStyle = emojies[this.tries.length+1].emojiStyle;
+      if (this.tries.length > 5) {
+        this.reset(false);
+      }
     }
   }
 

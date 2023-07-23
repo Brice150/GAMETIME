@@ -9,6 +9,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { MeliMeloModule } from './games/letters/melimelo/melimelo.module';
 import { PriceModule } from './games/digits/price/price.module';
+import { CalculModule } from './games/digits/calcul/calcul.module';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { PriceModule } from './games/digits/price/price.module';
     FlagModule,
     MeliMeloModule,
     PriceModule,
+    CalculModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot()
   ],

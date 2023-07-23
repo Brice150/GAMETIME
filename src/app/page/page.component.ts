@@ -30,8 +30,8 @@ export class PageComponent implements OnInit {
       const randomString = uuidv4().substring(0,4);
       this.user.username = `User#${randomString}`;
       this.user.victories = {
-        game: ['motus', 'flag', 'melimelo', 'justeprix'],
-        gold: [0, 0, 0, 0]
+        game: ['motus', 'flag', 'melimelo', 'justeprix', 'calcul'],
+        gold: [0, 0, 0, 0, 0]
       };
       localStorage.setItem('user', JSON.stringify(this.user));
     }    

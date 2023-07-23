@@ -35,6 +35,11 @@ Frontend : Angular
   - Find a number
   - Hint : green arrow if +, red arrow if -
 
+  ### Calcul
+
+  - Find a number
+  - Hint : equation, green arrow if + and red arrow if -
+
 </details>
 
 <details>
