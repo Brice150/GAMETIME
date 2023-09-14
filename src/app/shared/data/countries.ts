@@ -1,6 +1,6 @@
-import { Country } from "../../core/interfaces/country";
+import { Country } from '../../core/interfaces/country';
 
-export const countries: Country[] = [ 
+export const countries: Country[] = [
   { name: 'Afghanistan', code: 'AF' },
   { name: 'Albanie', code: 'AL' },
   { name: 'Algerie', code: 'DZ' },
@@ -155,5 +155,5 @@ export const countries: Country[] = [
   { name: 'Vietnam', code: 'VN' },
   { name: 'Yemen', code: 'YE' },
   { name: 'Zambie', code: 'ZM' },
-  { name: 'Zimbabwe', code: 'ZW' }
+  { name: 'Zimbabwe', code: 'ZW' },
 ];

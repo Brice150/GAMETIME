@@ -5,7 +5,7 @@ import { words } from 'src/app/shared/data/words';
 @Component({
   selector: 'app-root',
   templateUrl: './motus.component.html',
-  styleUrls: ['./motus.component.css']
+  styleUrls: ['./motus.component.css'],
 })
 export class MotusComponent implements OnInit {
   mode!: string;
@@ -20,7 +20,7 @@ export class MotusComponent implements OnInit {
     let storedUser: string | null = localStorage.getItem('user');
     if (storedUser !== null) {
       this.user = JSON.parse(storedUser);
-    }  
+    }
     this.medals = this.user.victories.gold[0];
 
     this.newWord();
@@ -31,7 +31,9 @@ export class MotusComponent implements OnInit {
   }
 
   newWord() {
-    const wordsFixedLength = words.filter(word => word.length === this.wordLength);
+    const wordsFixedLength = words.filter(
+      (word) => word.length === this.wordLength
+    );
     let randomIndex = Math.floor(Math.random() * wordsFixedLength.length);
     this.response = wordsFixedLength[randomIndex];
   }
@@ -44,7 +46,7 @@ export class MotusComponent implements OnInit {
       localStorage.setItem('user', JSON.stringify(this.user));
       this.medals = this.user.victories.gold[0];
     }
-    
+
     this.newWord();
   }
 

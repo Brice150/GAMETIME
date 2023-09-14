@@ -4,7 +4,7 @@ import { User } from 'src/app/core/interfaces/user';
 @Component({
   selector: 'app-root',
   templateUrl: './price.component.html',
-  styleUrls: ['./price.component.css']
+  styleUrls: ['./price.component.css'],
 })
 export class PriceComponent implements OnInit {
   mode!: string;
@@ -19,7 +19,7 @@ export class PriceComponent implements OnInit {
     let storedUser: string | null = localStorage.getItem('user');
     if (storedUser !== null) {
       this.user = JSON.parse(storedUser);
-    }  
+    }
     this.medals = this.user.victories.gold[3];
 
     this.newNumber();
@@ -50,7 +50,7 @@ export class PriceComponent implements OnInit {
       localStorage.setItem('user', JSON.stringify(this.user));
       this.medals = this.user.victories.gold[3];
     }
-    
+
     this.newNumber();
   }
 

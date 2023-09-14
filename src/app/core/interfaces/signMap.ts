@@ -1,6 +1,6 @@
 export interface SignMap {
-    [key: number]: {
-      sign: string;
-      operator: string;
-    };
+  [key: number]: {
+    sign: string;
+    operator: string;
+  };
 }

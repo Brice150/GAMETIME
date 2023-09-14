@@ -1,17 +1,16 @@
 .container {
-    margin-top: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: -30px;
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: -30px;
 }
 
 .container img {
-    height: 107px;
-    width: 160px;
-    object-fit: cover;
-    background: var(--background);
-    box-shadow:  5px 5px 16px #12161b,
-             -5px -5px 16px #48566b;
-    border-radius: 10px;
+  height: 107px;
+  width: 160px;
+  object-fit: cover;
+  background: var(--background);
+  box-shadow: 5px 5px 16px #12161b, -5px -5px 16px #48566b;
+  border-radius: 10px;
 }

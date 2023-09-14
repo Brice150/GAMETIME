@@ -1,4 +1,4 @@
 export interface Victories {
-    game: string[];
-    gold: number[];
-  }
+  game: string[];
+  gold: number[];
+}

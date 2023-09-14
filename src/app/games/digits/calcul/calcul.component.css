@@ -1,80 +1,76 @@
 .container {
-    margin-top: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    margin-bottom: -30px;
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-bottom: -30px;
 }
 
 .container mat-slider {
-    width: 80%;
-    max-width: 300px;
+  width: 80%;
+  max-width: 300px;
 }
 
 .container span {
-    font-size: 20px;
-    font-weight: 500;
-    color: var(--text);
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--text);
 }
 
 .container .equation-container {
-    margin-top: 30px;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    max-width: 400px;
+  margin-top: 30px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 400px;
 }
 
 .container .sign-selection {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    padding: 17px 12px;
-    box-shadow: 5px 5px 16px #12161b,
-            -5px -5px 16px #48566b;
-    background: var(--background);
-    border-radius: 10px;
-    width: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 17px 12px;
+  box-shadow: 5px 5px 16px #12161b, -5px -5px 16px #48566b;
+  background: var(--background);
+  border-radius: 10px;
+  width: 90%;
 }
 
 .container .sign-selection .equation {
-    color: red;
-    font-size: 30px;
-    font-weight: 500;
-    letter-spacing: 10px;
-    font-family: monospace;
-    margin-bottom: 15px;
+  color: red;
+  font-size: 30px;
+  font-weight: 500;
+  letter-spacing: 10px;
+  font-family: monospace;
+  margin-bottom: 15px;
 }
 
 .signs {
-    display: flex;
-    align-items: center;
-    justify-content: space-evenly;
-    width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 100%;
 }
 
 .signs i {
-    color: var(--text);
-    font-size: 30px;
-    padding: 4px;
-    box-shadow: 5px 5px 16px #12161b,
-            -5px -5px 16px #48566b;
-    background: var(--background);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.5s ease;
+  color: var(--text);
+  font-size: 30px;
+  padding: 4px;
+  box-shadow: 5px 5px 16px #12161b, -5px -5px 16px #48566b;
+  background: var(--background);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.5s ease;
 }
 
 .signs i.active {
-    box-shadow: inset 5px 5px 16px #12161b,
-            inset -5px -5px 16px #48566b;
-    color: red;
+  box-shadow: inset 5px 5px 16px #12161b, inset -5px -5px 16px #48566b;
+  color: red;
 }
 
 .signs i:hover {
-    box-shadow: inset 5px 5px 16px #12161b,
-            inset -5px -5px 16px #48566b;
+  box-shadow: inset 5px 5px 16px #12161b, inset -5px -5px 16px #48566b;
 }

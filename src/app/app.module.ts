@@ -10,11 +10,10 @@ import { ToastrModule } from 'ngx-toastr';
 import { MeliMeloModule } from './games/letters/melimelo/melimelo.module';
 import { PriceModule } from './games/digits/price/price.module';
 import { CalculModule } from './games/digits/calcul/calcul.module';
+import { ErrorPathComponent } from './error-path/error-path.component';
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
+  declarations: [AppComponent, ErrorPathComponent],
   imports: [
     BrowserModule,
     appRouter,
@@ -25,8 +24,8 @@ import { CalculModule } from './games/digits/calcul/calcul.module';
     PriceModule,
     CalculModule,
     BrowserAnimationsModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot(),
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

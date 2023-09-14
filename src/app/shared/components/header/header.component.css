@@ -1,100 +1,99 @@
 .container {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    color: var(--text);
-    margin-top: 20px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  color: var(--text);
+  margin-top: 20px;
 }
 
 .title {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .title h1 {
-    font-size: 35px;
-    font-weight: 800;
-    text-transform: capitalize;
-    text-align: center;
-    padding: 0;
-    margin: 0;
+  font-size: 35px;
+  font-weight: 800;
+  text-transform: capitalize;
+  text-align: center;
+  padding: 0;
+  margin: 0;
 }
 
 .title i {
-    margin-right: 20px;
-    font-size: 40px;
-    color: var(--primary);
+  margin-right: 20px;
+  font-size: 40px;
+  color: var(--primary);
 }
 
 .medals {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 130px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 130px;
 }
 
 .medals .gold {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .victory-number {
-    margin-right: 2px;
-    font-size: 22px;
-    font-weight: 600;
+  margin-right: 2px;
+  font-size: 22px;
+  font-weight: 600;
 }
 
 .medals i {
-    font-size: 32px;
+  font-size: 32px;
 }
 
 .medals .gold i {
-    color: var(--secondary);
+  color: var(--secondary);
 }
 
 a {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-decoration: none;
-    cursor: pointer;
-    padding: 12px 0;
-    box-shadow:  5px 5px 16px #12161b,
-             -5px -5px 16px #48566b;
-    background: var(--background);
-    border-radius: 10px;
-    transition: 0.5s ease;
-    width: 130px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  cursor: pointer;
+  padding: 12px 0;
+  box-shadow: 5px 5px 16px #12161b, -5px -5px 16px #48566b;
+  background: var(--background);
+  border-radius: 10px;
+  transition: 0.5s ease;
+  width: 130px;
 }
 
 a:hover {
-    box-shadow: inset 5px 5px 16px #12161b,
-            inset -5px -5px 16px #48566b;
+  box-shadow: inset 5px 5px 16px #12161b, inset -5px -5px 16px #48566b;
 }
 
 a i {
-    font-size: 25px;
-    margin-right: 10px;
-    color: var(--text);
+  font-size: 25px;
+  margin-right: 10px;
+  color: var(--text);
 }
 
 a span {
-    font-size: 20px;
-    font-weight: 500;
+  font-size: 20px;
+  font-weight: 500;
 }
 
-a:link, a:visited {
-    color: var(--text);
+a:link,
+a:visited {
+  color: var(--text);
 }
 
 @media screen and (max-width: 500px) {
-    .container {
-        flex-direction: column;
-    }
+  .container {
+    flex-direction: column;
+  }
 
-    .title {
-        margin: 20px 0;
-    }
+  .title {
+    margin: 20px 0;
+  }
 }

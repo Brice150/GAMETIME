@@ -10,31 +10,28 @@ import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-root',
   templateUrl: './page.component.html',
-  styleUrls: ['./page.component.css']
+  styleUrls: ['./page.component.css'],
 })
 export class PageComponent implements OnInit {
   imagePath: string = environment.imagePath;
   isActive: boolean[] = [true, false, false];
   user: User = {} as User;
 
-  constructor(
-    public dialog: MatDialog,
-    private toastr: ToastrService
-    ) {}
-  
+  constructor(public dialog: MatDialog, private toastr: ToastrService) {}
+
   ngOnInit() {
     let storedUser: string | null = localStorage.getItem('user');
     if (storedUser !== null) {
       this.user = JSON.parse(storedUser);
     } else {
-      const randomString = uuidv4().substring(0,4);
+      const randomString = uuidv4().substring(0, 4);
       this.user.username = `User#${randomString}`;
       this.user.victories = {
         game: ['motus', 'flag', 'melimelo', 'justeprix', 'calcul'],
-        gold: [0, 0, 0, 0, 0]
+        gold: [0, 0, 0, 0, 0],
       };
       localStorage.setItem('user', JSON.stringify(this.user));
-    }    
+    }
   }
 
   trigger(gameIndex: number) {
@@ -45,11 +42,11 @@ export class PageComponent implements OnInit {
   openConfirmationDialog() {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent);
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.deleteAccount();
       }
-    })
+    });
   }
 
   openLearnDialog() {
@@ -58,19 +55,17 @@ export class PageComponent implements OnInit {
 
   changeName() {
     if (this.user.username.length > 10) {
-      this.toastr.error("Nom trop long", "COMPTE", {
-        positionClass: "toast-top-center" 
+      this.toastr.error('Nom trop long', 'COMPTE', {
+        positionClass: 'toast-top-center',
       });
-    }
-    else if (this.user.username.length < 5) {
-      this.toastr.error("Nom trop court", "COMPTE", {
-        positionClass: "toast-top-center" 
+    } else if (this.user.username.length < 5) {
+      this.toastr.error('Nom trop court', 'COMPTE', {
+        positionClass: 'toast-top-center',
       });
-    }
-    else {
+    } else {
       localStorage.setItem('user', JSON.stringify(this.user));
-      this.toastr.info("Compte modifié", "COMPTE", {
-        positionClass: "toast-top-center" 
+      this.toastr.info('Compte modifié', 'COMPTE', {
+        positionClass: 'toast-top-center',
       });
     }
   }
@@ -78,8 +73,8 @@ export class PageComponent implements OnInit {
   deleteAccount() {
     localStorage.removeItem('user');
     this.ngOnInit();
-    this.toastr.info("Compte supprimé", "COMPTE", {
-      positionClass: "toast-top-center" 
+    this.toastr.info('Compte supprimé', 'COMPTE', {
+      positionClass: 'toast-top-center',
     });
   }
 }

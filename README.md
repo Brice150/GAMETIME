@@ -9,58 +9,58 @@ Frontend : Angular
 <details>
   <summary>Pages Features</summary>
 
-   ### Page
+### Page
 
-  - Handle your account and learn how to play
-  - Choose to play to various games
-  - Earn medals while playing
+- Handle your account and learn how to play
+- Choose to play to various games
+- Earn medals while playing
 
-  ### Motus
+### Motus
 
-  - Find a word
-  - Hint : first letter, red and yellow letter colors
+- Find a word
+- Hint : first letter, red and yellow letter colors
 
-  ### Drapeau
+### Drapeau
 
-  - Find a country
-  - Hint : flag, red and yellow letter colors
+- Find a country
+- Hint : flag, red and yellow letter colors
 
-  ### Meli Melo
+### Meli Melo
 
-  - Find a word
-  - Hint : not in order letters, red letter color
+- Find a word
+- Hint : not in order letters, red letter color
 
-  ### Juste Prix
+### Juste Prix
 
-  - Find a number
-  - Hint : green arrow if +, red arrow if -
+- Find a number
+- Hint : green arrow if +, red arrow if -
 
-  ### Calcul
+### Calcul
 
-  - Find a number
-  - Hint : equation, green arrow if + and red arrow if -
+- Find a number
+- Hint : equation, green arrow if + and red arrow if -
 
 </details>
 
 <details>
   <summary>Run Locally</summary>
 
-  ### Clone the project
+### Clone the project
 
-  ```bash
-    git clone https://github.com/Brice150/GAMETIME.git
-  ```
+```bash
+  git clone https://github.com/Brice150/GAMETIME.git
+```
 
-  ### Install dependencies
+### Install dependencies
 
-  ```bash
-    npm install
-  ```
+```bash
+  npm install
+```
 
-  ### Start the server
+### Start the server
 
-  ```bash
-    ng serve -o
-  ```
+```bash
+  ng serve -o
+```
 
 </details>

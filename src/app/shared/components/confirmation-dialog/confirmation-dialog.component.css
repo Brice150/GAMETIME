@@ -1,83 +1,85 @@
 .container {
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    background: var(--text);
-    padding: 40px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    width: 80%;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--text);
+  padding: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 80%;
 }
 
 h1 {
-    color: black;
-    text-align: center;
-    font-size: 23px;
-    font-weight: 600;
-    margin-bottom: 30px;
+  color: black;
+  text-align: center;
+  font-size: 23px;
+  font-weight: 600;
+  margin-bottom: 30px;
 }
 
 .buttons {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.buttons .cancel, .delete {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-decoration: none;
-    cursor: pointer;
-    padding: 12px;
-    background: var(--text);
-    box-shadow:  5px 5px 9px #d1d1d1,
-    -5px -5px 9px #ffffff;
-    border-radius: 10px;
-    transition: 0.5s ease;
-    border: none;
-    color: black;
-    width: 130px;
+.buttons .cancel,
+.delete {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  cursor: pointer;
+  padding: 12px;
+  background: var(--text);
+  box-shadow: 5px 5px 9px #d1d1d1, -5px -5px 9px #ffffff;
+  border-radius: 10px;
+  transition: 0.5s ease;
+  border: none;
+  color: black;
+  width: 130px;
 }
 
-.buttons .cancel:hover, .delete:hover {
-    box-shadow: inset 5px 5px 9px #d1d1d1,
-    inset -5px -5px 9px #ffffff;
+.buttons .cancel:hover,
+.delete:hover {
+  box-shadow: inset 5px 5px 9px #d1d1d1, inset -5px -5px 9px #ffffff;
 }
 
 a i {
-    font-size: 25px;
-    margin-right: 10px;
-    color: black;
+  font-size: 25px;
+  margin-right: 10px;
+  color: black;
 }
 
 a span {
-    font-size: 20px;
-    font-weight: 500;
-    color: black;
+  font-size: 20px;
+  font-weight: 500;
+  color: black;
 }
 
-a:link, a:visited {
-    color: black;
+a:link,
+a:visited {
+  color: black;
 }
 
 @media screen and (max-width: 500px) {
-    .buttons {
-        flex-direction: column;
-    }
+  .buttons {
+    flex-direction: column;
+  }
 
-    .buttons .cancel, .delete {
-        margin: 10px 0;
-    }
+  .buttons .cancel,
+  .delete {
+    margin: 10px 0;
+  }
 }
 
 @media screen and (min-width: 600px) {
-    .container {
-        width: 500px;
-    }
+  .container {
+    width: 500px;
+  }
 }

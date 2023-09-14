@@ -5,10 +5,10 @@ import { environment } from 'src/environments/environment';
 @Component({
   selector: 'app-learn-dialog',
   templateUrl: './learn-dialog.component.html',
-  styleUrls: ['./learn-dialog.component.css']
+  styleUrls: ['./learn-dialog.component.css'],
 })
 export class LearnDialogComponent {
-  imagePath: string = environment.imagePath + "/learn/";
+  imagePath: string = environment.imagePath + '/learn/';
 
   constructor(public dialogRef: MatDialogRef<LearnDialogComponent>) {}
 

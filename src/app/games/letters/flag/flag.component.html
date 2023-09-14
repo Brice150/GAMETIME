@@ -1,5 +1,15 @@
-<app-header [game]="'drapeau'" [logo]="'bx bxs-flag'" [medals]="medals"></app-header>
+<app-header
+  [game]="'drapeau'"
+  [logo]="'bx bxs-flag'"
+  [medals]="medals"
+></app-header>
 <div class="container">
-    <img [src]="flagApi">
+  <img [src]="flagApi" />
 </div>
-<app-word-input [response]="response" [showFirstLetter]="false" [gameName]="'drapeau'" (winEvent)="handleWinEvent()" (lostEvent)="handleLostEvent()"></app-word-input>
+<app-word-input
+  [response]="response"
+  [showFirstLetter]="false"
+  [gameName]="'drapeau'"
+  (winEvent)="handleWinEvent()"
+  (lostEvent)="handleLostEvent()"
+></app-word-input>

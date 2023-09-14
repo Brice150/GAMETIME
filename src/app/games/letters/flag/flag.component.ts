@@ -5,12 +5,12 @@ import { countries } from 'src/app/shared/data/countries';
 @Component({
   selector: 'app-root',
   templateUrl: './flag.component.html',
-  styleUrls: ['./flag.component.css']
+  styleUrls: ['./flag.component.css'],
 })
 export class FlagComponent implements OnInit {
   mode!: string;
   response!: string;
-  flagApi: string = "https://flagcdn.com/w160/";
+  flagApi: string = 'https://flagcdn.com/w160/';
   medals!: number;
   user: User = {} as User;
 
@@ -20,7 +20,7 @@ export class FlagComponent implements OnInit {
     let storedUser: string | null = localStorage.getItem('user');
     if (storedUser !== null) {
       this.user = JSON.parse(storedUser);
-    }  
+    }
     this.medals = this.user.victories.gold[1];
 
     this.newWord();
@@ -30,7 +30,9 @@ export class FlagComponent implements OnInit {
     let randomIndex = Math.floor(Math.random() * countries.length);
     this.response = countries[randomIndex].name;
     const timestamp = new Date().getTime();
-    this.flagApi = `https://flagcdn.com/w160/${countries[randomIndex].code.toLowerCase()}.png?timestamp=${timestamp}`;
+    this.flagApi = `https://flagcdn.com/w160/${countries[
+      randomIndex
+    ].code.toLowerCase()}.png?timestamp=${timestamp}`;
   }
 
   handleWinEvent() {
@@ -41,7 +43,7 @@ export class FlagComponent implements OnInit {
       localStorage.setItem('user', JSON.stringify(this.user));
       this.medals = this.user.victories.gold[1];
     }
-      
+
     this.newWord();
   }
 

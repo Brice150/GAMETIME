@@ -1,16 +1,16 @@
 <div class="container">
-    <a title="Home" routerLink="/">
-        <i class='bx bxs-home'></i>
-        <span>Accueil</span>
-    </a>
-    <div class="title">
-        <i [class]="logo"></i>
-        <h1>{{game}}</h1>
+  <a title="Home" routerLink="/">
+    <i class="bx bxs-home"></i>
+    <span>Accueil</span>
+  </a>
+  <div class="title">
+    <i [class]="logo"></i>
+    <h1>{{ game }}</h1>
+  </div>
+  <div class="medals">
+    <div class="gold">
+      <span class="victory-number">{{ medals }}</span>
+      <i class="bx bxs-medal"></i>
     </div>
-    <div class="medals">
-        <div class="gold">
-            <span class="victory-number">{{medals}}</span>
-            <i class='bx bxs-medal'></i>
-        </div>
-    </div>
+  </div>
 </div>

@@ -5,7 +5,7 @@ import { signs } from 'src/app/shared/data/signs';
 @Component({
   selector: 'app-root',
   templateUrl: './calcul.component.html',
-  styleUrls: ['./calcul.component.css']
+  styleUrls: ['./calcul.component.css'],
 })
 export class CalculComponent implements OnInit {
   mode!: string;
@@ -24,7 +24,7 @@ export class CalculComponent implements OnInit {
     let storedUser: string | null = localStorage.getItem('user');
     if (storedUser !== null) {
       this.user = JSON.parse(storedUser);
-    }  
+    }
     this.medals = this.user.victories.gold[4];
 
     this.newEquation();
@@ -51,12 +51,11 @@ export class CalculComponent implements OnInit {
 
     const signNumber = this.isActive.indexOf(true);
 
-    if (signs[signNumber].sign === "?") {
+    if (signs[signNumber].sign === '?') {
       const randomOperatorIndex = Math.floor(Math.random() * 3);
       this.sign = signs[randomOperatorIndex].sign;
       this.operator = signs[randomOperatorIndex].operator;
-    }
-    else {
+    } else {
       this.sign = signs[signNumber].sign;
       this.operator = signs[signNumber].operator;
     }
@@ -65,7 +64,8 @@ export class CalculComponent implements OnInit {
 
     if (solution.toString().length <= 5 && solution > 0) {
       this.response = solution.toString();
-      this.equation = randomInteger1.toString() + this.sign + randomInteger2.toString() + "=";
+      this.equation =
+        randomInteger1.toString() + this.sign + randomInteger2.toString() + '=';
     } else {
       this.newEquation();
     }
@@ -79,7 +79,7 @@ export class CalculComponent implements OnInit {
       localStorage.setItem('user', JSON.stringify(this.user));
       this.medals = this.user.victories.gold[4];
     }
-    
+
     this.newEquation();
   }
 
