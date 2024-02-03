@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { AppComponent } from './app.component';
-import { appRouter } from './app.router';
+import { appRouter } from './app.routes';
 import { CalculModule } from './games/digits/calcul/calcul.module';
 import { PriceModule } from './games/digits/price/price.module';
 import { FlagModule } from './games/letters/flag/flag.module';
