@@ -9,12 +9,14 @@ import {
 import { NumberTry } from 'src/app/core/interfaces/numberTry';
 import { emojies } from '../../data/emojis';
 import { ToastrService } from 'ngx-toastr';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-    selector: 'app-number-input',
-    templateUrl: './number-input.component.html',
-    styleUrls: ['./number-input.component.css'],
-    standalone: false
+  selector: 'app-number-input',
+  imports: [CommonModule, FormsModule],
+  templateUrl: './number-input.component.html',
+  styleUrls: ['./number-input.component.css'],
 })
 export class NumberInputComponent implements OnInit {
   @Input() response!: string;

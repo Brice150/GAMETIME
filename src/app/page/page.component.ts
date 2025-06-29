@@ -6,12 +6,15 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { LearnDialogComponent } from '../shared/components/learn-dialog/learn-dialog.component';
 import { ToastrService } from 'ngx-toastr';
+import { RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-    selector: 'app-root',
-    templateUrl: './page.component.html',
-    styleUrls: ['./page.component.css'],
-    standalone: false
+  selector: 'app-root',
+  imports: [RouterModule, CommonModule, FormsModule],
+  templateUrl: './page.component.html',
+  styleUrls: ['./page.component.css'],
 })
 export class PageComponent implements OnInit {
   imagePath: string = environment.imagePath;

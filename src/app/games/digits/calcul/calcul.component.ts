@@ -1,12 +1,23 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatSliderModule } from '@angular/material/slider';
 import { User } from 'src/app/core/interfaces/user';
+import { HeaderComponent } from 'src/app/shared/components/header/header.component';
+import { NumberInputComponent } from 'src/app/shared/components/number-input/number-input.component';
 import { signs } from 'src/app/shared/data/signs';
 
 @Component({
-    selector: 'app-root',
-    templateUrl: './calcul.component.html',
-    styleUrls: ['./calcul.component.css'],
-    standalone: false
+  selector: 'app-root',
+  imports: [
+    CommonModule,
+    MatSliderModule,
+    FormsModule,
+    HeaderComponent,
+    NumberInputComponent,
+  ],
+  templateUrl: './calcul.component.html',
+  styleUrls: ['./calcul.component.css'],
 })
 export class CalculComponent implements OnInit {
   mode!: string;

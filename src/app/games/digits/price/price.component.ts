@@ -1,11 +1,22 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatSliderModule } from '@angular/material/slider';
 import { User } from 'src/app/core/interfaces/user';
+import { HeaderComponent } from 'src/app/shared/components/header/header.component';
+import { NumberInputComponent } from 'src/app/shared/components/number-input/number-input.component';
 
 @Component({
-    selector: 'app-root',
-    templateUrl: './price.component.html',
-    styleUrls: ['./price.component.css'],
-    standalone: false
+  selector: 'app-root',
+  imports: [
+    CommonModule,
+    MatSliderModule,
+    FormsModule,
+    HeaderComponent,
+    NumberInputComponent,
+  ],
+  templateUrl: './price.component.html',
+  styleUrls: ['./price.component.css'],
 })
 export class PriceComponent implements OnInit {
   mode!: string;

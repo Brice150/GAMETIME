@@ -9,12 +9,14 @@ import {
 import { WordTry } from 'src/app/core/interfaces/wordTry';
 import { emojies } from '../../data/emojis';
 import { ToastrService } from 'ngx-toastr';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-    selector: 'app-word-input',
-    templateUrl: './word-input.component.html',
-    styleUrls: ['./word-input.component.css'],
-    standalone: false
+  selector: 'app-word-input',
+  imports: [CommonModule, FormsModule],
+  templateUrl: './word-input.component.html',
+  styleUrls: ['./word-input.component.css'],
 })
 export class WordInputComponent implements OnInit {
   @Input() response!: string;

@@ -1,12 +1,15 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { User } from 'src/app/core/interfaces/user';
+import { HeaderComponent } from 'src/app/shared/components/header/header.component';
+import { WordInputComponent } from 'src/app/shared/components/word-input/word-input.component';
 import { countries } from 'src/app/shared/data/countries';
 
 @Component({
-    selector: 'app-root',
-    templateUrl: './flag.component.html',
-    styleUrls: ['./flag.component.css'],
-    standalone: false
+  selector: 'app-root',
+  imports: [CommonModule, HeaderComponent, WordInputComponent],
+  templateUrl: './flag.component.html',
+  styleUrls: ['./flag.component.css'],
 })
 export class FlagComponent implements OnInit {
   mode!: string;
