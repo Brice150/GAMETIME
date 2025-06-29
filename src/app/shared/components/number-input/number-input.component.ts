@@ -1,10 +1,10 @@
 import {
   Component,
   EventEmitter,
-  Input,
   OnInit,
   Output,
   SimpleChanges,
+  input
 } from '@angular/core';
 import { NumberTry } from 'src/app/core/interfaces/numberTry';
 import { emojies } from '../../data/emojis';
@@ -19,10 +19,10 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./number-input.component.css'],
 })
 export class NumberInputComponent implements OnInit {
-  @Input() response!: string;
-  @Input() gameName!: string;
-  @Input() rounded: boolean = true;
-  @Input() moreChances: boolean = false;
+  readonly response = input.required<string>();
+  readonly gameName = input.required<string>();
+  readonly rounded = input<boolean>(true);
+  readonly moreChances = input<boolean>(false);
   wordToFind!: string;
   maxlength!: number;
   inputValue!: string | null;
@@ -37,14 +37,15 @@ export class NumberInputComponent implements OnInit {
   constructor(private toastr: ToastrService) {}
 
   ngOnInit() {
-    if (this.response) {
+    const response = this.response();
+    if (response) {
       this.tries = [];
       this.emojiClass = emojies[1].emojiClass;
       this.emojiStyle = emojies[1].emojiStyle;
       this.tryCount = 1;
       this.isSecondChance = false;
-      this.maxlength = this.response.length;
-      this.wordToFind = this.response.replace(/[0-9]/g, '_');
+      this.maxlength = response.length;
+      this.wordToFind = response.replace(/[0-9]/g, '_');
     }
   }
 
@@ -74,7 +75,7 @@ export class NumberInputComponent implements OnInit {
 
   submitAnswer() {
     let inputValueAsNumber = parseInt(this.inputValue!);
-    if (this.rounded) {
+    if (this.rounded()) {
       const remainder = inputValueAsNumber % 5;
       inputValueAsNumber -= remainder;
       if (remainder > 2) {
@@ -87,18 +88,18 @@ export class NumberInputComponent implements OnInit {
         this.inputValue.length === this.maxlength &&
         !isNaN(inputValueAsNumber)
       ) {
-        if (this.inputValue === this.response) {
+        if (this.inputValue === this.response()) {
           this.reset(true);
         } else {
           this.addTry();
         }
       } else {
-        this.toastr.error('Tentative invalide', this.gameName.toUpperCase(), {
+        this.toastr.error('Tentative invalide', this.gameName().toUpperCase(), {
           positionClass: 'toast-top-center',
         });
       }
     } else {
-      this.toastr.error('Tentative vide', this.gameName.toUpperCase(), {
+      this.toastr.error('Tentative vide', this.gameName().toUpperCase(), {
         positionClass: 'toast-top-center',
       });
     }
@@ -107,7 +108,7 @@ export class NumberInputComponent implements OnInit {
 
   addTry() {
     let inputValueAsNumber: number = parseInt(this.inputValue!);
-    const responseAsNumber: number = parseInt(this.response!);
+    const responseAsNumber: number = parseInt(this.response()!);
     if (inputValueAsNumber === 0) {
       inputValueAsNumber = 1;
     }
@@ -119,13 +120,13 @@ export class NumberInputComponent implements OnInit {
     );
     const newTry: NumberTry = {
       number: this.inputValue!,
-      isGreater: this.inputValue! < this.response,
+      isGreater: this.inputValue! < this.response(),
       isBigGap: gapPerCentValue > 50,
       isCloseGap: gapPerCentValue < 20,
       isResult: false,
     };
     this.tries.push(newTry);
-    if (this.moreChances) {
+    if (this.moreChances()) {
       if (this.isSecondChance) {
         this.tryCount += 1;
         this.emojiClass = emojies[this.tryCount].emojiClass;
@@ -148,7 +149,7 @@ export class NumberInputComponent implements OnInit {
 
   reset(gameWon: boolean) {
     const response: NumberTry = {
-      number: this.response,
+      number: this.response(),
       isGreater: false,
       isBigGap: false,
       isCloseGap: false,
@@ -157,11 +158,11 @@ export class NumberInputComponent implements OnInit {
     this.tries = [];
     this.tries.push(response);
     if (gameWon) {
-      this.toastr.success('Gagné', this.gameName.toUpperCase(), {
+      this.toastr.success('Gagné', this.gameName().toUpperCase(), {
         positionClass: 'toast-top-center',
       });
     } else {
-      this.toastr.error('Perdu', this.gameName.toUpperCase(), {
+      this.toastr.error('Perdu', this.gameName().toUpperCase(), {
         positionClass: 'toast-top-center',
       });
     }

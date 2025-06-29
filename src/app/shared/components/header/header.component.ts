@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 @Component({
@@ -9,7 +9,7 @@ import { RouterModule } from '@angular/router';
   styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent {
-  @Input() logo!: string;
-  @Input() game!: string;
-  @Input() medals!: number;
+  readonly logo = input.required<string>();
+  readonly game = input.required<string>();
+  readonly medals = input.required<number>();
 }

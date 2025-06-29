@@ -5,6 +5,7 @@ import {
   OnInit,
   Output,
   SimpleChanges,
+  input,
 } from '@angular/core';
 import { WordTry } from 'src/app/core/interfaces/wordTry';
 import { emojies } from '../../data/emojis';
@@ -20,9 +21,9 @@ import { FormsModule } from '@angular/forms';
 })
 export class WordInputComponent implements OnInit {
   @Input() response!: string;
-  @Input() showFirstLetter: boolean = true;
-  @Input() showYellowLetter: boolean = true;
-  @Input() gameName!: string;
+  readonly showFirstLetter = input<boolean>(true);
+  readonly showYellowLetter = input<boolean>(true);
+  readonly gameName = input.required<string>();
   wordToFind!: string;
   maxlength!: number;
   inputValue!: string | null;
@@ -35,14 +36,12 @@ export class WordInputComponent implements OnInit {
   constructor(private toastr: ToastrService) {}
 
   ngOnInit() {
-    console.log('éèâäï'.normalize('NFD').replace(/\p{Diacritic}/gu, ''));
-
     if (this.response) {
       this.response = this.response.toUpperCase();
       this.tries = [];
       this.emojiClass = emojies[1].emojiClass;
       this.emojiStyle = emojies[1].emojiStyle;
-      if (this.showFirstLetter) {
+      if (this.showFirstLetter()) {
         this.wordToFind =
           this.response.charAt(0) +
           this.response.slice(1).replace(/[A-Za-z]/g, '_');
@@ -67,7 +66,7 @@ export class WordInputComponent implements OnInit {
       event.preventDefault();
     }
 
-    if (this.showFirstLetter) {
+    if (this.showFirstLetter()) {
       const inputValue = (event.target as HTMLInputElement).value;
       if (inputValue.length === 0 && key !== this.response.charAt(0)) {
         event.preventDefault();
@@ -81,24 +80,25 @@ export class WordInputComponent implements OnInit {
         .normalize('NFD')
         .replace(/\p{Diacritic}/gu, '')
         .toUpperCase();
+      const response = this.response;
       if (
         this.inputValue.length === this.maxlength &&
-        (!this.showFirstLetter ||
-          this.inputValue.startsWith(this.response.charAt(0))) &&
+        (!this.showFirstLetter() ||
+          this.inputValue.startsWith(response.charAt(0))) &&
         /^[A-Z]+$/.test(this.inputValue)
       ) {
-        if (this.inputValue === this.response) {
+        if (this.inputValue === response) {
           this.reset(true);
         } else {
           this.addTry();
         }
       } else {
-        this.toastr.error('Tentative invalide', this.gameName.toUpperCase(), {
+        this.toastr.error('Tentative invalide', this.gameName().toUpperCase(), {
           positionClass: 'toast-top-center',
         });
       }
     } else {
-      this.toastr.error('Tentative vide', this.gameName.toUpperCase(), {
+      this.toastr.error('Tentative vide', this.gameName().toUpperCase(), {
         positionClass: 'toast-top-center',
       });
     }
@@ -150,11 +150,11 @@ export class WordInputComponent implements OnInit {
     this.tries = [];
     this.tries.push(response);
     if (gameWon) {
-      this.toastr.success('Gagné', this.gameName.toUpperCase(), {
+      this.toastr.success('Gagné', this.gameName().toUpperCase(), {
         positionClass: 'toast-top-center',
       });
     } else {
-      this.toastr.error('Perdu', this.gameName.toUpperCase(), {
+      this.toastr.error('Perdu', this.gameName().toUpperCase(), {
         positionClass: 'toast-top-center',
       });
     }

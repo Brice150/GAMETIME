@@ -8,7 +8,7 @@
               class="letter"
           [ngClass]="{
             red: try.isRed[i],
-            yellow: try.isYellow[i] && showYellowLetter
+            yellow: try.isYellow[i] && showYellowLetter()
           }"
               >
               {{ letter }}
