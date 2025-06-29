@@ -11,103 +11,109 @@
         class="game"
         (click)="trigger(0); ($event.stopPropagation)"
         [ngClass]="{ active: isActive[0] }"
-      >
+        >
         <div class="game-title">
           <i class="bx bxs-user-rectangle"></i>
           <input
             [(ngModel)]="user.username"
             [ngModelOptions]="{ standalone: true }"
-          />
-        </div>
-        <div *ngIf="isActive[0]" class="buttons">
-          <button title="Modify" type="submit">
-            <i class="bx bxs-edit-alt"></i>
-            <span>Modifier</span>
-          </button>
-          <a title="Learn" (click)="openLearnDialog()">
-            <i class="bx bxs-book"></i>
-            <span>Apprendre</span>
-          </a>
-          <a title="Delete" (click)="openConfirmationDialog()">
-            <i class="bx bxs-trash"></i>
-            <span>Supprimer</span>
-          </a>
-        </div>
-      </form>
-      <div
-        class="game"
-        (click)="trigger(1); ($event.stopPropagation)"
-        [ngClass]="{ active: isActive[1] }"
-      >
-        <div class="game-title">
-          <i class="bx bx-sort-a-z"></i>
-          <span>Lettres</span>
-        </div>
-        <div *ngIf="isActive[1]" class="buttons column">
-          <a class="link" title="Motus" [routerLink]="['/motus']">
-            <div class="medals">
-              <div class="gold">
-                <span class="victory-number">{{ user.victories.gold[0] }}</span>
-                <i class="bx bxs-medal"></i>
-              </div>
+            />
+          </div>
+          @if (isActive[0]) {
+            <div class="buttons">
+              <button title="Modify" type="submit">
+                <i class="bx bxs-edit-alt"></i>
+                <span>Modifier</span>
+              </button>
+              <a title="Learn" (click)="openLearnDialog()">
+                <i class="bx bxs-book"></i>
+                <span>Apprendre</span>
+              </a>
+              <a title="Delete" (click)="openConfirmationDialog()">
+                <i class="bx bxs-trash"></i>
+                <span>Supprimer</span>
+              </a>
             </div>
-            <i class="bx bxs-objects-horizontal-left"></i>
-            <span>Motus</span>
-          </a>
-          <a class="link" title="Drapeau" [routerLink]="['/drapeau']">
-            <div class="medals">
-              <div class="gold">
-                <span class="victory-number">{{ user.victories.gold[1] }}</span>
-                <i class="bx bxs-medal"></i>
-              </div>
+          }
+        </form>
+        <div
+          class="game"
+          (click)="trigger(1); ($event.stopPropagation)"
+          [ngClass]="{ active: isActive[1] }"
+          >
+          <div class="game-title">
+            <i class="bx bx-sort-a-z"></i>
+            <span>Lettres</span>
+          </div>
+          @if (isActive[1]) {
+            <div class="buttons column">
+              <a class="link" title="Motus" [routerLink]="['/motus']">
+                <div class="medals">
+                  <div class="gold">
+                    <span class="victory-number">{{ user.victories.gold[0] }}</span>
+                    <i class="bx bxs-medal"></i>
+                  </div>
+                </div>
+                <i class="bx bxs-objects-horizontal-left"></i>
+                <span>Motus</span>
+              </a>
+              <a class="link" title="Drapeau" [routerLink]="['/drapeau']">
+                <div class="medals">
+                  <div class="gold">
+                    <span class="victory-number">{{ user.victories.gold[1] }}</span>
+                    <i class="bx bxs-medal"></i>
+                  </div>
+                </div>
+                <i class="bx bxs-flag"></i>
+                <span>Drapeau</span>
+              </a>
+              <a class="link" title="Meli Melo" [routerLink]="['/melimelo']">
+                <div class="medals">
+                  <div class="gold">
+                    <span class="victory-number">{{ user.victories.gold[2] }}</span>
+                    <i class="bx bxs-medal"></i>
+                  </div>
+                </div>
+                <i class="bx bxs-grid"></i>
+                <span>Meli Melo</span>
+              </a>
             </div>
-            <i class="bx bxs-flag"></i>
-            <span>Drapeau</span>
-          </a>
-          <a class="link" title="Meli Melo" [routerLink]="['/melimelo']">
-            <div class="medals">
-              <div class="gold">
-                <span class="victory-number">{{ user.victories.gold[2] }}</span>
-                <i class="bx bxs-medal"></i>
-              </div>
-            </div>
-            <i class="bx bxs-grid"></i>
-            <span>Meli Melo</span>
-          </a>
+          }
         </div>
-      </div>
-      <div
-        class="game"
-        (click)="trigger(2); ($event.stopPropagation)"
-        [ngClass]="{ active: isActive[2] }"
-      >
-        <div class="game-title">
-          <i class="bx bx-infinite"></i>
-          <span>Chiffres</span>
-        </div>
-        <div *ngIf="isActive[2]" class="buttons column">
-          <a class="link" title="Juste Prix" [routerLink]="['/price']">
-            <div class="medals">
-              <div class="gold">
-                <span class="victory-number">{{ user.victories.gold[3] }}</span>
-                <i class="bx bxs-medal"></i>
-              </div>
+        <div
+          class="game"
+          (click)="trigger(2); ($event.stopPropagation)"
+          [ngClass]="{ active: isActive[2] }"
+          >
+          <div class="game-title">
+            <i class="bx bx-infinite"></i>
+            <span>Chiffres</span>
+          </div>
+          @if (isActive[2]) {
+            <div class="buttons column">
+              <a class="link" title="Juste Prix" [routerLink]="['/price']">
+                <div class="medals">
+                  <div class="gold">
+                    <span class="victory-number">{{ user.victories.gold[3] }}</span>
+                    <i class="bx bxs-medal"></i>
+                  </div>
+                </div>
+                <i class="bx bxs-badge-dollar"></i>
+                <span>Juste Prix</span>
+              </a>
+              <a class="link" title="Calcul" [routerLink]="['/calcul']">
+                <div class="medals">
+                  <div class="gold">
+                    <span class="victory-number">{{ user.victories.gold[4] }}</span>
+                    <i class="bx bxs-medal"></i>
+                  </div>
+                </div>
+                <i class="bx bx-math"></i>
+                <span>Calcul</span>
+              </a>
             </div>
-            <i class="bx bxs-badge-dollar"></i>
-            <span>Juste Prix</span>
-          </a>
-          <a class="link" title="Calcul" [routerLink]="['/calcul']">
-            <div class="medals">
-              <div class="gold">
-                <span class="victory-number">{{ user.victories.gold[4] }}</span>
-                <i class="bx bxs-medal"></i>
-              </div>
-            </div>
-            <i class="bx bx-math"></i>
-            <span>Calcul</span>
-          </a>
+          }
         </div>
-      </div>
-    </nav>
+      </nav>
+    </div>
   </div>
-</div>
