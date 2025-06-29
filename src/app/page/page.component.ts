@@ -8,9 +8,10 @@ import { LearnDialogComponent } from '../shared/components/learn-dialog/learn-di
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './page.component.html',
-  styleUrls: ['./page.component.css'],
+    selector: 'app-root',
+    templateUrl: './page.component.html',
+    styleUrls: ['./page.component.css'],
+    standalone: false
 })
 export class PageComponent implements OnInit {
   imagePath: string = environment.imagePath;

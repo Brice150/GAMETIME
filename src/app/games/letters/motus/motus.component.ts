@@ -3,9 +3,10 @@ import { User } from 'src/app/core/interfaces/user';
 import { words } from 'src/app/shared/data/words';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './motus.component.html',
-  styleUrls: ['./motus.component.css'],
+    selector: 'app-root',
+    templateUrl: './motus.component.html',
+    styleUrls: ['./motus.component.css'],
+    standalone: false
 })
 export class MotusComponent implements OnInit {
   mode!: string;

@@ -3,9 +3,10 @@ import { User } from 'src/app/core/interfaces/user';
 import { countries } from 'src/app/shared/data/countries';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './flag.component.html',
-  styleUrls: ['./flag.component.css'],
+    selector: 'app-root',
+    templateUrl: './flag.component.html',
+    styleUrls: ['./flag.component.css'],
+    standalone: false
 })
 export class FlagComponent implements OnInit {
   mode!: string;

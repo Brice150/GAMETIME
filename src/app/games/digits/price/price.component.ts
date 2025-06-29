@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { User } from 'src/app/core/interfaces/user';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './price.component.html',
-  styleUrls: ['./price.component.css'],
+    selector: 'app-root',
+    templateUrl: './price.component.html',
+    styleUrls: ['./price.component.css'],
+    standalone: false
 })
 export class PriceComponent implements OnInit {
   mode!: string;

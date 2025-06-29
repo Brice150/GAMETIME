@@ -3,9 +3,10 @@ import { User } from 'src/app/core/interfaces/user';
 import { signs } from 'src/app/shared/data/signs';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './calcul.component.html',
-  styleUrls: ['./calcul.component.css'],
+    selector: 'app-root',
+    templateUrl: './calcul.component.html',
+    styleUrls: ['./calcul.component.css'],
+    standalone: false
 })
 export class CalculComponent implements OnInit {
   mode!: string;

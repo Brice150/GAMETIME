@@ -11,9 +11,10 @@ import { emojies } from '../../data/emojis';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
-  selector: 'app-word-input',
-  templateUrl: './word-input.component.html',
-  styleUrls: ['./word-input.component.css'],
+    selector: 'app-word-input',
+    templateUrl: './word-input.component.html',
+    styleUrls: ['./word-input.component.css'],
+    standalone: false
 })
 export class WordInputComponent implements OnInit {
   @Input() response!: string;

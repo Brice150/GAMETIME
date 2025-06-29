@@ -3,9 +3,10 @@ import { User } from 'src/app/core/interfaces/user';
 import { words } from 'src/app/shared/data/words';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './melimelo.component.html',
-  styleUrls: ['./melimelo.component.css'],
+    selector: 'app-root',
+    templateUrl: './melimelo.component.html',
+    styleUrls: ['./melimelo.component.css'],
+    standalone: false
 })
 export class MeliMeloComponent implements OnInit {
   mode!: string;

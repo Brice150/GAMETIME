@@ -11,9 +11,10 @@ import { emojies } from '../../data/emojis';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
-  selector: 'app-number-input',
-  templateUrl: './number-input.component.html',
-  styleUrls: ['./number-input.component.css'],
+    selector: 'app-number-input',
+    templateUrl: './number-input.component.html',
+    styleUrls: ['./number-input.component.css'],
+    standalone: false
 })
 export class NumberInputComponent implements OnInit {
   @Input() response!: string;
