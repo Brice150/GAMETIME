@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { environment } from 'src/environments/environment';
@@ -11,9 +11,9 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./learn-dialog.component.css'],
 })
 export class LearnDialogComponent {
-  imagePath: string = environment.imagePath + '/learn/';
+  dialogRef = inject<MatDialogRef<LearnDialogComponent>>(MatDialogRef);
 
-  constructor(public dialogRef: MatDialogRef<LearnDialogComponent>) {}
+  imagePath: string = environment.imagePath + '/learn/';
 
   cancel(): void {
     this.dialogRef.close(false);

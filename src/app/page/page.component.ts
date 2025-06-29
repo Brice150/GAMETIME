@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { v4 as uuidv4 } from 'uuid';
 import { User } from '../core/interfaces/user';
@@ -17,11 +17,12 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./page.component.css'],
 })
 export class PageComponent implements OnInit {
+  dialog = inject(MatDialog);
+  toastr = inject(ToastrService);
+
   imagePath: string = environment.imagePath;
   isActive: boolean[] = [true, false, false];
   user: User = {} as User;
-
-  constructor(public dialog: MatDialog, private toastr: ToastrService) {}
 
   ngOnInit() {
     let storedUser: string | null = localStorage.getItem('user');

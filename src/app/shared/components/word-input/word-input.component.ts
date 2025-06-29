@@ -6,6 +6,7 @@ import {
   Output,
   SimpleChanges,
   input,
+  inject,
 } from '@angular/core';
 import { WordTry } from 'src/app/core/interfaces/wordTry';
 import { emojies } from '../../data/emojis';
@@ -20,6 +21,8 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./word-input.component.css'],
 })
 export class WordInputComponent implements OnInit {
+  toastr = inject(ToastrService);
+
   @Input() response!: string;
   readonly showFirstLetter = input<boolean>(true);
   readonly showYellowLetter = input<boolean>(true);
@@ -32,8 +35,6 @@ export class WordInputComponent implements OnInit {
   @Output() lostEvent = new EventEmitter<void>();
   emojiClass: string = emojies[1].emojiClass;
   emojiStyle: { [klass: string]: any } = emojies[1].emojiStyle;
-
-  constructor(private toastr: ToastrService) {}
 
   ngOnInit() {
     if (this.response) {

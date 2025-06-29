@@ -4,7 +4,8 @@ import {
   OnInit,
   Output,
   SimpleChanges,
-  input
+  input,
+  inject,
 } from '@angular/core';
 import { NumberTry } from 'src/app/core/interfaces/numberTry';
 import { emojies } from '../../data/emojis';
@@ -19,6 +20,8 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./number-input.component.css'],
 })
 export class NumberInputComponent implements OnInit {
+  toastr = inject(ToastrService);
+
   readonly response = input.required<string>();
   readonly gameName = input.required<string>();
   readonly rounded = input<boolean>(true);
@@ -33,8 +36,6 @@ export class NumberInputComponent implements OnInit {
   emojiStyle: { [klass: string]: any } = emojies[1].emojiStyle;
   isSecondChance: boolean = false;
   tryCount: number = 1;
-
-  constructor(private toastr: ToastrService) {}
 
   ngOnInit() {
     const response = this.response();
