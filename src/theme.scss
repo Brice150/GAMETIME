@@ -68,11 +68,11 @@ $accent: (
   ),
 );
 
-$my-app-primary: mat.define-palette($primary);
-$my-app-accent: mat.define-palette($accent);
-$my-app-warn: mat.define-palette(mat.$red-palette);
+$my-app-primary: mat.m2-define-palette($primary);
+$my-app-accent: mat.m2-define-palette($accent);
+$my-app-warn: mat.m2-define-palette(mat.$m2-red-palette);
 
-$my-app-theme: mat.define-light-theme(
+$my-app-theme: mat.m2-define-light-theme(
   (
     color: (
       primary: $my-app-primary,
