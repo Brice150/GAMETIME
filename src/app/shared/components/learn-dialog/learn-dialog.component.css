@@ -90,21 +90,17 @@ ul li {
   box-shadow: inset 5px 5px 9px #d1d1d1, inset -5px -5px 9px #ffffff;
 }
 
-a i {
+button i {
   font-size: 25px;
   margin-right: 10px;
   color: black;
 }
 
-a span {
+button span {
   font-size: 20px;
   font-weight: 500;
   color: black;
-}
-
-a:link,
-a:visited {
-  color: black;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
 @media screen and (max-width: 500px) {

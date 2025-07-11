@@ -1,13 +1,13 @@
 <div mat-dialog-content class="container">
   <h1>Etes vous sûr de supprimer votre compte ?</h1>
   <div class="buttons">
-    <a class="cancel" title="cancel" (click)="cancel()">
+    <button type="button" class="cancel" title="Annuler" (click)="cancel()">
       <i class="bx bx-undo"></i>
       <span>Annuler</span>
-    </a>
-    <a class="delete" title="delete" (click)="delete()">
+    </button>
+    <button type="button" class="delete" title="Supprimer" (click)="delete()">
       <i class="bx bxs-trash"></i>
       <span>Supprimer</span>
-    </a>
+    </button>
   </div>
 </div>

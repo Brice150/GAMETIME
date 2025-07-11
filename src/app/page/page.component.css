@@ -137,7 +137,6 @@ nav .game .game-title {
   flex-wrap: wrap;
 }
 
-a,
 button {
   display: flex;
   justify-content: center;
@@ -152,12 +151,11 @@ button {
   border: none;
 }
 
-a:hover,
 button:hover {
   box-shadow: inset 5px 5px 16px #12161b, inset -5px -5px 16px #48566b;
 }
 
-a i {
+button i {
   font-size: 25px;
   margin-right: 10px;
   color: var(--text);
@@ -184,17 +182,11 @@ button span {
   font-size: 20px;
   font-weight: 500;
   color: var(--text);
+  font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
-a span {
-  font-size: 20px;
-  font-weight: 500;
-  color: var(--text);
-}
-
-a:link,
-a:visited {
-  color: var(--text);
+button.link {
+  width: 150px;
 }
 
 input {
@@ -208,7 +200,6 @@ input {
 }
 
 @media screen and (max-width: 600px) {
-  a,
   button {
     margin: 10px;
   }
