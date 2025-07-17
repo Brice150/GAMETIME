@@ -1,0 +1,33 @@
+<section>
+  <div class="title">
+    <img [src]="imagePath + 'logo.webp'" alt="Logo" />
+    <h1><span class="subtitle">Game</span> Time</h1>
+  </div>
+  <span class="description">Quand réfléchir devient amusant !</span>
+  <div class="buttons">
+    <button type="button" title="Motus" routerLink="motus">
+      <div class="flex">
+        <i class="bx bxs-objects-horizontal-left"></i>
+        <span class="game">Motus</span>
+      </div>
+      <div class="medals">
+        <span class="victory-number">{{
+          this.userService.user().stats[0].medalsNumer
+        }}</span>
+        <i class="bx bxs-medal"></i>
+      </div>
+    </button>
+    <button type="button" title="Drapeau" routerLink="flag">
+      <div class="flex">
+        <i class="bx bxs-flag"></i>
+        <span class="game">Drapeau</span>
+      </div>
+      <div class="medals">
+        <span class="victory-number">{{
+          this.userService.user().stats[1].medalsNumer
+        }}</span>
+        <i class="bx bxs-medal"></i>
+      </div>
+    </button>
+  </div>
+</section>

@@ -16,7 +16,7 @@
 
 form {
   position: relative;
-  margin-top: 10px;
+  margin-top: 30px;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -25,12 +25,12 @@ form {
 }
 
 input {
-  color: var(--text);
+  color: var(--primary);
   font-size: 30px;
   font-weight: 500;
   padding: 12px;
   border: none;
-  box-shadow: inset 5px 5px 16px #12161b, inset -5px -5px 16px #48566b;
+  box-shadow: inset var(--box-shadow);
   background: var(--background);
   border-radius: 10px;
   height: 30px;
@@ -43,7 +43,7 @@ input {
 
 .placeholder {
   position: absolute;
-  color: var(--text);
+  color: var(--primary);
   font-size: 30px;
   font-weight: 500;
   padding: 12px;
@@ -75,13 +75,13 @@ input {
   display: flex;
   align-items: center;
   justify-content: left;
-  color: var(--text);
+  color: var(--primary);
   margin: 10px 0;
   font-size: 30px;
   font-weight: 500;
   padding: 12px;
   border: none;
-  box-shadow: 5px 5px 16px #12161b, -5px -5px 16px #48566b;
+  box-shadow: var(--box-shadow);
   background: var(--background);
   border-radius: 10px;
   height: 30px;
@@ -99,18 +99,18 @@ input {
   flex-direction: row;
 }
 
-.letter.yellow {
-  color: gold;
+.letter.accent {
+  color: var(--accent);
 }
 
-.letter.red {
-  color: red;
+.letter.secondary {
+  color: var(--secondary);
 }
 
 .container i {
   font-size: 40px;
-  box-shadow: 5px 5px 16px #12161b, -5px -5px 16px #48566b;
-  background: var(--background);
+  box-shadow: var(--box-shadow);
+  background: var(--primary);
   border-radius: 50%;
 }
 

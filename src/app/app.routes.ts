@@ -1,17 +1,11 @@
 import { Routes } from '@angular/router';
-import { CalculComponent } from './games/digits/calcul/calcul.component';
-import { PriceComponent } from './games/digits/price/price.component';
-import { FlagComponent } from './games/letters/flag/flag.component';
-import { MeliMeloComponent } from './games/letters/melimelo/melimelo.component';
-import { MotusComponent } from './games/letters/motus/motus.component';
-import { PageComponent } from './page/page.component';
+import { FlagComponent } from './games/flag/flag.component';
+import { MotusComponent } from './games/motus/motus.component';
+import { HomeComponent } from './home/home.component';
 
 export const routes: Routes = [
-  { path: '', component: PageComponent },
+  { path: '', component: HomeComponent },
   { path: 'motus', component: MotusComponent },
-  { path: 'drapeau', component: FlagComponent },
-  { path: 'melimelo', component: MeliMeloComponent },
-  { path: 'price', component: PriceComponent },
-  { path: 'calcul', component: CalculComponent },
-  { path: '**', component: PageComponent },
+  { path: 'flag', component: FlagComponent },
+  { path: '**', component: HomeComponent },
 ];

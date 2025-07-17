@@ -1,5 +1,5 @@
 <div align="center">
-<img height="130px" width="130px" src="./src/assets/images/logo.png">
+<img height="130px" width="130px" src="./src/assets/images/logo.webp">
 </div>
   
 # GAME TIME, a gaming web application

@@ -15,5 +15,5 @@
 .container span {
   font-size: 20px;
   font-weight: 500;
-  color: var(--text);
+  color: var(--primary);
 }

@@ -25,7 +25,7 @@ export class WordInputComponent implements OnInit {
 
   @Input() response!: string;
   readonly showFirstLetter = input<boolean>(true);
-  readonly showYellowLetter = input<boolean>(true);
+  readonly showAccentLetter = input<boolean>(true);
   readonly gameName = input.required<string>();
   wordToFind!: string;
   maxlength!: number;
@@ -95,12 +95,14 @@ export class WordInputComponent implements OnInit {
         }
       } else {
         this.toastr.error('Tentative invalide', this.gameName().toUpperCase(), {
-          positionClass: 'toast-top-center',
+          positionClass: 'toast-bottom-center',
+          toastClass: 'ngx-toastr custom error',
         });
       }
     } else {
       this.toastr.error('Tentative vide', this.gameName().toUpperCase(), {
-        positionClass: 'toast-top-center',
+        positionClass: 'toast-bottom-center',
+        toastClass: 'ngx-toastr custom error',
       });
     }
     this.inputValue = null;
@@ -109,8 +111,8 @@ export class WordInputComponent implements OnInit {
   addTry() {
     const newTry: WordTry = {
       letter: Array.from(this.inputValue!),
-      isRed: Array.from({ length: this.inputValue!.length }, () => false),
-      isYellow: Array.from({ length: this.inputValue!.length }, () => false),
+      isSecondary: Array.from({ length: this.inputValue!.length }, () => false),
+      isAccent: Array.from({ length: this.inputValue!.length }, () => false),
     };
     const letterCountMap = new Map<string, number>();
     for (let letter of this.response) {
@@ -124,14 +126,14 @@ export class WordInputComponent implements OnInit {
       let letter = this.inputValue![i];
       if (letter === this.response[i]) {
         letterCountMap.set(letter, letterCountMap.get(letter)! - 1);
-        newTry.isRed[i] = true;
+        newTry.isSecondary[i] = true;
       }
     }
     for (let i = 0; i < this.inputValue!.length; i++) {
       let letter = this.inputValue![i];
       if (this.response.includes(letter) && letterCountMap.get(letter) !== 0) {
         letterCountMap.set(letter, letterCountMap.get(letter)! - 1);
-        newTry.isYellow[i] = true;
+        newTry.isAccent[i] = true;
       }
     }
     this.tries.push(newTry);
@@ -145,18 +147,20 @@ export class WordInputComponent implements OnInit {
   reset(gameWon: boolean) {
     const response: WordTry = {
       letter: Array.from(this.response),
-      isRed: Array.from({ length: this.response!.length }, () => true),
-      isYellow: Array.from({ length: this.response!.length }, () => false),
+      isSecondary: Array.from({ length: this.response!.length }, () => true),
+      isAccent: Array.from({ length: this.response!.length }, () => false),
     };
     this.tries = [];
     this.tries.push(response);
     if (gameWon) {
-      this.toastr.success('Gagné', this.gameName().toUpperCase(), {
-        positionClass: 'toast-top-center',
+      this.toastr.info('Gagné', this.gameName().toUpperCase(), {
+        positionClass: 'toast-bottom-center',
+        toastClass: 'ngx-toastr custom info',
       });
     } else {
       this.toastr.error('Perdu', this.gameName().toUpperCase(), {
-        positionClass: 'toast-top-center',
+        positionClass: 'toast-bottom-center',
+        toastClass: 'ngx-toastr custom error',
       });
     }
     setTimeout(() => {

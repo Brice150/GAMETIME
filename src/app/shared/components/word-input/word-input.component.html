@@ -1,21 +1,21 @@
 <div class="main-container">
   <div class="container">
-    @for (try of tries; track try) {
-      <div class="previous-container">
-        <div class="previous">
-          @for (letter of try.letter; track letter; let i = $index) {
-            <span
-              class="letter"
+    @for (try of tries; track $index) {
+    <div class="previous-container">
+      <div class="previous">
+        @for (letter of try.letter; track $index; let i = $index) {
+        <span
+          class="letter"
           [ngClass]="{
-            red: try.isRed[i],
-            yellow: try.isYellow[i] && showYellowLetter()
+            secondary: try.isSecondary[i],
+            accent: try.isAccent[i] && showAccentLetter()
           }"
-              >
-              {{ letter }}
-            </span>
-          }
-        </div>
+        >
+          {{ letter }}
+        </span>
+        }
       </div>
+    </div>
     }
     <form (ngSubmit)="submitAnswer()">
       <input
@@ -23,10 +23,10 @@
         (keydown)="onKeyDown($event)"
         [(ngModel)]="inputValue"
         [ngModelOptions]="{ standalone: true }"
-        />
-        <span class="placeholder">{{ wordToFind }}</span>
-        <button class="submit" type="submit">Submit</button>
-      </form>
-      <i [ngClass]="emojiClass" [ngStyle]="emojiStyle"></i>
-    </div>
+      />
+      <span class="placeholder">{{ wordToFind }}</span>
+      <button class="submit" type="submit">Submit</button>
+    </form>
+    <i [ngClass]="emojiClass" [ngStyle]="emojiStyle"></i>
   </div>
+</div>

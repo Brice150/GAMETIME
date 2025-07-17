@@ -11,6 +11,6 @@
   width: 160px;
   object-fit: cover;
   background: var(--background);
-  box-shadow: 5px 5px 16px #12161b, -5px -5px 16px #48566b;
+  box-shadow: var(--box-shadow);
   border-radius: 10px;
 }

@@ -1,8 +1,8 @@
-.container {
+header {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  color: var(--text);
+  color: var(--primary);
   margin-top: 20px;
 }
 
@@ -24,20 +24,14 @@
 .title i {
   margin-right: 20px;
   font-size: 40px;
-  color: var(--primary);
+  color: var(--secondary);
 }
 
 .medals {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 130px;
-}
-
-.medals .gold {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  gap: 10px;
 }
 
 .victory-number {
@@ -48,46 +42,42 @@
 
 .medals i {
   font-size: 32px;
-}
-
-.medals .gold i {
-  color: var(--secondary);
+  color: var(--accent);
 }
 
 button {
   display: flex;
   justify-content: center;
   align-items: center;
-  text-decoration: none;
+  gap: 10px;
   cursor: pointer;
   padding: 12px 0;
-  box-shadow: 5px 5px 16px #12161b, -5px -5px 16px #48566b;
+  box-shadow: var(--box-shadow);
   background: var(--background);
   border-radius: 10px;
   transition: 0.5s ease;
-  width: 130px;
+  width: 140px;
   border: none;
 }
 
 button:hover {
-  box-shadow: inset 5px 5px 16px #12161b, inset -5px -5px 16px #48566b;
+  box-shadow: inset var(--box-shadow);
 }
 
 button i {
   font-size: 25px;
-  margin-right: 10px;
-  color: var(--text);
+  color: var(--secondary);
 }
 
 button span {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 500;
-  color: var(--text);
+  color: var(--primary);
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
 @media screen and (max-width: 500px) {
-  .container {
+  header {
     flex-direction: column;
   }
 

@@ -1,16 +1,14 @@
-<div class="container">
+<header>
   <button type="button" title="Accueil" routerLink="/">
     <i class="bx bxs-home"></i>
     <span>Accueil</span>
   </button>
   <div class="title">
     <i [class]="logo()"></i>
-    <h1>{{ game() }}</h1>
+    <h1>{{ gameName() }}</h1>
   </div>
   <div class="medals">
-    <div class="gold">
-      <span class="victory-number">{{ medals() }}</span>
-      <i class="bx bxs-medal"></i>
-    </div>
+    <span class="victory-number">{{ getMedalsNumber() }}</span>
+    <i class="bx bxs-medal"></i>
   </div>
-</div>
+</header>

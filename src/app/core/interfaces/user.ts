@@ -1,6 +1,6 @@
-import { Victories } from './victories';
+import { Stat } from './stat';
 
 export interface User {
   username: string;
-  victories: Victories;
+  stats: Stat[];
 }
