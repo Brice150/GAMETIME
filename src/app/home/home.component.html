@@ -1,33 +1,61 @@
 <section>
-  <div class="title">
-    <img [src]="imagePath + 'logo.webp'" alt="Logo" />
-    <h1><span class="subtitle">Game</span> Time</h1>
-  </div>
-  <span class="description">Quand réfléchir devient amusant !</span>
-  <div class="buttons">
-    <button type="button" title="Motus" routerLink="motus">
+  <span class="description">A quel jeu voulez-vous jouer aujourd'hui ?</span>
+  <div class="games">
+    <button
+      type="button"
+      title="Motus"
+      [ngClass]="{ active: gameSelected === games.MOTUS }"
+      (click)="gameSelected = games.MOTUS"
+    >
       <div class="flex">
         <i class="bx bxs-objects-horizontal-left"></i>
         <span class="game">Motus</span>
       </div>
       <div class="medals">
-        <span class="victory-number">{{
-          this.userService.user().stats[0].medalsNumer
-        }}</span>
+        <span class="victory-number">0</span>
         <i class="bx bxs-medal"></i>
       </div>
     </button>
-    <button type="button" title="Drapeau" routerLink="flag">
+    <button
+      type="button"
+      title="Drapeau"
+      [ngClass]="{ active: gameSelected === games.FLAG }"
+      (click)="gameSelected = games.FLAG"
+    >
       <div class="flex">
         <i class="bx bxs-flag"></i>
         <span class="game">Drapeau</span>
       </div>
       <div class="medals">
-        <span class="victory-number">{{
-          this.userService.user().stats[1].medalsNumer
-        }}</span>
+        <span class="victory-number">0</span>
         <i class="bx bxs-medal"></i>
       </div>
     </button>
   </div>
+  @if (gameSelected){
+  <div class="modes">
+    <button
+      type="button"
+      class="mode"
+      title="Solo"
+      [routerLink]="['/', gameSelected, 'solo']"
+    >
+      <div class="flex">
+        <i class="bx bx-user"></i>
+        <span class="game">Solo</span>
+      </div>
+    </button>
+    <button
+      type="button"
+      class="mode"
+      title="Multijoueur"
+      [routerLink]="['/', gameSelected, 'multi']"
+    >
+      <div class="flex">
+        <i class="bx bx-group"></i>
+        <span class="game">Multijoueur</span>
+      </div>
+    </button>
+  </div>
+  }
 </section>

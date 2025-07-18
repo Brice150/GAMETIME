@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { CountryService } from 'src/app/core/services/country.service';
-import { UserService } from 'src/app/core/services/user.service';
 import { WordInputComponent } from 'src/app/shared/components/word-input/word-input.component';
 import { countries } from 'src/app/shared/data/countries';
 
@@ -17,7 +16,6 @@ export class FlagComponent implements OnInit {
   medals!: number;
   imageUrl: string = '';
   countryService = inject(CountryService);
-  userService = inject(UserService);
 
   ngOnInit() {
     this.newWord();
@@ -31,7 +29,7 @@ export class FlagComponent implements OnInit {
   }
 
   handleWinEvent() {
-    this.userService.addMedalToGame('flag');
+    //TODO
 
     this.newWord();
   }

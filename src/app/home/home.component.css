@@ -36,17 +36,20 @@ section .description {
   margin-top: 20px;
   font-size: 20px;
   font-weight: 600;
+  color: var(--secondary);
+  text-align: center;
+  width: 90%;
 }
 
-.buttons {
+.games {
   margin-top: 40px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 60px;
+  justify-content: space-around;
+  width: 90%;
+  max-width: 600px;
+  gap: 10px;
   flex-wrap: wrap;
-  margin-left: 10px;
-  margin-right: 10px;
 }
 
 button {
@@ -57,15 +60,22 @@ button {
   width: 200px;
   cursor: pointer;
   padding: 12px;
-  box-shadow: var(--box-shadow);
-  background: var(--background);
+  background-color: var(--primary);
+  color: var(--accent);
   border-radius: 10px;
   transition: 0.5s ease;
   border: none;
 }
 
+button.active {
+  background-color: var(--accent);
+  color: var(--primary);
+  cursor: default;
+}
+
 button:hover {
-  box-shadow: inset var(--box-shadow);
+  background-color: var(--accent);
+  color: var(--primary);
 }
 
 .medals {
@@ -73,35 +83,43 @@ button:hover {
   justify-content: center;
   align-items: center;
   gap: 10px;
+  margin-top: 10px;
 }
 
 .victory-number {
-  margin-right: 2px;
   font-size: 22px;
   font-weight: 600;
 }
 
 .medals i {
   font-size: 32px;
-  color: var(--accent);
 }
 
 button i {
   font-size: 32px;
-  color: var(--secondary);
 }
 
 button .game {
   font-size: 22px;
   font-weight: 500;
-  color: var(--primary);
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
 button .flex {
-  margin-bottom: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
+}
+
+.modes {
+  margin-top: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-left: 10px;
+  margin-right: 10px;
 }

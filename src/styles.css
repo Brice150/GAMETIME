@@ -1,9 +1,8 @@
 :root {
   --background: #62cbd7;
-  --primary: black;
-  --secondary: blue;
-  --accent: white;
-  --box-shadow: 7px 7px 32px #3e8087, -7px -7px 32px #86ffff;
+  --primary: white;
+  --secondary: black;
+  --accent: blue;
 
   --strong-radius: 20px;
   --light-radius: 10px;
@@ -40,8 +39,8 @@ body {
 }
 
 .toast-container .ngx-toastr.custom.info {
-  background-color: var(--secondary);
-  color: var(--accent);
+  background-color: var(--accent);
+  color: var(--primary);
 }
 
 .toast-container .ngx-toastr.custom.error {

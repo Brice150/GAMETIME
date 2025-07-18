@@ -1,14 +1,32 @@
-<header>
-  <button type="button" title="Accueil" routerLink="/">
-    <i class="bx bxs-home"></i>
-    <span>Accueil</span>
+<div class="project-title">
+  <h1>{{ getTitle() }}</h1>
+</div>
+<div class="switch-container">
+  <button mat-button [matMenuTriggerFor]="menu" class="menu" title="Menu">
+    <i class="bx bx-menu"></i>
   </button>
-  <div class="title">
-    <i [class]="logo()"></i>
-    <h1>{{ gameName() }}</h1>
-  </div>
-  <div class="medals">
-    <span class="victory-number">{{ getMedalsNumber() }}</span>
-    <i class="bx bxs-medal"></i>
-  </div>
-</header>
+  <mat-menu #menu="matMenu">
+    @for (item of menuItems; track $index) {
+    <button
+      type="button"
+      [routerLink]="item.path"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      [title]="item.title"
+      mat-menu-item
+    >
+      <i [class]="item.icon"></i>
+      <span class="description">{{ item.title }}</span>
+    </button>
+    }
+    <button type="button" (click)="logout()" title="Déconnexion" mat-menu-item>
+      <i class="bx bxs-log-out"></i>
+      <span class="description">Déconnexion</span>
+    </button>
+  </mat-menu>
+  @if (!isHomePage()) {
+  <button type="button" (click)="back()" title="Back" class="back">
+    <i class="bx bx-arrow-back"></i>
+  </button>
+  }
+</div>

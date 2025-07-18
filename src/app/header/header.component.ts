@@ -1,29 +1,47 @@
-import { CommonModule } from '@angular/common';
-import { Component, inject, input } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { UserService } from '../core/services/user.service';
+import { CommonModule, Location } from '@angular/common';
+import { Component, EventEmitter, inject, Output } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-header',
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, MatButtonModule, MatMenuModule],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent {
-  readonly logo = input.required<string>();
-  readonly gameName = input.required<string>();
-  userService = inject(UserService);
+  router = inject(Router);
+  location = inject(Location);
+  @Output() logoutEvent = new EventEmitter<void>();
 
-  getMedalsNumber(): number {
-    if (this.gameName() === 'motus') {
-      return this.userService
-        .user()
-        .stats.filter((stat) => stat.game === 'motus')[0]?.medalsNumer;
-    } else if (this.gameName() === 'drapeau') {
-      return this.userService
-        .user()
-        .stats.filter((stat) => stat.game === 'flag')[0]?.medalsNumer;
+  menuItems = [
+    { path: '/', title: 'Accueil', icon: 'bx bxs-home' },
+    { path: '/profile', title: 'Profile', icon: 'bx bxs-user' },
+  ];
+
+  getTitle(): string {
+    if (this.router.url === '/') {
+      return 'Game Time';
+    } else if (this.router.url.startsWith('/profile')) {
+      return 'Profile';
+    } else if (this.router.url.startsWith('/motus')) {
+      return 'Motus';
+    } else if (this.router.url.startsWith('/flag')) {
+      return 'Drapeau';
     }
-    return 0;
+    return '';
+  }
+
+  isHomePage(): boolean {
+    return this.router.url === '/';
+  }
+
+  back(): void {
+    this.location.back();
+  }
+
+  logout(): void {
+    this.logoutEvent.emit();
   }
 }

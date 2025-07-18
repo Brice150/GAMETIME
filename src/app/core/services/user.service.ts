@@ -1,56 +1,70 @@
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
+import {
+  Auth,
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  signOut,
+  user,
+} from '@angular/fire/auth';
+import { from, Observable } from 'rxjs';
 import { User } from '../interfaces/user';
-import { v4 as uuidv4 } from 'uuid';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class UserService {
-  user = signal<User>(this.getInitialUser());
+  auth = inject(Auth);
+  user$ = user(this.auth);
+  currentUserSig = signal<User | null | undefined>(undefined);
 
-  private getInitialUser(): User {
-    const storedUser: string | null = localStorage.getItem('gameTimeUser');
-    if (storedUser !== null) {
-      return JSON.parse(storedUser);
-    } else {
-      return this.createDefaultUser();
-    }
+  register(user: User): Observable<void> {
+    const promise = createUserWithEmailAndPassword(
+      this.auth,
+      user.email,
+      user.password!
+    ).then((response) => {
+      this.currentUserSig.set({
+        email: response.user.email!,
+      });
+    });
+
+    return from(promise);
   }
 
-  setDefaultUser(): User {
-    const defaultUser = this.createDefaultUser();
-    localStorage.setItem('gameTimeUser', JSON.stringify(defaultUser));
-    this.user.set(defaultUser);
-    return defaultUser;
+  login(user: User): Observable<void> {
+    const promise = signInWithEmailAndPassword(
+      this.auth,
+      user.email,
+      user.password!
+    ).then((response) => {
+      this.currentUserSig.set({
+        email: response.user.email!,
+      });
+    });
+
+    return from(promise);
   }
 
-  private createDefaultUser(): User {
-    const motusStat = {
-      game: 'motus',
-      medalsNumer: 0,
-    };
-
-    const flagStat = {
-      game: 'flag',
-      medalsNumer: 0,
-    };
-
-    const randomString = uuidv4().substring(0, 4);
-    const username = `User#${randomString}`;
-
-    return {
-      username: username,
-      stats: [motusStat, flagStat],
-    };
+  signInWithGoogle(): Observable<void> {
+    const provider = new GoogleAuthProvider();
+    const promise = signInWithPopup(this.auth, provider).then((response) => {
+      this.currentUserSig.set({
+        email: response.user.email!,
+      });
+    });
+    return from(promise);
   }
 
-  addMedalToGame(gameName: string): void {
-    const user = this.user();
-    const gameStat = user.stats.find((stat) => stat.game === gameName);
-    if (gameStat) {
-      gameStat.medalsNumer += 1;
-      localStorage.setItem('gameTimeUser', JSON.stringify(user));
-      this.user.set({ ...user });
-    }
+  logout(): Observable<void> {
+    const promise = signOut(this.auth);
+    this.currentUserSig.set(null);
+
+    return from(promise);
+  }
+
+  passwordReset(email: string): Observable<void> {
+    const promise = sendPasswordResetEmail(this.auth, email);
+    return from(promise);
   }
 }

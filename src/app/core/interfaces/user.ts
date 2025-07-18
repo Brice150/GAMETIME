@@ -1,6 +1,4 @@
-import { Stat } from './stat';
-
 export interface User {
-  username: string;
-  stats: Stat[];
+  email: string;
+  password?: string;
 }

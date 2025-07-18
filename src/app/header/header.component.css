@@ -1,87 +1,140 @@
-header {
+:host {
   display: flex;
-  justify-content: space-around;
   align-items: center;
-  color: var(--primary);
-  margin-top: 20px;
+  flex-direction: column;
+  margin: 0;
+  width: 100%;
+  color: var(--accent);
+  position: relative;
+  min-height: 50px;
 }
 
-.title {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.project-title {
+  top: 15px;
+  position: absolute;
+  z-index: 2;
 }
 
-.title h1 {
-  font-size: 35px;
-  font-weight: 800;
-  text-transform: capitalize;
-  text-align: center;
-  padding: 0;
+.project-title h1 {
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
   margin: 0;
 }
 
-.title i {
-  margin-right: 20px;
-  font-size: 40px;
-  color: var(--secondary);
-}
-
-.medals {
+.switch-container {
+  top: 8px;
+  position: absolute;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  gap: 10px;
-}
-
-.victory-number {
-  margin-right: 2px;
-  font-size: 22px;
-  font-weight: 600;
-}
-
-.medals i {
-  font-size: 32px;
-  color: var(--accent);
+  width: 95%;
+  z-index: 1;
 }
 
 button {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
   cursor: pointer;
-  padding: 12px 0;
-  box-shadow: var(--box-shadow);
-  background: var(--background);
-  border-radius: 10px;
+  text-decoration: none;
+  border-radius: var(--light-radius);
   transition: 0.5s ease;
-  width: 140px;
+  background-color: var(--primary);
+  color: var(--accent) !important;
   border: none;
+  margin: 5px 0;
 }
 
-button:hover {
-  box-shadow: inset var(--box-shadow);
+button.active {
+  color: var(--primary) !important;
+  background-color: var(--accent) !important;
+}
+
+.back {
+  width: 50px;
+  height: 50px;
+}
+
+.menu {
+  width: 50px;
+  height: 50px;
 }
 
 button i {
-  font-size: 25px;
-  color: var(--secondary);
+  font-size: 30px;
 }
 
-button span {
-  font-size: 22px;
-  font-weight: 500;
+button:hover {
+  color: var(--primary) !important;
+  background-color: var(--accent) !important;
+}
+
+.switch-container button i {
+  font-size: 35px;
+}
+
+.switch-container button:hover {
   color: var(--primary);
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: var(--accent);
 }
 
-@media screen and (max-width: 500px) {
-  header {
-    flex-direction: column;
+.switch-container button .bx-arrow-back {
+  font-size: 35px;
+}
+
+.description {
+  margin-left: 10px;
+  font-size: 18px;
+}
+
+::ng-deep .mat-mdc-menu-content {
+  padding: 10px !important;
+  background-color: var(--primary);
+}
+
+::ng-deep .mat-mdc-menu-item-text {
+  display: flex;
+  align-items: center;
+}
+
+::ng-deep .mdc-button {
+  min-width: 0 !important;
+}
+
+::ng-deep .mat-mdc-button:not(:disabled) {
+  color: var(--accent) !important;
+}
+
+::ng-deep .mat-mdc-button:not(:disabled):hover {
+  color: var(--primary) !important;
+}
+
+::ng-deep .mdc-button__label {
+  height: 35px !important;
+}
+
+::ng-deep .mat-mdc-button .mat-mdc-button-touch-target {
+  height: 50px !important;
+}
+
+@media screen and (max-width: 550px) {
+  .project-title {
+    top: 20px;
   }
 
-  .title {
-    margin: 20px 0;
+  .project-title h1 {
+    font-size: 25px;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .project-title {
+    top: 24px;
+  }
+
+  .project-title h1 {
+    font-size: 22px;
   }
 }

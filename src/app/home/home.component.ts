@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { environment } from 'src/environments/environment';
-import { UserService } from '../core/services/user.service';
+import { Games } from '../core/enums/games.enum';
 
 @Component({
   selector: 'app-home',
@@ -11,7 +11,12 @@ import { UserService } from '../core/services/user.service';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
   imagePath: string = environment.imagePath;
-  userService = inject(UserService);
+  games = Games;
+  gameSelected: string = '';
+
+  ngOnInit(): void {
+    //TODO: get medals number
+  }
 }

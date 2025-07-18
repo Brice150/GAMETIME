@@ -1,4 +1,4 @@
-@if(!isHomePage()) {
-<app-header [logo]="logo" [gameName]="gameName"></app-header>
+@if (userService.currentUserSig()) {
+<app-header (logoutEvent)="logout()"></app-header>
 }
 <router-outlet></router-outlet>

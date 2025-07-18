@@ -1,4 +1,4 @@
 export interface Stat {
-  game: string;
+  gameName: string;
   medalsNumer: number;
 }

@@ -15,5 +15,23 @@
 .container span {
   font-size: 20px;
   font-weight: 500;
-  color: var(--primary);
+  color: var(--secondary);
+}
+
+::ng-deep .mdc-slider__track--active_fill {
+  border-color: var(--accent) !important;
+}
+
+::ng-deep .mdc-slider__track--inactive {
+  background-color: white !important;
+  opacity: 1 !important;
+}
+
+::ng-deep .mdc-slider__thumb-knob {
+  background-color: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+
+::ng-deep .mdc-slider__value-indicator {
+  background-color: var(--accent) !important;
 }

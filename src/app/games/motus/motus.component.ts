@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatSliderModule } from '@angular/material/slider';
-import { UserService } from 'src/app/core/services/user.service';
+import { Games } from 'src/app/core/enums/games.enum';
 import { WordInputComponent } from 'src/app/shared/components/word-input/word-input.component';
 import { words } from 'src/app/shared/data/words';
 
@@ -15,7 +15,7 @@ import { words } from 'src/app/shared/data/words';
 export class MotusComponent implements OnInit {
   response!: string;
   wordLength: number = 5;
-  userService = inject(UserService);
+  games = Games;
 
   ngOnInit() {
     this.newWord();
@@ -34,7 +34,7 @@ export class MotusComponent implements OnInit {
   }
 
   handleWinEvent() {
-    this.userService.addMedalToGame('motus');
+    //TODO
 
     this.newWord();
   }

@@ -30,7 +30,6 @@ input {
   font-weight: 500;
   padding: 12px;
   border: none;
-  box-shadow: inset var(--box-shadow);
   background: var(--background);
   border-radius: 10px;
   height: 30px;
@@ -81,7 +80,6 @@ input {
   font-weight: 500;
   padding: 12px;
   border: none;
-  box-shadow: var(--box-shadow);
   background: var(--background);
   border-radius: 10px;
   height: 30px;
@@ -109,7 +107,6 @@ input {
 
 .container i {
   font-size: 40px;
-  box-shadow: var(--box-shadow);
   background: var(--primary);
   border-radius: 50%;
 }

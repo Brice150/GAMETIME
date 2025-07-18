@@ -1,42 +1,71 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
-import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
-import { UserService } from './core/services/user.service';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Router, RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './header/header.component';
+import { UserService } from './core/services/user.service';
+import { Subject, takeUntil } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, HeaderComponent, RouterOutlet],
+  imports: [RouterOutlet, CommonModule, HeaderComponent],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
+  styleUrl: './app.component.css',
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   userService = inject(UserService);
   router = inject(Router);
-  logo: string = '';
-  gameName: string = '';
+  toastr = inject(ToastrService);
+  destroyed$ = new Subject<void>();
 
   ngOnInit(): void {
-    this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        this.getCurrentGame(event.urlAfterRedirects);
-      }
+    this.userService.user$.pipe(takeUntil(this.destroyed$)).subscribe({
+      next: (user) => {
+        if (user) {
+          this.userService.currentUserSig.set({
+            email: user.email!,
+          });
+        } else {
+          this.userService.currentUserSig.set(null);
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        if (!error.message.includes('Missing or insufficient permissions.')) {
+          this.toastr.error(error.message, 'Connexion', {
+            positionClass: 'toast-bottom-center',
+            toastClass: 'ngx-toastr custom error',
+          });
+        }
+      },
     });
   }
 
-  getCurrentGame(url?: string): void {
-    const currentUrl = url || this.router.url;
-
-    if (currentUrl.endsWith('/motus')) {
-      this.logo = 'bx bxs-objects-horizontal-left';
-      this.gameName = 'motus';
-    } else if (currentUrl.endsWith('/flag')) {
-      this.logo = 'bx bxs-flag';
-      this.gameName = 'drapeau';
-    }
+  ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
-  isHomePage(): boolean {
-    return this.router.url === '/';
+  logout(): void {
+    this.userService
+      .logout()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: () => {
+          this.router.navigate(['/connect']);
+          this.toastr.info('Vous avez été déconnecté', 'Game Time', {
+            positionClass: 'toast-bottom-center',
+            toastClass: 'ngx-toastr custom info',
+          });
+        },
+        error: (error: HttpErrorResponse) => {
+          if (!error.message.includes('Missing or insufficient permissions.')) {
+            this.toastr.error(error.message, 'Game Time', {
+              positionClass: 'toast-bottom-center',
+              toastClass: 'ngx-toastr custom error',
+            });
+          }
+        },
+      });
   }
 }
