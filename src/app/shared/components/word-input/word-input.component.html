@@ -7,8 +7,8 @@
         <span
           class="letter"
           [ngClass]="{
-            secondary: try.isSecondary[i],
-            accent: try.isAccent[i] && showAccentLetter()
+            wellPlaced: try.isWellPlaced[i],
+            wrongPlaced: try.isWrongPlaced[i]
           }"
         >
           {{ letter }}

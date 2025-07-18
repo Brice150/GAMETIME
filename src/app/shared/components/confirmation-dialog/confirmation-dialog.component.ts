@@ -1,22 +1,33 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-confirmation-dialog',
+  standalone: true,
   imports: [CommonModule],
   templateUrl: './confirmation-dialog.component.html',
-  styleUrls: ['./confirmation-dialog.component.css'],
+  styleUrl: './confirmation-dialog.component.css',
 })
-export class ConfirmationDialogComponent {
-  dialogRef = inject<MatDialogRef<ConfirmationDialogComponent>>(MatDialogRef);
+export class ConfirmationDialogComponent implements OnInit {
+  action: string = 'delete';
 
+  constructor(
+    public dialogRef: MatDialogRef<ConfirmationDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: string
+  ) {}
+
+  ngOnInit(): void {
+    if (this.data) {
+      this.action = this.data;
+    }
+  }
 
   cancel(): void {
     this.dialogRef.close(false);
   }
 
-  delete(): void {
+  confirm(): void {
     this.dialogRef.close(true);
   }
 }

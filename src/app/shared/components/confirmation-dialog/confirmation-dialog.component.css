@@ -1,74 +1,71 @@
-.container {
+section {
   position: fixed;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
   background: var(--primary);
-  padding: 40px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  width: 80%;
-}
-
-h1 {
-  color: black;
-  text-align: center;
-  font-size: 23px;
-  font-weight: 600;
-  margin-bottom: 30px;
-}
-
-.buttons {
-  width: 100%;
+  padding: 10px;
+  border-radius: var(--light-radius);
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-direction: column;
+  max-width: 700px;
+  width: 80%;
 }
 
-.buttons .cancel,
-.delete {
+section h1 {
+  font-size: 20px;
+  color: red;
+  text-align: center;
+}
+
+.button-container {
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
-  text-decoration: none;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.button-container button {
   cursor: pointer;
-  padding: 12px;
-  background-color: var(--primary);
-  border-radius: 10px;
+  color: var(--accent);
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: var(--light-radius);
   transition: 0.5s ease;
+  width: 110px;
   border: none;
-  color: black;
-  width: 140px;
+  background-color: var(--primary);
+  box-shadow: var(--box-shadow);
 }
 
-button i {
-  font-size: 25px;
-  color: black;
+section .button-container .delete {
+  color: red;
+  transition: 0.5s ease;
 }
 
-button span {
+section .button-container button:hover {
+  background-color: var(--accent);
+  color: var(--primary);
+  box-shadow: var(--box-shadow-active);
+}
+
+section .button-container .delete:hover {
+  background-color: red;
+  box-shadow: var(--box-shadow-active-red);
+}
+
+section .button-container button i {
+  font-size: 40px;
+}
+
+section .button-container button .text {
   font-size: 20px;
   font-weight: 500;
-  color: black;
   font-family: Roboto, "Helvetica Neue", sans-serif;
-}
-
-@media screen and (max-width: 500px) {
-  .buttons {
-    flex-direction: column;
-  }
-
-  .buttons .cancel,
-  .delete {
-    margin: 10px 0;
-  }
-}
-
-@media screen and (min-width: 600px) {
-  .container {
-    width: 500px;
-  }
 }
