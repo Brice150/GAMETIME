@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import {
   collection,
   collectionData,
@@ -22,6 +22,9 @@ import {
 } from 'rxjs';
 import { UserService } from './user.service';
 import { Player } from '../interfaces/player';
+import { v4 as uuidv4 } from 'uuid';
+import { Games } from '../enums/games.enum';
+import { Stat } from '../interfaces/stat';
 
 @Injectable({ providedIn: 'root' })
 export class PlayerService {
@@ -40,16 +43,38 @@ export class PlayerService {
     >;
   }
 
-  getPlayer(playerId: string): Observable<Player> {
-    const playerDoc = doc(this.firestore, `players/${playerId}`);
-    return docData(playerDoc, { idField: 'id' }) as Observable<Player>;
-  }
+  addPlayer(): Observable<string | null | undefined> {
+    const userId = this.userService.auth.currentUser?.uid;
+    const email = this.userService.auth.currentUser?.email;
 
-  addPlayer(player: Player): Observable<string> {
-    const playerDoc = doc(this.playersCollection);
-    player.id = playerDoc.id;
-    player.userId = this.userService.auth.currentUser?.uid;
-    return from(setDoc(playerDoc, { ...player })).pipe(map(() => player.id));
+    const playersQuery = query(
+      this.playersCollection,
+      where('userId', '==', userId)
+    );
+
+    return (
+      collectionData(playersQuery, { idField: 'id' }) as Observable<Player[]>
+    ).pipe(
+      take(1),
+      switchMap((players: Player[]) => {
+        if (players.length > 0) {
+          return of(void 0).pipe(map(() => email));
+        }
+        const username = `User#${this.generateUsernameSuffix()}`;
+        const playerDoc = doc(this.playersCollection);
+
+        const statMotus: Stat = { gameName: Games.MOTUS, medalsNumer: 0 };
+        const statFlag: Stat = { gameName: Games.FLAG, medalsNumer: 0 };
+
+        const player: Player = {
+          id: playerDoc.id,
+          userId: userId,
+          username: username,
+          stats: [statMotus, statFlag],
+        };
+        return from(setDoc(playerDoc, { ...player })).pipe(map(() => email));
+      })
+    );
   }
 
   updatePlayer(player: Player): Observable<void> {
@@ -87,5 +112,10 @@ export class PlayerService {
       }),
       map(() => undefined)
     );
+  }
+
+  generateUsernameSuffix(): string {
+    const uuid = uuidv4();
+    return uuid.replace(/-/g, '').slice(-4);
   }
 }

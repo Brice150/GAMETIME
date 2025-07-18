@@ -16,11 +16,20 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { catchError, filter, of, Subject, switchMap, takeUntil } from 'rxjs';
+import {
+  catchError,
+  filter,
+  of,
+  Subject,
+  switchMap,
+  take,
+  takeUntil,
+} from 'rxjs';
 import { ProfileService } from '../core/services/profile.service';
 import { UserService } from '../core/services/user.service';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { PlayerService } from '../core/services/player.service';
+import { Player } from '../core/interfaces/player';
 
 @Component({
   selector: 'app-profil',
@@ -49,13 +58,25 @@ export class ProfileComponent implements OnInit, OnDestroy {
   hide: boolean = true;
   hideDuplicate: boolean = true;
   destroyed$ = new Subject<void>();
-  loading: boolean = false;
+  loading: boolean = true;
+  player: Player = {} as Player;
 
   ngOnInit(): void {
     this.profileForm = this.fb.group(
       {
         email: [
-          { value: this.userService.currentUserSig()!.email, disabled: true },
+          {
+            value: this.userService.currentUserSig()?.email || '',
+            disabled: true,
+          },
+        ],
+        username: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(3),
+            Validators.maxLength(40),
+          ],
         ],
         password: [
           '',
@@ -76,6 +97,30 @@ export class ProfileComponent implements OnInit, OnDestroy {
       },
       { validators: this.passwordMatchValidator }
     );
+
+    this.playerService
+      .getPlayers()
+      .pipe(take(1), takeUntil(this.destroyed$))
+      .subscribe({
+        next: (players: Player[]) => {
+          if (players?.length > 0) {
+            this.player = players[0];
+            this.profileForm.patchValue({
+              username: players[0].username,
+            });
+          }
+          this.loading = false;
+        },
+        error: (error: HttpErrorResponse) => {
+          this.loading = false;
+          if (!error.message.includes('Missing or insufficient permissions.')) {
+            this.toastr.error(error.message, 'Game Time', {
+              positionClass: 'toast-bottom-center',
+              toastClass: 'ngx-toastr custom error',
+            });
+          }
+        },
+      });
   }
 
   ngOnDestroy(): void {
@@ -86,30 +131,47 @@ export class ProfileComponent implements OnInit, OnDestroy {
   updateProfile(): void {
     if (this.profileForm.valid) {
       this.loading = true;
+      const newUsername = this.profileForm.value.username;
+      const usernameChanged = newUsername !== this.player.username;
+
       this.profileService
         .updateProfile(this.profileForm.value)
-        .pipe(takeUntil(this.destroyed$))
+        .pipe(
+          switchMap(() => {
+            if (usernameChanged) {
+              return this.playerService.updatePlayer({
+                ...this.player,
+                username: newUsername,
+              });
+            }
+            return of(null);
+          }),
+          takeUntil(this.destroyed$)
+        )
         .subscribe({
           next: () => {
             this.loading = false;
-            this.toastr.info('Profile updated', 'Profile', {
+            this.toastr.info('Profil modifié', 'Profil', {
               positionClass: 'toast-bottom-center',
               toastClass: 'ngx-toastr custom info',
             });
+            if (usernameChanged) {
+              this.player.username = newUsername;
+            }
           },
           error: (error: HttpErrorResponse) => {
             this.loading = false;
             if (error.message.includes('auth/requires-recent-login')) {
               this.toastr.info(
-                'Please logout and login again to perform this action',
-                'Profile',
+                'Merci de vous déconnecter et de vous reconnecter pour effectuer cette action',
+                'Profil',
                 {
                   positionClass: 'toast-bottom-center',
                   toastClass: 'ngx-toastr custom error',
                 }
               );
             } else {
-              this.toastr.info(error.message, 'Profile', {
+              this.toastr.info(error.message, 'Profil', {
                 positionClass: 'toast-bottom-center',
                 toastClass: 'ngx-toastr custom error',
               });
@@ -123,7 +185,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   openDialog(): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-      data: 'delete your profile',
+      data: 'supprimer votre profil',
     });
 
     dialogRef
@@ -154,7 +216,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         next: () => {
           this.loading = false;
           this.router.navigate(['/connect']);
-          this.toastr.info('Profile deleted', 'Profile', {
+          this.toastr.info('Profil supprimé', 'Profil', {
             positionClass: 'toast-bottom-center',
             toastClass: 'ngx-toastr custom info',
           });
@@ -163,15 +225,15 @@ export class ProfileComponent implements OnInit, OnDestroy {
           this.loading = false;
           if (error.message.includes('auth/requires-recent-login')) {
             this.toastr.info(
-              'Please logout and login again to perform this action',
-              'Profile',
+              'Merci de vous déconnecter et de vous reconnecter pour effectuer cette action',
+              'Profil',
               {
                 positionClass: 'toast-bottom-center',
                 toastClass: 'ngx-toastr custom error',
               }
             );
           } else {
-            this.toastr.info(error.message, 'Profile', {
+            this.toastr.info(error.message, 'Profil', {
               positionClass: 'toast-bottom-center',
               toastClass: 'ngx-toastr custom error',
             });

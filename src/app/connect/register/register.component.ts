@@ -15,8 +15,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, switchMap, takeUntil } from 'rxjs';
 import { UserService } from '../../core/services/user.service';
+import { PlayerService } from 'src/app/core/services/player.service';
 
 @Component({
   selector: 'app-register',
@@ -38,6 +39,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   toastr = inject(ToastrService);
   fb = inject(FormBuilder);
   userService = inject(UserService);
+  playerService = inject(PlayerService);
   router = inject(Router);
   hide: boolean = true;
   hideDuplicate: boolean = true;
@@ -97,11 +99,15 @@ export class RegisterComponent implements OnInit, OnDestroy {
       this.loading = true;
       this.userService
         .register(this.registerForm.value)
-        .pipe(takeUntil(this.destroyed$))
+        .pipe(
+          switchMap(() => this.playerService.addPlayer()),
+          takeUntil(this.destroyed$)
+        )
         .subscribe({
-          next: () => {
+          next: (email) => {
             this.loading = false;
             this.router.navigate(['/']);
+            this.userService.currentUserSig.set({ email: email! });
             this.toastr.info('Bienvenue sur Game Time', 'Game Time', {
               positionClass: 'toast-bottom-center',
               toastClass: 'ngx-toastr custom info',
@@ -127,10 +133,14 @@ export class RegisterComponent implements OnInit, OnDestroy {
   registerWithGoogle(): void {
     this.userService
       .signInWithGoogle()
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(
+        switchMap(() => this.playerService.addPlayer()),
+        takeUntil(this.destroyed$)
+      )
       .subscribe({
-        next: () => {
+        next: (email) => {
           this.router.navigate(['/']);
+          this.userService.currentUserSig.set({ email: email! });
           this.toastr.info('Bienvenue sur Game Time', 'Game Time', {
             positionClass: 'toast-bottom-center',
             toastClass: 'ngx-toastr custom info',

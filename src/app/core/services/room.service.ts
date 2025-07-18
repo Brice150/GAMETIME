@@ -40,11 +40,6 @@ export class RoomService {
     >;
   }
 
-  getRoom(roomId: string): Observable<Room> {
-    const roomDoc = doc(this.firestore, `rooms/${roomId}`);
-    return docData(roomDoc, { idField: 'id' }) as Observable<Room>;
-  }
-
   addRoom(room: Room): Observable<string> {
     const roomDoc = doc(this.roomsCollection);
     room.id = roomDoc.id;

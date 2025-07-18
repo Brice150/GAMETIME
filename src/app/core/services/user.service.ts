@@ -8,6 +8,7 @@ import {
   signInWithPopup,
   signOut,
   user,
+  UserCredential,
 } from '@angular/fire/auth';
 import { from, Observable } from 'rxjs';
 import { User } from '../interfaces/user';
@@ -18,41 +19,29 @@ export class UserService {
   user$ = user(this.auth);
   currentUserSig = signal<User | null | undefined>(undefined);
 
-  register(user: User): Observable<void> {
+  register(user: User): Observable<UserCredential> {
     const promise = createUserWithEmailAndPassword(
       this.auth,
       user.email,
       user.password!
-    ).then((response) => {
-      this.currentUserSig.set({
-        email: response.user.email!,
-      });
-    });
+    );
 
     return from(promise);
   }
 
-  login(user: User): Observable<void> {
+  login(user: User): Observable<UserCredential> {
     const promise = signInWithEmailAndPassword(
       this.auth,
       user.email,
       user.password!
-    ).then((response) => {
-      this.currentUserSig.set({
-        email: response.user.email!,
-      });
-    });
+    );
 
     return from(promise);
   }
 
-  signInWithGoogle(): Observable<void> {
+  signInWithGoogle(): Observable<UserCredential> {
     const provider = new GoogleAuthProvider();
-    const promise = signInWithPopup(this.auth, provider).then((response) => {
-      this.currentUserSig.set({
-        email: response.user.email!,
-      });
-    });
+    const promise = signInWithPopup(this.auth, provider);
     return from(promise);
   }
 

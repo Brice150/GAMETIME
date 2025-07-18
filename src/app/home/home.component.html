@@ -1,4 +1,5 @@
 <section>
+  @if (!loading) {
   <span class="description">A quel jeu voulez-vous jouer aujourd'hui ?</span>
   <div class="games">
     <button
@@ -12,7 +13,9 @@
         <span class="game">Motus</span>
       </div>
       <div class="medals">
-        <span class="victory-number">0</span>
+        <span class="victory-number">
+          {{ getMedalsNumber(games.MOTUS) }}
+        </span>
         <i class="bx bxs-medal"></i>
       </div>
     </button>
@@ -27,7 +30,9 @@
         <span class="game">Drapeau</span>
       </div>
       <div class="medals">
-        <span class="victory-number">0</span>
+        <span class="victory-number">
+          {{ getMedalsNumber(games.FLAG) }}
+        </span>
         <i class="bx bxs-medal"></i>
       </div>
     </button>
@@ -57,5 +62,7 @@
       </div>
     </button>
   </div>
+  }} @else {
+  <mat-spinner></mat-spinner>
   }
 </section>
