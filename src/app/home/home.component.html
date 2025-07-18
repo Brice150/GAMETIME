@@ -1,6 +1,6 @@
 <section>
   @if (!loading) {
-  <span class="description">A quel jeu voulez-vous jouer aujourd'hui ?</span>
+  <span class="description">À quel jeu voulez-vous jouer aujourd'hui ?</span>
   <div class="games">
     <button
       type="button"
@@ -21,13 +21,13 @@
     </button>
     <button
       type="button"
-      title="Drapeau"
+      title="Drapeaux"
       [ngClass]="{ active: gameSelected === games.FLAG }"
       (click)="gameSelected = games.FLAG"
     >
       <div class="flex">
         <i class="bx bxs-flag"></i>
-        <span class="game">Drapeau</span>
+        <span class="game">Drapeaux</span>
       </div>
       <div class="medals">
         <span class="victory-number">

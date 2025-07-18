@@ -22,7 +22,6 @@ import { FormsModule } from '@angular/forms';
 })
 export class WordInputComponent implements OnInit {
   toastr = inject(ToastrService);
-
   @Input() response!: string;
   readonly showFirstLetter = input<boolean>(true);
   readonly gameName = input.required<string>();
@@ -42,9 +41,8 @@ export class WordInputComponent implements OnInit {
       this.emojiClass = emojies[1].emojiClass;
       this.emojiStyle = emojies[1].emojiStyle;
       if (this.showFirstLetter()) {
-        this.wordToFind =
-          this.response.charAt(0) +
-          this.response.slice(1).replace(/[A-Za-z]/g, '_');
+        this.wordToFind = this.response.replace(/[A-Za-z]/g, '_');
+        this.inputValue = this.response.charAt(0);
       } else {
         this.wordToFind = this.response.replace(/[A-Za-z]/g, '_');
       }
@@ -104,7 +102,12 @@ export class WordInputComponent implements OnInit {
         toastClass: 'ngx-toastr custom error',
       });
     }
-    this.inputValue = null;
+
+    if (this.showFirstLetter()) {
+      this.inputValue = this.response.charAt(0);
+    } else {
+      this.inputValue = null;
+    }
   }
 
   addTry() {

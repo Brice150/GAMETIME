@@ -28,7 +28,7 @@ export class HeaderComponent {
     } else if (this.router.url.startsWith('/motus')) {
       return 'Motus';
     } else if (this.router.url.startsWith('/flag')) {
-      return 'Drapeau';
+      return 'Drapeaux';
     }
     return '';
   }
