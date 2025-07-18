@@ -17,14 +17,14 @@ export class HeaderComponent {
 
   menuItems = [
     { path: '/', title: 'Accueil', icon: 'bx bxs-home' },
-    { path: '/profile', title: 'Profile', icon: 'bx bxs-user' },
+    { path: '/profile', title: 'Profil', icon: 'bx bxs-user' },
   ];
 
   getTitle(): string {
     if (this.router.url === '/') {
       return 'Game Time';
     } else if (this.router.url.startsWith('/profile')) {
-      return 'Profile';
+      return 'Profil';
     } else if (this.router.url.startsWith('/motus')) {
       return 'Motus';
     } else if (this.router.url.startsWith('/flag')) {
