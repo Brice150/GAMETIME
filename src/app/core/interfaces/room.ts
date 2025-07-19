@@ -1,10 +1,14 @@
-import { Player } from './player';
+import { Country } from './country';
+import { PlayerRoom } from './player-room';
 
 export interface Room {
-  id: string;
+  id?: string;
   gameName: string;
-  players: Player[];
+  playersRoom: PlayerRoom[];
   userId?: string;
   isStarted: boolean;
+  isSolo: boolean;
+  showFirstLetter: boolean;
   responses: string[];
+  countries: Country[];
 }

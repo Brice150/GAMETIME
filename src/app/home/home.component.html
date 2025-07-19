@@ -58,7 +58,7 @@
     </span>
     <mat-slider
       [min]="gameSelected === motusGameKey ? 5 : 1"
-      [max]="gameSelected === motusGameKey ? 13 : 6"
+      [max]="gameSelected === motusGameKey ? maxWordLength : 6"
       step="1"
       discrete
       [displayWith]="

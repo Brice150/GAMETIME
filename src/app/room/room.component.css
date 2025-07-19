@@ -1,0 +1,58 @@
+section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  color: var(--primary);
+  width: 100%;
+  margin-top: 20px;
+}
+
+mat-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+::ng-deep .mdc-circular-progress__indeterminate-circle-graphic {
+  stroke: var(--accent) !important;
+}
+
+.button-container {
+  margin-top: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.button-container button {
+  cursor: pointer;
+  color: var(--accent);
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: var(--light-radius);
+  transition: 0.5s ease;
+  width: 150px;
+  border: none;
+  background-color: var(--primary);
+}
+
+.button-container button:hover {
+  background-color: var(--accent);
+  color: var(--primary);
+}
+
+button i {
+  font-size: 32px;
+}
+
+button span {
+  font-size: 22px;
+  font-weight: 500;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}

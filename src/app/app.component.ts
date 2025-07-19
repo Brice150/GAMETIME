@@ -68,4 +68,8 @@ export class AppComponent implements OnInit, OnDestroy {
         },
       });
   }
+
+  isRoomPage(): boolean {
+    return this.router.url.startsWith('/room');
+  }
 }

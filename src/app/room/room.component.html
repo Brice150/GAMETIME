@@ -1,1 +1,24 @@
-<p>room works!</p>
+<app-room-header
+  [room]="room"
+  [medalsNumber]="getMedalsNumber()"
+></app-room-header>
+<section>
+  @if(!loading) { @if (room.isStarted) {
+  <app-word-games
+    [room]="room"
+    [playerRoom]="playerRoom"
+    (finishedStepEvent)="updateRoom($event)"
+  ></app-word-games>
+  } @else {
+  <app-waiting-room></app-waiting-room>
+  }
+  <div class="button-container">
+    <button type="button" title="Quitter" (click)="openDialog()">
+      <i class="bx bxs-log-out"></i>
+      <span>Quitter</span>
+    </button>
+  </div>
+  } @else {
+  <mat-spinner></mat-spinner>
+  }
+</section>

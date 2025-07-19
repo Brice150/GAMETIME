@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -9,11 +9,16 @@ import { Router, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Subject, take, takeUntil } from 'rxjs';
 import { gameMap, games } from 'src/assets/data/games';
-import { environment } from 'src/environments/environment';
 import { Mode } from '../core/interfaces/mode';
 import { Player } from '../core/interfaces/player';
 import { PlayerService } from '../core/services/player.service';
+import { RoomService } from '../core/services/room.service';
+import { Room } from '../core/interfaces/room';
+import { Country } from '../core/interfaces/country';
+import { words } from 'src/assets/data/words';
+import { countries } from 'src/assets/data/countries';
 import { Continent } from '../core/enums/continent.enum';
+import { PlayerRoom } from '../core/interfaces/player-room';
 
 @Component({
   selector: 'app-home',
@@ -28,12 +33,12 @@ import { Continent } from '../core/enums/continent.enum';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })
-export class HomeComponent implements OnInit {
-  imagePath: string = environment.imagePath;
+export class HomeComponent implements OnInit, OnDestroy {
   gameSelected: string = '';
   modeSelected: string = '';
   loading: boolean = true;
   playerService = inject(PlayerService);
+  roomService = inject(RoomService);
   toastr = inject(ToastrService);
   destroyed$ = new Subject<void>();
   player: Player = {} as Player;
@@ -73,6 +78,13 @@ export class HomeComponent implements OnInit {
     } else {
       this.continentFilter = value;
     }
+  }
+
+  get maxWordLength(): number {
+    if (this.isWordLengthIncreasing) {
+      return 13 - (this.stepsNumber - 1);
+    }
+    return 13;
   }
 
   ngOnInit(): void {
@@ -138,6 +150,96 @@ export class HomeComponent implements OnInit {
   }
 
   play(): void {
-    this.router.navigate(['/', this.gameSelected]);
+    this.loading = true;
+
+    const showFirstLetter: boolean =
+      this.gameSelected === this.motusGameKey
+        ? this.showFirstLetterMotus
+        : this.showFirstLetterDrapeaux;
+
+    let countries: Country[] = [];
+    let responses: string[] = [];
+
+    if (this.gameSelected === this.drapeauxGameKey) {
+      countries = this.generateCountries();
+      responses = this.generateCountries().map((country) => country.name);
+    } else if (this.gameSelected === this.motusGameKey) {
+      responses = this.generateMotusWords();
+    }
+
+    const playerRoom: PlayerRoom = {
+      userId: this.player.userId!,
+      username: this.player.username,
+      currentRoomWins: [],
+    };
+
+    const roomToAdd: Room = {
+      gameName: this.gameSelected,
+      playersRoom: [playerRoom],
+      isStarted: this.modeSelected === 'solo',
+      isSolo: this.modeSelected === 'solo',
+      showFirstLetter: showFirstLetter,
+      responses: responses,
+      countries: countries,
+    };
+
+    this.roomService
+      .addRoom(roomToAdd)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: (roomId) => {
+          this.loading = false;
+          this.router.navigate([`/room/${roomId}`]);
+        },
+        error: (error: HttpErrorResponse) => {
+          this.loading = false;
+          if (!error.message.includes('Missing or insufficient permissions.')) {
+            this.toastr.error(error.message, 'Game Time', {
+              positionClass: 'toast-bottom-center',
+              toastClass: 'ngx-toastr custom error',
+            });
+          }
+        },
+      });
+  }
+
+  generateMotusWords(): string[] {
+    const wordsToGenerate: string[] = [];
+    for (let i = 0; i < this.stepsNumber; i++) {
+      if (!this.isWordLengthIncreasing) {
+        wordsToGenerate.push(this.newWord(this.startWordLength));
+      } else {
+        wordsToGenerate.push(this.newWord(this.startWordLength + i));
+      }
+    }
+    return wordsToGenerate;
+  }
+
+  newWord(wordLength: number): string {
+    const wordsFixedLength = words.filter((word) => word.length === wordLength);
+    let randomIndex = Math.floor(Math.random() * wordsFixedLength.length);
+    return wordsFixedLength[randomIndex];
+  }
+
+  generateCountries(): Country[] {
+    const countriesToGenerate: Country[] = [];
+    for (let i = 0; i < this.stepsNumber; i++) {
+      countriesToGenerate.push(this.newCountry(this.continentFilter));
+    }
+    return countriesToGenerate;
+  }
+
+  newCountry(continentFilter: number): Country {
+    if (continentFilter === Continent.Monde) {
+      const randomIndex = Math.floor(Math.random() * countries.length);
+      return countries[randomIndex];
+    } else {
+      const filteredCountries = countries.filter(
+        (country) => country.continent === continentFilter
+      );
+
+      const randomIndex = Math.floor(Math.random() * filteredCountries.length);
+      return filteredCountries[randomIndex];
+    }
   }
 }

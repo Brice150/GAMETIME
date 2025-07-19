@@ -51,14 +51,6 @@ export class HeaderComponent {
     return matched ? matched.title : '';
   }
 
-  isHomePage(): boolean {
-    return this.router.url === '/';
-  }
-
-  back(): void {
-    this.location.back();
-  }
-
   logout(): void {
     this.logoutEvent.emit();
   }

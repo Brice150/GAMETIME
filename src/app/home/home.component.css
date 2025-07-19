@@ -8,30 +8,6 @@ section {
   margin-top: 20px;
 }
 
-.title {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.title img {
-  width: 120px;
-  height: auto;
-}
-
-.title h1 {
-  font-size: 38px;
-  font-weight: 800;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  text-align: center;
-  color: var(--primary);
-}
-
-.subtitle {
-  color: var(--secondary);
-}
-
 section .description {
   margin-top: 20px;
   font-size: 20px;

@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   Component,
   EventEmitter,
@@ -5,14 +6,13 @@ import {
   OnInit,
   Output,
   SimpleChanges,
-  input,
   inject,
+  input,
 } from '@angular/core';
-import { WordTry } from 'src/app/core/interfaces/wordTry';
-import { emojies } from '../../../../assets/data/emojis';
-import { ToastrService } from 'ngx-toastr';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
+import { WordTry } from 'src/app/core/interfaces/wordTry';
+import { emojies } from 'src/assets/data/emojis';
 
 @Component({
   selector: 'app-word-input',
@@ -22,15 +22,13 @@ import { FormsModule } from '@angular/forms';
 })
 export class WordInputComponent implements OnInit {
   toastr = inject(ToastrService);
-  @Input() response!: string;
+  @Input() response: string = '';
   readonly showFirstLetter = input<boolean>(true);
-  readonly gameName = input.required<string>();
   wordToFind!: string;
   maxlength!: number;
   inputValue!: string | null;
   tries: WordTry[] = [];
-  @Output() winEvent = new EventEmitter<number>();
-  @Output() lostEvent = new EventEmitter<void>();
+  @Output() emitEvent = new EventEmitter<boolean>();
   emojiClass: string = emojies[1].emojiClass;
   emojiStyle: { [klass: string]: any } = emojies[1].emojiStyle;
 
@@ -91,13 +89,13 @@ export class WordInputComponent implements OnInit {
           this.addTry();
         }
       } else {
-        this.toastr.error('Tentative invalide', this.gameName().toUpperCase(), {
+        this.toastr.error('Tentative invalide', 'Game Time', {
           positionClass: 'toast-bottom-center',
           toastClass: 'ngx-toastr custom error',
         });
       }
     } else {
-      this.toastr.error('Tentative vide', this.gameName().toUpperCase(), {
+      this.toastr.error('Tentative vide', 'Game Time', {
         positionClass: 'toast-bottom-center',
         toastClass: 'ngx-toastr custom error',
       });
@@ -152,7 +150,7 @@ export class WordInputComponent implements OnInit {
     }
   }
 
-  reset(gameWon: boolean) {
+  reset(stepWon: boolean) {
     const response: WordTry = {
       letter: Array.from(this.response),
       isWellPlaced: Array.from({ length: this.response!.length }, () => true),
@@ -160,23 +158,8 @@ export class WordInputComponent implements OnInit {
     };
     this.tries = [];
     this.tries.push(response);
-    if (gameWon) {
-      this.toastr.info('Gagné', this.gameName().toUpperCase(), {
-        positionClass: 'toast-bottom-center',
-        toastClass: 'ngx-toastr custom info',
-      });
-    } else {
-      this.toastr.error('Perdu', this.gameName().toUpperCase(), {
-        positionClass: 'toast-bottom-center',
-        toastClass: 'ngx-toastr custom error',
-      });
-    }
     setTimeout(() => {
-      if (gameWon) {
-        this.winEvent.emit();
-      } else {
-        this.lostEvent.emit();
-      }
+      this.emitEvent.emit(stepWon);
       this.tries = [];
       this.emojiClass = emojies[1].emojiClass;
       this.emojiStyle = emojies[1].emojiStyle;

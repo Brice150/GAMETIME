@@ -29,22 +29,16 @@ export class RoomService {
   userService = inject(UserService);
   roomsCollection = collection(this.firestore, 'rooms');
 
-  getRooms(): Observable<Room[]> {
-    const userId = this.userService.auth.currentUser?.uid;
-    const roomsCollection = query(
-      collection(this.firestore, 'rooms'),
-      where('userId', '==', userId)
-    );
-    return collectionData(roomsCollection, { idField: 'id' }) as Observable<
-      Room[]
-    >;
+  getRoom(roomId: string): Observable<Room> {
+    const roomDoc = doc(this.firestore, `rooms/${roomId}`);
+    return docData(roomDoc, { idField: 'id' }) as Observable<Room>;
   }
 
   addRoom(room: Room): Observable<string> {
     const roomDoc = doc(this.roomsCollection);
     room.id = roomDoc.id;
     room.userId = this.userService.auth.currentUser?.uid;
-    return from(setDoc(roomDoc, { ...room })).pipe(map(() => room.id));
+    return from(setDoc(roomDoc, { ...room })).pipe(map(() => room.id!));
   }
 
   updateRoom(room: Room): Observable<void> {

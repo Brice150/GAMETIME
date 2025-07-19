@@ -1,0 +1,63 @@
+header {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin: 0;
+  width: 100%;
+  color: var(--accent);
+  position: relative;
+  min-height: 50px;
+}
+
+.project-title {
+  top: 15px;
+  position: absolute;
+  z-index: 2;
+}
+
+.project-title h1 {
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.medals {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  top: 15px;
+  left: 30px;
+}
+
+.victory-number {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.medals i {
+  font-size: 32px;
+}
+
+@media screen and (max-width: 550px) {
+  .project-title {
+    top: 20px;
+  }
+
+  .project-title h1 {
+    font-size: 25px;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .project-title {
+    top: 24px;
+  }
+
+  .project-title h1 {
+    font-size: 22px;
+  }
+}

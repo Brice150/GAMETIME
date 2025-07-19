@@ -1,10 +1,10 @@
+@if (room().gameName === drapeauxGameKey) {
 <div class="container">
   <img [src]="imageUrl" alt="Drapeau.png" />
 </div>
+}
 <app-word-input
   [response]="response"
-  [showFirstLetter]="false"
-  [gameName]="drapeauxGameKey"
-  (winEvent)="handleWinEvent()"
-  (lostEvent)="handleLostEvent()"
+  [showFirstLetter]="room().showFirstLetter"
+  (emitEvent)="handleEvent($event)"
 ></app-word-input>

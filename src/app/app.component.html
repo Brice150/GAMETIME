@@ -1,4 +1,4 @@
-@if (userService.currentUserSig()) {
+@if (userService.currentUserSig() && !isRoomPage()) {
 <app-header (logoutEvent)="logout()"></app-header>
 }
 <router-outlet></router-outlet>

@@ -5,5 +5,4 @@ export interface Player {
   userId?: string;
   username: string;
   stats: Stat[];
-  progress?: number;
 }

@@ -1,32 +1,34 @@
-<div class="project-title">
-  <h1>{{ getTitle() }}</h1>
-</div>
-<div class="switch-container">
-  <button mat-button [matMenuTriggerFor]="menu" class="menu" title="Menu">
-    <i class="bx bx-menu"></i>
-  </button>
-  <mat-menu #menu="matMenu">
-    @for (item of menuItems; track $index) {
-    <button
-      type="button"
-      [routerLink]="item.path"
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{ exact: true }"
-      [title]="item.title"
-      mat-menu-item
-    >
-      <i [class]="item.icon"></i>
-      <span class="description">{{ item.title }}</span>
+<header>
+  <div class="project-title">
+    <h1>{{ getTitle() || "Game Time" }}</h1>
+  </div>
+  <div class="switch-container">
+    <button mat-button [matMenuTriggerFor]="menu" class="menu" title="Menu">
+      <i class="bx bx-menu"></i>
     </button>
-    }
-    <button type="button" (click)="logout()" title="Déconnexion" mat-menu-item>
-      <i class="bx bxs-log-out"></i>
-      <span class="description">Déconnexion</span>
-    </button>
-  </mat-menu>
-  @if (!isHomePage()) {
-  <button type="button" (click)="back()" title="Retour" class="back">
-    <i class="bx bx-arrow-back"></i>
-  </button>
-  }
-</div>
+    <mat-menu #menu="matMenu">
+      @for (item of menuItems; track $index) {
+      <button
+        type="button"
+        [routerLink]="item.path"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        [title]="item.title"
+        mat-menu-item
+      >
+        <i [class]="item.icon"></i>
+        <span class="description">{{ item.title }}</span>
+      </button>
+      }
+      <button
+        type="button"
+        (click)="logout()"
+        title="Déconnexion"
+        mat-menu-item
+      >
+        <i class="bx bxs-log-out"></i>
+        <span class="description">Déconnexion</span>
+      </button>
+    </mat-menu>
+  </div>
+</header>
