@@ -191,10 +191,6 @@ export class RoomComponent implements OnInit, OnDestroy {
       });
   }
 
-  finishGame(stepWon: boolean): void {
-    //TODO
-  }
-
   getMedalsNumber(): number {
     const stat = this.player?.stats?.find(
       (stat) => stat.gameName === this.room.gameName
