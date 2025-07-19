@@ -2,12 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatSliderModule } from '@angular/material/slider';
-import { Games } from 'src/app/core/enums/games.enum';
 import { WordInputComponent } from 'src/app/shared/components/word-input/word-input.component';
 import { words } from 'src/app/shared/data/words';
+import { gameMap } from 'src/assets/data/games';
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-motus',
   imports: [CommonModule, MatSliderModule, FormsModule, WordInputComponent],
   templateUrl: './motus.component.html',
   styleUrls: ['./motus.component.css'],
@@ -15,7 +15,7 @@ import { words } from 'src/app/shared/data/words';
 export class MotusComponent implements OnInit {
   response!: string;
   wordLength: number = 5;
-  games = Games;
+  motusGameKey = gameMap['motus'].key;
 
   ngOnInit() {
     this.newWord();

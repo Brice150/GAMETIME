@@ -1,10 +1,10 @@
 <div class="container">
-  <img [src]="imageUrl" alt="Flag.png" />
+  <img [src]="imageUrl" alt="Drapeau.png" />
 </div>
 <app-word-input
   [response]="response"
   [showFirstLetter]="false"
-  [gameName]="games.FLAG"
+  [gameName]="drapeauxGameKey"
   (winEvent)="handleWinEvent()"
   (lostEvent)="handleLostEvent()"
 ></app-word-input>

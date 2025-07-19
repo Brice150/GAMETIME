@@ -1,68 +1,45 @@
 <section>
   @if (!loading) {
   <span class="description">À quel jeu voulez-vous jouer aujourd'hui ?</span>
+
   <div class="games">
+    @for (game of games; track game.key) {
     <button
       type="button"
-      title="Motus"
-      [ngClass]="{ active: gameSelected === games.MOTUS }"
-      (click)="gameSelected = games.MOTUS"
+      [title]="game.label"
+      [ngClass]="{ active: gameSelected === game.key }"
+      (click)="gameSelected = game.key"
     >
       <div class="flex">
-        <i class="bx bxs-objects-horizontal-left"></i>
-        <span class="game">Motus</span>
+        <i class="{{ game.icon }}"></i>
+        <span class="game">{{ game.label }}</span>
       </div>
       <div class="medals">
-        <span class="victory-number">
-          {{ getMedalsNumber(games.MOTUS) }}
-        </span>
+        <span class="victory-number">{{ getMedalsNumber(game.key) }}</span>
         <i class="bx bxs-medal"></i>
       </div>
     </button>
-    <button
-      type="button"
-      title="Drapeaux"
-      [ngClass]="{ active: gameSelected === games.FLAG }"
-      (click)="gameSelected = games.FLAG"
-    >
-      <div class="flex">
-        <i class="bx bxs-flag"></i>
-        <span class="game">Drapeaux</span>
-      </div>
-      <div class="medals">
-        <span class="victory-number">
-          {{ getMedalsNumber(games.FLAG) }}
-        </span>
-        <i class="bx bxs-medal"></i>
-      </div>
-    </button>
+    }
   </div>
-  @if (gameSelected){
+
+  @if (gameSelected) {
   <div class="modes">
+    @for (mode of modes; track mode.key) {
     <button
       type="button"
       class="mode"
-      title="Solo"
-      [routerLink]="['/', gameSelected, 'solo']"
+      [title]="mode.label"
+      [ngClass]="{ active: modeSelected === mode.key }"
+      (click)="mode.onClick ? mode.onClick() : (modeSelected = mode.key)"
     >
       <div class="flex">
-        <i class="bx bx-user"></i>
-        <span class="game">Solo</span>
+        <i class="{{ mode.icon }}"></i>
+        <span class="game">{{ mode.label }}</span>
       </div>
     </button>
-    <button
-      type="button"
-      class="mode"
-      title="Multijoueur"
-      [routerLink]="['/', gameSelected, 'multi']"
-    >
-      <div class="flex">
-        <i class="bx bx-group"></i>
-        <span class="game">Multijoueur</span>
-      </div>
-    </button>
+    }
   </div>
-  }} @else {
+  } } @else {
   <mat-spinner></mat-spinner>
   }
 </section>

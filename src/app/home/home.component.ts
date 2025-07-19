@@ -1,14 +1,15 @@
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, OnInit } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { RouterModule } from '@angular/router';
-import { environment } from 'src/environments/environment';
-import { Games } from '../core/enums/games.enum';
-import { PlayerService } from '../core/services/player.service';
-import { Subject, take, takeUntil } from 'rxjs';
-import { Player } from '../core/interfaces/player';
-import { HttpErrorResponse } from '@angular/common/http';
+import { Router, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { Subject, take, takeUntil } from 'rxjs';
+import { environment } from 'src/environments/environment';
+import { Mode } from '../core/interfaces/mode';
+import { Player } from '../core/interfaces/player';
+import { PlayerService } from '../core/services/player.service';
+import { games } from 'src/assets/data/games';
 
 @Component({
   selector: 'app-home',
@@ -18,13 +19,28 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class HomeComponent implements OnInit {
   imagePath: string = environment.imagePath;
-  games = Games;
   gameSelected: string = '';
+  modeSelected: string = '';
   loading: boolean = true;
   playerService = inject(PlayerService);
   toastr = inject(ToastrService);
   destroyed$ = new Subject<void>();
   player: Player = {} as Player;
+  router = inject(Router);
+  games = games;
+  modes: Mode[] = [
+    {
+      key: 'solo',
+      label: 'Solo',
+      icon: 'bx bx-user',
+    },
+    {
+      key: 'multi',
+      label: 'Multijoueur',
+      icon: 'bx bx-group',
+      onClick: () => this.alerte(),
+    },
+  ];
 
   ngOnInit(): void {
     this.playerService
@@ -49,13 +65,24 @@ export class HomeComponent implements OnInit {
       });
   }
 
-  getMedalsNumber(gameName: string): number {
-    const stat = this.player?.stats?.find((stat) => stat.gameName === gameName);
-    return stat?.medalsNumer ?? 0;
-  }
-
   ngOnDestroy(): void {
     this.destroyed$.next();
     this.destroyed$.complete();
+  }
+
+  alerte(): void {
+    this.toastr.error(
+      'Le mode multijoueur est en cours de développement',
+      'Game Time',
+      {
+        positionClass: 'toast-bottom-center',
+        toastClass: 'ngx-toastr custom error',
+      }
+    );
+  }
+
+  getMedalsNumber(gameName: string): number {
+    const stat = this.player?.stats?.find((stat) => stat.gameName === gameName);
+    return stat?.medalsNumer ?? 0;
   }
 }

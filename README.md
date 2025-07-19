@@ -20,25 +20,10 @@ Frontend : Angular
 - Find a word
 - Hint : first letter, red and yellow letter colors
 
-### Drapeau
+### Drapeaux
 
 - Find a country
 - Hint : flag, red and yellow letter colors
-
-### Meli Melo
-
-- Find a word
-- Hint : not in order letters, red letter color
-
-### Juste Prix
-
-- Find a number
-- Hint : green arrow if +, red arrow if -
-
-### Calcul
-
-- Find a number
-- Hint : equation, green arrow if + and red arrow if -
 
 </details>
 

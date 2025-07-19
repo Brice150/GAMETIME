@@ -1,10 +1,9 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import {
   collection,
   collectionData,
   deleteDoc,
   doc,
-  docData,
   Firestore,
   query,
   setDoc,
@@ -20,11 +19,11 @@ import {
   switchMap,
   take,
 } from 'rxjs';
-import { UserService } from './user.service';
-import { Player } from '../interfaces/player';
+import { gameMap } from 'src/assets/data/games';
 import { v4 as uuidv4 } from 'uuid';
-import { Games } from '../enums/games.enum';
+import { Player } from '../interfaces/player';
 import { Stat } from '../interfaces/stat';
+import { UserService } from './user.service';
 
 @Injectable({ providedIn: 'root' })
 export class PlayerService {
@@ -63,14 +62,20 @@ export class PlayerService {
         const username = `User#${this.generateUsernameSuffix()}`;
         const playerDoc = doc(this.playersCollection);
 
-        const statMotus: Stat = { gameName: Games.MOTUS, medalsNumer: 0 };
-        const statFlag: Stat = { gameName: Games.FLAG, medalsNumer: 0 };
+        const statMotus: Stat = {
+          gameName: gameMap['motus'].key,
+          medalsNumer: 0,
+        };
+        const statDrapeaux: Stat = {
+          gameName: gameMap['drapeaux'].key,
+          medalsNumer: 0,
+        };
 
         const player: Player = {
           id: playerDoc.id,
           userId: userId,
           username: username,
-          stats: [statMotus, statFlag],
+          stats: [statMotus, statDrapeaux],
         };
         return from(setDoc(playerDoc, { ...player })).pipe(map(() => email));
       })

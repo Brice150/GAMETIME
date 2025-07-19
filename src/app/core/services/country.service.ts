@@ -4,12 +4,12 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class CountryService {
-  flagApi: string = 'https://flagcdn.com/w160/';
+  drapeauxApi: string = 'https://flagcdn.com/w160/';
 
-  getFlagImageUrl(countryCode: string): string {
+  getDrapeauImageUrl(countryCode: string): string {
     const timestamp = new Date().getTime();
     return `${
-      this.flagApi
+      this.drapeauxApi
     }${countryCode.toLowerCase()}.png?timestamp=${timestamp}`;
   }
 }

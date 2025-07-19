@@ -1,23 +1,23 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import { Games } from 'src/app/core/enums/games.enum';
 import { CountryService } from 'src/app/core/services/country.service';
 import { WordInputComponent } from 'src/app/shared/components/word-input/word-input.component';
 import { countries } from 'src/app/shared/data/countries';
+import { gameMap } from 'src/assets/data/games';
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-drapeaux',
   imports: [CommonModule, WordInputComponent],
-  templateUrl: './flag.component.html',
-  styleUrls: ['./flag.component.css'],
+  templateUrl: './drapeaux.component.html',
+  styleUrls: ['./drapeaux.component.css'],
 })
-export class FlagComponent implements OnInit {
+export class DrapeauxComponent implements OnInit {
   mode!: string;
   response!: string;
   medals!: number;
   imageUrl: string = '';
   countryService = inject(CountryService);
-  games = Games;
+  drapeauxGameKey = gameMap['drapeaux'].key;
 
   ngOnInit() {
     this.newWord();
@@ -27,7 +27,7 @@ export class FlagComponent implements OnInit {
     const randomIndex = Math.floor(Math.random() * countries.length);
     const country = countries[randomIndex];
     this.response = country.name;
-    this.imageUrl = this.countryService.getFlagImageUrl(country.code);
+    this.imageUrl = this.countryService.getDrapeauImageUrl(country.code);
   }
 
   handleWinEvent() {
