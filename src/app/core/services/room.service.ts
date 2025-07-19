@@ -22,12 +22,21 @@ import {
 } from 'rxjs';
 import { UserService } from './user.service';
 import { Room } from '../interfaces/room';
+import { Country } from '../interfaces/country';
+import { PlayerRoom } from '../interfaces/player-room';
+import { gameMap } from 'src/assets/data/games';
+import { Player } from '../interfaces/player';
+import { words } from 'src/assets/data/words';
+import { Continent } from '../enums/continent.enum';
+import { countries } from 'src/assets/data/countries';
 
 @Injectable({ providedIn: 'root' })
 export class RoomService {
   firestore = inject(Firestore);
   userService = inject(UserService);
   roomsCollection = collection(this.firestore, 'rooms');
+  motusGameKey = gameMap['motus'].key;
+  drapeauxGameKey = gameMap['drapeaux'].key;
 
   getRoom(roomId: string): Observable<Room> {
     const roomDoc = doc(this.firestore, `rooms/${roomId}`);
@@ -76,5 +85,129 @@ export class RoomService {
       }),
       map(() => undefined)
     );
+  }
+
+  newRoom(
+    gameSelected: string,
+    modeSelected: string,
+    showFirstLetterMotus: boolean,
+    showFirstLetterDrapeaux: boolean,
+    stepsNumber: number,
+    isWordLengthIncreasing: boolean,
+    startWordLength: number,
+    continentFilter: number,
+    player: Player
+  ): Room {
+    const showFirstLetter: boolean =
+      gameSelected === this.motusGameKey
+        ? showFirstLetterMotus
+        : showFirstLetterDrapeaux;
+
+    let countries: Country[] = [];
+    let responses: string[] = [];
+
+    this.generateResponses(
+      gameSelected,
+      stepsNumber,
+      continentFilter,
+      isWordLengthIncreasing,
+      startWordLength,
+      countries,
+      responses
+    );
+
+    const playerRoom: PlayerRoom = {
+      userId: player.userId!,
+      username: player.username,
+      currentRoomWins: [],
+    };
+
+    return {
+      gameName: gameSelected,
+      playersRoom: [playerRoom],
+      isStarted: modeSelected === 'solo',
+      isSolo: modeSelected === 'solo',
+      showFirstLetter: showFirstLetter,
+      stepsNumber: stepsNumber,
+      continentFilter: continentFilter,
+      isWordLengthIncreasing: isWordLengthIncreasing,
+      startWordLength: startWordLength,
+      responses: responses,
+      countries: countries,
+    };
+  }
+
+  generateResponses(
+    gameSelected: string,
+    stepsNumber: number,
+    continentFilter: number,
+    isWordLengthIncreasing: boolean,
+    startWordLength: number,
+    countries: Country[],
+    responses: string[]
+  ): void {
+    if (gameSelected === this.drapeauxGameKey) {
+      const generatedCountries = this.generateCountries(
+        stepsNumber,
+        continentFilter
+      );
+      countries.splice(0, countries.length, ...generatedCountries);
+      responses.splice(
+        0,
+        responses.length,
+        ...generatedCountries.map((country) => country.name)
+      );
+    } else if (gameSelected === this.motusGameKey) {
+      const generatedWords = this.generateMotusWords(
+        stepsNumber,
+        isWordLengthIncreasing,
+        startWordLength
+      );
+      responses.splice(0, responses.length, ...generatedWords);
+    }
+  }
+
+  generateMotusWords(
+    stepsNumber: number,
+    isWordLengthIncreasing: boolean,
+    startWordLength: number
+  ): string[] {
+    const wordsToGenerate: string[] = [];
+    for (let i = 0; i < stepsNumber; i++) {
+      if (!isWordLengthIncreasing) {
+        wordsToGenerate.push(this.newWord(startWordLength));
+      } else {
+        wordsToGenerate.push(this.newWord(startWordLength + i));
+      }
+    }
+    return wordsToGenerate;
+  }
+
+  newWord(wordLength: number): string {
+    const wordsFixedLength = words.filter((word) => word.length === wordLength);
+    let randomIndex = Math.floor(Math.random() * wordsFixedLength.length);
+    return wordsFixedLength[randomIndex];
+  }
+
+  generateCountries(stepsNumber: number, continentFilter: number): Country[] {
+    const countriesToGenerate: Country[] = [];
+    for (let i = 0; i < stepsNumber; i++) {
+      countriesToGenerate.push(this.newCountry(continentFilter));
+    }
+    return countriesToGenerate;
+  }
+
+  newCountry(continentFilter: number): Country {
+    if (continentFilter === Continent.Monde) {
+      const randomIndex = Math.floor(Math.random() * countries.length);
+      return countries[randomIndex];
+    } else {
+      const filteredCountries = countries.filter(
+        (country) => country.continent === continentFilter
+      );
+
+      const randomIndex = Math.floor(Math.random() * filteredCountries.length);
+      return filteredCountries[randomIndex];
+    }
   }
 }

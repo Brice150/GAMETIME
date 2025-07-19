@@ -52,7 +52,6 @@ input {
   text-transform: uppercase;
   outline: none;
   font-family: monospace;
-  width: 100%;
   pointer-events: none;
   top: -2.5px;
   white-space: nowrap;

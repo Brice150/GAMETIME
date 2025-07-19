@@ -23,8 +23,11 @@
         (keydown)="onKeyDown($event)"
         [(ngModel)]="inputValue"
         [ngModelOptions]="{ standalone: true }"
+        [disabled]="isOver"
       />
+      @if (!isOver) {
       <span class="placeholder">{{ wordToFind }}</span>
+      }
       <button class="submit" type="submit">Submit</button>
     </form>
     <i [ngClass]="emojiClass" [ngStyle]="emojiStyle"></i>

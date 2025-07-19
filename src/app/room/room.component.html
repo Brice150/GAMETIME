@@ -3,20 +3,38 @@
   [medalsNumber]="getMedalsNumber()"
 ></app-room-header>
 <section>
-  @if(!loading) { @if (room.isStarted) {
+  @if(!loading) { @if (room.isStarted) { @if(!isResultPageActive) {
   <app-word-games
     [room]="room"
     [playerRoom]="playerRoom"
     (finishedStepEvent)="updateRoom($event)"
   ></app-word-games>
   } @else {
+  <app-results></app-results>
+  } } @else {
   <app-waiting-room></app-waiting-room>
   }
   <div class="button-container">
-    <button type="button" title="Quitter" (click)="openDialog()">
+    <button type="button" title="Quitter" (click)="openDialog()" class="delete">
       <i class="bx bxs-log-out"></i>
-      <span>Quitter</span>
+      <span class="text">Quitter</span>
     </button>
+    @if (isNextButtonAvailable) {
+    <button type="button" (click)="next()" title="Suivant">
+      <i class="bx bxs-skip-next-circle"></i>
+      <span class="text">Suivant</span>
+    </button>
+    } @else if (isSeeResultsAvailable) {
+    <button type="button" (click)="seeResults()" title="Résultats">
+      <i class="bx bxs-medal"></i>
+      <span class="text">Résultats</span>
+    </button>
+    } @else if (isResultPageActive && currentUserId === room.userId) {
+    <button type="button" (click)="startAgain()" title="Rejouer">
+      <i class="bx bx-play"></i>
+      <span class="text">Rejouer</span>
+    </button>
+    }
   </div>
   } @else {
   <mat-spinner></mat-spinner>

@@ -9,6 +9,10 @@ export interface Room {
   isStarted: boolean;
   isSolo: boolean;
   showFirstLetter: boolean;
+  stepsNumber: number;
+  continentFilter: number;
+  isWordLengthIncreasing: boolean;
+  startWordLength: number;
   responses: string[];
   countries: Country[];
 }

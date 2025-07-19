@@ -26,14 +26,16 @@ export class WordInputComponent implements OnInit {
   readonly showFirstLetter = input<boolean>(true);
   wordToFind!: string;
   maxlength!: number;
-  inputValue!: string | null;
+  inputValue: string = '';
   tries: WordTry[] = [];
   @Output() emitEvent = new EventEmitter<boolean>();
   emojiClass: string = emojies[1].emojiClass;
   emojiStyle: { [klass: string]: any } = emojies[1].emojiStyle;
+  isOver = false;
 
   ngOnInit(): void {
     if (this.response) {
+      this.isOver = false;
       this.response = this.response.toUpperCase();
       this.tries = [];
       this.emojiClass = emojies[1].emojiClass;
@@ -101,11 +103,7 @@ export class WordInputComponent implements OnInit {
       });
     }
 
-    if (this.showFirstLetter()) {
-      this.inputValue = this.response.charAt(0);
-    } else {
-      this.inputValue = null;
-    }
+    this.inputValue = this.showFirstLetter() ? this.response.charAt(0) : '';
   }
 
   addTry(): void {
@@ -156,13 +154,11 @@ export class WordInputComponent implements OnInit {
       isWellPlaced: Array.from({ length: this.response!.length }, () => true),
       isWrongPlaced: Array.from({ length: this.response!.length }, () => false),
     };
-    this.tries = [];
     this.tries.push(response);
+    this.isOver = true;
     setTimeout(() => {
-      this.emitEvent.emit(stepWon);
-      this.tries = [];
-      this.emojiClass = emojies[1].emojiClass;
-      this.emojiStyle = emojies[1].emojiStyle;
-    }, 2000);
+      this.inputValue = '';
+    });
+    this.emitEvent.emit(stepWon);
   }
 }

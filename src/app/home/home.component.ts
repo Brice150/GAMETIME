@@ -152,39 +152,20 @@ export class HomeComponent implements OnInit, OnDestroy {
   play(): void {
     this.loading = true;
 
-    const showFirstLetter: boolean =
-      this.gameSelected === this.motusGameKey
-        ? this.showFirstLetterMotus
-        : this.showFirstLetterDrapeaux;
-
-    let countries: Country[] = [];
-    let responses: string[] = [];
-
-    if (this.gameSelected === this.drapeauxGameKey) {
-      countries = this.generateCountries();
-      responses = countries.map((country) => country.name);
-    } else if (this.gameSelected === this.motusGameKey) {
-      responses = this.generateMotusWords();
-    }
-
-    const playerRoom: PlayerRoom = {
-      userId: this.player.userId!,
-      username: this.player.username,
-      currentRoomWins: [],
-    };
-
-    const roomToAdd: Room = {
-      gameName: this.gameSelected,
-      playersRoom: [playerRoom],
-      isStarted: this.modeSelected === 'solo',
-      isSolo: this.modeSelected === 'solo',
-      showFirstLetter: showFirstLetter,
-      responses: responses,
-      countries: countries,
-    };
+    const newRoom = this.roomService.newRoom(
+      this.gameSelected,
+      this.modeSelected,
+      this.showFirstLetterMotus,
+      this.showFirstLetterDrapeaux,
+      this.stepsNumber,
+      this.isWordLengthIncreasing,
+      this.startWordLength,
+      this.continentFilter,
+      this.player
+    );
 
     this.roomService
-      .addRoom(roomToAdd)
+      .addRoom(newRoom)
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: (roomId) => {
@@ -201,45 +182,5 @@ export class HomeComponent implements OnInit, OnDestroy {
           }
         },
       });
-  }
-
-  generateMotusWords(): string[] {
-    const wordsToGenerate: string[] = [];
-    for (let i = 0; i < this.stepsNumber; i++) {
-      if (!this.isWordLengthIncreasing) {
-        wordsToGenerate.push(this.newWord(this.startWordLength));
-      } else {
-        wordsToGenerate.push(this.newWord(this.startWordLength + i));
-      }
-    }
-    return wordsToGenerate;
-  }
-
-  newWord(wordLength: number): string {
-    const wordsFixedLength = words.filter((word) => word.length === wordLength);
-    let randomIndex = Math.floor(Math.random() * wordsFixedLength.length);
-    return wordsFixedLength[randomIndex];
-  }
-
-  generateCountries(): Country[] {
-    const countriesToGenerate: Country[] = [];
-    for (let i = 0; i < this.stepsNumber; i++) {
-      countriesToGenerate.push(this.newCountry(this.continentFilter));
-    }
-    return countriesToGenerate;
-  }
-
-  newCountry(continentFilter: number): Country {
-    if (continentFilter === Continent.Monde) {
-      const randomIndex = Math.floor(Math.random() * countries.length);
-      return countries[randomIndex];
-    } else {
-      const filteredCountries = countries.filter(
-        (country) => country.continent === continentFilter
-      );
-
-      const randomIndex = Math.floor(Math.random() * filteredCountries.length);
-      return filteredCountries[randomIndex];
-    }
   }
 }

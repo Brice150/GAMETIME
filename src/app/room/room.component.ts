@@ -25,6 +25,8 @@ import { WaitingRoomComponent } from './waiting-room/waiting-room.component';
 import { WordGamesComponent } from './word-games/word-games.component';
 import { RoomHeaderComponent } from './room-header/room-header.component';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
+import { ResultsComponent } from './results/results.component';
+import { gameMap } from 'src/assets/data/games';
 
 @Component({
   selector: 'app-room',
@@ -33,6 +35,7 @@ import { ConfirmationDialogComponent } from '../shared/components/confirmation-d
     WordGamesComponent,
     WaitingRoomComponent,
     RoomHeaderComponent,
+    ResultsComponent,
     MatProgressSpinnerModule,
   ],
   templateUrl: './room.component.html',
@@ -51,6 +54,10 @@ export class RoomComponent implements OnInit, OnDestroy {
   player: Player = {} as Player;
   playerRoom: PlayerRoom = {} as PlayerRoom;
   currentUserId?: string;
+  isNextButtonAvailable = false;
+  isSeeResultsAvailable = false;
+  isResultPageActive = false;
+  drapeauxGameKey = gameMap['drapeaux'].key;
   @ViewChild(WordGamesComponent) wordGamesComponent!: WordGamesComponent;
 
   ngOnInit(): void {
@@ -178,7 +185,14 @@ export class RoomComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: () => {
-          this.wordGamesComponent?.new();
+          if (
+            this.room.responses.length !==
+            this.playerRoom.currentRoomWins.length
+          ) {
+            this.isNextButtonAvailable = true;
+          } else {
+            this.isSeeResultsAvailable = true;
+          }
         },
         error: (error: HttpErrorResponse) => {
           if (!error.message.includes('Missing or insufficient permissions.')) {
@@ -199,24 +213,102 @@ export class RoomComponent implements OnInit, OnDestroy {
   }
 
   openDialog(): void {
-    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-      data: 'supprimer cette room',
-    });
+    if (this.currentUserId === this.room.userId) {
+      const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+        data: 'supprimer cette room',
+      });
 
-    dialogRef
-      .afterClosed()
-      .pipe(
-        filter((res: boolean) => res),
-        switchMap(() => {
-          this.loading = true;
-          return this.roomService.deleteRoom(this.room.id!);
-        }),
-        takeUntil(this.destroyed$)
-      )
+      dialogRef
+        .afterClosed()
+        .pipe(
+          filter((res: boolean) => res),
+          switchMap(() => {
+            this.loading = true;
+            return this.roomService.deleteRoom(this.room.id!);
+          }),
+          takeUntil(this.destroyed$)
+        )
+        .subscribe({
+          next: () => {
+            this.loading = false;
+            this.router.navigate(['/']);
+          },
+          error: (error: HttpErrorResponse) => {
+            this.loading = false;
+            if (
+              !error.message.includes('Missing or insufficient permissions.')
+            ) {
+              this.toastr.error(error.message, 'Game Time', {
+                positionClass: 'toast-bottom-center',
+                toastClass: 'ngx-toastr custom error',
+              });
+            }
+          },
+        });
+    } else {
+      const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+        data: 'quitter cette room',
+      });
+
+      dialogRef
+        .afterClosed()
+        .pipe(
+          filter((res: boolean) => res),
+          takeUntil(this.destroyed$)
+        )
+        .subscribe({
+          next: () => {
+            this.router.navigate(['/']);
+          },
+          error: (error: HttpErrorResponse) => {
+            this.loading = false;
+            if (
+              !error.message.includes('Missing or insufficient permissions.')
+            ) {
+              this.toastr.error(error.message, 'Game Time', {
+                positionClass: 'toast-bottom-center',
+                toastClass: 'ngx-toastr custom error',
+              });
+            }
+          },
+        });
+    }
+  }
+
+  next(): void {
+    this.wordGamesComponent?.new();
+    this.isNextButtonAvailable = false;
+  }
+
+  seeResults(): void {
+    this.isSeeResultsAvailable = false;
+    this.isResultPageActive = true;
+  }
+
+  startAgain(): void {
+    this.loading = true;
+
+    this.room.countries = [];
+    this.room.responses = [];
+    this.room.playersRoom.forEach((player) => (player.currentRoomWins = []));
+
+    this.roomService.generateResponses(
+      this.room.gameName,
+      this.room.stepsNumber,
+      this.room.continentFilter,
+      this.room.isWordLengthIncreasing,
+      this.room.startWordLength,
+      this.room.countries,
+      this.room.responses
+    );
+
+    this.roomService
+      .updateRoom(this.room)
+      .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: () => {
+          this.isResultPageActive = false;
           this.loading = false;
-          this.router.navigate(['/']);
         },
         error: (error: HttpErrorResponse) => {
           this.loading = false;
