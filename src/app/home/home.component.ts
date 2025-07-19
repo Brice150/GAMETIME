@@ -162,7 +162,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     if (this.gameSelected === this.drapeauxGameKey) {
       countries = this.generateCountries();
-      responses = this.generateCountries().map((country) => country.name);
+      responses = countries.map((country) => country.name);
     } else if (this.gameSelected === this.motusGameKey) {
       responses = this.generateMotusWords();
     }
