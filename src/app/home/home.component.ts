@@ -119,13 +119,9 @@ export class HomeComponent implements OnInit {
     return stat?.medalsNumer ?? 0;
   }
 
-  play(): void {
-    this.router.navigate(['/', this.gameSelected]);
-  }
-
   formatLabel(index: number): string {
     const continentLabels = [
-      '', // index 0 non utilisé
+      '', // index 0 unused
       'Monde',
       'Europe',
       'Asie',
@@ -139,5 +135,9 @@ export class HomeComponent implements OnInit {
 
   defaultFormatLabel(value: number): string {
     return value.toString();
+  }
+
+  play(): void {
+    this.router.navigate(['/', this.gameSelected]);
   }
 }

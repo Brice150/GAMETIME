@@ -18,7 +18,7 @@ export class WelcomeComponent implements AfterViewInit {
   imagePath: string = environment.imagePath;
   @ViewChildren('feature') features!: QueryList<ElementRef>;
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry, index) => {

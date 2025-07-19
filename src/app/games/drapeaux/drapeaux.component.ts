@@ -19,24 +19,24 @@ export class DrapeauxComponent implements OnInit {
   countryService = inject(CountryService);
   drapeauxGameKey = gameMap['drapeaux'].key;
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.newWord();
   }
 
-  newWord() {
+  newWord(): void {
     const randomIndex = Math.floor(Math.random() * countries.length);
     const country = countries[randomIndex];
     this.response = country.name;
     this.imageUrl = this.countryService.getDrapeauImageUrl(country.code);
   }
 
-  handleWinEvent() {
+  handleWinEvent(): void {
     //TODO
 
     this.newWord();
   }
 
-  handleLostEvent() {
+  handleLostEvent(): void {
     this.newWord();
   }
 }

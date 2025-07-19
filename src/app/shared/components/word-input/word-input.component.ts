@@ -34,7 +34,7 @@ export class WordInputComponent implements OnInit {
   emojiClass: string = emojies[1].emojiClass;
   emojiStyle: { [klass: string]: any } = emojies[1].emojiStyle;
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (this.response) {
       this.response = this.response.toUpperCase();
       this.tries = [];
@@ -72,7 +72,7 @@ export class WordInputComponent implements OnInit {
     }
   }
 
-  submitAnswer() {
+  submitAnswer(): void {
     if (this.inputValue) {
       this.inputValue = this.inputValue
         .normalize('NFD')
@@ -110,7 +110,7 @@ export class WordInputComponent implements OnInit {
     }
   }
 
-  addTry() {
+  addTry(): void {
     const newTry: WordTry = {
       letter: Array.from(this.inputValue!),
       isWellPlaced: Array.from(

@@ -13,7 +13,7 @@ export class MotusComponent implements OnInit {
   response!: string;
   motusGameKey = gameMap['motus'].key;
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.newWord();
   }
 
