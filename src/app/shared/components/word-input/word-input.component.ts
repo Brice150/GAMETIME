@@ -9,7 +9,7 @@ import {
   inject,
 } from '@angular/core';
 import { WordTry } from 'src/app/core/interfaces/wordTry';
-import { emojies } from '../../data/emojis';
+import { emojies } from '../../../../assets/data/emojis';
 import { ToastrService } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';

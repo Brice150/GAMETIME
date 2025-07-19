@@ -1,9 +1,3 @@
-<div class="container">
-  <mat-slider min="5" max="13" step="1" discrete (change)="changeWordLength()">
-    <input matSliderThumb [(ngModel)]="wordLength" />
-  </mat-slider>
-  <span>Taille du mot</span>
-</div>
 <app-word-input
   [response]="response"
   [gameName]="motusGameKey"

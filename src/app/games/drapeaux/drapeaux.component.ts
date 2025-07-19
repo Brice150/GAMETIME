@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { CountryService } from 'src/app/core/services/country.service';
 import { WordInputComponent } from 'src/app/shared/components/word-input/word-input.component';
-import { countries } from 'src/app/shared/data/countries';
+import { countries } from 'src/assets/data/countries';
 import { gameMap } from 'src/assets/data/games';
 
 @Component({
