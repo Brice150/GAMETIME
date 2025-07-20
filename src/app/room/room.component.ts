@@ -134,6 +134,8 @@ export class RoomComponent implements OnInit, OnDestroy {
             this.room.responses.length
           ) {
             this.isSeeResultsAvailable = true;
+          } else {
+            this.isResultPageActive = false;
           }
           this.loading = false;
         },
