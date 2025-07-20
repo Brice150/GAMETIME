@@ -62,7 +62,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       key: 'multi',
       label: 'Multijoueur',
       icon: 'bx bx-group',
-      onClick: () => this.alerte(),
     },
   ];
 
@@ -113,17 +112,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroyed$.next();
     this.destroyed$.complete();
-  }
-
-  alerte(): void {
-    this.toastr.error(
-      'Le mode multijoueur est en cours de développement',
-      'Game Time',
-      {
-        positionClass: 'toast-bottom-center',
-        toastClass: 'ngx-toastr custom error',
-      }
-    );
   }
 
   getMedalsNumber(gameName: string): number {

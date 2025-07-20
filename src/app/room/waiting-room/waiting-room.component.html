@@ -1,18 +1,20 @@
+<div class="game">
+  <h2>{{ room().gameName }}</h2>
+</div>
 <div class="players-room">
-  @for (playerRoom of room().playersRoom; track $index) {
+  @for (playerRoom of room().playersRoom; track $index; let i = $index) {
   <div
-    class="progress"
+    class="player"
     [ngClass]="{ 'alt-color': playerRoom.userId !== player().userId }"
   >
     <span class="username">{{ playerRoom.username }}</span>
-    @if (playerRoom.currentRoomWins.length !== room().responses.length) {
-    <span class="step">
-      {{ playerRoom.currentRoomWins.length + 1 }}<span class="slash">/</span
-      >{{ room().responses.length }}
-    </span>
-    } @else {
-    <span class="step">Terminé</span>
-    }
+    <div class="medals">
+      <span class="victory-number">{{ playerRoom.medalsNumber }}</span>
+      <i class="bx bxs-medal"></i>
+    </div>
+  </div>
+  <div class="player spinner">
+    <mat-spinner diameter="34"></mat-spinner>
   </div>
   }
 </div>

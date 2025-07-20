@@ -32,7 +32,7 @@ export class AppComponent implements OnInit, OnDestroy {
       },
       error: (error: HttpErrorResponse) => {
         if (!error.message.includes('Missing or insufficient permissions.')) {
-          this.toastr.error(error.message, 'Connexion', {
+          this.toastr.error(error.message, 'Game Time', {
             positionClass: 'toast-bottom-center',
             toastClass: 'ngx-toastr custom error',
           });

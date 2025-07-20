@@ -1,12 +1,17 @@
 <header>
   <div class="project-title">
+    @if (room().isStarted) {
     <h1>{{ room().gameName || "" }}</h1>
+    } @else {
+    <h1>{{ "Multi" }}</h1>
+    }
   </div>
   <div class="switch-container">
     <div class="medals">
       <span class="victory-number">{{ getMedalsNumber() }}</span>
       <i class="bx bxs-medal"></i>
     </div>
+    @if (room().isStarted) {
     <div class="players-room">
       @for (playerRoom of sortedPlayersRoom; track $index) {
       <div
@@ -25,5 +30,6 @@
       </div>
       }
     </div>
+    }
   </div>
 </header>

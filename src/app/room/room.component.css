@@ -45,6 +45,10 @@ mat-spinner {
   background-color: var(--primary);
 }
 
+.button-container button.share {
+  width: 50px;
+}
+
 .button-container .delete {
   color: red;
   transition: 0.5s ease;

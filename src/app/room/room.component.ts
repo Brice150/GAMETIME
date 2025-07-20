@@ -167,18 +167,28 @@ export class RoomComponent implements OnInit, OnDestroy {
     const updatePlayer$ = stepWon
       ? this.playerService.updatePlayer(this.player).pipe(
           tap(() => {
-            this.toastr.info('Manche gagnée', 'Game Time', {
-              positionClass: 'toast-bottom-center',
-              toastClass: 'ngx-toastr custom info',
-            });
+            this.toastr.info(
+              'Manche gagnée',
+              this.room.gameName.charAt(0).toUpperCase() +
+                this.room.gameName.slice(1),
+              {
+                positionClass: 'toast-bottom-center',
+                toastClass: 'ngx-toastr custom info',
+              }
+            );
           })
         )
       : of(undefined).pipe(
           tap(() => {
-            this.toastr.error('Manche perdue', 'Game Time', {
-              positionClass: 'toast-bottom-center',
-              toastClass: 'ngx-toastr custom error',
-            });
+            this.toastr.error(
+              'Manche perdue',
+              this.room.gameName.charAt(0).toUpperCase() +
+                this.room.gameName.slice(1),
+              {
+                positionClass: 'toast-bottom-center',
+                toastClass: 'ngx-toastr custom error',
+              }
+            );
           })
         );
 
@@ -290,33 +300,30 @@ export class RoomComponent implements OnInit, OnDestroy {
       (player) => player.userId === this.player.userId
     );
 
-    playerRoom!.isOver = true;
+    if (playerRoom) {
+      playerRoom.isOver = true;
 
-    const stat = this.player.stats.find(
-      (stat) => stat.gameName === this.room.gameName
-    );
+      const stat = this.player.stats.find(
+        (stat) => stat.gameName === this.room.gameName
+      );
 
-    playerRoom!.medalsNumber = stat?.medalsNumer || 0;
+      playerRoom.medalsNumber = stat?.medalsNumer || 0;
+    }
 
-    this.roomService
-      .updateRoom(this.room)
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe({
-        next: () => {
-          this.isSeeResultsAvailable = false;
-          this.isResultPageActive = true;
-          this.loading = false;
-        },
-        error: (error: HttpErrorResponse) => {
-          this.loading = false;
-          if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastr.error(error.message, 'Game Time', {
-              positionClass: 'toast-bottom-center',
-              toastClass: 'ngx-toastr custom error',
-            });
-          }
-        },
-      });
+    this.updateRoomAndHandleResponse(() => {
+      this.isSeeResultsAvailable = false;
+      this.isResultPageActive = true;
+    });
+  }
+
+  start(): void {
+    this.loading = true;
+
+    this.room.isStarted = true;
+
+    this.updateRoomAndHandleResponse(() => {
+      this.isResultPageActive = false;
+    });
   }
 
   startAgain(): void {
@@ -339,12 +346,29 @@ export class RoomComponent implements OnInit, OnDestroy {
       this.room.responses
     );
 
+    this.updateRoomAndHandleResponse(() => {
+      this.isResultPageActive = false;
+    });
+  }
+
+  share(): void {
+    const link = window.location.href;
+
+    navigator.clipboard.writeText(link).then(() => {
+      this.toastr.info('Lien de la partie copié', 'Game Time', {
+        positionClass: 'toast-bottom-center',
+        toastClass: 'ngx-toastr custom info',
+      });
+    });
+  }
+
+  updateRoomAndHandleResponse(onSuccess: () => void): void {
     this.roomService
       .updateRoom(this.room)
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: () => {
-          this.isResultPageActive = false;
+          onSuccess();
           this.loading = false;
         },
         error: (error: HttpErrorResponse) => {

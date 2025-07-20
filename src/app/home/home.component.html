@@ -30,7 +30,7 @@
       class="mode"
       [title]="mode.label"
       [ngClass]="{ active: modeSelected === mode.key }"
-      (click)="mode.onClick ? mode.onClick() : (modeSelected = mode.key)"
+      (click)="modeSelected = mode.key"
     >
       <div class="flex">
         <i class="{{ mode.icon }}"></i>

@@ -31,7 +31,16 @@
       <i class="bx bx-play"></i>
       <span class="text">Rejouer</span>
     </button>
-    }
+    } @else if (!room.isStarted) {
+    <button type="button" (click)="share()" title="Partager" class="share">
+      <i class="bx bx-link"></i>
+    </button>
+    @if (currentUserId === room.userId) {
+    <button type="button" (click)="start()" title="Jouer">
+      <i class="bx bx-play"></i>
+      <span class="text">Jouer</span>
+    </button>
+    } }
   </div>
   } @else {
   <mat-spinner></mat-spinner>
