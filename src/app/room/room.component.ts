@@ -269,10 +269,20 @@ export class RoomComponent implements OnInit, OnDestroy {
         .afterClosed()
         .pipe(
           filter((res: boolean) => res),
+          switchMap(() => {
+            this.loading = true;
+
+            this.room.playersRoom = this.room.playersRoom.filter(
+              (player) => player.userId !== this.player.userId
+            );
+
+            return this.roomService.updateRoom(this.room);
+          }),
           takeUntil(this.destroyed$)
         )
         .subscribe({
           next: () => {
+            this.loading = false;
             this.router.navigate(['/']);
           },
           error: (error: HttpErrorResponse) => {
