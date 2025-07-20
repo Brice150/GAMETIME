@@ -29,6 +29,7 @@ export class WordGamesComponent implements OnInit {
   drapeauxGameKey = gameMap['drapeaux'].key;
   toastr = inject(ToastrService);
   countryService = inject(CountryService);
+  isOver = false;
   readonly room = input.required<Room>();
   readonly playerRoom = input.required<PlayerRoom>();
   @Output() finishedStepEvent = new EventEmitter<boolean>();
@@ -42,14 +43,19 @@ export class WordGamesComponent implements OnInit {
   }
 
   new(): void {
+    const index = this.playerRoom().currentRoomWins.length;
+
+    if (index === this.room().responses.length) {
+      this.isOver = true;
+      return;
+    }
+
     if (this.room().gameName === this.drapeauxGameKey) {
       this.imageUrl = this.countryService.getDrapeauImageUrl(
-        this.room().countries[this.playerRoom().currentRoomWins.length || 0]
-          .code
+        this.room().countries[index || 0].code
       );
     }
 
-    this.response =
-      this.room().responses[this.playerRoom().currentRoomWins.length || 0];
+    this.response = this.room().responses[index || 0];
   }
 }

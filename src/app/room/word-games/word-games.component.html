@@ -1,4 +1,4 @@
-@if (room().gameName === drapeauxGameKey) {
+@if (!isOver) { @if (room().gameName === drapeauxGameKey) {
 <div class="container">
   <img [src]="imageUrl" alt="Drapeau.png" />
 </div>
@@ -8,3 +8,4 @@
   [showFirstLetter]="room().showFirstLetter"
   (emitEvent)="handleEvent($event)"
 ></app-word-input>
+}
