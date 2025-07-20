@@ -276,9 +276,7 @@ export class RoomComponent implements OnInit, OnDestroy {
               (player) => player.userId !== this.player.userId
             );
 
-            return this.roomService.updateRoomPartial(this.room.id!, {
-              playersRoom: this.room.playersRoom,
-            });
+            return this.roomService.updateRoomFull(this.room);
           }),
           takeUntil(this.destroyed$)
         )

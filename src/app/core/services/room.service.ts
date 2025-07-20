@@ -58,12 +58,13 @@ export class RoomService {
     return from(updateDoc(roomDoc, { ...room }));
   }
 
-  updateRoomPartial(roomId: string, partial: Partial<Room>): Observable<void> {
-    if (!roomId) {
+  updateRoomFull(room: Room): Observable<void> {
+    if (!room.id) {
       return from(Promise.reject('ID de salle manquant.'));
     }
-    const roomDoc = doc(this.firestore, `rooms/${roomId}`);
-    return from(updateDoc(roomDoc, partial));
+
+    const roomDoc = doc(this.firestore, `rooms/${room.id}`);
+    return from(setDoc(roomDoc, JSON.parse(JSON.stringify(room))));
   }
 
   deleteRoom(roomId: string): Observable<void> {
