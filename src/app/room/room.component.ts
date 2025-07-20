@@ -99,10 +99,15 @@ export class RoomComponent implements OnInit, OnDestroy {
           }
 
           if (!room.isSolo) {
+            const stat = this.player.stats.find(
+              (stat) => stat.gameName === this.room.gameName
+            );
+
             this.playerRoom = {
               userId: this.player.userId!,
               username: this.player.username,
               isOver: false,
+              medalsNumber: stat?.medalsNumer || 0,
               currentRoomWins: [],
             };
             this.room.playersRoom.push(this.playerRoom);
@@ -297,6 +302,12 @@ export class RoomComponent implements OnInit, OnDestroy {
     );
 
     playerRoom!.isOver = true;
+
+    const stat = this.player.stats.find(
+      (stat) => stat.gameName === this.room.gameName
+    );
+
+    playerRoom!.medalsNumber = stat?.medalsNumer || 0;
 
     this.roomService
       .updateRoom(this.room)

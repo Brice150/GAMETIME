@@ -116,10 +116,13 @@ export class RoomService {
       responses
     );
 
+    const stat = player.stats.find((stat) => stat.gameName === gameSelected);
+
     const playerRoom: PlayerRoom = {
       userId: player.userId!,
       username: player.username,
       isOver: false,
+      medalsNumber: stat?.medalsNumer || 0,
       currentRoomWins: [],
     };
 
