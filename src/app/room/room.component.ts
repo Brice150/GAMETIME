@@ -272,13 +272,13 @@ export class RoomComponent implements OnInit, OnDestroy {
           switchMap(() => {
             this.loading = true;
 
-            this.room.playersRoom = [
-              ...this.room.playersRoom.filter(
-                (player) => player.userId !== this.player.userId
-              ),
-            ];
+            this.room.playersRoom = this.room.playersRoom.filter(
+              (player) => player.userId !== this.player.userId
+            );
 
-            return this.roomService.updateRoom(this.room);
+            return this.roomService.updateRoomPartial(this.room.id!, {
+              playersRoom: this.room.playersRoom,
+            });
           }),
           takeUntil(this.destroyed$)
         )
