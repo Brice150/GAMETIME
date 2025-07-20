@@ -11,4 +11,13 @@ import { Room } from 'src/app/core/interfaces/room';
 export class RoomHeaderComponent {
   room = input.required<Room>();
   medalsNumber = input.required<number>();
+
+  get sortedPlayersRoom() {
+    const room = this.room();
+    if (!room || !room.playersRoom) return [];
+
+    return [...room.playersRoom].sort(
+      (a, b) => b.currentRoomWins.length - a.currentRoomWins.length
+    );
+  }
 }

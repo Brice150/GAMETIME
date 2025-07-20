@@ -2,9 +2,25 @@
   <div class="project-title">
     <h1>{{ room().gameName || "" }}</h1>
   </div>
-  <div class="medals">
-    <span class="victory-number">{{ medalsNumber() }}</span>
-    <i class="bx bxs-medal"></i>
+  <div class="switch-container">
+    <div class="medals">
+      <span class="victory-number">{{ medalsNumber() }}</span>
+      <i class="bx bxs-medal"></i>
+    </div>
+    <div class="players-room">
+      @for (playerRoom of sortedPlayersRoom; track $index) {
+      <div class="progress" [ngClass]="{ 'alt-color': $index % 2 === 1 }">
+        <span class="username">{{ playerRoom.username }}</span>
+        @if (playerRoom.currentRoomWins.length !== room().responses.length) {
+        <span class="step">
+          {{ playerRoom.currentRoomWins.length + 1 }}<span class="slash">/</span
+          >{{ room().responses.length }}
+        </span>
+        } @else {
+        <span class="step">Terminé</span>
+        }
+      </div>
+      }
+    </div>
   </div>
-  <div class="progress-container"></div>
 </header>

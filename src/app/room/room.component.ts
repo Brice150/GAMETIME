@@ -102,6 +102,7 @@ export class RoomComponent implements OnInit, OnDestroy {
             this.playerRoom = {
               userId: this.player.userId!,
               username: this.player.username,
+              isOver: false,
               currentRoomWins: [],
             };
             this.room.playersRoom.push(this.playerRoom);
@@ -125,6 +126,14 @@ export class RoomComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: () => {
+          if (this.playerRoom.isOver) {
+            this.isResultPageActive = true;
+          } else if (
+            this.playerRoom.currentRoomWins.length ===
+            this.room.responses.length
+          ) {
+            this.isSeeResultsAvailable = true;
+          }
           this.loading = false;
         },
         error: (error: HttpErrorResponse) => {
@@ -281,8 +290,33 @@ export class RoomComponent implements OnInit, OnDestroy {
   }
 
   seeResults(): void {
-    this.isSeeResultsAvailable = false;
-    this.isResultPageActive = true;
+    this.loading = true;
+
+    const playerRoom = this.room.playersRoom.find(
+      (player) => player.userId === this.player.userId
+    );
+
+    playerRoom!.isOver = true;
+
+    this.roomService
+      .updateRoom(this.room)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: () => {
+          this.isSeeResultsAvailable = false;
+          this.isResultPageActive = true;
+          this.loading = false;
+        },
+        error: (error: HttpErrorResponse) => {
+          this.loading = false;
+          if (!error.message.includes('Missing or insufficient permissions.')) {
+            this.toastr.error(error.message, 'Game Time', {
+              positionClass: 'toast-bottom-center',
+              toastClass: 'ngx-toastr custom error',
+            });
+          }
+        },
+      });
   }
 
   startAgain(): void {
@@ -290,7 +324,10 @@ export class RoomComponent implements OnInit, OnDestroy {
 
     this.room.countries = [];
     this.room.responses = [];
-    this.room.playersRoom.forEach((player) => (player.currentRoomWins = []));
+    this.room.playersRoom.forEach((player) => {
+      player.isOver = false;
+      player.currentRoomWins = [];
+    });
 
     this.roomService.generateResponses(
       this.room.gameName,

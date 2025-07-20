@@ -119,6 +119,7 @@ export class RoomService {
     const playerRoom: PlayerRoom = {
       userId: player.userId!,
       username: player.username,
+      isOver: false,
       currentRoomWins: [],
     };
 
