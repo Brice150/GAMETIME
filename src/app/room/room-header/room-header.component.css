@@ -24,12 +24,9 @@ header {
 }
 
 .switch-container {
-  top: 8px;
   position: absolute;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 95%;
+  top: 8px;
+  left: 20px;
   z-index: 1;
 }
 
@@ -58,6 +55,9 @@ header {
 }
 
 .players-room {
+  position: absolute;
+  top: 8px;
+  right: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -74,11 +74,14 @@ header {
 }
 
 .players-room .player {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 150px;
   font-size: 15px;
   font-weight: bold;
   color: var(--accent);
   text-align: center;
-  margin: 2px;
 }
 
 .players-room .player.alt-color {
@@ -100,6 +103,20 @@ header {
 
 .slash {
   margin: 0 2px;
+}
+
+@media screen and (max-width: 768px) {
+  .players-room {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin: 0;
+    margin-top: 70px;
+    right: unset;
+    top: unset;
+  }
 }
 
 @media screen and (max-width: 550px) {

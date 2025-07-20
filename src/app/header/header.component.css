@@ -24,12 +24,9 @@ header {
 }
 
 .switch-container {
-  top: 8px;
   position: absolute;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 95%;
+  top: 8px;
+  left: 20px;
   z-index: 1;
 }
 

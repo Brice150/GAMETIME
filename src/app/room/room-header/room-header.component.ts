@@ -28,4 +28,15 @@ export class RoomHeaderComponent {
     );
     return stat?.medalsNumer ?? 0;
   }
+
+  isOver(): boolean {
+    const playerRoom = this.room().playersRoom.find(
+      (player) => player.userId === this.player().userId
+    );
+
+    if (playerRoom) {
+      return playerRoom.isOver;
+    }
+    return false;
+  }
 }

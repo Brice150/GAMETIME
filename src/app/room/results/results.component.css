@@ -36,6 +36,18 @@
   font-size: 28px;
 }
 
+.players-room .player .podium .order {
+  font-size: 22px;
+  padding: 0 10px;
+  border-radius: var(--light-radius);
+  color: var(--primary);
+  background-color: var(--accent);
+}
+
+.players-room .player.alt-color .podium .order {
+  background-color: var(--secondary);
+}
+
 .players-room .player .medals {
   display: flex;
   justify-content: center;
