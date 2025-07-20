@@ -362,6 +362,22 @@ export class RoomComponent implements OnInit, OnDestroy {
     });
   }
 
+  test(): void {
+    const playerRoom: PlayerRoom = {
+      userId: 'fzef',
+      username: 'Bloew',
+      isOver: false,
+      medalsNumber: 5,
+      currentRoomWins: [],
+    };
+
+    this.room.playersRoom.push(playerRoom);
+
+    this.updateRoomAndHandleResponse(() => {
+      // ne rien faire
+    });
+  }
+
   updateRoomAndHandleResponse(onSuccess: () => void): void {
     this.roomService
       .updateRoom(this.room)
