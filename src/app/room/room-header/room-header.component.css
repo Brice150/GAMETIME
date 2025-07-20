@@ -73,7 +73,7 @@ header {
   min-height: 36px;
 }
 
-.players-room .progress {
+.players-room .player {
   font-size: 15px;
   font-weight: bold;
   color: var(--accent);
@@ -81,11 +81,11 @@ header {
   margin: 2px;
 }
 
-.players-room .progress.alt-color {
+.players-room .player.alt-color {
   color: var(--secondary);
 }
 
-.players-room .progress .step {
+.players-room .player .step {
   background-color: var(--accent);
   color: var(--primary);
   border-radius: var(--light-radius);
@@ -94,7 +94,7 @@ header {
   margin-left: 7px;
 }
 
-.players-room .progress.alt-color .step {
+.players-room .player.alt-color .step {
   background-color: var(--secondary);
 }
 

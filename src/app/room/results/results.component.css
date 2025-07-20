@@ -1,0 +1,88 @@
+.players-room {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.players-room .player {
+  border-radius: var(--light-radius);
+  background-color: var(--primary);
+  color: var(--accent);
+  padding: 10px;
+  width: 270px;
+}
+
+.players-room .player.alt-color {
+  color: var(--secondary);
+}
+
+.players-room .player .flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.players-room .player .username {
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.players-room .player .podium {
+  font-size: 28px;
+}
+
+.players-room .player .medals {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  background-color: var(--accent);
+  color: var(--primary);
+  border-radius: var(--light-radius);
+  padding: 3px 0;
+  padding-left: 10px;
+  padding-right: 5px;
+}
+
+.players-room .player.alt-color .medals {
+  background-color: var(--secondary);
+}
+
+.victory-number {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.medals i {
+  font-size: 28px;
+}
+
+.players-room .player .responses {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.players-room .player .responses .response {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.players-room .player .responses .response .description {
+  font-size: 18px;
+  text-transform: uppercase;
+}
+
+.players-room .player .responses .response i {
+  font-size: 28px;
+}

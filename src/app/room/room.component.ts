@@ -80,10 +80,6 @@ export class RoomComponent implements OnInit, OnDestroy {
         switchMap((roomId: string) => this.roomService.getRoom(roomId)),
         switchMap((room: Room | null) => {
           if (!room) {
-            this.toastr.info('Room supprimée', 'Room', {
-              positionClass: 'toast-bottom-center',
-              toastClass: 'ngx-toastr custom info',
-            });
             return of(null);
           }
 
@@ -217,13 +213,6 @@ export class RoomComponent implements OnInit, OnDestroy {
           }
         },
       });
-  }
-
-  getMedalsNumber(): number {
-    const stat = this.player?.stats?.find(
-      (stat) => stat.gameName === this.room.gameName
-    );
-    return stat?.medalsNumer ?? 0;
   }
 
   openDialog(): void {

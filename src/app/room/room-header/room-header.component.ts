@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
+import { Player } from 'src/app/core/interfaces/player';
 import { Room } from 'src/app/core/interfaces/room';
 
 @Component({
@@ -10,7 +11,7 @@ import { Room } from 'src/app/core/interfaces/room';
 })
 export class RoomHeaderComponent {
   room = input.required<Room>();
-  medalsNumber = input.required<number>();
+  player = input.required<Player>();
 
   get sortedPlayersRoom() {
     const room = this.room();
@@ -19,5 +20,12 @@ export class RoomHeaderComponent {
     return [...room.playersRoom].sort(
       (a, b) => b.currentRoomWins.length - a.currentRoomWins.length
     );
+  }
+
+  getMedalsNumber(): number {
+    const stat = this.player().stats?.find(
+      (stat) => stat.gameName === this.room().gameName
+    );
+    return stat?.medalsNumer ?? 0;
   }
 }

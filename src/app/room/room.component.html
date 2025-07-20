@@ -1,7 +1,4 @@
-<app-room-header
-  [room]="room"
-  [medalsNumber]="getMedalsNumber()"
-></app-room-header>
+<app-room-header [room]="room" [player]="player"></app-room-header>
 <section>
   @if(!loading) { @if (room.isStarted) { @if(!isResultPageActive) {
   <app-word-games
@@ -10,9 +7,9 @@
     (finishedStepEvent)="updateRoom($event)"
   ></app-word-games>
   } @else {
-  <app-results></app-results>
+  <app-results [room]="room" [player]="player"></app-results>
   } } @else {
-  <app-waiting-room></app-waiting-room>
+  <app-waiting-room [room]="room" [player]="player"></app-waiting-room>
   }
   <div class="button-container">
     <button type="button" title="Quitter" (click)="openDialog()" class="delete">

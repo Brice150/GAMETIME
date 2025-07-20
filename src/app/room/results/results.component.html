@@ -1,1 +1,41 @@
-<p>results works!</p>
+<div class="players-room">
+  @for (playerRoom of sortedPlayersRoom; track $index; let i = $index) {
+  <div
+    class="player"
+    [ngClass]="{ 'alt-color': playerRoom.userId !== player().userId }"
+  >
+    <div class="flex">
+      <span class="username">{{ playerRoom.username }}</span>
+      <div class="medals">
+        <span class="victory-number">{{ playerRoom.medalsNumber }}</span>
+        <i class="bx bxs-medal"></i>
+      </div>
+      @if (!room().isSolo) {
+      <div class="podium">
+        @if (i + 1 === 1) {
+        <i class="bx bxs-trophy" style="color: gold"></i>
+        } @else if (i + 1 === 2) {
+        <i class="bx bxs-trophy" style="color: silver"></i>
+        }@else if (i + 1 === 3) {
+        <i class="bx bxs-trophy" style="color: #cd7f32"></i>
+        } @else {
+        <i class="bx bxs-trophy" style="color: black"></i>
+        }
+      </div>
+      }
+    </div>
+    <div class="responses">
+      @for (response of room().responses; track $index; let j = $index) {
+      <div class="response">
+        <span class="description">{{ response }}</span>
+        @if (playerRoom.currentRoomWins[j]) {
+        <i class="bx bx-check"></i>
+        } @else {
+        <i class="bx bx-x" style="color: red"></i>
+        }
+      </div>
+      }
+    </div>
+  </div>
+  }
+</div>

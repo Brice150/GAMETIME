@@ -4,12 +4,15 @@
   </div>
   <div class="switch-container">
     <div class="medals">
-      <span class="victory-number">{{ medalsNumber() }}</span>
+      <span class="victory-number">{{ getMedalsNumber() }}</span>
       <i class="bx bxs-medal"></i>
     </div>
     <div class="players-room">
       @for (playerRoom of sortedPlayersRoom; track $index) {
-      <div class="progress" [ngClass]="{ 'alt-color': $index % 2 === 1 }">
+      <div
+        class="player"
+        [ngClass]="{ 'alt-color': playerRoom.userId !== player().userId }"
+      >
         <span class="username">{{ playerRoom.username }}</span>
         @if (playerRoom.currentRoomWins.length !== room().responses.length) {
         <span class="step">

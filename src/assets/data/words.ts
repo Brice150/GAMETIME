@@ -16981,7 +16981,6 @@ export const words: string[] = [
   'sociologues',
   'socle',
   'sodium',
-  'seurs',
   'software',
   'soient',
   'soigne',
