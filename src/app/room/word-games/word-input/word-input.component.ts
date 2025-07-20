@@ -118,31 +118,37 @@ export class WordInputComponent implements OnInit {
         () => false
       ),
     };
+
     const letterCountMap = new Map<string, number>();
+
     for (let letter of this.response) {
-      if (letterCountMap.has(letter)) {
-        letterCountMap.set(letter, letterCountMap.get(letter)! + 1);
-      } else {
-        letterCountMap.set(letter, 1);
-      }
+      letterCountMap.set(letter, (letterCountMap.get(letter) ?? 0) + 1);
     }
+
     for (let i = 0; i < this.inputValue!.length; i++) {
-      let letter = this.inputValue![i];
+      const letter = this.inputValue![i];
       if (letter === this.response[i]) {
-        letterCountMap.set(letter, letterCountMap.get(letter)! - 1);
         newTry.isWellPlaced[i] = true;
-      }
-    }
-    for (let i = 0; i < this.inputValue!.length; i++) {
-      let letter = this.inputValue![i];
-      if (this.response.includes(letter) && letterCountMap.get(letter) !== 0) {
         letterCountMap.set(letter, letterCountMap.get(letter)! - 1);
-        newTry.isWrongPlaced[i] = true;
       }
     }
+
+    for (let i = 0; i < this.inputValue!.length; i++) {
+      const letter = this.inputValue![i];
+      if (
+        !newTry.isWellPlaced[i] &&
+        letterCountMap.get(letter) &&
+        this.response.includes(letter)
+      ) {
+        newTry.isWrongPlaced[i] = true;
+        letterCountMap.set(letter, letterCountMap.get(letter)! - 1);
+      }
+    }
+
     this.tries.push(newTry);
     this.emojiClass = emojies[this.tries.length + 1].emojiClass;
     this.emojiStyle = emojies[this.tries.length + 1].emojiStyle;
+
     if (this.tries.length > 5) {
       this.reset(false);
     }
