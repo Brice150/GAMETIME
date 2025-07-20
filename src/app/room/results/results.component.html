@@ -24,14 +24,21 @@
       </div>
       }
     </div>
+    <div class="time">
+      <span>{{
+        room().startDate | durationBetweenDates : playerRoom.finishDate
+      }}</span>
+    </div>
     <div class="responses">
       @for (response of room().responses; track $index; let j = $index) {
       <div class="response">
         <span class="description">{{ response }}</span>
-        @if (playerRoom.currentRoomWins[j]) {
+        @if (playerRoom.currentRoomWins[j] === true) {
         <i class="bx bx-check"></i>
-        } @else {
+        } @else if (playerRoom.currentRoomWins[j] === false) {
         <i class="bx bx-x" style="color: red"></i>
+        } @else {
+        <i class="bx bx-loader-alt bx-spin" style="color: var(--accent)"></i>
         }
       </div>
       }

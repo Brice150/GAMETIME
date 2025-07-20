@@ -302,6 +302,7 @@ export class RoomComponent implements OnInit, OnDestroy {
 
     if (playerRoom) {
       playerRoom.isOver = true;
+      playerRoom.finishDate = new Date();
 
       const stat = this.player.stats.find(
         (stat) => stat.gameName === this.room.gameName
@@ -320,6 +321,7 @@ export class RoomComponent implements OnInit, OnDestroy {
     this.loading = true;
 
     this.room.isStarted = true;
+    this.room.startDate = new Date();
 
     this.updateRoomAndHandleResponse(() => {
       this.isResultPageActive = false;

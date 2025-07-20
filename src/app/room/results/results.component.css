@@ -98,3 +98,15 @@
 .players-room .player .responses .response i {
   font-size: 28px;
 }
+
+.time {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.time span {
+  font-weight: bold;
+}

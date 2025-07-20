@@ -15,4 +15,5 @@ export interface Room {
   startWordLength: number;
   responses: string[];
   countries: Country[];
+  startDate: Date | null;
 }

@@ -138,6 +138,7 @@ export class RoomService {
       startWordLength: startWordLength,
       responses: responses,
       countries: countries,
+      startDate: modeSelected === 'solo' ? new Date() : null,
     };
   }
 
