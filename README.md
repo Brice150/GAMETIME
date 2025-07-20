@@ -5,25 +5,43 @@
 # GAME TIME, a gaming web application
 
 Frontend : Angular
+<br>
+Backend/Database : Firebase
+<br>
 
 <details>
   <summary>Pages Features</summary>
 
-### Page
+### Connect
 
-- Handle your account and learn how to play
-- Choose to play to various games
-- Earn medals while playing
+- Register by completing information with form control
+- Login with failure animation for bad credentials
+- Logout is available on menu once logged in
+
+### Accueil
+
+- Select the game you want to play
+- Choose options for the game including multiplayer mode
+
+### Profile
+
+- Modify your profile
+- Delete your account (needs confirmation)
+
+### Room
+
+- If you selected multiplayer mode, you can share a link for the others to connect to your room
+- After a game finishes, you can compare your results with other players
 
 ### Motus
 
-- Find a word
-- Hint : first letter, red and yellow letter colors
+- Find series of words with limiting number of trials
+- Hints : first letter, blue and red letter colors
 
 ### Drapeaux
 
-- Find a country
-- Hint : flag, red and yellow letter colors
+- Find series of countries with limiting number of trials
+- Hints : flag, blue and red letter colors
 
 </details>
 
