@@ -384,4 +384,8 @@ export class RoomComponent implements OnInit, OnDestroy {
         },
       });
   }
+
+  isEveryoneDone(): boolean {
+    return this.room.playersRoom.every((playerRoom) => playerRoom.isOver);
+  }
 }
