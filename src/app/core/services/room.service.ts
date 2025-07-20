@@ -20,15 +20,15 @@ import {
   switchMap,
   take,
 } from 'rxjs';
-import { UserService } from './user.service';
-import { Room } from '../interfaces/room';
-import { Country } from '../interfaces/country';
-import { PlayerRoom } from '../interfaces/player-room';
+import { countries } from 'src/assets/data/countries';
 import { gameMap } from 'src/assets/data/games';
-import { Player } from '../interfaces/player';
 import { words } from 'src/assets/data/words';
 import { Continent } from '../enums/continent.enum';
-import { countries } from 'src/assets/data/countries';
+import { Country } from '../interfaces/country';
+import { Player } from '../interfaces/player';
+import { PlayerRoom } from '../interfaces/player-room';
+import { Room } from '../interfaces/room';
+import { UserService } from './user.service';
 
 @Injectable({ providedIn: 'root' })
 export class RoomService {
@@ -56,15 +56,6 @@ export class RoomService {
     }
     const roomDoc = doc(this.firestore, `rooms/${room.id}`);
     return from(updateDoc(roomDoc, { ...room }));
-  }
-
-  updateRoomFull(room: Room): Observable<void> {
-    if (!room.id) {
-      return from(Promise.reject('ID de salle manquant.'));
-    }
-
-    const roomDoc = doc(this.firestore, `rooms/${room.id}`);
-    return from(setDoc(roomDoc, JSON.parse(JSON.stringify(room))));
   }
 
   deleteRoom(roomId: string): Observable<void> {

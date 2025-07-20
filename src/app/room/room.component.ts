@@ -16,17 +16,17 @@ import {
   takeUntil,
   tap,
 } from 'rxjs';
+import { gameMap } from 'src/assets/data/games';
 import { Player } from '../core/interfaces/player';
 import { PlayerRoom } from '../core/interfaces/player-room';
 import { Room } from '../core/interfaces/room';
 import { PlayerService } from '../core/services/player.service';
 import { RoomService } from '../core/services/room.service';
-import { WaitingRoomComponent } from './waiting-room/waiting-room.component';
-import { WordGamesComponent } from './word-games/word-games.component';
-import { RoomHeaderComponent } from './room-header/room-header.component';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ResultsComponent } from './results/results.component';
-import { gameMap } from 'src/assets/data/games';
+import { RoomHeaderComponent } from './room-header/room-header.component';
+import { WaitingRoomComponent } from './waiting-room/waiting-room.component';
+import { WordGamesComponent } from './word-games/word-games.component';
 
 @Component({
   selector: 'app-room',
@@ -276,7 +276,7 @@ export class RoomComponent implements OnInit, OnDestroy {
               (player) => player.userId !== this.player.userId
             );
 
-            return this.roomService.updateRoomFull(this.room);
+            return this.roomService.updateRoom(this.room);
           }),
           takeUntil(this.destroyed$)
         )
