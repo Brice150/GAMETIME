@@ -4,5 +4,5 @@ export interface PlayerRoom {
   isOver: boolean;
   medalsNumber: number;
   currentRoomWins: boolean[];
-  finishDate?: Date;
+  finishDate: Date | null;
 }

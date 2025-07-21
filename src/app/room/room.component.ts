@@ -103,6 +103,7 @@ export class RoomComponent implements OnInit, OnDestroy {
               userId: this.player.userId!,
               username: this.player.username,
               isOver: false,
+              finishDate: null,
               medalsNumber: stat?.medalsNumer || 0,
               currentRoomWins: [],
             };
@@ -373,8 +374,10 @@ export class RoomComponent implements OnInit, OnDestroy {
 
     this.room.countries = [];
     this.room.responses = [];
+    this.room.startDate = new Date();
     this.room.playersRoom.forEach((player) => {
       player.isOver = false;
+      player.finishDate = null;
       player.currentRoomWins = [];
     });
 

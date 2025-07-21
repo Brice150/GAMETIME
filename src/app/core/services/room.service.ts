@@ -122,6 +122,7 @@ export class RoomService {
       userId: player.userId!,
       username: player.username,
       isOver: false,
+      finishDate: null,
       medalsNumber: stat?.medalsNumer || 0,
       currentRoomWins: [],
     };
