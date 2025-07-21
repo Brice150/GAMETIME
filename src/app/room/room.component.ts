@@ -259,6 +259,10 @@ export class RoomComponent implements OnInit, OnDestroy {
           next: () => {
             this.loading = false;
             this.router.navigate(['/']);
+            this.toastr.info('La room a été supprimée', 'Game Time', {
+              positionClass: 'toast-bottom-center',
+              toastClass: 'ngx-toastr custom info',
+            });
           },
           error: (error: HttpErrorResponse) => {
             this.loading = false;
@@ -302,10 +306,22 @@ export class RoomComponent implements OnInit, OnDestroy {
             if (
               !error.message.includes('Missing or insufficient permissions.')
             ) {
-              this.toastr.error(error.message, 'Game Time', {
-                positionClass: 'toast-bottom-center',
-                toastClass: 'ngx-toastr custom error',
-              });
+              if (error.message.includes('No document to update')) {
+                this.router.navigate(['/']);
+                this.toastr.info(
+                  'Vous venez de quitter une room',
+                  'Game Time',
+                  {
+                    positionClass: 'toast-bottom-center',
+                    toastClass: 'ngx-toastr custom info',
+                  }
+                );
+              } else {
+                this.toastr.error(error.message, 'Game Time', {
+                  positionClass: 'toast-bottom-center',
+                  toastClass: 'ngx-toastr custom error',
+                });
+              }
             }
           },
         });
