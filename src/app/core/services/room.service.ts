@@ -59,19 +59,6 @@ export class RoomService {
     return from(updateDoc(roomDoc, { ...room }));
   }
 
-  removePlayerFromRoom(
-    roomId: string,
-    playerRoomToRemove: PlayerRoom
-  ): Observable<void> {
-    const roomDoc = doc(this.firestore, `rooms/${roomId}`);
-
-    return from(
-      updateDoc(roomDoc, {
-        playersRoom: arrayRemove(playerRoomToRemove),
-      })
-    );
-  }
-
   deleteRoom(roomId: string): Observable<void> {
     const roomDoc = doc(this.firestore, `rooms/${roomId}`);
     return from(deleteDoc(roomDoc));

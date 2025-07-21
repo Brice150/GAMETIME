@@ -7,18 +7,12 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSliderModule } from '@angular/material/slider';
 import { Router, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { Subject, take, takeUntil } from 'rxjs';
+import { Subject, switchMap, take, takeUntil } from 'rxjs';
 import { gameMap, games } from 'src/assets/data/games';
 import { Mode } from '../core/interfaces/mode';
 import { Player } from '../core/interfaces/player';
 import { PlayerService } from '../core/services/player.service';
 import { RoomService } from '../core/services/room.service';
-import { Room } from '../core/interfaces/room';
-import { Country } from '../core/interfaces/country';
-import { words } from 'src/assets/data/words';
-import { countries } from 'src/assets/data/countries';
-import { Continent } from '../core/enums/continent.enum';
-import { PlayerRoom } from '../core/interfaces/player-room';
 
 @Component({
   selector: 'app-home',
@@ -153,8 +147,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     );
 
     this.roomService
-      .addRoom(newRoom)
-      .pipe(takeUntil(this.destroyed$))
+      .deleteUserRoom()
+      .pipe(
+        takeUntil(this.destroyed$),
+        switchMap(() => this.roomService.addRoom(newRoom))
+      )
       .subscribe({
         next: (roomId) => {
           this.loading = false;
