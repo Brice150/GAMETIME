@@ -12,6 +12,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { WordTry } from 'src/app/core/interfaces/wordTry';
+import { LocalStorageService } from 'src/app/core/services/local-storage.service';
 import { emojies } from 'src/assets/data/emojis';
 
 @Component({
@@ -22,6 +23,7 @@ import { emojies } from 'src/assets/data/emojis';
 })
 export class WordInputComponent implements OnInit {
   toastr = inject(ToastrService);
+  localStorageService = inject(LocalStorageService);
   @Input() response: string = '';
   readonly showFirstLetter = input<boolean>(true);
   wordToFind!: string;
@@ -37,9 +39,17 @@ export class WordInputComponent implements OnInit {
     if (this.response) {
       this.isOver = false;
       this.response = this.response.toUpperCase();
-      this.tries = [];
-      this.emojiClass = emojies[1].emojiClass;
-      this.emojiStyle = emojies[1].emojiStyle;
+      const tries = this.localStorageService.getTries();
+
+      if (tries) {
+        this.tries = tries;
+        this.emojiClass = emojies[tries.length + 1].emojiClass;
+        this.emojiStyle = emojies[tries.length + 1].emojiStyle;
+      } else {
+        this.tries = [];
+        this.emojiClass = emojies[1].emojiClass;
+        this.emojiStyle = emojies[1].emojiStyle;
+      }
       if (this.showFirstLetter()) {
         this.wordToFind = this.response.replace(/[A-Za-z]/g, '_');
         this.inputValue = this.response.charAt(0);
@@ -146,6 +156,7 @@ export class WordInputComponent implements OnInit {
     }
 
     this.tries.push(newTry);
+    this.localStorageService.saveTries(this.tries);
     this.emojiClass = emojies[this.tries.length + 1].emojiClass;
     this.emojiStyle = emojies[this.tries.length + 1].emojiStyle;
 
@@ -164,6 +175,7 @@ export class WordInputComponent implements OnInit {
     this.isOver = true;
     setTimeout(() => {
       this.inputValue = '';
+      this.localStorageService.saveTries([]);
     });
     this.emitEvent.emit(stepWon);
   }
