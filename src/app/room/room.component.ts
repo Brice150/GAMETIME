@@ -109,18 +109,17 @@ export class RoomComponent implements OnInit, OnDestroy {
             };
             this.room.playersRoom.push(this.playerRoom);
 
-            return this.roomService.updateRoom(this.room).pipe(
-              tap(() => {
-                this.toastr.info(
-                  'Vous venez de rejoindre une room',
-                  'Game Time',
-                  {
-                    positionClass: 'toast-bottom-center',
-                    toastClass: 'ngx-toastr custom info',
-                  }
-                );
-              })
-            );
+            this.updateRoomAndHandleResponse(() => {
+              this.toastr.info(
+                'Vous venez de rejoindre une room',
+                'Game Time',
+                {
+                  positionClass: 'toast-bottom-center',
+                  toastClass: 'ngx-toastr custom info',
+                }
+              );
+            });
+            return of(null);
           }
 
           return of(null);
@@ -286,28 +285,15 @@ export class RoomComponent implements OnInit, OnDestroy {
         .afterClosed()
         .pipe(
           filter((res: boolean) => res),
-          switchMap(() => {
+          tap(() => {
             this.loading = true;
-
             this.room.playersRoom = this.room.playersRoom.filter(
               (player) => player.userId !== this.player.userId
             );
 
-            return this.roomService.updateRoom(this.room);
-          }),
-          takeUntil(this.destroyed$)
-        )
-        .subscribe({
-          next: () => {
-            this.loading = false;
-            this.router.navigate(['/']);
-          },
-          error: (error: HttpErrorResponse) => {
-            this.loading = false;
-            if (
-              !error.message.includes('Missing or insufficient permissions.')
-            ) {
-              if (error.message.includes('No document to update')) {
+            this.updateRoomAndHandleResponse(
+              () => {
+                this.loading = false;
                 this.router.navigate(['/']);
                 this.toastr.info(
                   'Vous venez de quitter une room',
@@ -317,15 +303,31 @@ export class RoomComponent implements OnInit, OnDestroy {
                     toastClass: 'ngx-toastr custom info',
                   }
                 );
-              } else {
-                this.toastr.error(error.message, 'Game Time', {
-                  positionClass: 'toast-bottom-center',
-                  toastClass: 'ngx-toastr custom error',
-                });
+              },
+              (error: HttpErrorResponse) => {
+                this.loading = false;
+                if (error.message.includes('No document to update')) {
+                  this.router.navigate(['/']);
+                  this.toastr.info(
+                    'Vous venez de quitter une room',
+                    'Game Time',
+                    {
+                      positionClass: 'toast-bottom-center',
+                      toastClass: 'ngx-toastr custom info',
+                    }
+                  );
+                } else {
+                  this.toastr.error(error.message, 'Game Time', {
+                    positionClass: 'toast-bottom-center',
+                    toastClass: 'ngx-toastr custom error',
+                  });
+                }
               }
-            }
-          },
-        });
+            );
+          }),
+          takeUntil(this.destroyed$)
+        )
+        .subscribe();
     }
   }
 
@@ -407,7 +409,10 @@ export class RoomComponent implements OnInit, OnDestroy {
     });
   }
 
-  updateRoomAndHandleResponse(onSuccess: () => void): void {
+  updateRoomAndHandleResponse(
+    onSuccess: () => void,
+    onError?: (error: HttpErrorResponse) => void
+  ): void {
     this.roomService
       .updateRoom(this.room)
       .pipe(takeUntil(this.destroyed$))
@@ -418,7 +423,11 @@ export class RoomComponent implements OnInit, OnDestroy {
         },
         error: (error: HttpErrorResponse) => {
           this.loading = false;
-          if (!error.message.includes('Missing or insufficient permissions.')) {
+          if (onError) {
+            onError(error);
+          } else if (
+            !error.message.includes('Missing or insufficient permissions.')
+          ) {
             this.toastr.error(error.message, 'Game Time', {
               positionClass: 'toast-bottom-center',
               toastClass: 'ngx-toastr custom error',
