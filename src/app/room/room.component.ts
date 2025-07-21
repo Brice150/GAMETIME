@@ -290,19 +290,16 @@ export class RoomComponent implements OnInit, OnDestroy {
         data: 'quitter cette room',
       });
 
-      dialogRef
-        .afterClosed()
-        .pipe(
-          filter((res: boolean) => res),
-          tap(() => {
-            this.hasConfirmedQuit = true;
-            this.loading = true;
-            this.room.playersRoom = this.room.playersRoom.filter(
-              (player) => player.userId !== this.player.userId
-            );
-
-            this.updateRoomAndHandleResponse(
-              () => {
+      dialogRef.afterClosed().pipe(
+        filter((res: boolean) => res),
+        tap(() => {
+          this.hasConfirmedQuit = true;
+          this.loading = true;
+          this.roomService
+            .removePlayerFromRoom(this.room.id!, this.playerRoom)
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe({
+              next: () => {
                 this.loading = false;
                 this.router.navigate(['/']);
                 this.toastr.info(
@@ -314,7 +311,7 @@ export class RoomComponent implements OnInit, OnDestroy {
                   }
                 );
               },
-              (error: HttpErrorResponse) => {
+              error: (error: HttpErrorResponse) => {
                 this.loading = false;
                 if (error.message.includes('No document to update')) {
                   this.router.navigate(['/']);
@@ -332,12 +329,10 @@ export class RoomComponent implements OnInit, OnDestroy {
                     toastClass: 'ngx-toastr custom error',
                   });
                 }
-              }
-            );
-          }),
-          takeUntil(this.destroyed$)
-        )
-        .subscribe();
+              },
+            });
+        })
+      );
     }
   }
 

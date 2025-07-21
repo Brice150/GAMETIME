@@ -1,5 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import {
+  arrayRemove,
   collection,
   collectionData,
   deleteDoc,
@@ -56,6 +57,19 @@ export class RoomService {
     }
     const roomDoc = doc(this.firestore, `rooms/${room.id}`);
     return from(updateDoc(roomDoc, { ...room }));
+  }
+
+  removePlayerFromRoom(
+    roomId: string,
+    playerRoomToRemove: PlayerRoom
+  ): Observable<void> {
+    const roomDoc = doc(this.firestore, `rooms/${roomId}`);
+
+    return from(
+      updateDoc(roomDoc, {
+        playersRoom: arrayRemove(playerRoomToRemove),
+      })
+    );
   }
 
   deleteRoom(roomId: string): Observable<void> {
