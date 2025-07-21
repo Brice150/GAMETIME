@@ -57,19 +57,11 @@ export class RoomComponent implements OnInit, OnDestroy {
   isNextButtonAvailable = false;
   isSeeResultsAvailable = false;
   isResultPageActive = false;
-  hasConfirmedQuit = false;
   drapeauxGameKey = gameMap['drapeaux'].key;
   @ViewChild(WordGamesComponent) wordGamesComponent!: WordGamesComponent;
 
   ngOnInit(): void {
     this.loading = true;
-
-    window.addEventListener('beforeunload', (event) => {
-      if (!this.hasConfirmedQuit) {
-        event.preventDefault();
-        event.returnValue = '';
-      }
-    });
 
     this.activatedRoute.params
       .pipe(
@@ -258,7 +250,6 @@ export class RoomComponent implements OnInit, OnDestroy {
         .pipe(
           filter((res: boolean) => res),
           switchMap(() => {
-            this.hasConfirmedQuit = true;
             this.loading = true;
             return this.roomService.deleteRoom(this.room.id!);
           }),
@@ -290,16 +281,18 @@ export class RoomComponent implements OnInit, OnDestroy {
         data: 'quitter cette room',
       });
 
-      dialogRef.afterClosed().pipe(
-        filter((res: boolean) => res),
-        tap(() => {
-          this.hasConfirmedQuit = true;
-          this.loading = true;
-          this.roomService
-            .removePlayerFromRoom(this.room.id!, this.playerRoom)
-            .pipe(takeUntil(this.destroyed$))
-            .subscribe({
-              next: () => {
+      dialogRef
+        .afterClosed()
+        .pipe(
+          filter((res: boolean) => res),
+          tap(() => {
+            this.loading = true;
+            this.room.playersRoom = this.room.playersRoom.filter(
+              (player) => player.userId !== this.player.userId
+            );
+
+            this.updateRoomAndHandleResponse(
+              () => {
                 this.loading = false;
                 this.router.navigate(['/']);
                 this.toastr.info(
@@ -311,7 +304,7 @@ export class RoomComponent implements OnInit, OnDestroy {
                   }
                 );
               },
-              error: (error: HttpErrorResponse) => {
+              (error: HttpErrorResponse) => {
                 this.loading = false;
                 if (error.message.includes('No document to update')) {
                   this.router.navigate(['/']);
@@ -329,10 +322,12 @@ export class RoomComponent implements OnInit, OnDestroy {
                     toastClass: 'ngx-toastr custom error',
                   });
                 }
-              },
-            });
-        })
-      );
+              }
+            );
+          }),
+          takeUntil(this.destroyed$)
+        )
+        .subscribe();
     }
   }
 
