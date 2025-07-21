@@ -64,7 +64,7 @@ export class RoomService {
     return from(deleteDoc(roomDoc));
   }
 
-  deleteUserRoom(): Observable<void> {
+  deleteUserRooms(): Observable<void> {
     const roomsQuery = query(
       this.roomsCollection,
       where('userId', '==', this.userService.auth.currentUser?.uid)

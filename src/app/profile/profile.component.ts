@@ -30,6 +30,7 @@ import { UserService } from '../core/services/user.service';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { PlayerService } from '../core/services/player.service';
 import { Player } from '../core/interfaces/player';
+import { RoomService } from '../core/services/room.service';
 
 @Component({
   selector: 'app-profil',
@@ -53,6 +54,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   profileService = inject(ProfileService);
   userService = inject(UserService);
   playerService = inject(PlayerService);
+  roomService = inject(RoomService);
   dialog = inject(MatDialog);
   router = inject(Router);
   hide: boolean = true;
@@ -194,8 +196,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
         filter((res: boolean) => res),
         switchMap(() => {
           this.loading = true;
-          return this.playerService.deleteUserPlayer();
+          return this.roomService.deleteUserRooms();
         }),
+        switchMap(() => this.playerService.deleteUserPlayer()),
         switchMap(() =>
           this.profileService.deleteProfile().pipe(
             catchError(() => {

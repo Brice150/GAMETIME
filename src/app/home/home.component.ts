@@ -147,7 +147,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     );
 
     this.roomService
-      .deleteUserRoom()
+      .deleteUserRooms()
       .pipe(
         takeUntil(this.destroyed$),
         switchMap(() => this.roomService.addRoom(newRoom))
