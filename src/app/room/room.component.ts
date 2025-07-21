@@ -57,11 +57,19 @@ export class RoomComponent implements OnInit, OnDestroy {
   isNextButtonAvailable = false;
   isSeeResultsAvailable = false;
   isResultPageActive = false;
+  hasConfirmedQuit = false;
   drapeauxGameKey = gameMap['drapeaux'].key;
   @ViewChild(WordGamesComponent) wordGamesComponent!: WordGamesComponent;
 
   ngOnInit(): void {
     this.loading = true;
+
+    window.addEventListener('beforeunload', (event) => {
+      if (!this.hasConfirmedQuit) {
+        event.preventDefault();
+        event.returnValue = '';
+      }
+    });
 
     this.activatedRoute.params
       .pipe(
@@ -250,6 +258,7 @@ export class RoomComponent implements OnInit, OnDestroy {
         .pipe(
           filter((res: boolean) => res),
           switchMap(() => {
+            this.hasConfirmedQuit = true;
             this.loading = true;
             return this.roomService.deleteRoom(this.room.id!);
           }),
@@ -286,6 +295,7 @@ export class RoomComponent implements OnInit, OnDestroy {
         .pipe(
           filter((res: boolean) => res),
           tap(() => {
+            this.hasConfirmedQuit = true;
             this.loading = true;
             this.room.playersRoom = this.room.playersRoom.filter(
               (player) => player.userId !== this.player.userId
