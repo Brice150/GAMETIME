@@ -26,8 +26,7 @@
       <i class="bx bxs-medal"></i>
       <span class="text">Résultats</span>
     </button>
-    } @else if (isResultPageActive && currentUserId === room.userId &&
-    isEveryoneDone()) {
+    } @else if (isResultPageActive && currentUserId === room.userId) {
     <button type="button" (click)="startAgain()" title="Rejouer">
       <i class="bx bx-play"></i>
       <span class="text">Rejouer</span>
