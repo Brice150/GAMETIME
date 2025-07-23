@@ -39,6 +39,13 @@ export class RoomService {
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
 
+  getRooms(): Observable<Room[]> {
+    const roomsCollection = collection(this.firestore, 'rooms');
+    return collectionData(roomsCollection, { idField: 'id' }) as Observable<
+      Room[]
+    >;
+  }
+
   getRoom(roomId: string): Observable<Room> {
     const roomDoc = doc(this.firestore, `rooms/${roomId}`);
     return docData(roomDoc, { idField: 'id' }) as Observable<Room>;

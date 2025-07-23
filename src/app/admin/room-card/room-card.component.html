@@ -1,0 +1,39 @@
+<div class="container">
+  <div class="button-container-delete">
+    <button
+      type="button"
+      (click)="delete()"
+      title="Supprimer"
+      class="delete share"
+    >
+      <i class="bx bxs-trash"></i>
+    </button>
+  </div>
+  <div class="button-container-look">
+    <button
+      type="button"
+      [routerLink]="room().id"
+      title="Résultats"
+      class="share"
+    >
+      <i class="bx bxs-search"></i>
+    </button>
+  </div>
+  <div class="game">
+    <h2>{{ room().gameName }}</h2>
+  </div>
+  <div class="players-room">
+    @for (playerRoom of room().playersRoom; track $index; let i = $index) {
+    <div
+      class="player"
+      [ngClass]="{ 'alt-color': playerRoom.userId !== room().userId }"
+    >
+      <span class="username">{{ playerRoom.username }}</span>
+      <div class="medals">
+        <span class="victory-number">{{ playerRoom.medalsNumber }}</span>
+        <i class="bx bxs-medal"></i>
+      </div>
+    </div>
+    }
+  </div>
+</div>

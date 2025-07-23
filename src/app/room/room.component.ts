@@ -52,8 +52,6 @@ export class RoomComponent implements OnInit, OnDestroy {
   @ViewChild(WordGamesComponent) wordGamesComponent!: WordGamesComponent;
 
   ngOnInit(): void {
-    this.loading = true;
-
     this.playerService.playerReady$
       .pipe(
         tap((player) => (this.player = player)),

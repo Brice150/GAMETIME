@@ -1,1 +1,20 @@
-<p>admin works!</p>
+<section>
+  @if(!loading) {
+  <div class="toggle-container">
+    <mat-slide-toggle [(ngModel)]="isMulti">
+      Room Multijoueur
+    </mat-slide-toggle>
+  </div>
+  <div class="rooms">
+    @for (room of filteredRooms; track $index) {
+    <app-room-card
+      [room]="room"
+      (deleteEvent)="openDialog(room.id!)"
+      title="Résultats"
+    ></app-room-card>
+    }
+  </div>
+  } @else {
+  <mat-spinner></mat-spinner>
+  }
+</section>

@@ -1,0 +1,138 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: var(--primary);
+  border-radius: var(--light-radius);
+  padding: 10px;
+  position: relative;
+}
+
+.button-container-delete {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.button-container-look {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+button {
+  cursor: pointer;
+  color: var(--accent);
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: var(--light-radius);
+  transition: 0.5s ease;
+  border: none;
+  background-color: var(--primary);
+}
+
+button.share {
+  width: 50px;
+}
+
+.delete {
+  color: red;
+  transition: 0.5s ease;
+}
+
+button:hover {
+  background-color: var(--accent);
+  color: var(--primary);
+}
+
+.delete:hover {
+  background-color: red;
+}
+
+button i {
+  font-size: 30px;
+}
+
+.game {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.game h2 {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: capitalize;
+  margin: 0;
+  color: var(--secondary);
+  transition: 0.5s ease;
+}
+
+.players-room {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.players-room .player {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  border-radius: var(--light-radius);
+  background-color: var(--primary);
+  color: var(--accent);
+  padding: 10px;
+  width: 270px;
+  height: 34px;
+}
+
+.players-room .player.alt-color {
+  color: var(--secondary);
+}
+
+.players-room .player .username {
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.players-room .player .medals {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  background-color: var(--accent);
+  color: var(--primary);
+  border-radius: var(--light-radius);
+  padding: 3px 0;
+  padding-left: 10px;
+  padding-right: 5px;
+}
+
+.players-room .player.alt-color .medals {
+  background-color: var(--secondary);
+}
+
+.victory-number {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.medals i {
+  font-size: 28px;
+}
