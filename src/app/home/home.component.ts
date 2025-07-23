@@ -1,19 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSliderModule } from '@angular/material/slider';
 import { Router, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { Subject, switchMap, take, takeUntil } from 'rxjs';
+import { Subject, switchMap, takeUntil } from 'rxjs';
 import { gameMap, games } from 'src/assets/data/games';
 import { Mode } from '../core/interfaces/mode';
-import { Player } from '../core/interfaces/player';
+import { LocalStorageService } from '../core/services/local-storage.service';
 import { PlayerService } from '../core/services/player.service';
 import { RoomService } from '../core/services/room.service';
-import { LocalStorageService } from '../core/services/local-storage.service';
 
 @Component({
   selector: 'app-home',
@@ -28,16 +27,15 @@ import { LocalStorageService } from '../core/services/local-storage.service';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })
-export class HomeComponent implements OnInit, OnDestroy {
+export class HomeComponent implements OnDestroy {
   gameSelected: string = '';
   modeSelected: string = '';
-  loading: boolean = true;
+  loading: boolean = false;
   playerService = inject(PlayerService);
   roomService = inject(RoomService);
   toastr = inject(ToastrService);
   localStorageService = inject(LocalStorageService);
   destroyed$ = new Subject<void>();
-  player: Player = {} as Player;
   router = inject(Router);
   games = games;
   stepsNumber: number = 3;
@@ -82,36 +80,15 @@ export class HomeComponent implements OnInit, OnDestroy {
     return 13;
   }
 
-  ngOnInit(): void {
-    this.playerService
-      .getPlayers()
-      .pipe(take(1), takeUntil(this.destroyed$))
-      .subscribe({
-        next: (players: Player[]) => {
-          if (players?.length > 0) {
-            this.player = players[0];
-          }
-          this.loading = false;
-        },
-        error: (error: HttpErrorResponse) => {
-          this.loading = false;
-          if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastr.error(error.message, 'Game Time', {
-              positionClass: 'toast-bottom-center',
-              toastClass: 'ngx-toastr custom error',
-            });
-          }
-        },
-      });
-  }
-
   ngOnDestroy(): void {
     this.destroyed$.next();
     this.destroyed$.complete();
   }
 
   getMedalsNumber(gameName: string): number {
-    const stat = this.player?.stats?.find((stat) => stat.gameName === gameName);
+    const stat = this.playerService
+      .currentPlayerSig()
+      ?.stats?.find((stat) => stat.gameName === gameName);
     return stat?.medalsNumer ?? 0;
   }
 
@@ -145,7 +122,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.isWordLengthIncreasing,
       this.startWordLength,
       this.continentFilter,
-      this.player
+      this.playerService.currentPlayerSig()!
     );
 
     this.roomService

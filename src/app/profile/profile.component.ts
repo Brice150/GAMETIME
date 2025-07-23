@@ -1,6 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  effect,
+  inject,
+  Injector,
+  OnDestroy,
+  OnInit,
+  runInInjectionContext,
+} from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -57,11 +65,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
   roomService = inject(RoomService);
   dialog = inject(MatDialog);
   router = inject(Router);
+  injector = inject(Injector);
   hide: boolean = true;
   hideDuplicate: boolean = true;
   destroyed$ = new Subject<void>();
-  loading: boolean = true;
-  player: Player = {} as Player;
+  loading: boolean = false;
 
   ngOnInit(): void {
     this.profileForm = this.fb.group(
@@ -100,29 +108,16 @@ export class ProfileComponent implements OnInit, OnDestroy {
       { validators: this.passwordMatchValidator }
     );
 
-    this.playerService
-      .getPlayers()
-      .pipe(take(1), takeUntil(this.destroyed$))
-      .subscribe({
-        next: (players: Player[]) => {
-          if (players?.length > 0) {
-            this.player = players[0];
-            this.profileForm.patchValue({
-              username: players[0].username,
-            });
-          }
-          this.loading = false;
-        },
-        error: (error: HttpErrorResponse) => {
-          this.loading = false;
-          if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastr.error(error.message, 'Game Time', {
-              positionClass: 'toast-bottom-center',
-              toastClass: 'ngx-toastr custom error',
-            });
-          }
-        },
+    runInInjectionContext(this.injector, () => {
+      effect(() => {
+        const player = this.playerService.currentPlayerSig();
+        if (player?.username) {
+          this.profileForm.patchValue({
+            username: player.username,
+          });
+        }
       });
+    });
   }
 
   ngOnDestroy(): void {
@@ -134,7 +129,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     if (this.profileForm.valid) {
       this.loading = true;
       const newUsername = this.profileForm.value.username;
-      const usernameChanged = newUsername !== this.player.username;
+      const usernameChanged =
+        newUsername !== this.playerService.currentPlayerSig()!.username;
 
       this.profileService
         .updateProfile(this.profileForm.value)
@@ -142,7 +138,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
           switchMap(() => {
             if (usernameChanged) {
               return this.playerService.updatePlayer({
-                ...this.player,
+                ...this.playerService.currentPlayerSig()!,
                 username: newUsername,
               });
             }
@@ -158,7 +154,11 @@ export class ProfileComponent implements OnInit, OnDestroy {
               toastClass: 'ngx-toastr custom info',
             });
             if (usernameChanged) {
-              this.player.username = newUsername;
+              const newPlayer = this.playerService.currentPlayerSig();
+              if (newPlayer) {
+                newPlayer.username = newUsername;
+              }
+              this.playerService.currentPlayerSig.set(newPlayer);
             }
           },
           error: (error: HttpErrorResponse) => {

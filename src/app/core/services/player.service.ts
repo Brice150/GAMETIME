@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import {
   collection,
   collectionData,
@@ -12,6 +12,7 @@ import {
 } from '@angular/fire/firestore';
 import {
   combineLatest,
+  filter,
   from,
   map,
   Observable,
@@ -24,12 +25,21 @@ import { v4 as uuidv4 } from 'uuid';
 import { Player } from '../interfaces/player';
 import { Stat } from '../interfaces/stat';
 import { UserService } from './user.service';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 @Injectable({ providedIn: 'root' })
 export class PlayerService {
   firestore = inject(Firestore);
   userService = inject(UserService);
   playersCollection = collection(this.firestore, 'players');
+  currentPlayerSig = signal<Player | null | undefined>(undefined);
+
+  readonly playerReady$ = toObservable(
+    computed(() => this.currentPlayerSig())
+  ).pipe(
+    filter((player): player is Player => !!player),
+    take(1)
+  );
 
   getPlayers(): Observable<Player[]> {
     const userId = this.userService.auth.currentUser?.uid;
@@ -76,6 +86,7 @@ export class PlayerService {
           userId: userId,
           username: username,
           stats: [statMotus, statDrapeaux],
+          isAdmin: false,
         };
         return from(setDoc(playerDoc, { ...player })).pipe(map(() => email));
       })

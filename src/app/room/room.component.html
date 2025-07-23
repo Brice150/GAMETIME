@@ -26,7 +26,7 @@
       <i class="bx bxs-medal"></i>
       <span class="text">Résultats</span>
     </button>
-    } @else if (isResultPageActive && currentUserId === room.userId) {
+    } @else if (isResultPageActive && player.userId === room.userId) {
     <button type="button" (click)="startAgain()" title="Rejouer">
       <i class="bx bx-play"></i>
       <span class="text">Rejouer</span>
@@ -35,7 +35,7 @@
     <button type="button" (click)="share()" title="Partager" class="share">
       <i class="bx bx-link"></i>
     </button>
-    @if (currentUserId === room.userId) {
+    @if (player.userId === room.userId) {
     <button type="button" (click)="start()" title="Jouer">
       <i class="bx bx-play"></i>
       <span class="text">Jouer</span>

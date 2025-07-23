@@ -5,21 +5,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import {
-  filter,
-  map,
-  Observable,
-  of,
-  Subject,
-  switchMap,
-  take,
-  takeUntil,
-  tap,
-} from 'rxjs';
+import { filter, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { gameMap } from 'src/assets/data/games';
 import { Player } from '../core/interfaces/player';
 import { PlayerRoom } from '../core/interfaces/player-room';
 import { Room } from '../core/interfaces/room';
+import { LocalStorageService } from '../core/services/local-storage.service';
 import { PlayerService } from '../core/services/player.service';
 import { RoomService } from '../core/services/room.service';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
@@ -27,7 +18,6 @@ import { ResultsComponent } from './results/results.component';
 import { RoomHeaderComponent } from './room-header/room-header.component';
 import { WaitingRoomComponent } from './waiting-room/waiting-room.component';
 import { WordGamesComponent } from './word-games/word-games.component';
-import { LocalStorageService } from '../core/services/local-storage.service';
 
 @Component({
   selector: 'app-room',
@@ -55,7 +45,6 @@ export class RoomComponent implements OnInit, OnDestroy {
   room: Room = {} as Room;
   player: Player = {} as Player;
   playerRoom: PlayerRoom = {} as PlayerRoom;
-  currentUserId?: string;
   isNextButtonAvailable = false;
   isSeeResultsAvailable = false;
   isResultPageActive = false;
@@ -65,21 +54,11 @@ export class RoomComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loading = true;
 
-    this.activatedRoute.params
+    this.playerService.playerReady$
       .pipe(
-        takeUntil(this.destroyed$),
-        switchMap((params): Observable<string> => {
-          return this.playerService.getPlayers().pipe(
-            take(1),
-            map((players: Player[]) => {
-              if (!players?.length) throw new Error('Aucun joueur trouvé');
-              this.player = players[0];
-              this.currentUserId = this.player.userId;
-              return params['id'];
-            })
-          );
-        }),
-        switchMap((roomId: string) => this.roomService.getRoom(roomId)),
+        tap((player) => (this.player = player)),
+        switchMap(() => this.activatedRoute.params),
+        switchMap((params) => this.roomService.getRoom(params['id'])),
         switchMap((room: Room | null) => {
           if (!room) {
             return of(null);
@@ -88,7 +67,7 @@ export class RoomComponent implements OnInit, OnDestroy {
           this.room = room;
 
           const playerRoom = room.playersRoom.find(
-            (p) => p.userId === this.currentUserId
+            (p) => p.userId === this.player.userId
           );
 
           if (playerRoom) {
@@ -242,7 +221,7 @@ export class RoomComponent implements OnInit, OnDestroy {
   }
 
   openDialog(): void {
-    if (this.currentUserId === this.room.userId) {
+    if (this.player.userId === this.room.userId) {
       const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
         data: 'supprimer cette room',
       });

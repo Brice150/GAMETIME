@@ -1,5 +1,12 @@
 import { CommonModule, Location } from '@angular/common';
-import { Component, EventEmitter, inject, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  inject,
+  input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
@@ -12,7 +19,7 @@ import { games } from 'src/assets/data/games';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
   router = inject(Router);
   location = inject(Location);
   currentUrl = '';
@@ -20,6 +27,7 @@ export class HeaderComponent {
     { path: '/', title: 'Accueil', icon: 'bx bxs-home' },
     { path: '/profil', title: 'Profil', icon: 'bx bxs-user' },
   ];
+  isAdmin = input.required<boolean>();
   @Output() logoutEvent = new EventEmitter<void>();
 
   constructor() {
@@ -28,6 +36,16 @@ export class HeaderComponent {
       .subscribe((event: NavigationEnd) => {
         this.currentUrl = event.urlAfterRedirects;
       });
+  }
+
+  ngOnInit(): void {
+    if (this.isAdmin()) {
+      this.menuItems.push({
+        path: '/admin',
+        title: 'Admin',
+        icon: 'bx bxs-cog',
+      });
+    }
   }
 
   getTitle(): string {
