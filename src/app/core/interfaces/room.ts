@@ -16,4 +16,5 @@ export interface Room {
   responses: string[];
   countries: Country[];
   startDate: Date | null;
+  startAgainNumber: number;
 }

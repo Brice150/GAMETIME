@@ -27,6 +27,7 @@ import { ResultsComponent } from './results/results.component';
 import { RoomHeaderComponent } from './room-header/room-header.component';
 import { WaitingRoomComponent } from './waiting-room/waiting-room.component';
 import { WordGamesComponent } from './word-games/word-games.component';
+import { LocalStorageService } from '../core/services/local-storage.service';
 
 @Component({
   selector: 'app-room',
@@ -47,6 +48,7 @@ export class RoomComponent implements OnInit, OnDestroy {
   router = inject(Router);
   toastr = inject(ToastrService);
   activatedRoute = inject(ActivatedRoute);
+  localStorageService = inject(LocalStorageService);
   dialog = inject(MatDialog);
   destroyed$ = new Subject<void>();
   loading: boolean = true;
@@ -367,6 +369,7 @@ export class RoomComponent implements OnInit, OnDestroy {
     this.room.startDate = new Date();
 
     this.updateRoomAndHandleResponse(() => {
+      this.localStorageService.saveStartAgainNumber(this.room.startAgainNumber);
       this.isResultPageActive = false;
     });
   }
@@ -377,6 +380,7 @@ export class RoomComponent implements OnInit, OnDestroy {
     this.room.countries = [];
     this.room.responses = [];
     this.room.startDate = new Date();
+    this.room.startAgainNumber += 1;
     this.room.playersRoom.forEach((player) => {
       player.isOver = false;
       player.finishDate = null;
@@ -394,6 +398,7 @@ export class RoomComponent implements OnInit, OnDestroy {
     );
 
     this.updateRoomAndHandleResponse(() => {
+      this.localStorageService.saveStartAgainNumber(this.room.startAgainNumber);
       this.isResultPageActive = false;
     });
   }

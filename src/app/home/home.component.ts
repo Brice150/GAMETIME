@@ -13,6 +13,7 @@ import { Mode } from '../core/interfaces/mode';
 import { Player } from '../core/interfaces/player';
 import { PlayerService } from '../core/services/player.service';
 import { RoomService } from '../core/services/room.service';
+import { LocalStorageService } from '../core/services/local-storage.service';
 
 @Component({
   selector: 'app-home',
@@ -34,6 +35,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   playerService = inject(PlayerService);
   roomService = inject(RoomService);
   toastr = inject(ToastrService);
+  localStorageService = inject(LocalStorageService);
   destroyed$ = new Subject<void>();
   player: Player = {} as Player;
   router = inject(Router);
@@ -154,6 +156,9 @@ export class HomeComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: (roomId) => {
+          this.localStorageService.saveStartAgainNumber(
+            newRoom.startAgainNumber
+          );
           this.loading = false;
           this.router.navigate([`/room/${roomId}`]);
         },

@@ -141,6 +141,7 @@ export class RoomService {
       responses: responses,
       countries: countries,
       startDate: modeSelected === 'solo' ? new Date() : null,
+      startAgainNumber: 0,
     };
   }
 
