@@ -52,9 +52,6 @@ export class AdminComponent implements OnInit {
       .subscribe({
         next: (rooms) => {
           this.rooms = rooms;
-          if (this.filteredRooms.length === 0) {
-            this.isMulti = false;
-          }
           this.loading = false;
         },
         error: (error: HttpErrorResponse) => {

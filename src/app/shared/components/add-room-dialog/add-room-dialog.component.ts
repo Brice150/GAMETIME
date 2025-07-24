@@ -23,7 +23,7 @@ export class AddRoomDialogComponent {
   showFirstLetterDrapeaux = false;
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
-  gameSelected: string = '';
+  gameSelected: string = 'motus';
 
   get dynamicSliderValue(): number {
     return this.gameSelected === this.motusGameKey
@@ -75,13 +75,13 @@ export class AddRoomDialogComponent {
 
   confirm(): void {
     this.dialogRef.close({
-      gameSelected: 'motus',
-      showFirstLetterMotus: true,
-      showFirstLetterDrapeaux: false,
-      stepsNumber: 3,
-      isWordLengthIncreasing: true,
-      startWordLength: 5,
-      continentFilter: 0,
+      gameSelected: this.gameSelected,
+      showFirstLetterMotus: this.showFirstLetterMotus,
+      showFirstLetterDrapeaux: this.showFirstLetterDrapeaux,
+      stepsNumber: this.stepsNumber,
+      isWordLengthIncreasing: this.isWordLengthIncreasing,
+      startWordLength: this.startWordLength,
+      continentFilter: this.continentFilter,
     } as RoomForm);
   }
 }
