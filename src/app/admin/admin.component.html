@@ -14,6 +14,14 @@
     ></app-room-card>
     }
   </div>
+  <div class="button-container">
+    @if (isMulti) {
+    <button type="button" (click)="openAddRoomDialog()" title="Ajouter">
+      <i class="bx bx-plus"></i>
+      <span class="text">Ajouter</span>
+    </button>
+    }
+  </div>
   } @else {
   <mat-spinner></mat-spinner>
   }

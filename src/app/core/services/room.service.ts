@@ -104,7 +104,8 @@ export class RoomService {
     isWordLengthIncreasing: boolean,
     startWordLength: number,
     continentFilter: number,
-    player: Player
+    player: Player,
+    isCreatedByAdmin: boolean
   ): Room {
     const showFirstLetter: boolean =
       gameSelected === this.motusGameKey
@@ -137,7 +138,7 @@ export class RoomService {
 
     return {
       gameName: gameSelected,
-      playersRoom: [playerRoom],
+      playersRoom: !isCreatedByAdmin ? [playerRoom] : [],
       isStarted: modeSelected === 'solo',
       isSolo: modeSelected === 'solo',
       showFirstLetter: showFirstLetter,
@@ -149,7 +150,7 @@ export class RoomService {
       countries: countries,
       startDate: modeSelected === 'solo' ? new Date() : null,
       startAgainNumber: 0,
-      isCreatedByAdmin: player.isAdmin,
+      isCreatedByAdmin: isCreatedByAdmin,
     };
   }
 

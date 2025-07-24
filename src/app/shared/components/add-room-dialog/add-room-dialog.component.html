@@ -1,0 +1,74 @@
+<section mat-dialog-content>
+  <h1>Veuillez configurer la room</h1>
+  <div class="button-container margin">
+    @for (game of games; track game.key) {
+    <button
+      type="button"
+      [title]="game.label"
+      [ngClass]="{ active: gameSelected === game.key }"
+      (click)="gameSelected = game.key"
+    >
+      <i class="{{ game.icon }}"></i>
+      <span class="text">{{ game.label }}</span>
+    </button>
+    }
+  </div>
+
+  @if (gameSelected) {
+  <div class="slider-container top">
+    <span>Nombre de manches</span>
+    <mat-slider min="1" max="8" step="1" discrete>
+      <input matSliderThumb [(ngModel)]="stepsNumber" />
+    </mat-slider>
+  </div>
+
+  @if (gameSelected === motusGameKey || gameSelected === drapeauxGameKey) {
+  <div class="slider-container top">
+    <span>
+      {{
+        gameSelected === motusGameKey
+          ? "Taille du mot de départ"
+          : "Filtre par continent"
+      }}
+    </span>
+    <mat-slider
+      [min]="gameSelected === motusGameKey ? 5 : 1"
+      [max]="gameSelected === motusGameKey ? maxWordLength : 6"
+      step="1"
+      discrete
+      [displayWith]="
+        gameSelected === drapeauxGameKey ? formatLabel : defaultFormatLabel
+      "
+      [ngClass]="{ showContinent: gameSelected === drapeauxGameKey }"
+    >
+      <input matSliderThumb [(ngModel)]="dynamicSliderValue" />
+    </mat-slider>
+  </div>
+  }
+
+  <div class="toggle-container">
+    @if (gameSelected === motusGameKey) {
+    <mat-slide-toggle [(ngModel)]="isWordLengthIncreasing">
+      Croissance progressive
+    </mat-slide-toggle>
+    <mat-slide-toggle [(ngModel)]="showFirstLetterMotus">
+      Afficher 1<sup>ère</sup> lettre
+    </mat-slide-toggle>
+    } @else if (gameSelected === drapeauxGameKey) {
+    <mat-slide-toggle [(ngModel)]="showFirstLetterDrapeaux">
+      Afficher 1<sup>ère</sup> lettre
+    </mat-slide-toggle>
+    }
+  </div>
+  }
+  <div class="button-container">
+    <button type="button" title="Annuler" (click)="cancel()" class="delete">
+      <i class="bx bx-x"></i>
+      <span class="text">Annuler</span>
+    </button>
+    <button type="button" title="Valider" (click)="confirm()">
+      <i class="bx bx-check"></i>
+      <span class="text">Valider</span>
+    </button>
+  </div>
+</section>

@@ -1,0 +1,192 @@
+section {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--primary);
+  padding: 10px;
+  border-radius: var(--light-radius);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column;
+  max-width: 700px;
+  width: 80%;
+}
+
+section h1 {
+  font-size: 20px;
+  color: var(--accent);
+  text-align: center;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 100%;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.button-container.margin {
+  margin-top: 10px;
+}
+
+.button-container button {
+  cursor: pointer;
+  color: var(--accent);
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: var(--light-radius);
+  transition: 0.5s ease;
+  width: 160px;
+  border: none;
+  background-color: var(--primary);
+  box-shadow: var(--box-shadow);
+}
+
+.button-container button.active {
+  background-color: var(--accent);
+  color: var(--primary);
+  cursor: default;
+}
+
+section .button-container .delete {
+  color: red;
+  transition: 0.5s ease;
+}
+
+section .button-container button:hover {
+  background-color: var(--accent);
+  color: var(--primary);
+  box-shadow: var(--box-shadow-active);
+}
+
+section .button-container .delete:hover {
+  background-color: red;
+  box-shadow: var(--box-shadow-active-red);
+}
+
+section .button-container button i {
+  font-size: 40px;
+}
+
+section .button-container button .text {
+  font-size: 20px;
+  font-weight: 500;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.slider-container {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-bottom: -30px;
+  width: 100%;
+}
+
+.slider-container.top {
+  margin-top: 20px;
+}
+
+.slider-container mat-slider {
+  width: 80%;
+  max-width: 300px;
+}
+
+.slider-container span {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--secondary);
+}
+
+.toggle-container {
+  margin-top: 40px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 20px;
+  width: 95%;
+}
+
+mat-slide-toggle {
+  width: 100%;
+  max-width: 320px;
+}
+
+::ng-deep .mdc-slider__track--active_fill {
+  border-color: var(--accent) !important;
+}
+
+::ng-deep .mdc-slider__track--inactive {
+  background-color: white !important;
+  opacity: 1 !important;
+}
+
+::ng-deep .mdc-slider__thumb-knob {
+  background-color: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+
+::ng-deep .mdc-slider__value-indicator {
+  background-color: var(--accent) !important;
+}
+
+::ng-deep .mat-mdc-slide-toggle .mat-internal-form-field {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+::ng-deep .mat-mdc-slide-toggle .mdc-switch:enabled + .mdc-label {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--secondary);
+  text-align: left;
+  margin: 0;
+  width: 250px;
+}
+
+::ng-deep .mdc-switch__track::after {
+  background: var(--accent) !important;
+}
+
+::ng-deep .mdc-switch--selected:enabled .mdc-switch__handle::after {
+  background: var(--primary) !important;
+}
+
+::ng-deep .mdc-switch--selected .mdc-switch__icon {
+  fill: var(--accent) !important;
+}
+
+::ng-deep .mdc-switch__track::before {
+  background: var(--primary) !important;
+}
+
+::ng-deep .mdc-switch--unselected .mdc-switch__icon {
+  fill: var(--primary) !important;
+}
+
+::ng-deep .showContinent .mdc-slider__value-indicator-container {
+  transform: none !important;
+  left: -25% !important;
+}
+
+::ng-deep .showContinent .mdc-slider__value-indicator {
+  width: 70px !important;
+  border-radius: var(--light-radius) !important;
+}
+
+::ng-deep .showContinent .mdc-slider__value-indicator-text {
+  transform: none !important;
+  width: 70px !important;
+}

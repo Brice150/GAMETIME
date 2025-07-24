@@ -13,6 +13,8 @@ import { PlayerService } from '../core/services/player.service';
 import { RoomService } from '../core/services/room.service';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { RoomCardComponent } from './room-card/room-card.component';
+import { AddRoomDialogComponent } from '../shared/components/add-room-dialog/add-room-dialog.component';
+import { RoomForm } from '../core/interfaces/room-form';
 
 @Component({
   selector: 'app-admin',
@@ -91,6 +93,55 @@ export class AdminComponent implements OnInit {
         next: () => {
           this.loading = false;
           this.toastr.info('Room supprimée', 'Admin', {
+            positionClass: 'toast-bottom-center',
+            toastClass: 'ngx-toastr custom info',
+          });
+        },
+        error: (error: HttpErrorResponse) => {
+          this.loading = false;
+          if (!error.message.includes('Missing or insufficient permissions.')) {
+            this.toastr.error(error.message, 'Game Time', {
+              positionClass: 'toast-bottom-center',
+              toastClass: 'ngx-toastr custom error',
+            });
+          }
+        },
+      });
+  }
+
+  openAddRoomDialog(): void {
+    const dialogRef = this.dialog.open(AddRoomDialogComponent);
+
+    dialogRef
+      .afterClosed()
+      .pipe(
+        filter((roomData: RoomForm) => !!roomData),
+        switchMap((roomData: RoomForm) => {
+          this.loading = true;
+          return this.roomService.deleteUserRooms().pipe(
+            switchMap(() => {
+              const newRoom = this.roomService.newRoom(
+                roomData.gameSelected,
+                'multi',
+                roomData.showFirstLetterMotus,
+                roomData.showFirstLetterDrapeaux,
+                roomData.stepsNumber,
+                roomData.isWordLengthIncreasing,
+                roomData.startWordLength,
+                roomData.continentFilter,
+                this.playerService.currentPlayerSig()!,
+                true
+              );
+              return this.roomService.addRoom(newRoom);
+            })
+          );
+        }),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe({
+        next: () => {
+          this.loading = false;
+          this.toastr.info('Room créée', 'Admin', {
             positionClass: 'toast-bottom-center',
             toastClass: 'ngx-toastr custom info',
           });
