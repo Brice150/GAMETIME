@@ -1,5 +1,10 @@
 <section>
   @if (!loading) {
+  <div class="toggle-container">
+    <mat-slide-toggle [(ngModel)]="hideResults">
+      Cacher résultats
+    </mat-slide-toggle>
+  </div>
   <div class="players-room">
     @for (playerRoom of sortedPlayersRoom; track $index; let i = $index) {
     <div
@@ -34,7 +39,9 @@
       <div class="responses">
         @for (response of room.responses; track $index; let j = $index) {
         <div class="response">
-          <span class="description">{{ response }}</span>
+          <span class="description" [class.blurred]="hideResults">{{
+            response
+          }}</span>
           @if (playerRoom.currentRoomWins[j] === true) {
           <i class="bx bx-check"></i>
           } @else if (playerRoom.currentRoomWins[j] === false) {
@@ -47,6 +54,31 @@
       </div>
     </div>
     }
+  </div>
+  <div class="button-container">
+    @if (!room.isStarted || allPlayersDone()) {
+    <button type="button" (click)="share()" title="Partager" class="share">
+      <i class="bx bx-link"></i>
+    </button>
+    <button type="button" (click)="start()" title="Lancer">
+      <i class="bx bx-play"></i>
+      <span class="text">Lancer</span></button
+    >} @else { @if (room.isSolo) {
+    <button
+      type="button"
+      (click)="openDialog()"
+      title="Supprimer"
+      class="delete"
+    >
+      <i class="bx bxs-trash"></i>
+      <span class="text">Supprimer</span>
+    </button>
+    } @else {
+    <button type="button" (click)="stop()" title="Arrêter" class="delete">
+      <i class="bx bxs-error-alt"></i>
+      <span class="text">Arrêter</span>
+    </button>
+    } }
   </div>
   } @else {
   <mat-spinner></mat-spinner>
