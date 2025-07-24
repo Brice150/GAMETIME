@@ -17,4 +17,5 @@ export interface Room {
   countries: Country[];
   startDate: Date | null;
   startAgainNumber: number;
+  isCreatedByAdmin: boolean;
 }

@@ -149,6 +149,7 @@ export class RoomService {
       countries: countries,
       startDate: modeSelected === 'solo' ? new Date() : null,
       startAgainNumber: 0,
+      isCreatedByAdmin: player.isAdmin,
     };
   }
 

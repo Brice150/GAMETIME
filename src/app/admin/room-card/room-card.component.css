@@ -7,6 +7,7 @@
   border-radius: var(--light-radius);
   padding: 10px;
   position: relative;
+  min-width: 310px;
 }
 
 .button-container-delete {
@@ -99,6 +100,12 @@ button i {
   padding: 10px;
   width: 270px;
   height: 34px;
+}
+
+.players-room .player.admin {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .players-room .player.alt-color {

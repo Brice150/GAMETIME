@@ -53,6 +53,21 @@
         }
       </div>
     </div>
+    } @empty {
+    <div class="player">
+      <div class="flex">
+        <span class="username">Admin room</span>
+      </div>
+      <div class="responses">
+        @for (response of room.responses; track $index; let j = $index) {
+        <div class="response">
+          <span class="description" [class.blurred]="hideResults">{{
+            response
+          }}</span>
+        </div>
+        }
+      </div>
+    </div>
     }
   </div>
   <div class="button-container">

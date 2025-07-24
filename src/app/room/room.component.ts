@@ -73,7 +73,7 @@ export class RoomComponent implements OnInit, OnDestroy {
             return of(null);
           }
 
-          if (!room.isSolo) {
+          if (!room.isSolo && !(room.isCreatedByAdmin && this.player.isAdmin)) {
             const stat = this.player.stats.find(
               (stat) => stat.gameName === this.room.gameName
             );
