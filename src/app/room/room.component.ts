@@ -99,6 +99,8 @@ export class RoomComponent implements OnInit, OnDestroy {
               );
             });
             return of(null);
+          } else if (room.isCreatedByAdmin && this.player.isAdmin) {
+            this.router.navigate(['/admin', room.id]);
           }
 
           return of(null);
@@ -344,6 +346,9 @@ export class RoomComponent implements OnInit, OnDestroy {
 
     this.room.isStarted = true;
     this.room.startDate = new Date();
+    if (this.room.playersRoom.length < 2) {
+      this.room.isSolo = true;
+    }
 
     this.updateRoomAndHandleResponse(() => {
       this.localStorageService.saveStartAgainNumber(this.room.startAgainNumber);

@@ -1,4 +1,5 @@
 <div class="container">
+  @if (room().userId === player().userId) {
   <div class="button-container-delete">
     <button
       type="button"
@@ -9,6 +10,7 @@
       <i class="bx bxs-trash"></i>
     </button>
   </div>
+  }
   <div class="button-container-look">
     <button
       type="button"

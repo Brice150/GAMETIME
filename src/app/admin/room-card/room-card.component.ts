@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, input, Output } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { Player } from 'src/app/core/interfaces/player';
 import { Room } from 'src/app/core/interfaces/room';
 
 @Component({
@@ -11,6 +12,7 @@ import { Room } from 'src/app/core/interfaces/room';
 })
 export class RoomCardComponent {
   room = input.required<Room>();
+  player = input.required<Player>();
   @Output() deleteEvent = new EventEmitter<void>();
 
   delete(): void {

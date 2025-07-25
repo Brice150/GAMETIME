@@ -78,22 +78,12 @@
     <button type="button" (click)="start()" title="Lancer">
       <i class="bx bx-play"></i>
       <span class="text">Lancer</span></button
-    >} @else { @if (room.isSolo) {
-    <button
-      type="button"
-      (click)="openDialog()"
-      title="Supprimer"
-      class="delete"
-    >
-      <i class="bx bxs-trash"></i>
-      <span class="text">Supprimer</span>
-    </button>
-    } @else {
+    >} @else {
     <button type="button" (click)="stop()" title="Arrêter" class="delete">
       <i class="bx bxs-error-alt"></i>
       <span class="text">Arrêter</span>
     </button>
-    } }
+    }
   </div>
   } @else {
   <mat-spinner></mat-spinner>

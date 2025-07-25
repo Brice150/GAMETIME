@@ -7,7 +7,7 @@
   border-radius: var(--light-radius);
   padding: 10px;
   position: relative;
-  min-width: 310px;
+  min-width: 280px;
 }
 
 .button-container-delete {
@@ -97,7 +97,6 @@ button i {
   border-radius: var(--light-radius);
   background-color: var(--primary);
   color: var(--accent);
-  padding: 10px;
   width: 270px;
   height: 34px;
 }

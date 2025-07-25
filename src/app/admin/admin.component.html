@@ -5,21 +5,22 @@
       Room multijoueur
     </mat-slide-toggle>
   </div>
-  <div class="rooms">
-    @for (room of filteredRooms; track $index) {
-    <app-room-card
-      [room]="room"
-      (deleteEvent)="openDialog(room.id!)"
-      title="Résultats"
-    ></app-room-card>
-    }
-  </div>
   <div class="button-container">
     @if (isMulti) {
     <button type="button" (click)="openAddRoomDialog()" title="Ajouter">
       <i class="bx bx-plus"></i>
       <span class="text">Ajouter</span>
     </button>
+    }
+  </div>
+  <div class="rooms">
+    @for (room of filteredRooms; track $index) {
+    <app-room-card
+      [room]="room"
+      [player]="player"
+      (deleteEvent)="openDialog(room.id!)"
+      title="Résultats"
+    ></app-room-card>
     }
   </div>
   } @else {

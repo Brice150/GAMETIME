@@ -4,16 +4,14 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { filter, Subject, switchMap, takeUntil } from 'rxjs';
+import { Subject, switchMap, takeUntil } from 'rxjs';
 import { Room } from '../core/interfaces/room';
+import { LocalStorageService } from '../core/services/local-storage.service';
+import { PlayerService } from '../core/services/player.service';
 import { RoomService } from '../core/services/room.service';
 import { DurationBetweenDatesPipe } from '../shared/pipes/duration.pipe';
-import { PlayerService } from '../core/services/player.service';
-import { LocalStorageService } from '../core/services/local-storage.service';
-import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-admin-room',
@@ -35,7 +33,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
   playerService = inject(PlayerService);
   toastr = inject(ToastrService);
   localStorageService = inject(LocalStorageService);
-  dialog = inject(MatDialog);
+  router = inject(Router);
   destroyed$ = new Subject<void>();
   hideResults = true;
 
@@ -91,7 +89,9 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
   }
 
   share(): void {
-    const link = window.location.href;
+    let link = window.location.href;
+
+    link = link.replace('/admin/', '/room/');
 
     navigator.clipboard.writeText(link).then(() => {
       this.toastr.info('Lien de la partie copié', 'Game Time', {
@@ -102,6 +102,18 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
   }
 
   start(): void {
+    if (this.room.playersRoom.length === 0) {
+      this.toastr.error(
+        'Pour être lancée, une room doit avoir des joueurs',
+        'Admin',
+        {
+          positionClass: 'toast-bottom-center',
+          toastClass: 'ngx-toastr custom error',
+        }
+      );
+      return;
+    }
+
     this.loading = true;
 
     this.room.countries = [];
@@ -109,6 +121,9 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
 
     this.room.isStarted = true;
     this.room.startDate = new Date();
+    if (this.room.playersRoom.length < 2) {
+      this.room.isSolo = true;
+    }
     this.room.startAgainNumber += 1;
     this.room.playersRoom.forEach((player) => {
       player.isOver = false;
@@ -159,41 +174,6 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
 
   allPlayersDone(): boolean {
     return this.room.playersRoom.every((player) => player.isOver);
-  }
-
-  openDialog(): void {
-    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-      data: 'supprimer cette room',
-    });
-
-    dialogRef
-      .afterClosed()
-      .pipe(
-        filter((res: boolean) => res),
-        switchMap(() => {
-          this.loading = true;
-          return this.roomService.deleteRoom(this.room.id!);
-        }),
-        takeUntil(this.destroyed$)
-      )
-      .subscribe({
-        next: () => {
-          this.loading = false;
-          this.toastr.info('Room supprimée', 'Admin', {
-            positionClass: 'toast-bottom-center',
-            toastClass: 'ngx-toastr custom info',
-          });
-        },
-        error: (error: HttpErrorResponse) => {
-          this.loading = false;
-          if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastr.error(error.message, 'Game Time', {
-              positionClass: 'toast-bottom-center',
-              toastClass: 'ngx-toastr custom error',
-            });
-          }
-        },
-      });
   }
 
   updateRoomAndHandleResponse(
