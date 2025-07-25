@@ -178,14 +178,21 @@ mat-slide-toggle {
   background-color: var(--accent) !important;
 }
 
-::ng-deep .mat-mdc-slide-toggle .mat-internal-form-field {
+::ng-deep
+  .toggle-container.home
+  .mat-mdc-slide-toggle
+  .mat-internal-form-field {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
 }
 
-::ng-deep .mat-mdc-slide-toggle .mdc-switch:enabled + .mdc-label {
+::ng-deep
+  .toggle-container.home
+  .mat-mdc-slide-toggle
+  .mdc-switch:enabled
+  + .mdc-label {
   font-size: 20px;
   font-weight: 500;
   color: var(--secondary);
