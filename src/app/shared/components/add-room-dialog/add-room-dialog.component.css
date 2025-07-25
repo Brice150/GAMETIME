@@ -127,7 +127,7 @@ mat-slide-toggle {
 }
 
 ::ng-deep .mdc-slider__track--inactive {
-  background-color: white !important;
+  background-color: rgb(221, 221, 221) !important;
   opacity: 1 !important;
 }
 
