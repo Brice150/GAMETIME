@@ -189,14 +189,26 @@ export class RoomService {
     isWordLengthIncreasing: boolean,
     startWordLength: number
   ): string[] {
-    const wordsToGenerate: string[] = [];
-    for (let i = 0; i < stepsNumber; i++) {
-      if (!isWordLengthIncreasing) {
-        wordsToGenerate.push(this.newWord(startWordLength));
-      } else {
-        wordsToGenerate.push(this.newWord(startWordLength + i));
+    const wordsToGenerate: string[] = new Array();
+
+    const usedWords = new Set<string>();
+
+    let attempts = 0;
+    while (wordsToGenerate.length < stepsNumber && attempts < 1000) {
+      const length = isWordLengthIncreasing
+        ? startWordLength + wordsToGenerate.length
+        : startWordLength;
+
+      const word = this.newWord(length);
+
+      if (!usedWords.has(word)) {
+        usedWords.add(word);
+        wordsToGenerate.push(word);
       }
+
+      attempts++;
     }
+
     return wordsToGenerate;
   }
 
@@ -208,9 +220,26 @@ export class RoomService {
 
   generateCountries(stepsNumber: number, continentFilter: number): Country[] {
     const countriesToGenerate: Country[] = [];
-    for (let i = 0; i < stepsNumber; i++) {
-      countriesToGenerate.push(this.newCountry(continentFilter));
+    const usedCountryNames = new Set<string>();
+
+    const pool =
+      continentFilter === Continent.Monde
+        ? countries
+        : countries.filter((c) => c.continent === continentFilter);
+
+    let attempts = 0;
+    while (countriesToGenerate.length < stepsNumber && attempts < 1000) {
+      const randomIndex = Math.floor(Math.random() * pool.length);
+      const candidate = pool[randomIndex];
+
+      if (!usedCountryNames.has(candidate.name)) {
+        usedCountryNames.add(candidate.name);
+        countriesToGenerate.push(candidate);
+      }
+
+      attempts++;
     }
+
     return countriesToGenerate;
   }
 
