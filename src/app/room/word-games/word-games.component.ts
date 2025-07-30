@@ -13,10 +13,11 @@ import { Room } from 'src/app/core/interfaces/room';
 import { CountryService } from 'src/app/core/services/country.service';
 import { gameMap } from 'src/assets/data/games';
 import { WordInputComponent } from './word-input/word-input.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-word-games',
-  imports: [CommonModule, WordInputComponent],
+  imports: [CommonModule, WordInputComponent, MatProgressSpinnerModule],
   templateUrl: './word-games.component.html',
   styleUrl: './word-games.component.css',
 })
@@ -28,6 +29,7 @@ export class WordGamesComponent implements OnInit {
   toastr = inject(ToastrService);
   countryService = inject(CountryService);
   isOver = false;
+  loading = false;
   readonly room = input.required<Room>();
   readonly playerRoom = input.required<PlayerRoom>();
   @Output() finishedStepEvent = new EventEmitter<boolean>();
@@ -49,9 +51,16 @@ export class WordGamesComponent implements OnInit {
     }
 
     if (this.room().gameName === this.drapeauxGameKey) {
-      this.imageUrl = this.countryService.getDrapeauImageUrl(
-        this.room().countries[index || 0].code
-      );
+      this.loading = true;
+      this.countryService
+        .getDrapeauImage(this.room().countries[index || 0].code)
+        .subscribe({
+          next: (blob) => {
+            this.imageUrl = URL.createObjectURL(blob);
+            this.loading = false;
+          },
+          error: () => (this.loading = false),
+        });
     }
 
     this.response = this.room().responses[index || 0];

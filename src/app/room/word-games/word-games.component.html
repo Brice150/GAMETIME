@@ -1,6 +1,10 @@
 @if (!isOver) { @if (room().gameName === drapeauxGameKey) {
 <div class="container">
+  @if(!loading) {
   <img [src]="imageUrl" alt="Drapeau.png" />
+  } @else {
+  <mat-spinner></mat-spinner>
+  }
 </div>
 }
 <app-word-input
