@@ -1,8 +1,7 @@
-@if (userService.currentUserSig() && playerService.currentPlayerSig() &&
-!isRoomPage()) {
+@if (userService.currentUserSig() && playerService.currentPlayerSig()) {
 <app-header
   (logoutEvent)="logout()"
-  [isAdmin]="playerService.currentPlayerSig()!.isAdmin"
+  [player]="playerService.currentPlayerSig()!"
 ></app-header>
 }
 <router-outlet></router-outlet>

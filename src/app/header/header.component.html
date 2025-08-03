@@ -31,4 +31,31 @@
       </button>
     </mat-menu>
   </div>
+  @if (isRoomPage()) {
+  <div class="switch-container medals-container">
+    <div class="medals">
+      <span class="victory-number">{{ getMedalsNumber() }}</span>
+      <i class="bx bxs-medal"></i>
+    </div>
+  </div>
+  @if (room!.isStarted && !isOver) {
+  <div class="players-room">
+    @for (playerRoom of sortedPlayersRoom; track $index) {
+    <div
+      class="player"
+      [ngClass]="{ 'alt-color': playerRoom.userId !== player().userId }"
+    >
+      <span class="username">{{ playerRoom.username }}</span>
+      @if (playerRoom.currentRoomWins.length !== room!.responses.length) {
+      <span class="step">
+        {{ playerRoom.currentRoomWins.length + 1 }}<span class="slash">/</span
+        >{{ room!.responses.length }}
+      </span>
+      } @else {
+      <span class="step">Terminé</span>
+      }
+    </div>
+    }
+  </div>
+  } }
 </header>

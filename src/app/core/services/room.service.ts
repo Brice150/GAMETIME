@@ -1,6 +1,6 @@
-import { inject, Injectable } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import {
-  arrayRemove,
   collection,
   collectionData,
   deleteDoc,
@@ -14,6 +14,7 @@ import {
 } from '@angular/fire/firestore';
 import {
   combineLatest,
+  filter,
   from,
   map,
   Observable,
@@ -38,6 +39,11 @@ export class RoomService {
   roomsCollection = collection(this.firestore, 'rooms');
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
+  currentRoomSig = signal<Room | null | undefined>(undefined);
+
+  readonly roomReady$ = toObservable(
+    computed(() => this.currentRoomSig())
+  ).pipe(filter((room): room is Room => !!room));
 
   getRooms(): Observable<Room[]> {
     const roomsCollection = collection(this.firestore, 'rooms');

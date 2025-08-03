@@ -10,16 +10,15 @@ import { gameMap } from 'src/assets/data/games';
 import { Player } from '../core/interfaces/player';
 import { PlayerRoom } from '../core/interfaces/player-room';
 import { Room } from '../core/interfaces/room';
+import { RoomForm } from '../core/interfaces/room-form';
 import { LocalStorageService } from '../core/services/local-storage.service';
 import { PlayerService } from '../core/services/player.service';
 import { RoomService } from '../core/services/room.service';
+import { AddRoomDialogComponent } from '../shared/components/add-room-dialog/add-room-dialog.component';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ResultsComponent } from './results/results.component';
-import { RoomHeaderComponent } from './room-header/room-header.component';
 import { WaitingRoomComponent } from './waiting-room/waiting-room.component';
 import { WordGamesComponent } from './word-games/word-games.component';
-import { RoomForm } from '../core/interfaces/room-form';
-import { AddRoomDialogComponent } from '../shared/components/add-room-dialog/add-room-dialog.component';
 
 @Component({
   selector: 'app-room',
@@ -27,7 +26,6 @@ import { AddRoomDialogComponent } from '../shared/components/add-room-dialog/add
     CommonModule,
     WordGamesComponent,
     WaitingRoomComponent,
-    RoomHeaderComponent,
     ResultsComponent,
     MatProgressSpinnerModule,
   ],
@@ -120,6 +118,7 @@ export class RoomComponent implements OnInit, OnDestroy {
           } else {
             this.isResultPageActive = false;
           }
+          this.roomService.currentRoomSig.set(this.room);
           this.loading = false;
         },
         error: (error: HttpErrorResponse) => {
@@ -198,6 +197,7 @@ export class RoomComponent implements OnInit, OnDestroy {
           } else {
             this.isSeeResultsAvailable = true;
           }
+          this.roomService.currentRoomSig.set(this.room);
         },
         error: (error: HttpErrorResponse) => {
           if (!error.message.includes('Missing or insufficient permissions.')) {
@@ -240,6 +240,7 @@ export class RoomComponent implements OnInit, OnDestroy {
         )
         .subscribe({
           next: () => {
+            this.roomService.currentRoomSig.set(undefined);
             this.loading = false;
             this.router.navigate(['/']);
             this.toastr.info('La room a été supprimée', 'Game Time', {
@@ -276,6 +277,7 @@ export class RoomComponent implements OnInit, OnDestroy {
 
             this.updateRoomAndHandleResponse(
               () => {
+                this.roomService.currentRoomSig.set(undefined);
                 this.loading = false;
                 this.router.navigate(['/']);
                 this.toastr.info(
@@ -340,6 +342,7 @@ export class RoomComponent implements OnInit, OnDestroy {
     this.updateRoomAndHandleResponse(() => {
       this.isSeeResultsAvailable = false;
       this.isResultPageActive = true;
+      this.roomService.currentRoomSig.set(this.room);
     });
   }
 
@@ -352,6 +355,7 @@ export class RoomComponent implements OnInit, OnDestroy {
     this.updateRoomAndHandleResponse(() => {
       this.localStorageService.saveStartAgainNumber(this.room.startAgainNumber);
       this.isResultPageActive = false;
+      this.roomService.currentRoomSig.set(this.room);
     });
   }
 
@@ -381,6 +385,7 @@ export class RoomComponent implements OnInit, OnDestroy {
     this.updateRoomAndHandleResponse(() => {
       this.localStorageService.saveStartAgainNumber(this.room.startAgainNumber);
       this.isResultPageActive = false;
+      this.roomService.currentRoomSig.set(this.room);
     });
   }
 
