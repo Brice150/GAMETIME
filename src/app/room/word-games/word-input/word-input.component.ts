@@ -45,7 +45,7 @@ export class WordInputComponent implements OnInit {
 
       if (
         tries &&
-        startAgainNumber &&
+        startAgainNumber !== undefined &&
         this.startAgainNumber() === startAgainNumber
       ) {
         this.tries = tries;
