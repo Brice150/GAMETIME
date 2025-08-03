@@ -18,6 +18,8 @@ import { ResultsComponent } from './results/results.component';
 import { RoomHeaderComponent } from './room-header/room-header.component';
 import { WaitingRoomComponent } from './waiting-room/waiting-room.component';
 import { WordGamesComponent } from './word-games/word-games.component';
+import { RoomForm } from '../core/interfaces/room-form';
+import { AddRoomDialogComponent } from '../shared/components/add-room-dialog/add-room-dialog.component';
 
 @Component({
   selector: 'app-room',
@@ -421,6 +423,34 @@ export class RoomComponent implements OnInit, OnDestroy {
               toastClass: 'ngx-toastr custom error',
             });
           }
+        },
+      });
+  }
+
+  openAddRoomDialog(): void {
+    const dialogRef = this.dialog.open(AddRoomDialogComponent, {
+      data: 'startAgain',
+    });
+
+    dialogRef
+      .afterClosed()
+      .pipe(filter((roomData: RoomForm) => !!roomData))
+      .subscribe({
+        next: (roomData: RoomForm) => {
+          if (roomData && roomData.gameSelected) {
+            this.room.gameName = roomData.gameSelected;
+            if (roomData.gameSelected === 'motus') {
+              this.room.showFirstLetter = roomData.showFirstLetterMotus;
+            } else if (roomData.gameSelected === 'drapeaux') {
+              this.room.showFirstLetter = roomData.showFirstLetterDrapeaux;
+            }
+            this.room.stepsNumber = roomData.stepsNumber;
+            this.room.continentFilter = roomData.continentFilter;
+            this.room.isWordLengthIncreasing = roomData.isWordLengthIncreasing;
+            this.room.startWordLength = roomData.startWordLength;
+          }
+
+          this.startAgain();
         },
       });
   }

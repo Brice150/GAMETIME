@@ -1,4 +1,22 @@
 <section mat-dialog-content>
+  @if(startAgainMode) {
+  <h1>Souhaitez-vous conserver les mêmes paramètres ?</h1>
+  <div class="button-container">
+    <button
+      type="button"
+      title="Non"
+      (click)="startAgainMode = false"
+      class="delete"
+    >
+      <i class="bx bx-x"></i>
+      <span class="text">Non</span>
+    </button>
+    <button type="button" title="Oui" (click)="keepSameSettingsConfirm()">
+      <i class="bx bx-check"></i>
+      <span class="text">Oui</span>
+    </button>
+  </div>
+  } @else {
   <h1>Veuillez configurer la room</h1>
   <div class="button-container margin">
     @for (game of games; track game.key) {
@@ -71,4 +89,5 @@
       <span class="text">Valider</span>
     </button>
   </div>
+  }
 </section>

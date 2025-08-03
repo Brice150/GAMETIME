@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -13,7 +13,7 @@ import { gameMap, games } from 'src/assets/data/games';
   templateUrl: './add-room-dialog.component.html',
   styleUrl: './add-room-dialog.component.css',
 })
-export class AddRoomDialogComponent {
+export class AddRoomDialogComponent implements OnInit {
   games = games;
   stepsNumber: number = 3;
   startWordLength: number = 5;
@@ -24,6 +24,7 @@ export class AddRoomDialogComponent {
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
   gameSelected: string = 'motus';
+  startAgainMode = false;
 
   get dynamicSliderValue(): number {
     return this.gameSelected === this.motusGameKey
@@ -50,6 +51,12 @@ export class AddRoomDialogComponent {
     public dialogRef: MatDialogRef<AddRoomDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: string
   ) {}
+
+  ngOnInit(): void {
+    if (this.data) {
+      this.startAgainMode = this.data === 'startAgain';
+    }
+  }
 
   formatLabel(index: number): string {
     const continentLabels = [
@@ -83,5 +90,9 @@ export class AddRoomDialogComponent {
       startWordLength: this.startWordLength,
       continentFilter: this.continentFilter,
     } as RoomForm);
+  }
+
+  keepSameSettingsConfirm(): void {
+    this.dialogRef.close({});
   }
 }
