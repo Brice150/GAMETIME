@@ -72,8 +72,25 @@ export class HeaderComponent implements OnInit {
     this.roomService.roomReady$
       .pipe(takeUntil(this.destroyed$))
       .subscribe((room) => {
-        this.room = room;
-        this.updateIsOver();
+        if (room) {
+          this.room = room;
+          this.updateIsOver();
+
+          this.menuItems = this.menuItems.filter(
+            (item) => !item.path.startsWith('/room/')
+          );
+
+          this.menuItems.push({
+            path: '/room/' + room.id,
+            title: 'Room',
+            icon: 'bx bx-play',
+          });
+        } else {
+          this.room = undefined;
+          this.menuItems = this.menuItems.filter(
+            (item) => !item.path.startsWith('/room/')
+          );
+        }
       });
   }
 

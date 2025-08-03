@@ -41,9 +41,7 @@ export class RoomService {
   drapeauxGameKey = gameMap['drapeaux'].key;
   currentRoomSig = signal<Room | null | undefined>(undefined);
 
-  readonly roomReady$ = toObservable(
-    computed(() => this.currentRoomSig())
-  ).pipe(filter((room): room is Room => !!room));
+  readonly roomReady$ = toObservable(computed(() => this.currentRoomSig()));
 
   getRooms(): Observable<Room[]> {
     const roomsCollection = collection(this.firestore, 'rooms');
