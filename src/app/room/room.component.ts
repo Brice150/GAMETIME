@@ -88,16 +88,7 @@ export class RoomComponent implements OnInit, OnDestroy {
             };
             this.room.playersRoom.push(this.playerRoom);
 
-            this.updateRoomAndHandleResponse(() => {
-              this.toastr.info(
-                'Vous venez de rejoindre une room',
-                'Game Time',
-                {
-                  positionClass: 'toast-bottom-center',
-                  toastClass: 'ngx-toastr custom info',
-                }
-              );
-            });
+            this.updateRoomAndHandleResponse(() => {});
             return of(null);
           } else if (room.isCreatedByAdmin && this.player.isAdmin) {
             this.router.navigate(['/admin', room.id]);

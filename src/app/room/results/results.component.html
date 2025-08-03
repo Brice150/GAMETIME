@@ -7,7 +7,11 @@
     <div class="flex">
       <span class="username">{{ playerRoom.username }}</span>
       <div class="medals">
+        @if (playerRoom.isOver) {
         <span class="victory-number">{{ playerRoom.medalsNumber }}</span>
+        } @else {
+        <i class="bx bx-loader-alt bx-spin" style="color: var(--primary)"></i>
+        }
         <i class="bx bxs-medal"></i>
       </div>
       @if (sortedPlayersRoom.length > 1) {
