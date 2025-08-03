@@ -15,10 +15,17 @@ import { games } from 'src/assets/data/games';
 import { Player } from '../core/interfaces/player';
 import { Room } from '../core/interfaces/room';
 import { RoomService } from '../core/services/room.service';
+import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
 
 @Component({
   selector: 'app-header',
-  imports: [CommonModule, RouterModule, MatButtonModule, MatMenuModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    MatButtonModule,
+    MatMenuModule,
+    MedalsNumberPipe,
+  ],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
 })
@@ -102,13 +109,6 @@ export class HeaderComponent implements OnInit {
 
   isRoomPage(): boolean {
     return this.location.path().startsWith('/room') && !!this.room;
-  }
-
-  getMedalsNumber(): number {
-    const stat = this.player().stats?.find(
-      (stat) => stat.gameName === this.room?.gameName
-    );
-    return stat?.medalsNumer ?? 0;
   }
 
   updateIsOver(): void {

@@ -15,7 +15,9 @@
         <span class="game">{{ game.label }}</span>
       </div>
       <div class="medals">
-        <span class="victory-number">{{ getMedalsNumber(game.key) }}</span>
+        <span class="victory-number">{{
+          game.key | medalsNumber : playerService.currentPlayerSig()!
+        }}</span>
         <i class="bx bxs-medal"></i>
       </div>
     </button>

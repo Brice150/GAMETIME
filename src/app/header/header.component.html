@@ -34,7 +34,9 @@
   @if (isRoomPage()) {
   <div class="switch-container medals-container">
     <div class="medals">
-      <span class="victory-number">{{ getMedalsNumber() }}</span>
+      <span class="victory-number">{{
+        room?.gameName! | medalsNumber : player()
+      }}</span>
       <i class="bx bxs-medal"></i>
     </div>
   </div>

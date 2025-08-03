@@ -12,6 +12,7 @@ import { gameMap, games } from 'src/assets/data/games';
 import { LocalStorageService } from '../core/services/local-storage.service';
 import { PlayerService } from '../core/services/player.service';
 import { RoomService } from '../core/services/room.service';
+import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
 
 @Component({
   selector: 'app-home',
@@ -22,6 +23,7 @@ import { RoomService } from '../core/services/room.service';
     MatSliderModule,
     FormsModule,
     MatSlideToggleModule,
+    MedalsNumberPipe,
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
@@ -69,13 +71,6 @@ export class HomeComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.destroyed$.next();
     this.destroyed$.complete();
-  }
-
-  getMedalsNumber(gameName: string): number {
-    const stat = this.playerService
-      .currentPlayerSig()
-      ?.stats?.find((stat) => stat.gameName === gameName);
-    return stat?.medalsNumer ?? 0;
   }
 
   formatLabel(index: number): string {
