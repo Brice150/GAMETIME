@@ -37,11 +37,6 @@ export class AdminComponent implements OnInit {
   player: Player = {} as Player;
   rooms: Room[] = [];
   loading: boolean = true;
-  isMulti: boolean = true;
-
-  get filteredRooms(): Room[] {
-    return this.rooms.filter((room) => room.isSolo !== this.isMulti);
-  }
 
   ngOnInit(): void {
     this.playerService.playerReady$
@@ -119,7 +114,6 @@ export class AdminComponent implements OnInit {
             switchMap(() => {
               const newRoom = this.roomService.newRoom(
                 roomData.gameSelected,
-                'multi',
                 roomData.showFirstLetterMotus,
                 roomData.showFirstLetterDrapeaux,
                 roomData.stepsNumber,

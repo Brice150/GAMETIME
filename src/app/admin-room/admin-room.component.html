@@ -17,7 +17,7 @@
           <span class="victory-number">{{ playerRoom.medalsNumber }}</span>
           <i class="bx bxs-medal"></i>
         </div>
-        @if (!room.isSolo) {
+        @if (room.playersRoom.length > 1) {
         <div class="podium">
           @if (i + 1 === 1) {
           <i class="bx bxs-trophy" style="color: gold"></i>
@@ -72,13 +72,15 @@
   </div>
   <div class="button-container">
     @if (!room.isStarted || allPlayersDone()) {
-    <button type="button" (click)="share()" title="Partager" class="share">
+    <button type="button" (click)="share()" title="Multijoueur" class="share">
       <i class="bx bx-link"></i>
+      <span class="text">Multijoueur</span>
     </button>
     <button type="button" (click)="start()" title="Lancer">
       <i class="bx bx-play"></i>
-      <span class="text">Lancer</span></button
-    >} @else {
+      <span class="text">Lancer</span>
+    </button>
+    } @else {
     <button type="button" (click)="stop()" title="Arrêter" class="delete">
       <i class="bx bxs-error-alt"></i>
       <span class="text">Arrêter</span>

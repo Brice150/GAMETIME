@@ -32,8 +32,9 @@
       <span class="text">Rejouer</span>
     </button>
     } @else if (!room.isStarted) {
-    <button type="button" (click)="share()" title="Partager" class="share">
+    <button type="button" (click)="share()" title="Multijoueur" class="share">
       <i class="bx bx-link"></i>
+      <span class="text">Multijoueur</span>
     </button>
     @if (player.userId === room.userId) {
     <button type="button" (click)="start()" title="Jouer">

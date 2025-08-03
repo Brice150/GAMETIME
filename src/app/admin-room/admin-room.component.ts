@@ -94,10 +94,14 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
     link = link.replace('/admin/', '/room/');
 
     navigator.clipboard.writeText(link).then(() => {
-      this.toastr.info('Lien de la partie copié', 'Game Time', {
-        positionClass: 'toast-bottom-center',
-        toastClass: 'ngx-toastr custom info',
-      });
+      this.toastr.info(
+        'Lien de la partie copié, envoyez ce lien à vos amis pour jouer en multijoueur !',
+        'Game Time',
+        {
+          positionClass: 'toast-bottom-center',
+          toastClass: 'ngx-toastr custom info',
+        }
+      );
     });
   }
 
@@ -121,9 +125,6 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
 
     this.room.isStarted = true;
     this.room.startDate = new Date();
-    if (this.room.playersRoom.length < 2) {
-      this.room.isSolo = true;
-    }
     this.room.startAgainNumber += 1;
     this.room.playersRoom.forEach((player) => {
       player.isOver = false;

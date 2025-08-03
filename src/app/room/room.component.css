@@ -23,11 +23,10 @@ mat-spinner {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  width: 95%;
   gap: 20px;
   flex-wrap: wrap;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin: 20px 0;
 }
 
 .button-container button {
@@ -46,7 +45,7 @@ mat-spinner {
 }
 
 .button-container button.share {
-  width: 50px;
+  width: 170px;
 }
 
 .button-container .delete {

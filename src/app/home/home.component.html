@@ -23,23 +23,6 @@
   </div>
 
   @if (gameSelected) {
-  <div class="modes">
-    @for (mode of modes; track mode.key) {
-    <button
-      type="button"
-      class="mode"
-      [title]="mode.label"
-      [ngClass]="{ active: modeSelected === mode.key }"
-      (click)="modeSelected = mode.key"
-    >
-      <div class="flex">
-        <i class="{{ mode.icon }}"></i>
-        <span class="game">{{ mode.label }}</span>
-      </div>
-    </button>
-    }
-  </div>
-  } @if (modeSelected) {
   <div class="slider-container top">
     <span>Nombre de manches</span>
     <mat-slider min="1" max="8" step="1" discrete>
@@ -86,8 +69,8 @@
     }
   </div>
 
-  <div class="modes">
-    <button type="button" class="mode play" title="Jouer" (click)="play()">
+  <div class="play-container">
+    <button type="button" class="play" title="Jouer" (click)="play()">
       <div class="flex">
         <i class="bx bx-play"></i>
         <span class="game">Jouer</span>

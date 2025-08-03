@@ -73,7 +73,7 @@ export class RoomComponent implements OnInit, OnDestroy {
             return of(null);
           }
 
-          if (!room.isSolo && !(room.isCreatedByAdmin && this.player.isAdmin)) {
+          if (!(room.isCreatedByAdmin && this.player.isAdmin)) {
             const stat = this.player.stats.find(
               (stat) => stat.gameName === this.room.gameName
             );
@@ -346,9 +346,6 @@ export class RoomComponent implements OnInit, OnDestroy {
 
     this.room.isStarted = true;
     this.room.startDate = new Date();
-    if (this.room.playersRoom.length < 2) {
-      this.room.isSolo = true;
-    }
 
     this.updateRoomAndHandleResponse(() => {
       this.localStorageService.saveStartAgainNumber(this.room.startAgainNumber);
@@ -389,10 +386,14 @@ export class RoomComponent implements OnInit, OnDestroy {
     const link = window.location.href;
 
     navigator.clipboard.writeText(link).then(() => {
-      this.toastr.info('Lien de la partie copié', 'Game Time', {
-        positionClass: 'toast-bottom-center',
-        toastClass: 'ngx-toastr custom info',
-      });
+      this.toastr.info(
+        'Lien de la partie copié, envoyez ce lien à vos amis pour jouer en multijoueur !',
+        'Game Time',
+        {
+          positionClass: 'toast-bottom-center',
+          toastClass: 'ngx-toastr custom info',
+        }
+      );
     });
   }
 

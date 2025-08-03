@@ -1,20 +1,13 @@
 <section>
   @if(!loading) {
-  <div class="toggle-container admin">
-    <mat-slide-toggle [(ngModel)]="isMulti">
-      Room multijoueur
-    </mat-slide-toggle>
-  </div>
   <div class="button-container">
-    @if (isMulti) {
     <button type="button" (click)="openAddRoomDialog()" title="Ajouter">
       <i class="bx bx-plus"></i>
       <span class="text">Ajouter</span>
     </button>
-    }
   </div>
   <div class="rooms">
-    @for (room of filteredRooms; track $index) {
+    @for (room of rooms; track $index) {
     <app-room-card
       [room]="room"
       [player]="player"

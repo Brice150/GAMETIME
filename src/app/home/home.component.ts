@@ -9,7 +9,6 @@ import { Router, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Subject, switchMap, takeUntil } from 'rxjs';
 import { gameMap, games } from 'src/assets/data/games';
-import { Mode } from '../core/interfaces/mode';
 import { LocalStorageService } from '../core/services/local-storage.service';
 import { PlayerService } from '../core/services/player.service';
 import { RoomService } from '../core/services/room.service';
@@ -29,7 +28,6 @@ import { RoomService } from '../core/services/room.service';
 })
 export class HomeComponent implements OnDestroy {
   gameSelected: string = '';
-  modeSelected: string = '';
   loading: boolean = false;
   playerService = inject(PlayerService);
   roomService = inject(RoomService);
@@ -46,18 +44,6 @@ export class HomeComponent implements OnDestroy {
   showFirstLetterDrapeaux = false;
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
-  modes: Mode[] = [
-    {
-      key: 'solo',
-      label: 'Solo',
-      icon: 'bx bx-user',
-    },
-    {
-      key: 'multi',
-      label: 'Multijoueur',
-      icon: 'bx bx-group',
-    },
-  ];
 
   get dynamicSliderValue(): number {
     return this.gameSelected === this.motusGameKey
@@ -115,7 +101,6 @@ export class HomeComponent implements OnDestroy {
 
     const newRoom = this.roomService.newRoom(
       this.gameSelected,
-      this.modeSelected,
       this.showFirstLetterMotus,
       this.showFirstLetterDrapeaux,
       this.stepsNumber,

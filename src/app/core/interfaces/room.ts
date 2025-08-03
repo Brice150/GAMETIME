@@ -7,7 +7,6 @@ export interface Room {
   playersRoom: PlayerRoom[];
   userId?: string;
   isStarted: boolean;
-  isSolo: boolean;
   showFirstLetter: boolean;
   stepsNumber: number;
   continentFilter: number;

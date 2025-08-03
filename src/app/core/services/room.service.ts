@@ -97,7 +97,6 @@ export class RoomService {
 
   newRoom(
     gameSelected: string,
-    modeSelected: string,
     showFirstLetterMotus: boolean,
     showFirstLetterDrapeaux: boolean,
     stepsNumber: number,
@@ -139,8 +138,7 @@ export class RoomService {
     return {
       gameName: gameSelected,
       playersRoom: !isCreatedByAdmin ? [playerRoom] : [],
-      isStarted: modeSelected === 'solo',
-      isSolo: modeSelected === 'solo',
+      isStarted: false,
       showFirstLetter: showFirstLetter,
       stepsNumber: stepsNumber,
       continentFilter: continentFilter,
@@ -148,7 +146,7 @@ export class RoomService {
       startWordLength: startWordLength,
       responses: responses,
       countries: countries,
-      startDate: modeSelected === 'solo' ? new Date() : null,
+      startDate: null,
       startAgainNumber: 0,
       isCreatedByAdmin: isCreatedByAdmin,
     };

@@ -10,7 +10,7 @@
         <span class="victory-number">{{ playerRoom.medalsNumber }}</span>
         <i class="bx bxs-medal"></i>
       </div>
-      @if (!room().isSolo) {
+      @if (sortedPlayersRoom.length > 1) {
       <div class="podium">
         @if (i + 1 === 1) {
         <i class="bx bxs-trophy" style="color: gold"></i>
