@@ -42,17 +42,19 @@ export class WordInputComponent implements OnInit {
       this.response = this.response.toUpperCase();
       const tries = this.localStorageService.getTries();
       const startAgainNumber = this.localStorageService.getStartAgainNumber();
+      const roomId = this.localStorageService.getRoomId();
 
       if (
         tries &&
         startAgainNumber !== undefined &&
+        roomId &&
         this.startAgainNumber() === startAgainNumber
       ) {
         this.tries = tries;
         this.emojiClass = emojies[tries.length + 1].emojiClass;
         this.emojiStyle = emojies[tries.length + 1].emojiStyle;
       } else {
-        this.localStorageService.saveStartAgainNumber(this.startAgainNumber());
+        this.localStorageService.newGame(roomId!, this.startAgainNumber());
         this.tries = [];
         this.emojiClass = emojies[1].emojiClass;
         this.emojiStyle = emojies[1].emojiStyle;

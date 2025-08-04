@@ -144,9 +144,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
 
     this.updateRoomAndHandleResponse(() => {
       if (this.room.userId === this.playerService.currentPlayerSig()?.userId) {
-        this.localStorageService.saveStartAgainNumber(
-          this.room.startAgainNumber
-        );
+        this.localStorageService.newGame(this.room.id!);
       }
     });
   }
@@ -165,10 +163,10 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
 
     this.updateRoomAndHandleResponse(() => {
       if (this.room.userId === this.playerService.currentPlayerSig()?.userId) {
-        this.localStorageService.saveStartAgainNumber(
+        this.localStorageService.newGame(
+          this.room.id!,
           this.room.startAgainNumber
         );
-        this.localStorageService.saveTries([]);
       }
     });
   }

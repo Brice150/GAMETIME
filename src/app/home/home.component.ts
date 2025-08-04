@@ -114,9 +114,7 @@ export class HomeComponent implements OnDestroy {
       )
       .subscribe({
         next: (roomId) => {
-          this.localStorageService.saveStartAgainNumber(
-            newRoom.startAgainNumber
-          );
+          this.localStorageService.newGame(roomId);
           this.loading = false;
           this.router.navigate([`/room/${roomId}`]);
         },

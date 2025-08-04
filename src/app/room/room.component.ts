@@ -344,7 +344,7 @@ export class RoomComponent implements OnInit, OnDestroy {
     this.room.startDate = new Date();
 
     this.updateRoomAndHandleResponse(() => {
-      this.localStorageService.saveStartAgainNumber(this.room.startAgainNumber);
+      this.localStorageService.newGame(this.room.id!);
       this.isResultPageActive = false;
       this.roomService.currentRoomSig.set(this.room);
     });
@@ -374,7 +374,10 @@ export class RoomComponent implements OnInit, OnDestroy {
     );
 
     this.updateRoomAndHandleResponse(() => {
-      this.localStorageService.saveStartAgainNumber(this.room.startAgainNumber);
+      this.localStorageService.newGame(
+        this.room.id!,
+        this.room.startAgainNumber
+      );
       this.isResultPageActive = false;
       this.roomService.currentRoomSig.set(this.room);
     });
