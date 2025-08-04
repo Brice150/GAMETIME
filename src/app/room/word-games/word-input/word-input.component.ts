@@ -11,6 +11,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { Room } from 'src/app/core/interfaces/room';
 import { WordTry } from 'src/app/core/interfaces/wordTry';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
 import { emojies } from 'src/assets/data/emojis';
@@ -25,8 +26,7 @@ export class WordInputComponent implements OnInit {
   toastr = inject(ToastrService);
   localStorageService = inject(LocalStorageService);
   @Input() response: string = '';
-  readonly startAgainNumber = input.required<number>();
-  readonly showFirstLetter = input<boolean>(true);
+  readonly room = input.required<Room>();
   wordToFind!: string;
   maxlength!: number;
   inputValue: string = '';
@@ -48,18 +48,19 @@ export class WordInputComponent implements OnInit {
         tries &&
         startAgainNumber !== undefined &&
         roomId &&
-        this.startAgainNumber() === startAgainNumber
+        roomId === this.room().id &&
+        this.room().startAgainNumber === startAgainNumber
       ) {
         this.tries = tries;
         this.emojiClass = emojies[tries.length + 1].emojiClass;
         this.emojiStyle = emojies[tries.length + 1].emojiStyle;
       } else {
-        this.localStorageService.newGame(roomId!, this.startAgainNumber());
+        this.localStorageService.newGame(roomId!, this.room().startAgainNumber);
         this.tries = [];
         this.emojiClass = emojies[1].emojiClass;
         this.emojiStyle = emojies[1].emojiStyle;
       }
-      if (this.showFirstLetter()) {
+      if (this.room().showFirstLetter) {
         this.wordToFind = this.response.replace(/[A-Za-z]/g, '_');
         this.inputValue = this.response.charAt(0);
       } else {
@@ -83,7 +84,7 @@ export class WordInputComponent implements OnInit {
       event.preventDefault();
     }
 
-    if (this.showFirstLetter()) {
+    if (this.room().showFirstLetter) {
       const inputValue = (event.target as HTMLInputElement).value;
       if (inputValue.length === 0 && key !== this.response.charAt(0)) {
         event.preventDefault();
@@ -100,7 +101,7 @@ export class WordInputComponent implements OnInit {
       const response = this.response;
       if (
         this.inputValue.length === this.maxlength &&
-        (!this.showFirstLetter() ||
+        (!this.room().showFirstLetter ||
           this.inputValue.startsWith(response.charAt(0))) &&
         /^[A-Z]+$/.test(this.inputValue)
       ) {
@@ -122,7 +123,9 @@ export class WordInputComponent implements OnInit {
       });
     }
 
-    this.inputValue = this.showFirstLetter() ? this.response.charAt(0) : '';
+    this.inputValue = this.room().showFirstLetter
+      ? this.response.charAt(0)
+      : '';
   }
 
   addTry(): void {

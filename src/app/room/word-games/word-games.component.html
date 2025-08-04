@@ -9,8 +9,7 @@
 }
 <app-word-input
   [response]="response"
-  [showFirstLetter]="room().showFirstLetter"
-  [startAgainNumber]="room().startAgainNumber"
+  [room]="room()"
   (emitEvent)="handleEvent($event)"
 ></app-word-input>
 }
