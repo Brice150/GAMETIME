@@ -81,7 +81,6 @@ export const countries: Country[] = [
   { name: 'Lesotho', code: 'LS', continent: Continent.Afrique },
   { name: 'Liberia', code: 'LR', continent: Continent.Afrique },
   { name: 'Libye', code: 'LY', continent: Continent.Afrique },
-  { name: 'Liechtenstein', code: 'LI', continent: Continent.Europe },
   { name: 'Lituanie', code: 'LT', continent: Continent.Europe },
   { name: 'Luxembourg', code: 'LU', continent: Continent.Europe },
   { name: 'Madagascar', code: 'MG', continent: Continent.Afrique },
