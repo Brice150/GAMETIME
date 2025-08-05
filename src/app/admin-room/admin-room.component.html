@@ -5,19 +5,21 @@
       Cacher résultats
     </mat-slide-toggle>
   </div>
-  <div class="players-room">
-    @for (playerRoom of sortedPlayersRoom; track $index; let i = $index) {
+  <div class="players">
+    @for (otherPlayer of sortedPlayers; track $index; let i = $index) {
     <div
       class="player"
-      [ngClass]="{ 'alt-color': playerRoom.userId !== room.userId }"
+      [ngClass]="{ 'alt-color': otherPlayer.userId !== room.userId }"
     >
       <div class="flex">
-        <span class="username">{{ playerRoom.username }}</span>
+        <span class="username">{{ otherPlayer.username }}</span>
         <div class="medals">
-          <span class="victory-number">{{ playerRoom.medalsNumber }}</span>
+          <span class="victory-number">{{
+            room.gameName | medalsNumber : otherPlayer
+          }}</span>
           <i class="bx bxs-medal"></i>
         </div>
-        @if (room.playersRoom.length > 1) {
+        @if (players.length > 1) {
         <div class="podium">
           @if (i + 1 === 1) {
           <i class="bx bxs-trophy" style="color: gold"></i>
@@ -33,7 +35,7 @@
       </div>
       <div class="time">
         <span>{{
-          room.startDate | durationBetweenDates : playerRoom.finishDate
+          room.startDate | durationBetweenDates : otherPlayer.finishDate
         }}</span>
       </div>
       <div class="responses">
@@ -42,9 +44,9 @@
           <span class="description" [class.blurred]="hideResults">{{
             response
           }}</span>
-          @if (playerRoom.currentRoomWins[j] === true) {
+          @if (otherPlayer.currentRoomWins[j] === true) {
           <i class="bx bx-check"></i>
-          } @else if (playerRoom.currentRoomWins[j] === false) {
+          } @else if (otherPlayer.currentRoomWins[j] === false) {
           <i class="bx bx-x" style="color: red"></i>
           } @else {
           <i class="bx bx-loader-alt bx-spin" style="color: var(--accent)"></i>

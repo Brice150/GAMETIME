@@ -6,7 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ToastrService } from 'ngx-toastr';
-import { filter, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import { filter, map, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { Player } from '../core/interfaces/player';
 import { Room } from '../core/interfaces/room';
 import { PlayerService } from '../core/services/player.service';
@@ -36,17 +36,39 @@ export class AdminComponent implements OnInit {
   dialog = inject(MatDialog);
   player: Player = {} as Player;
   rooms: Room[] = [];
+  playersByRoom: Record<string, Player[]> = {};
   loading: boolean = true;
 
   ngOnInit(): void {
     this.playerService.playerReady$
       .pipe(
         tap((player) => (this.player = player)),
-        switchMap(() => this.roomService.getRooms())
+        switchMap(() => this.roomService.getRooms()),
+        switchMap((rooms) => {
+          this.rooms = rooms;
+
+          const allPlayerIds = Array.from(
+            new Set(rooms.flatMap((room) => room.playerIds || []))
+          );
+
+          if (!allPlayerIds.length) {
+            return of({ rooms, players: [] });
+          }
+
+          return this.playerService
+            .getPlayers(allPlayerIds)
+            .pipe(map((players) => ({ rooms, players })));
+        })
       )
       .subscribe({
-        next: (rooms) => {
-          this.rooms = rooms;
+        next: ({ rooms, players }) => {
+          this.playersByRoom = rooms.reduce((acc, room) => {
+            acc[room.id!] = room.playerIds
+              .map((id) => players.find((p) => p.userId === id))
+              .filter((p): p is Player => !!p);
+            return acc;
+          }, {} as Record<string, Player[]>);
+
           this.loading = false;
         },
         error: (error: HttpErrorResponse) => {
@@ -120,7 +142,7 @@ export class AdminComponent implements OnInit {
                 roomData.isWordLengthIncreasing,
                 roomData.startWordLength,
                 roomData.continentFilter,
-                this.playerService.currentPlayerSig()!,
+                '',
                 true
               );
               return this.roomService.addRoom(newRoom);

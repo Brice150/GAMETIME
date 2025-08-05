@@ -3,22 +3,21 @@ import { Component, input } from '@angular/core';
 import { Player } from 'src/app/core/interfaces/player';
 import { Room } from 'src/app/core/interfaces/room';
 import { DurationBetweenDatesPipe } from 'src/app/shared/pipes/duration.pipe';
+import { MedalsNumberPipe } from '../../shared/pipes/medals-number.pipe';
 
 @Component({
   selector: 'app-results',
-  imports: [CommonModule, DurationBetweenDatesPipe],
+  imports: [CommonModule, DurationBetweenDatesPipe, MedalsNumberPipe],
   templateUrl: './results.component.html',
   styleUrl: './results.component.css',
 })
 export class ResultsComponent {
   room = input.required<Room>();
   player = input.required<Player>();
+  players = input.required<Player[]>();
 
-  get sortedPlayersRoom() {
-    const room = this.room();
-    if (!room || !room.playersRoom) return [];
-
-    return [...room.playersRoom].sort((a, b) => {
+  get sortedPlayers() {
+    return [...this.players()].sort((a, b) => {
       const aTrueCount = a.currentRoomWins.filter(Boolean).length;
       const bTrueCount = b.currentRoomWins.filter(Boolean).length;
 

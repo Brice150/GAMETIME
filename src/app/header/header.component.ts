@@ -10,12 +10,13 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
-import { filter, Subject, takeUntil } from 'rxjs';
+import { filter, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { games } from 'src/assets/data/games';
 import { Player } from '../core/interfaces/player';
 import { Room } from '../core/interfaces/room';
 import { RoomService } from '../core/services/room.service';
 import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
+import { PlayerService } from '../core/services/player.service';
 
 @Component({
   selector: 'app-header',
@@ -33,6 +34,7 @@ export class HeaderComponent implements OnInit {
   router = inject(Router);
   location = inject(Location);
   roomService = inject(RoomService);
+  playerService = inject(PlayerService);
   currentUrl = '';
   menuItems = [
     { path: '/', title: 'Accueil', icon: 'bx bxs-home' },
@@ -40,14 +42,12 @@ export class HeaderComponent implements OnInit {
   ];
   player = input.required<Player>();
   room?: Room;
-  isOver = false;
+  players: Player[] = [];
   destroyed$ = new Subject<void>();
   @Output() logoutEvent = new EventEmitter<void>();
 
-  get sortedPlayersRoom() {
-    if (!this.room || !this.room.playersRoom) return [];
-
-    return [...this.room.playersRoom].sort(
+  get sortedPlayers() {
+    return [...this.players].sort(
       (a, b) => b.currentRoomWins.length - a.currentRoomWins.length
     );
   }
@@ -70,27 +70,35 @@ export class HeaderComponent implements OnInit {
     }
 
     this.roomService.roomReady$
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe((room) => {
-        if (room) {
-          this.room = room;
-          this.updateIsOver();
-
-          this.menuItems = this.menuItems.filter(
-            (item) => !item.path.startsWith('/room/')
-          );
-
-          this.menuItems.push({
-            path: '/room/' + room.id,
-            title: 'Room',
-            icon: 'bx bx-play',
-          });
-        } else {
-          this.room = undefined;
-          this.menuItems = this.menuItems.filter(
-            (item) => !item.path.startsWith('/room/')
-          );
-        }
+      .pipe(
+        takeUntil(this.destroyed$),
+        tap((room) => {
+          if (room) {
+            this.room = room;
+            this.menuItems = this.menuItems.filter(
+              (item) => !item.path.startsWith('/room/')
+            );
+            this.menuItems.push({
+              path: '/room/' + room.id,
+              title: 'Room',
+              icon: 'bx bx-play',
+            });
+          } else {
+            this.room = undefined;
+            this.menuItems = this.menuItems.filter(
+              (item) => !item.path.startsWith('/room/')
+            );
+          }
+        }),
+        switchMap((room) => {
+          if (!room || !room.playerIds?.length) {
+            return of([]);
+          }
+          return this.playerService.getPlayers(room.playerIds);
+        })
+      )
+      .subscribe((players) => {
+        this.players = players;
       });
   }
 
@@ -126,12 +134,5 @@ export class HeaderComponent implements OnInit {
 
   isRoomPage(): boolean {
     return this.location.path().startsWith('/room') && !!this.room;
-  }
-
-  updateIsOver(): void {
-    const playerRoom = this.room?.playersRoom.find(
-      (player) => player.userId === this.player().userId
-    );
-    this.isOver = !!playerRoom?.isOver;
   }
 }

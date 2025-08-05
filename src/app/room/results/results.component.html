@@ -1,20 +1,22 @@
-<div class="players-room">
-  @for (playerRoom of sortedPlayersRoom; track $index; let i = $index) {
+<div class="players">
+  @for (otherPlayer of sortedPlayers; track $index; let i = $index) {
   <div
     class="player"
-    [ngClass]="{ 'alt-color': playerRoom.userId !== player().userId }"
+    [ngClass]="{ 'alt-color': otherPlayer.userId !== player().userId }"
   >
     <div class="flex">
-      <span class="username">{{ playerRoom.username }}</span>
+      <span class="username">{{ otherPlayer.username }}</span>
       <div class="medals">
-        @if (playerRoom.isOver) {
-        <span class="victory-number">{{ playerRoom.medalsNumber }}</span>
+        @if (otherPlayer.isOver) {
+        <span class="victory-number">{{
+          room().gameName | medalsNumber : otherPlayer
+        }}</span>
         } @else {
         <i class="bx bx-loader-alt bx-spin" style="color: var(--primary)"></i>
         }
         <i class="bx bxs-medal"></i>
       </div>
-      @if (sortedPlayersRoom.length > 1) {
+      @if (sortedPlayers.length > 1) {
       <div class="podium">
         @if (i + 1 === 1) {
         <i class="bx bxs-trophy" style="color: gold"></i>
@@ -30,16 +32,16 @@
     </div>
     <div class="time">
       <span>{{
-        room().startDate | durationBetweenDates : playerRoom.finishDate
+        room().startDate | durationBetweenDates : otherPlayer.finishDate
       }}</span>
     </div>
     <div class="responses">
       @for (response of room().responses; track $index; let j = $index) {
       <div class="response">
         <span class="description">{{ response }}</span>
-        @if (playerRoom.currentRoomWins[j] === true) {
+        @if (otherPlayer.currentRoomWins[j] === true) {
         <i class="bx bx-check"></i>
-        } @else if (playerRoom.currentRoomWins[j] === false) {
+        } @else if (otherPlayer.currentRoomWins[j] === false) {
         <i class="bx bx-x" style="color: red"></i>
         } @else {
         <i class="bx bx-loader-alt bx-spin" style="color: var(--accent)"></i>

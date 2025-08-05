@@ -6,4 +6,7 @@ export interface Player {
   username: string;
   isAdmin: boolean;
   stats: Stat[];
+  isOver: boolean;
+  currentRoomWins: boolean[];
+  finishDate: Date | null;
 }

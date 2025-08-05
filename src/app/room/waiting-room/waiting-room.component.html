@@ -1,12 +1,14 @@
-<div class="players-room">
-  @for (playerRoom of room().playersRoom; track $index; let i = $index) {
+<div class="players">
+  @for (otherPlayer of players(); track $index; let i = $index) {
   <div
     class="player"
-    [ngClass]="{ 'alt-color': playerRoom.userId !== player().userId }"
+    [ngClass]="{ 'alt-color': otherPlayer.userId !== player().userId }"
   >
-    <span class="username">{{ playerRoom.username }}</span>
+    <span class="username">{{ otherPlayer.username }}</span>
     <div class="medals">
-      <span class="victory-number">{{ playerRoom.medalsNumber }}</span>
+      <span class="victory-number">{{
+        room().gameName | medalsNumber : otherPlayer
+      }}</span>
       <i class="bx bxs-medal"></i>
     </div>
   </div>

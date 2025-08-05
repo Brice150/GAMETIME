@@ -2,13 +2,21 @@
   @if(!loading) { @if (room.isStarted) { @if(!isResultPageActive) {
   <app-word-games
     [room]="room"
-    [playerRoom]="playerRoom"
+    [player]="player"
     (finishedStepEvent)="updateRoom($event)"
   ></app-word-games>
   } @else {
-  <app-results [room]="room" [player]="player"></app-results>
+  <app-results
+    [room]="room"
+    [player]="player"
+    [players]="players"
+  ></app-results>
   } } @else {
-  <app-waiting-room [room]="room" [player]="player"></app-waiting-room>
+  <app-waiting-room
+    [room]="room"
+    [player]="player"
+    [players]="players"
+  ></app-waiting-room>
   }
   <div class="button-container">
     <button type="button" title="Quitter" (click)="openDialog()" class="delete">

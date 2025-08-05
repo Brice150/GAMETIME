@@ -6,12 +6,14 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { Subject, switchMap, takeUntil } from 'rxjs';
+import { of, Subject, switchMap, takeUntil } from 'rxjs';
 import { Room } from '../core/interfaces/room';
 import { LocalStorageService } from '../core/services/local-storage.service';
 import { PlayerService } from '../core/services/player.service';
 import { RoomService } from '../core/services/room.service';
 import { DurationBetweenDatesPipe } from '../shared/pipes/duration.pipe';
+import { Player } from '../core/interfaces/player';
+import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
 
 @Component({
   selector: 'app-admin-room',
@@ -21,6 +23,7 @@ import { DurationBetweenDatesPipe } from '../shared/pipes/duration.pipe';
     MatProgressSpinnerModule,
     FormsModule,
     MatSlideToggleModule,
+    MedalsNumberPipe,
   ],
   templateUrl: './admin-room.component.html',
   styleUrl: './admin-room.component.css',
@@ -28,6 +31,7 @@ import { DurationBetweenDatesPipe } from '../shared/pipes/duration.pipe';
 export class AdminRoomComponent implements OnInit, OnDestroy {
   loading: boolean = true;
   room: Room = {} as Room;
+  players: Player[] = [];
   roomService = inject(RoomService);
   activatedRoute = inject(ActivatedRoute);
   playerService = inject(PlayerService);
@@ -37,11 +41,8 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
   destroyed$ = new Subject<void>();
   hideResults = true;
 
-  get sortedPlayersRoom() {
-    const room = this.room;
-    if (!room || !room.playersRoom) return [];
-
-    return [...room.playersRoom].sort((a, b) => {
+  get sortedPlayers() {
+    return [...this.players].sort((a, b) => {
       const aTrueCount = a.currentRoomWins.filter(Boolean).length;
       const bTrueCount = b.currentRoomWins.filter(Boolean).length;
 
@@ -60,11 +61,18 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
     this.activatedRoute.params
       .pipe(
         takeUntil(this.destroyed$),
-        switchMap((params) => this.roomService.getRoom(params['id']))
+        switchMap((params) => this.roomService.getRoom(params['id'])),
+        switchMap((room) => {
+          this.room = room;
+          if (!room || !room.playerIds?.length) {
+            return of([]);
+          }
+          return this.playerService.getPlayers(room.playerIds);
+        })
       )
       .subscribe({
-        next: (room) => {
-          this.room = room;
+        next: (players) => {
+          this.players = players;
           this.loading = false;
         },
         error: (error: HttpErrorResponse) => {
@@ -106,7 +114,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
   }
 
   start(): void {
-    if (this.room.playersRoom.length === 0) {
+    if (this.players.length === 0) {
       this.toastr.error(
         'Pour être lancée, une room doit avoir des joueurs',
         'Admin',
@@ -126,7 +134,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
     this.room.isStarted = true;
     this.room.startDate = new Date();
     this.room.startAgainNumber += 1;
-    this.room.playersRoom.forEach((player) => {
+    this.players.forEach((player) => {
       player.isOver = false;
       player.finishDate = null;
       player.currentRoomWins = [];
@@ -152,7 +160,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
   stop(): void {
     this.loading = true;
 
-    this.room.playersRoom.forEach((player) => {
+    this.players.forEach((player) => {
       player.isOver = true;
       for (let i = 0; i < this.room.responses.length; i++) {
         if (player.currentRoomWins[i] === undefined) {
@@ -172,7 +180,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
   }
 
   allPlayersDone(): boolean {
-    return this.room.playersRoom.every((player) => player.isOver);
+    return this.players.every((player) => player.isOver);
   }
 
   updateRoomAndHandleResponse(

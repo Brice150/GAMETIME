@@ -1,10 +1,9 @@
 import { Country } from './country';
-import { PlayerRoom } from './player-room';
 
 export interface Room {
   id?: string;
   gameName: string;
-  playersRoom: PlayerRoom[];
+  playerIds: string[];
   userId?: string;
   isStarted: boolean;
   showFirstLetter: boolean;

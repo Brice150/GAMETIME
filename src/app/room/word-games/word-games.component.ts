@@ -8,12 +8,12 @@ import {
   Output,
 } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import { PlayerRoom } from 'src/app/core/interfaces/player-room';
 import { Room } from 'src/app/core/interfaces/room';
 import { CountryService } from 'src/app/core/services/country.service';
 import { gameMap } from 'src/assets/data/games';
 import { WordInputComponent } from './word-input/word-input.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { Player } from 'src/app/core/interfaces/player';
 
 @Component({
   selector: 'app-word-games',
@@ -31,7 +31,7 @@ export class WordGamesComponent implements OnInit {
   isOver = false;
   loading = false;
   readonly room = input.required<Room>();
-  readonly playerRoom = input.required<PlayerRoom>();
+  readonly player = input.required<Player>();
   @Output() finishedStepEvent = new EventEmitter<boolean>();
 
   ngOnInit(): void {
@@ -43,7 +43,7 @@ export class WordGamesComponent implements OnInit {
   }
 
   new(): void {
-    const index = this.playerRoom().currentRoomWins.length;
+    const index = this.player().currentRoomWins.length;
 
     if (index === this.room().responses.length) {
       this.isOver = true;

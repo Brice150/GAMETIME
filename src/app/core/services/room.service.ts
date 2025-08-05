@@ -14,7 +14,6 @@ import {
 } from '@angular/fire/firestore';
 import {
   combineLatest,
-  filter,
   from,
   map,
   Observable,
@@ -27,8 +26,6 @@ import { gameMap } from 'src/assets/data/games';
 import { words } from 'src/assets/data/words';
 import { Continent } from '../enums/continent.enum';
 import { Country } from '../interfaces/country';
-import { Player } from '../interfaces/player';
-import { PlayerRoom } from '../interfaces/player-room';
 import { Room } from '../interfaces/room';
 import { UserService } from './user.service';
 
@@ -107,7 +104,7 @@ export class RoomService {
     isWordLengthIncreasing: boolean,
     startWordLength: number,
     continentFilter: number,
-    player: Player,
+    playerId: string,
     isCreatedByAdmin: boolean
   ): Room {
     const showFirstLetter: boolean =
@@ -128,20 +125,9 @@ export class RoomService {
       responses
     );
 
-    const stat = player.stats.find((stat) => stat.gameName === gameSelected);
-
-    const playerRoom: PlayerRoom = {
-      userId: player.userId!,
-      username: player.username,
-      isOver: false,
-      finishDate: null,
-      medalsNumber: stat?.medalsNumer || 0,
-      currentRoomWins: [],
-    };
-
     return {
       gameName: gameSelected,
-      playersRoom: !isCreatedByAdmin ? [playerRoom] : [],
+      playerIds: !isCreatedByAdmin ? [playerId] : [],
       isStarted: false,
       showFirstLetter: showFirstLetter,
       stepsNumber: stepsNumber,

@@ -114,7 +114,7 @@ button:hover {
   font-size: 32px;
 }
 
-.players-room {
+.players {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -131,7 +131,7 @@ button:hover {
   width: 165px;
 }
 
-.players-room .player {
+.players .player {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -142,11 +142,11 @@ button:hover {
   text-align: center;
 }
 
-.players-room .player.alt-color {
+.players .player.alt-color {
   color: var(--secondary);
 }
 
-.players-room .player .step {
+.players .player .step {
   background-color: var(--accent);
   color: var(--primary);
   border-radius: var(--light-radius);
@@ -155,7 +155,7 @@ button:hover {
   margin-left: 7px;
 }
 
-.players-room .player.alt-color .step {
+.players .player.alt-color .step {
   background-color: var(--secondary);
 }
 
