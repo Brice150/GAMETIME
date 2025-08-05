@@ -33,12 +33,17 @@ export class PlayerService {
   userService = inject(UserService);
   playersCollection = collection(this.firestore, 'players');
   currentPlayerSig = signal<Player | null | undefined>(undefined);
+  currentPlayersSig = signal<Player[]>([]);
 
   readonly playerReady$ = toObservable(
     computed(() => this.currentPlayerSig())
   ).pipe(
     filter((player): player is Player => !!player),
     take(1)
+  );
+
+  readonly playersReady$ = toObservable(
+    computed(() => this.currentPlayersSig())
   );
 
   getPlayer(): Observable<Player[]> {

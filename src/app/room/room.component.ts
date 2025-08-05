@@ -98,6 +98,7 @@ export class RoomComponent implements OnInit, OnDestroy {
             this.isResultPageActive = false;
           }
           this.roomService.currentRoomSig.set(this.room);
+          this.playerService.currentPlayersSig.set(this.players);
           this.loading = false;
         },
         error: (error: HttpErrorResponse) => {
@@ -198,6 +199,7 @@ export class RoomComponent implements OnInit, OnDestroy {
         .subscribe({
           next: () => {
             this.roomService.currentRoomSig.set(undefined);
+            this.playerService.currentPlayersSig.set([]);
             this.loading = false;
             this.router.navigate(['/']);
             this.toastr.info('La room a été supprimée', 'Game Time', {
@@ -235,6 +237,7 @@ export class RoomComponent implements OnInit, OnDestroy {
             this.updateRoomAndHandleResponse(
               () => {
                 this.roomService.currentRoomSig.set(undefined);
+                this.playerService.currentPlayersSig.set([]);
                 this.loading = false;
                 this.router.navigate(['/']);
                 this.toastr.info(

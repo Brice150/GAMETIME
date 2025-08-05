@@ -63,7 +63,8 @@ export class AdminComponent implements OnInit {
       .subscribe({
         next: ({ rooms, players }) => {
           this.playersByRoom = rooms.reduce((acc, room) => {
-            acc[room.id!] = room.playerIds
+            const playerIds = room.playerIds || [];
+            acc[room.id!] = playerIds
               .map((id) => players.find((p) => p.userId === id))
               .filter((p): p is Player => !!p);
             return acc;

@@ -94,7 +94,7 @@ export class HeaderComponent implements OnInit {
           if (!room || !room.playerIds?.length) {
             return of([]);
           }
-          return this.playerService.getPlayers(room.playerIds);
+          return this.playerService.playersReady$;
         })
       )
       .subscribe((players) => {
