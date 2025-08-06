@@ -23,6 +23,7 @@
       <i class="bx bxs-log-out"></i>
       <span class="text">Quitter</span>
     </button>
+
     @if (isNextButtonAvailable) {
     <button type="button" (click)="next()" title="Suivant">
       <i class="bx bxs-skip-next-circle"></i>
@@ -33,24 +34,19 @@
       <i class="bx bxs-medal"></i>
       <span class="text">Résultats</span>
     </button>
-    } @else if (isResultPageActive && playerService.currentPlayerSig()!.userId
-    === room.userId) {
-    <button type="button" (click)="openAddRoomDialog()" title="Rejouer">
-      <i class="bx bx-play"></i>
-      <span class="text">Rejouer</span>
-    </button>
     } @else if (!room.isStarted) {
     <button type="button" (click)="share()" title="Multijoueur" class="share">
       <i class="bx bx-link"></i>
       <span class="text">Multijoueur</span>
     </button>
-    @if (playerService.currentPlayerSig()!.userId === room.userId) {
-    <button type="button" (click)="start()" title="Jouer">
+    } @if (shouldShowPlayButton()) {
+    <button type="button" (click)="openAddRoomDialog()" title="Jouer">
       <i class="bx bx-play"></i>
       <span class="text">Jouer</span>
     </button>
-    } }
+    }
   </div>
+
   } @else {
   <mat-spinner></mat-spinner>
   }

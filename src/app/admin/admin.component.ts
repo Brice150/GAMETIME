@@ -34,16 +34,15 @@ export class AdminComponent implements OnInit {
   destroyed$ = new Subject<void>();
   toastr = inject(ToastrService);
   dialog = inject(MatDialog);
-  player: Player = {} as Player;
   rooms: Room[] = [];
   playersByRoom: Record<string, Player[]> = {};
   loading: boolean = true;
 
   ngOnInit(): void {
-    this.playerService.playerReady$
+    this.roomService
+      .getRooms()
       .pipe(
-        tap((player) => (this.player = player)),
-        switchMap(() => this.roomService.getRooms()),
+        takeUntil(this.destroyed$),
         switchMap((rooms) => {
           this.rooms = rooms;
 

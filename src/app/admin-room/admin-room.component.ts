@@ -134,6 +134,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
     this.room.isStarted = true;
     this.room.startDate = new Date();
     this.room.startAgainNumber += 1;
+    this.room.isStarted = true;
     this.players.forEach((player) => {
       player.isOver = false;
       player.finishDate = null;
@@ -150,11 +151,26 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
       this.room.responses
     );
 
-    this.updateRoomAndHandleResponse(() => {
-      if (this.room.userId === this.playerService.currentPlayerSig()?.userId) {
-        this.localStorageService.newGame(this.room.id!);
-      }
-    });
+    this.roomService
+      .updateRoom(this.room)
+      .pipe(
+        takeUntil(this.destroyed$),
+        switchMap(() => this.playerService.updatePlayers(this.players))
+      )
+      .subscribe({
+        next: () => {
+          this.loading = false;
+        },
+        error: (error: HttpErrorResponse) => {
+          this.loading = false;
+          if (!error.message.includes('Missing or insufficient permissions.')) {
+            this.toastr.error(error.message, 'Game Time', {
+              positionClass: 'toast-bottom-center',
+              toastClass: 'ngx-toastr custom error',
+            });
+          }
+        },
+      });
   }
 
   stop(): void {
@@ -169,39 +185,16 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.updateRoomAndHandleResponse(() => {
-      if (this.room.userId === this.playerService.currentPlayerSig()?.userId) {
-        this.localStorageService.newGame(
-          this.room.id!,
-          this.room.startAgainNumber
-        );
-      }
-    });
-  }
-
-  allPlayersDone(): boolean {
-    return this.players.every((player) => player.isOver);
-  }
-
-  updateRoomAndHandleResponse(
-    onSuccess: () => void,
-    onError?: (error: HttpErrorResponse) => void
-  ): void {
-    this.roomService
-      .updateRoom(this.room)
+    this.playerService
+      .updatePlayers(this.players)
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: () => {
-          onSuccess();
           this.loading = false;
         },
         error: (error: HttpErrorResponse) => {
           this.loading = false;
-          if (onError) {
-            onError(error);
-          } else if (
-            !error.message.includes('Missing or insufficient permissions.')
-          ) {
+          if (!error.message.includes('Missing or insufficient permissions.')) {
             this.toastr.error(error.message, 'Game Time', {
               positionClass: 'toast-bottom-center',
               toastClass: 'ngx-toastr custom error',
@@ -209,5 +202,9 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
           }
         },
       });
+  }
+
+  allPlayersDone(): boolean {
+    return this.players.every((player) => player.isOver);
   }
 }

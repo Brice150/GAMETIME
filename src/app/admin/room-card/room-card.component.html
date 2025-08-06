@@ -12,12 +12,7 @@
   </div>
   }
   <div class="button-container-look">
-    <button
-      type="button"
-      [routerLink]="room().id"
-      title="Résultats"
-      class="share"
-    >
+    <button type="button" [routerLink]="room().id" title="Voir" class="share">
       <i class="bx bxs-search"></i>
     </button>
   </div>
@@ -38,10 +33,10 @@
         <i class="bx bxs-medal"></i>
       </div>
     </div>
-    }@empty {
+    }@empty { @if (room().isCreatedByAdmin) {
     <div class="player admin">
       <span class="username">Admin room</span>
     </div>
-    }
+    } }
   </div>
 </div>

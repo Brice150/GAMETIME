@@ -4,6 +4,7 @@ import {
   EventEmitter,
   inject,
   input,
+  OnDestroy,
   OnInit,
   Output,
 } from '@angular/core';
@@ -30,7 +31,7 @@ import { PlayerService } from '../core/services/player.service';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
   router = inject(Router);
   location = inject(Location);
   roomService = inject(RoomService);
@@ -100,6 +101,11 @@ export class HeaderComponent implements OnInit {
       .subscribe((players) => {
         this.players = players;
       });
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
   getTitle(): string {

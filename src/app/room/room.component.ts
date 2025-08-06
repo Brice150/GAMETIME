@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { filter, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import { filter, forkJoin, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { gameMap } from 'src/assets/data/games';
 import { Player } from '../core/interfaces/player';
 import { Room } from '../core/interfaces/room';
@@ -52,6 +52,7 @@ export class RoomComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.activatedRoute.params
       .pipe(
+        takeUntil(this.destroyed$),
         switchMap((params) => this.roomService.getRoom(params['id'])),
         switchMap((room: Room | null) => {
           if (!room) {
@@ -329,53 +330,11 @@ export class RoomComponent implements OnInit, OnDestroy {
   start(): void {
     this.loading = true;
 
-    this.room.isStarted = true;
-    this.room.startDate = new Date();
-    this.players.forEach((player) => {
-      player.isOver = false;
-      player.finishDate = null;
-      player.currentRoomWins = [];
-    });
-
-    this.roomService
-      .updateRoom(this.room)
-      .pipe(
-        takeUntil(this.destroyed$),
-        switchMap(() => this.playerService.updatePlayers(this.players))
-      )
-      .subscribe({
-        next: () => {
-          this.localStorageService.newGame(this.room.id!);
-          this.isResultPageActive = false;
-          this.roomService.currentRoomSig.set(this.room);
-          this.playerService.currentPlayersSig.set(this.players);
-          this.playerService.currentPlayerSig.set(
-            this.players.filter(
-              (player) =>
-                player.userId === this.playerService.currentPlayerSig()!.userId
-            )[0]
-          );
-          this.loading = false;
-        },
-        error: (error: HttpErrorResponse) => {
-          this.loading = false;
-          if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastr.error(error.message, 'Game Time', {
-              positionClass: 'toast-bottom-center',
-              toastClass: 'ngx-toastr custom error',
-            });
-          }
-        },
-      });
-  }
-
-  startAgain(): void {
-    this.loading = true;
-
     this.room.countries = [];
     this.room.responses = [];
     this.room.startDate = new Date();
     this.room.startAgainNumber += 1;
+    this.room.isStarted = true;
     this.players.forEach((player) => {
       player.isOver = false;
       player.finishDate = null;
@@ -394,12 +353,10 @@ export class RoomComponent implements OnInit, OnDestroy {
 
     this.roomService
       .updateRoom(this.room)
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe();
-
-    this.playerService
-      .updatePlayers(this.players)
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(
+        takeUntil(this.destroyed$),
+        switchMap(() => this.playerService.updatePlayers(this.players))
+      )
       .subscribe({
         next: () => {
           this.localStorageService.newGame(
@@ -443,6 +400,14 @@ export class RoomComponent implements OnInit, OnDestroy {
         }
       );
     });
+  }
+
+  shouldShowPlayButton(): boolean {
+    const userId = this.playerService.currentPlayerSig()?.userId;
+    return (
+      (this.isResultPageActive && userId === this.room.userId) ||
+      (!this.room.isStarted && userId === this.room.userId)
+    );
   }
 
   updateRoomAndHandleResponse(
@@ -496,7 +461,7 @@ export class RoomComponent implements OnInit, OnDestroy {
             this.room.startWordLength = roomData.startWordLength;
           }
 
-          this.startAgain();
+          this.start();
         },
       });
   }
