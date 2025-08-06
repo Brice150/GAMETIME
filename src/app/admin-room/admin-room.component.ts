@@ -6,7 +6,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { of, Subject, switchMap, takeUntil } from 'rxjs';
+import { filter, of, Subject, switchMap, takeUntil } from 'rxjs';
 import { Room } from '../core/interfaces/room';
 import { LocalStorageService } from '../core/services/local-storage.service';
 import { PlayerService } from '../core/services/player.service';
@@ -14,6 +14,9 @@ import { RoomService } from '../core/services/room.service';
 import { DurationBetweenDatesPipe } from '../shared/pipes/duration.pipe';
 import { Player } from '../core/interfaces/player';
 import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
+import { AddRoomDialogComponent } from '../shared/components/add-room-dialog/add-room-dialog.component';
+import { RoomForm } from '../core/interfaces/room-form';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-admin-room',
@@ -37,6 +40,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
   playerService = inject(PlayerService);
   toastr = inject(ToastrService);
   localStorageService = inject(LocalStorageService);
+  dialog = inject(MatDialog);
   router = inject(Router);
   destroyed$ = new Subject<void>();
   hideResults = true;
@@ -208,5 +212,33 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
 
   allPlayersDone(): boolean {
     return this.players.every((player) => player.isOver);
+  }
+
+  openAddRoomDialog(): void {
+    const dialogRef = this.dialog.open(AddRoomDialogComponent, {
+      data: 'startAgain',
+    });
+
+    dialogRef
+      .afterClosed()
+      .pipe(filter((roomData: RoomForm) => !!roomData))
+      .subscribe({
+        next: (roomData: RoomForm) => {
+          if (roomData && roomData.gameSelected) {
+            this.room.gameName = roomData.gameSelected;
+            if (roomData.gameSelected === 'motus') {
+              this.room.showFirstLetter = roomData.showFirstLetterMotus;
+            } else if (roomData.gameSelected === 'drapeaux') {
+              this.room.showFirstLetter = roomData.showFirstLetterDrapeaux;
+            }
+            this.room.stepsNumber = roomData.stepsNumber;
+            this.room.continentFilter = roomData.continentFilter;
+            this.room.isWordLengthIncreasing = roomData.isWordLengthIncreasing;
+            this.room.startWordLength = roomData.startWordLength;
+          }
+
+          this.start();
+        },
+      });
   }
 }
