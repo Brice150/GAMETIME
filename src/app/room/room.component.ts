@@ -42,7 +42,6 @@ export class RoomComponent implements OnInit, OnDestroy {
   destroyed$ = new Subject<void>();
   loading: boolean = true;
   room: Room = {} as Room;
-  player: Player = {} as Player;
   players: Player[] = [];
   isNextButtonAvailable = false;
   isSeeResultsAvailable = false;
@@ -51,10 +50,8 @@ export class RoomComponent implements OnInit, OnDestroy {
   @ViewChild(WordGamesComponent) wordGamesComponent!: WordGamesComponent;
 
   ngOnInit(): void {
-    this.playerService.playerReady$
+    this.activatedRoute.params
       .pipe(
-        tap((player) => (this.player = player)),
-        switchMap(() => this.activatedRoute.params),
         switchMap((params) => this.roomService.getRoom(params['id'])),
         switchMap((room: Room | null) => {
           if (!room) {
@@ -63,16 +60,30 @@ export class RoomComponent implements OnInit, OnDestroy {
 
           this.room = room;
 
-          if (this.room.playerIds.includes(this.player.userId!)) {
+          if (
+            this.room.playerIds.includes(
+              this.playerService.currentPlayerSig()!.userId!
+            )
+          ) {
             return of(room);
           }
 
-          if (!(room.isCreatedByAdmin && this.player.isAdmin)) {
-            this.room.playerIds.push(this.player.userId!);
+          if (
+            !(
+              room.isCreatedByAdmin &&
+              this.playerService.currentPlayerSig()!.isAdmin
+            )
+          ) {
+            this.room.playerIds.push(
+              this.playerService.currentPlayerSig()!.userId!
+            );
 
             this.updateRoomAndHandleResponse(() => {});
             return of(room);
-          } else if (room.isCreatedByAdmin && this.player.isAdmin) {
+          } else if (
+            room.isCreatedByAdmin &&
+            this.playerService.currentPlayerSig()!.isAdmin
+          ) {
             this.router.navigate(['/admin', room.id]);
           }
 
@@ -88,10 +99,11 @@ export class RoomComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (players) => {
           this.players = players;
-          if (this.player.isOver) {
+          if (this.playerService.currentPlayerSig()!.isOver) {
             this.isResultPageActive = true;
           } else if (
-            this.player.currentRoomWins.length === this.room.responses.length
+            this.playerService.currentPlayerSig()!.currentRoomWins.length ===
+            this.room.responses.length
           ) {
             this.isSeeResultsAvailable = true;
           } else {
@@ -118,36 +130,34 @@ export class RoomComponent implements OnInit, OnDestroy {
     this.destroyed$.complete();
   }
 
-  updateRoom(stepWon: boolean): void {
+  updatePlayerGame(stepWon: boolean): void {
     if (stepWon) {
-      const stat = this.player.stats.find(
-        (stat) => stat.gameName === this.room.gameName
-      );
+      const stat = this.playerService
+        .currentPlayerSig()!
+        .stats.find((stat) => stat.gameName === this.room.gameName);
       if (stat) {
         stat.medalsNumer += 1;
       }
-
-      this.playerService
-        .updatePlayer(this.player)
-        .pipe(takeUntil(this.destroyed$))
-        .subscribe({
-          next: () => {
-            this.handlePlayerNextAction(stepWon);
-          },
-          error: (error: HttpErrorResponse) => {
-            if (
-              !error.message.includes('Missing or insufficient permissions.')
-            ) {
-              this.toastr.error(error.message, 'Game Time', {
-                positionClass: 'toast-bottom-center',
-                toastClass: 'ngx-toastr custom error',
-              });
-            }
-          },
-        });
-    } else {
-      this.handlePlayerNextAction(stepWon);
     }
+
+    this.playerService.currentPlayerSig()!.currentRoomWins.push(stepWon);
+
+    this.playerService
+      .updatePlayer(this.playerService.currentPlayerSig()!)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: () => {
+          this.handlePlayerNextAction(stepWon);
+        },
+        error: (error: HttpErrorResponse) => {
+          if (!error.message.includes('Missing or insufficient permissions.')) {
+            this.toastr.error(error.message, 'Game Time', {
+              positionClass: 'toast-bottom-center',
+              toastClass: 'ngx-toastr custom error',
+            });
+          }
+        },
+      });
   }
 
   handlePlayerNextAction(stepWon: boolean): void {
@@ -173,15 +183,21 @@ export class RoomComponent implements OnInit, OnDestroy {
       );
     }
 
-    if (this.room.responses.length !== this.player.currentRoomWins.length) {
+    if (
+      this.room.responses.length !==
+      this.playerService.currentPlayerSig()!.currentRoomWins.length
+    ) {
       this.isNextButtonAvailable = true;
     } else {
       this.isSeeResultsAvailable = true;
     }
+    this.playerService.currentPlayerSig.set(
+      this.playerService.currentPlayerSig()!
+    );
   }
 
   openDialog(): void {
-    if (this.player.userId === this.room.userId) {
+    if (this.playerService.currentPlayerSig()!.userId === this.room.userId) {
       const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
         data: 'supprimer cette room',
       });
@@ -231,7 +247,8 @@ export class RoomComponent implements OnInit, OnDestroy {
           tap(() => {
             this.loading = true;
             this.room.playerIds = this.room.playerIds.filter(
-              (playerId) => playerId !== this.player.userId
+              (playerId) =>
+                playerId !== this.playerService.currentPlayerSig()!.userId
             );
 
             this.updateRoomAndHandleResponse(
@@ -283,16 +300,19 @@ export class RoomComponent implements OnInit, OnDestroy {
 
   seeResults(): void {
     this.loading = true;
-    this.player.isOver = true;
-    this.player.finishDate = new Date();
+    this.playerService.currentPlayerSig()!.isOver = true;
+    this.playerService.currentPlayerSig()!.finishDate = new Date();
 
     this.playerService
-      .updatePlayer(this.player)
+      .updatePlayer(this.playerService.currentPlayerSig()!)
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: () => {
           this.isSeeResultsAvailable = false;
           this.isResultPageActive = true;
+          this.playerService.currentPlayerSig.set(
+            this.playerService.currentPlayerSig()!
+          );
           this.loading = false;
         },
         error: (error: HttpErrorResponse) => {
@@ -328,6 +348,13 @@ export class RoomComponent implements OnInit, OnDestroy {
           this.localStorageService.newGame(this.room.id!);
           this.isResultPageActive = false;
           this.roomService.currentRoomSig.set(this.room);
+          this.playerService.currentPlayersSig.set(this.players);
+          this.playerService.currentPlayerSig.set(
+            this.players.filter(
+              (player) =>
+                player.userId === this.playerService.currentPlayerSig()!.userId
+            )[0]
+          );
           this.loading = false;
         },
         error: (error: HttpErrorResponse) => {
@@ -379,6 +406,14 @@ export class RoomComponent implements OnInit, OnDestroy {
           );
           this.isResultPageActive = false;
           this.roomService.currentRoomSig.set(this.room);
+          this.playerService.currentPlayersSig.set(this.players);
+          this.playerService.currentPlayerSig.set(
+            this.players.filter(
+              (player) =>
+                player.userId === this.playerService.currentPlayerSig()!.userId
+            )[0]
+          );
+
           this.loading = false;
         },
         error: (error: HttpErrorResponse) => {

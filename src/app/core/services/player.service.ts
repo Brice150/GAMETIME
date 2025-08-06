@@ -122,7 +122,7 @@ export class PlayerService {
   updatePlayers(players: Player[]): Observable<void> {
     const updates$ = players.map((player) => this.updatePlayer(player));
 
-    return combineLatest(updates$).pipe(map(() => void 0));
+    return combineLatest(updates$).pipe(map(() => undefined));
   }
 
   deletePlayer(playerId: string): Observable<void> {

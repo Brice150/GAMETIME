@@ -2,19 +2,19 @@
   @if(!loading) { @if (room.isStarted) { @if(!isResultPageActive) {
   <app-word-games
     [room]="room"
-    [player]="player"
-    (finishedStepEvent)="updateRoom($event)"
+    [player]="playerService.currentPlayerSig()!"
+    (finishedStepEvent)="updatePlayerGame($event)"
   ></app-word-games>
   } @else {
   <app-results
     [room]="room"
-    [player]="player"
+    [player]="playerService.currentPlayerSig()!"
     [players]="players"
   ></app-results>
   } } @else {
   <app-waiting-room
     [room]="room"
-    [player]="player"
+    [player]="playerService.currentPlayerSig()!"
     [players]="players"
   ></app-waiting-room>
   }
@@ -33,7 +33,8 @@
       <i class="bx bxs-medal"></i>
       <span class="text">Résultats</span>
     </button>
-    } @else if (isResultPageActive && player.userId === room.userId) {
+    } @else if (isResultPageActive && playerService.currentPlayerSig()!.userId
+    === room.userId) {
     <button type="button" (click)="openAddRoomDialog()" title="Rejouer">
       <i class="bx bx-play"></i>
       <span class="text">Rejouer</span>
@@ -43,7 +44,7 @@
       <i class="bx bx-link"></i>
       <span class="text">Multijoueur</span>
     </button>
-    @if (player.userId === room.userId) {
+    @if (playerService.currentPlayerSig()!.userId === room.userId) {
     <button type="button" (click)="start()" title="Jouer">
       <i class="bx bx-play"></i>
       <span class="text">Jouer</span>
