@@ -135,11 +135,6 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
     this.room.startDate = new Date();
     this.room.startAgainNumber += 1;
     this.room.isStarted = true;
-    this.players.forEach((player) => {
-      player.isOver = false;
-      player.finishDate = null;
-      player.currentRoomWins = [];
-    });
 
     this.roomService.generateResponses(
       this.room.gameName,
@@ -155,7 +150,14 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
       .updateRoom(this.room)
       .pipe(
         takeUntil(this.destroyed$),
-        switchMap(() => this.playerService.updatePlayers(this.players))
+        switchMap(() => {
+          this.players.forEach((player) => {
+            player.isOver = false;
+            player.finishDate = null;
+            player.currentRoomWins = [];
+          });
+          return this.playerService.updatePlayers(this.players);
+        })
       )
       .subscribe({
         next: () => {
