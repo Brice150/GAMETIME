@@ -71,7 +71,7 @@ export class WordInputComponent implements OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (!changes['response'].firstChange) {
+    if (!changes['response']?.firstChange) {
       this.ngOnInit();
     }
   }

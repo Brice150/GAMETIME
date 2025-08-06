@@ -12,34 +12,31 @@
   </div>
   }
   <div class="button-container-look">
-    <button
-      type="button"
-      [routerLink]="room().id"
-      title="Résultats"
-      class="share"
-    >
+    <button type="button" [routerLink]="room().id" title="Voir" class="share">
       <i class="bx bxs-search"></i>
     </button>
   </div>
   <div class="game">
     <h2>{{ room().gameName }}</h2>
   </div>
-  <div class="players-room">
-    @for (playerRoom of room().playersRoom; track $index; let i = $index) {
+  <div class="players">
+    @for (otherPlayer of players(); track $index; let i = $index) {
     <div
       class="player"
-      [ngClass]="{ 'alt-color': playerRoom.userId !== room().userId }"
+      [ngClass]="{ 'alt-color': otherPlayer.userId !== room().userId }"
     >
-      <span class="username">{{ playerRoom.username }}</span>
+      <span class="username">{{ otherPlayer.username }}</span>
       <div class="medals">
-        <span class="victory-number">{{ playerRoom.medalsNumber }}</span>
+        <span class="victory-number">{{
+          room().gameName | medalsNumber : otherPlayer
+        }}</span>
         <i class="bx bxs-medal"></i>
       </div>
     </div>
-    }@empty {
+    }@empty { @if (room().isCreatedByAdmin) {
     <div class="player admin">
       <span class="username">Admin room</span>
     </div>
-    }
+    } }
   </div>
 </div>

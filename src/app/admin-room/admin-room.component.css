@@ -19,7 +19,7 @@ mat-spinner {
   stroke: var(--accent) !important;
 }
 
-.players-room {
+.players {
   margin-top: 20px;
   display: flex;
   justify-content: center;
@@ -28,7 +28,7 @@ mat-spinner {
   gap: 20px;
 }
 
-.players-room .player {
+.players .player {
   border-radius: var(--light-radius);
   background-color: var(--primary);
   color: var(--accent);
@@ -36,28 +36,28 @@ mat-spinner {
   width: 270px;
 }
 
-.players-room .player.alt-color {
+.players .player.alt-color {
   color: var(--secondary);
 }
 
-.players-room .player .flex {
+.players .player .flex {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 20px;
 }
 
-.players-room .player .username {
+.players .player .username {
   font-size: 18px;
   font-weight: 600;
   text-align: center;
 }
 
-.players-room .player .podium {
+.players .player .podium {
   font-size: 28px;
 }
 
-.players-room .player .podium .order {
+.players .player .podium .order {
   font-size: 22px;
   padding: 0 10px;
   border-radius: var(--light-radius);
@@ -65,11 +65,11 @@ mat-spinner {
   background-color: var(--accent);
 }
 
-.players-room .player.alt-color .podium .order {
+.players .player.alt-color .podium .order {
   background-color: var(--secondary);
 }
 
-.players-room .player .medals {
+.players .player .medals {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -82,7 +82,7 @@ mat-spinner {
   padding-right: 5px;
 }
 
-.players-room .player.alt-color .medals {
+.players .player.alt-color .medals {
   background-color: var(--secondary);
 }
 
@@ -95,7 +95,7 @@ mat-spinner {
   font-size: 28px;
 }
 
-.players-room .player .responses {
+.players .player .responses {
   margin-top: 15px;
   display: flex;
   justify-content: center;
@@ -104,19 +104,19 @@ mat-spinner {
   width: 100%;
 }
 
-.players-room .player .responses .response {
+.players .player .responses .response {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
 }
 
-.players-room .player .responses .response .description {
+.players .player .responses .response .description {
   font-size: 18px;
   text-transform: uppercase;
 }
 
-.players-room .player .responses .response i {
+.players .player .responses .response i {
   font-size: 28px;
 }
 

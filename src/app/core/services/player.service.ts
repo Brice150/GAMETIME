@@ -13,6 +13,7 @@ import {
 import {
   combineLatest,
   filter,
+  forkJoin,
   from,
   map,
   Observable,
@@ -33,6 +34,7 @@ export class PlayerService {
   userService = inject(UserService);
   playersCollection = collection(this.firestore, 'players');
   currentPlayerSig = signal<Player | null | undefined>(undefined);
+  currentPlayersSig = signal<Player[]>([]);
 
   readonly playerReady$ = toObservable(
     computed(() => this.currentPlayerSig())
@@ -41,11 +43,25 @@ export class PlayerService {
     take(1)
   );
 
-  getPlayers(): Observable<Player[]> {
+  readonly playersReady$ = toObservable(
+    computed(() => this.currentPlayersSig())
+  );
+
+  getPlayer(): Observable<Player[]> {
     const userId = this.userService.auth.currentUser?.uid;
     const playersCollection = query(
       collection(this.firestore, 'players'),
       where('userId', '==', userId)
+    );
+    return collectionData(playersCollection, { idField: 'id' }) as Observable<
+      Player[]
+    >;
+  }
+
+  getPlayers(playerIds: string[]): Observable<Player[]> {
+    const playersCollection = query(
+      collection(this.firestore, 'players'),
+      where('userId', 'in', playerIds)
     );
     return collectionData(playersCollection, { idField: 'id' }) as Observable<
       Player[]
@@ -87,6 +103,9 @@ export class PlayerService {
           username: username,
           stats: [statMotus, statDrapeaux],
           isAdmin: false,
+          isOver: false,
+          currentRoomWins: [],
+          finishDate: null,
         };
         return from(setDoc(playerDoc, { ...player })).pipe(map(() => email));
       })
@@ -99,6 +118,11 @@ export class PlayerService {
     }
     const playerDoc = doc(this.firestore, `players/${player.id}`);
     return from(updateDoc(playerDoc, { ...player }));
+  }
+
+  updatePlayers(players: Player[]): Observable<void> {
+    const updates$ = players.map((player) => this.updatePlayer(player));
+    return forkJoin(updates$).pipe(map(() => undefined));
   }
 
   deletePlayer(playerId: string): Observable<void> {

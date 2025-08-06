@@ -4,16 +4,18 @@ import {
   EventEmitter,
   inject,
   input,
+  OnDestroy,
   OnInit,
   Output,
 } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import { PlayerRoom } from 'src/app/core/interfaces/player-room';
 import { Room } from 'src/app/core/interfaces/room';
 import { CountryService } from 'src/app/core/services/country.service';
 import { gameMap } from 'src/assets/data/games';
 import { WordInputComponent } from './word-input/word-input.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { Player } from 'src/app/core/interfaces/player';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-word-games',
@@ -21,7 +23,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   templateUrl: './word-games.component.html',
   styleUrl: './word-games.component.css',
 })
-export class WordGamesComponent implements OnInit {
+export class WordGamesComponent implements OnInit, OnDestroy {
   response!: string;
   imageUrl: string = '';
   motusGameKey = gameMap['motus'].key;
@@ -31,11 +33,17 @@ export class WordGamesComponent implements OnInit {
   isOver = false;
   loading = false;
   readonly room = input.required<Room>();
-  readonly playerRoom = input.required<PlayerRoom>();
+  readonly player = input.required<Player>();
+  destroyed$ = new Subject<void>();
   @Output() finishedStepEvent = new EventEmitter<boolean>();
 
   ngOnInit(): void {
     this.new();
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
   handleEvent(stepWon: boolean): void {
@@ -43,7 +51,7 @@ export class WordGamesComponent implements OnInit {
   }
 
   new(): void {
-    const index = this.playerRoom().currentRoomWins.length;
+    const index = this.player().currentRoomWins.length;
 
     if (index === this.room().responses.length) {
       this.isOver = true;
@@ -54,6 +62,7 @@ export class WordGamesComponent implements OnInit {
       this.loading = true;
       this.countryService
         .getDrapeauImage(this.room().countries[index || 0].code)
+        .pipe(takeUntil(this.destroyed$))
         .subscribe({
           next: (blob) => {
             this.imageUrl = URL.createObjectURL(blob);

@@ -102,7 +102,7 @@ export class HomeComponent implements OnDestroy {
       this.isWordLengthIncreasing,
       this.startWordLength,
       this.continentFilter,
-      this.playerService.currentPlayerSig()!,
+      this.playerService.currentPlayerSig()!.userId!,
       false
     );
 

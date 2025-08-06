@@ -28,7 +28,7 @@ export class AppComponent implements OnInit, OnDestroy {
         switchMap((user) => {
           if (user) {
             this.userService.currentUserSig.set({ email: user.email! });
-            return this.playerService.getPlayers();
+            return this.playerService.getPlayer();
           } else {
             this.userService.currentUserSig.set(null);
             return of([]);

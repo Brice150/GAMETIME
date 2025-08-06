@@ -5,10 +5,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { filter, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import { filter, forkJoin, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { gameMap } from 'src/assets/data/games';
 import { Player } from '../core/interfaces/player';
-import { PlayerRoom } from '../core/interfaces/player-room';
 import { Room } from '../core/interfaces/room';
 import { RoomForm } from '../core/interfaces/room-form';
 import { LocalStorageService } from '../core/services/local-storage.service';
@@ -43,8 +42,7 @@ export class RoomComponent implements OnInit, OnDestroy {
   destroyed$ = new Subject<void>();
   loading: boolean = true;
   room: Room = {} as Room;
-  player: Player = {} as Player;
-  playerRoom: PlayerRoom = {} as PlayerRoom;
+  players: Player[] = [];
   isNextButtonAvailable = false;
   isSeeResultsAvailable = false;
   isResultPageActive = false;
@@ -52,10 +50,9 @@ export class RoomComponent implements OnInit, OnDestroy {
   @ViewChild(WordGamesComponent) wordGamesComponent!: WordGamesComponent;
 
   ngOnInit(): void {
-    this.playerService.playerReady$
+    this.activatedRoute.params
       .pipe(
-        tap((player) => (this.player = player)),
-        switchMap(() => this.activatedRoute.params),
+        takeUntil(this.destroyed$),
         switchMap((params) => this.roomService.getRoom(params['id'])),
         switchMap((room: Room | null) => {
           if (!room) {
@@ -64,45 +61,49 @@ export class RoomComponent implements OnInit, OnDestroy {
 
           this.room = room;
 
-          const playerRoom = room.playersRoom.find(
-            (p) => p.userId === this.player.userId
-          );
-
-          if (playerRoom) {
-            this.playerRoom = playerRoom;
-            return of(null);
+          if (
+            this.room.playerIds.includes(
+              this.playerService.currentPlayerSig()!.userId!
+            )
+          ) {
+            return of(room);
           }
 
-          if (!(room.isCreatedByAdmin && this.player.isAdmin)) {
-            const stat = this.player.stats.find(
-              (stat) => stat.gameName === this.room.gameName
+          if (
+            !(
+              room.isCreatedByAdmin &&
+              this.playerService.currentPlayerSig()!.isAdmin
+            )
+          ) {
+            this.room.playerIds.push(
+              this.playerService.currentPlayerSig()!.userId!
             );
 
-            this.playerRoom = {
-              userId: this.player.userId!,
-              username: this.player.username,
-              isOver: false,
-              finishDate: null,
-              medalsNumber: stat?.medalsNumer || 0,
-              currentRoomWins: [],
-            };
-            this.room.playersRoom.push(this.playerRoom);
-
             this.updateRoomAndHandleResponse(() => {});
-            return of(null);
-          } else if (room.isCreatedByAdmin && this.player.isAdmin) {
+            return of(room);
+          } else if (
+            room.isCreatedByAdmin &&
+            this.playerService.currentPlayerSig()!.isAdmin
+          ) {
             this.router.navigate(['/admin', room.id]);
           }
 
-          return of(null);
+          return of(room);
+        }),
+        switchMap((room) => {
+          if (!room || !room.playerIds?.length) {
+            return of([]);
+          }
+          return this.playerService.getPlayers(room.playerIds);
         })
       )
       .subscribe({
-        next: () => {
-          if (this.playerRoom.isOver) {
+        next: (players) => {
+          this.players = players;
+          if (this.playerService.currentPlayerSig()!.isOver) {
             this.isResultPageActive = true;
           } else if (
-            this.playerRoom.currentRoomWins.length ===
+            this.playerService.currentPlayerSig()!.currentRoomWins.length ===
             this.room.responses.length
           ) {
             this.isSeeResultsAvailable = true;
@@ -110,6 +111,7 @@ export class RoomComponent implements OnInit, OnDestroy {
             this.isResultPageActive = false;
           }
           this.roomService.currentRoomSig.set(this.room);
+          this.playerService.currentPlayersSig.set(this.players);
           this.loading = false;
         },
         error: (error: HttpErrorResponse) => {
@@ -129,92 +131,74 @@ export class RoomComponent implements OnInit, OnDestroy {
     this.destroyed$.complete();
   }
 
-  updateRoom(stepWon: boolean): void {
+  updatePlayerGame(stepWon: boolean): void {
     if (stepWon) {
-      const stat = this.player.stats.find(
-        (stat) => stat.gameName === this.room.gameName
-      );
+      const stat = this.playerService
+        .currentPlayerSig()!
+        .stats.find((stat) => stat.gameName === this.room.gameName);
       if (stat) {
         stat.medalsNumer += 1;
       }
     }
 
-    const updatePlayer$ = stepWon
-      ? this.playerService.updatePlayer(this.player).pipe(
-          tap(() => {
-            this.toastr.info(
-              'Manche gagnée',
-              this.room.gameName.charAt(0).toUpperCase() +
-                this.room.gameName.slice(1),
-              {
-                positionClass: 'toast-bottom-center',
-                toastClass: 'ngx-toastr custom info',
-              }
-            );
-          })
-        )
-      : of(undefined).pipe(
-          tap(() => {
-            this.toastr.error(
-              'Manche perdue',
-              this.room.gameName.charAt(0).toUpperCase() +
-                this.room.gameName.slice(1),
-              {
-                positionClass: 'toast-bottom-center',
-                toastClass: 'ngx-toastr custom error',
-              }
-            );
-          })
-        );
+    this.playerService.currentPlayerSig()!.currentRoomWins.push(stepWon);
 
-    updatePlayer$
-      .pipe(
-        switchMap(() => {
-          const playerRoom = this.room.playersRoom.find(
-            (player) => player.userId === this.player.userId
-          );
-          playerRoom?.currentRoomWins.push(stepWon);
-
-          return this.roomService.updateRoom(this.room);
-        })
-      )
+    this.playerService
+      .updatePlayer(this.playerService.currentPlayerSig()!)
+      .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: () => {
-          if (
-            this.room.responses.length !==
-            this.playerRoom.currentRoomWins.length
-          ) {
-            this.isNextButtonAvailable = true;
-          } else {
-            this.isSeeResultsAvailable = true;
-          }
-          this.roomService.currentRoomSig.set(this.room);
+          this.handlePlayerNextAction(stepWon);
         },
         error: (error: HttpErrorResponse) => {
           if (!error.message.includes('Missing or insufficient permissions.')) {
-            if (error.message.includes('No document to update')) {
-              this.router.navigate(['/']);
-              this.toastr.error(
-                "La room a été supprimée par l'hôte",
-                'Game Time',
-                {
-                  positionClass: 'toast-bottom-center',
-                  toastClass: 'ngx-toastr custom error',
-                }
-              );
-            } else {
-              this.toastr.error(error.message, 'Game Time', {
-                positionClass: 'toast-bottom-center',
-                toastClass: 'ngx-toastr custom error',
-              });
-            }
+            this.toastr.error(error.message, 'Game Time', {
+              positionClass: 'toast-bottom-center',
+              toastClass: 'ngx-toastr custom error',
+            });
           }
         },
       });
   }
 
+  handlePlayerNextAction(stepWon: boolean): void {
+    if (stepWon) {
+      this.toastr.info(
+        'Manche gagnée',
+        this.room.gameName.charAt(0).toUpperCase() +
+          this.room.gameName.slice(1),
+        {
+          positionClass: 'toast-bottom-center',
+          toastClass: 'ngx-toastr custom info',
+        }
+      );
+    } else {
+      this.toastr.error(
+        'Manche perdue',
+        this.room.gameName.charAt(0).toUpperCase() +
+          this.room.gameName.slice(1),
+        {
+          positionClass: 'toast-bottom-center',
+          toastClass: 'ngx-toastr custom error',
+        }
+      );
+    }
+
+    if (
+      this.room.responses.length !==
+      this.playerService.currentPlayerSig()!.currentRoomWins.length
+    ) {
+      this.isNextButtonAvailable = true;
+    } else {
+      this.isSeeResultsAvailable = true;
+    }
+    this.playerService.currentPlayerSig.set(
+      this.playerService.currentPlayerSig()!
+    );
+  }
+
   openDialog(): void {
-    if (this.player.userId === this.room.userId) {
+    if (this.playerService.currentPlayerSig()!.userId === this.room.userId) {
       const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
         data: 'supprimer cette room',
       });
@@ -232,6 +216,7 @@ export class RoomComponent implements OnInit, OnDestroy {
         .subscribe({
           next: () => {
             this.roomService.currentRoomSig.set(undefined);
+            this.playerService.currentPlayersSig.set([]);
             this.loading = false;
             this.router.navigate(['/']);
             this.toastr.info('La room a été supprimée', 'Game Time', {
@@ -262,13 +247,15 @@ export class RoomComponent implements OnInit, OnDestroy {
           filter((res: boolean) => res),
           tap(() => {
             this.loading = true;
-            this.room.playersRoom = this.room.playersRoom.filter(
-              (player) => player.userId !== this.player.userId
+            this.room.playerIds = this.room.playerIds.filter(
+              (playerId) =>
+                playerId !== this.playerService.currentPlayerSig()!.userId
             );
 
             this.updateRoomAndHandleResponse(
               () => {
                 this.roomService.currentRoomSig.set(undefined);
+                this.playerService.currentPlayersSig.set([]);
                 this.loading = false;
                 this.router.navigate(['/']);
                 this.toastr.info(
@@ -314,54 +301,40 @@ export class RoomComponent implements OnInit, OnDestroy {
 
   seeResults(): void {
     this.loading = true;
+    this.playerService.currentPlayerSig()!.isOver = true;
+    this.playerService.currentPlayerSig()!.finishDate = new Date();
 
-    const playerRoom = this.room.playersRoom.find(
-      (player) => player.userId === this.player.userId
-    );
-
-    if (playerRoom) {
-      playerRoom.isOver = true;
-      playerRoom.finishDate = new Date();
-
-      const stat = this.player.stats.find(
-        (stat) => stat.gameName === this.room.gameName
-      );
-
-      playerRoom.medalsNumber = stat?.medalsNumer || 0;
-    }
-
-    this.updateRoomAndHandleResponse(() => {
-      this.isSeeResultsAvailable = false;
-      this.isResultPageActive = true;
-      this.roomService.currentRoomSig.set(this.room);
-    });
+    this.playerService
+      .updatePlayer(this.playerService.currentPlayerSig()!)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: () => {
+          this.isSeeResultsAvailable = false;
+          this.isResultPageActive = true;
+          this.playerService.currentPlayerSig.set(
+            this.playerService.currentPlayerSig()!
+          );
+          this.loading = false;
+        },
+        error: (error: HttpErrorResponse) => {
+          if (!error.message.includes('Missing or insufficient permissions.')) {
+            this.toastr.error(error.message, 'Game Time', {
+              positionClass: 'toast-bottom-center',
+              toastClass: 'ngx-toastr custom error',
+            });
+          }
+        },
+      });
   }
 
   start(): void {
-    this.loading = true;
-
-    this.room.isStarted = true;
-    this.room.startDate = new Date();
-
-    this.updateRoomAndHandleResponse(() => {
-      this.localStorageService.newGame(this.room.id!);
-      this.isResultPageActive = false;
-      this.roomService.currentRoomSig.set(this.room);
-    });
-  }
-
-  startAgain(): void {
     this.loading = true;
 
     this.room.countries = [];
     this.room.responses = [];
     this.room.startDate = new Date();
     this.room.startAgainNumber += 1;
-    this.room.playersRoom.forEach((player) => {
-      player.isOver = false;
-      player.finishDate = null;
-      player.currentRoomWins = [];
-    });
+    this.room.isStarted = true;
 
     this.roomService.generateResponses(
       this.room.gameName,
@@ -373,14 +346,47 @@ export class RoomComponent implements OnInit, OnDestroy {
       this.room.responses
     );
 
-    this.updateRoomAndHandleResponse(() => {
-      this.localStorageService.newGame(
-        this.room.id!,
-        this.room.startAgainNumber
-      );
-      this.isResultPageActive = false;
-      this.roomService.currentRoomSig.set(this.room);
-    });
+    this.roomService
+      .updateRoom(this.room)
+      .pipe(
+        takeUntil(this.destroyed$),
+        switchMap(() => {
+          this.players.forEach((player) => {
+            player.isOver = false;
+            player.finishDate = null;
+            player.currentRoomWins = [];
+          });
+          return this.playerService.updatePlayers(this.players);
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.localStorageService.newGame(
+            this.room.id!,
+            this.room.startAgainNumber
+          );
+          this.isResultPageActive = false;
+          this.roomService.currentRoomSig.set(this.room);
+          this.playerService.currentPlayersSig.set(this.players);
+          this.playerService.currentPlayerSig.set(
+            this.players.filter(
+              (player) =>
+                player.userId === this.playerService.currentPlayerSig()!.userId
+            )[0]
+          );
+
+          this.loading = false;
+        },
+        error: (error: HttpErrorResponse) => {
+          this.loading = false;
+          if (!error.message.includes('Missing or insufficient permissions.')) {
+            this.toastr.error(error.message, 'Game Time', {
+              positionClass: 'toast-bottom-center',
+              toastClass: 'ngx-toastr custom error',
+            });
+          }
+        },
+      });
   }
 
   share(): void {
@@ -396,6 +402,14 @@ export class RoomComponent implements OnInit, OnDestroy {
         }
       );
     });
+  }
+
+  shouldShowPlayButton(): boolean {
+    const userId = this.playerService.currentPlayerSig()?.userId;
+    return (
+      (this.isResultPageActive && userId === this.room.userId) ||
+      (!this.room.isStarted && userId === this.room.userId)
+    );
   }
 
   updateRoomAndHandleResponse(
@@ -449,7 +463,7 @@ export class RoomComponent implements OnInit, OnDestroy {
             this.room.startWordLength = roomData.startWordLength;
           }
 
-          this.startAgain();
+          this.start();
         },
       });
   }

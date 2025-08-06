@@ -40,17 +40,17 @@
       <i class="bx bxs-medal"></i>
     </div>
   </div>
-  @if (room!.isStarted && !isOver) {
-  <div class="players-room">
-    @for (playerRoom of sortedPlayersRoom; track $index) {
+  @if (room!.isStarted && !player().isOver) {
+  <div class="players">
+    @for (otherPlayer of sortedPlayers; track $index) {
     <div
       class="player"
-      [ngClass]="{ 'alt-color': playerRoom.userId !== player().userId }"
+      [ngClass]="{ 'alt-color': otherPlayer.userId !== player().userId }"
     >
-      <span class="username">{{ playerRoom.username }}</span>
-      @if (playerRoom.currentRoomWins.length !== room!.responses.length) {
+      <span class="username">{{ otherPlayer.username }}</span>
+      @if (otherPlayer.currentRoomWins.length !== room!.responses.length) {
       <span class="step">
-        {{ playerRoom.currentRoomWins.length + 1 }}<span class="slash">/</span
+        {{ otherPlayer.currentRoomWins.length + 1 }}<span class="slash">/</span
         >{{ room!.responses.length }}
       </span>
       } @else {

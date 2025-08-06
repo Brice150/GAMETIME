@@ -1,4 +1,4 @@
-.players-room {
+.players {
   margin-top: 20px;
   display: flex;
   justify-content: center;
@@ -7,7 +7,7 @@
   gap: 10px;
 }
 
-.players-room .player {
+.players .player {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -20,17 +20,17 @@
   height: 34px;
 }
 
-.players-room .player.alt-color {
+.players .player.alt-color {
   color: var(--secondary);
 }
 
-.players-room .player .username {
+.players .player .username {
   font-size: 18px;
   font-weight: 600;
   text-align: center;
 }
 
-.players-room .player .medals {
+.players .player .medals {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -43,7 +43,7 @@
   padding-right: 5px;
 }
 
-.players-room .player.alt-color .medals {
+.players .player.alt-color .medals {
   background-color: var(--secondary);
 }
 
@@ -56,7 +56,7 @@
   font-size: 28px;
 }
 
-.players-room .player.spinner {
+.players .player.spinner {
   display: flex;
   justify-content: center;
   align-items: center;
