@@ -394,10 +394,12 @@ export class RoomComponent implements OnInit, OnDestroy {
 
     this.roomService
       .updateRoom(this.room)
-      .pipe(
-        takeUntil(this.destroyed$),
-        switchMap(() => this.playerService.updatePlayers(this.players))
-      )
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe();
+
+    this.playerService
+      .updatePlayers(this.players)
+      .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: () => {
           this.localStorageService.newGame(

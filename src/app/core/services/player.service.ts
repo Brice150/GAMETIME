@@ -13,6 +13,7 @@ import {
 import {
   combineLatest,
   filter,
+  forkJoin,
   from,
   map,
   Observable,
@@ -121,8 +122,7 @@ export class PlayerService {
 
   updatePlayers(players: Player[]): Observable<void> {
     const updates$ = players.map((player) => this.updatePlayer(player));
-
-    return combineLatest(updates$).pipe(map(() => undefined));
+    return forkJoin(updates$).pipe(map(() => undefined));
   }
 
   deletePlayer(playerId: string): Observable<void> {
