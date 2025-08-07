@@ -25,6 +25,8 @@ export class DurationBetweenDatesPipe implements PipeTransform {
     const minutes = Math.floor((secondsTotal % 3600) / 60);
     const seconds = secondsTotal % 60;
 
+    const tenth = Math.floor((diffMs % 1000) / 100);
+
     if (days > 0) {
       return `${days} j ${hours} h`;
     } else if (hours > 0) {
@@ -32,7 +34,7 @@ export class DurationBetweenDatesPipe implements PipeTransform {
     } else if (minutes > 0) {
       return `${minutes} min ${seconds} s`;
     } else {
-      return `${seconds} s`;
+      return `${seconds}.${tenth} s`;
     }
   }
 
