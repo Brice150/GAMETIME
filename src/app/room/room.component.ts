@@ -54,7 +54,11 @@ export class RoomComponent implements OnInit, OnDestroy {
     this.activatedRoute.params
       .pipe(
         takeUntil(this.destroyed$),
-        switchMap((params) => this.roomService.getRoom(params['id'])),
+        switchMap((params) =>
+          this.roomService
+            .getRoom(params['id'])
+            .pipe(takeUntil(this.destroyed$))
+        ),
         switchMap((room: Room | null) => {
           if (!room) {
             return of(null);
@@ -118,7 +122,9 @@ export class RoomComponent implements OnInit, OnDestroy {
           if (!room || !room.playerIds?.length) {
             return of([]);
           }
-          return this.playerService.getPlayers(room.playerIds);
+          return this.playerService
+            .getPlayers(room.playerIds)
+            .pipe(takeUntil(this.destroyed$));
         })
       )
       .subscribe({

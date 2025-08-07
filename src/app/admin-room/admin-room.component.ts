@@ -49,13 +49,19 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
     this.activatedRoute.params
       .pipe(
         takeUntil(this.destroyed$),
-        switchMap((params) => this.roomService.getRoom(params['id'])),
+        switchMap((params) =>
+          this.roomService
+            .getRoom(params['id'])
+            .pipe(takeUntil(this.destroyed$))
+        ),
         switchMap((room) => {
           this.room = room;
           if (!room || !room.playerIds?.length) {
             return of([]);
           }
-          return this.playerService.getPlayers(room.playerIds);
+          return this.playerService
+            .getPlayers(room.playerIds)
+            .pipe(takeUntil(this.destroyed$));
         })
       )
       .subscribe({
@@ -164,7 +170,9 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
             player.finishDate = null;
             player.currentRoomWins = [];
           });
-          return this.playerService.updatePlayers(this.players);
+          return this.playerService
+            .updatePlayers(this.players)
+            .pipe(takeUntil(this.destroyed$));
         })
       )
       .subscribe({

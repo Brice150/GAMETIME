@@ -54,9 +54,10 @@ export class AdminComponent implements OnInit {
             return of({ rooms, players: [] });
           }
 
-          return this.playerService
-            .getPlayers(allPlayerIds)
-            .pipe(map((players) => ({ rooms, players })));
+          return this.playerService.getPlayers(allPlayerIds).pipe(
+            takeUntil(this.destroyed$),
+            map((players) => ({ rooms, players }))
+          );
         })
       )
       .subscribe({
