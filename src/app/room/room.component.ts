@@ -79,7 +79,27 @@ export class RoomComponent implements OnInit, OnDestroy {
               this.playerService.currentPlayerSig()!.userId!
             );
 
-            this.updateRoomAndHandleResponse(() => {});
+            this.roomService
+              .updateRoom(this.room)
+              .pipe(takeUntil(this.destroyed$))
+              .subscribe({
+                next: () => {
+                  this.loading = false;
+                },
+                error: (error: HttpErrorResponse) => {
+                  this.loading = false;
+                  if (
+                    !error.message.includes(
+                      'Missing or insufficient permissions.'
+                    )
+                  ) {
+                    this.toastr.error(error.message, 'Game Time', {
+                      positionClass: 'toast-bottom-center',
+                      toastClass: 'ngx-toastr custom error',
+                    });
+                  }
+                },
+              });
             return of(room);
           } else if (
             room.isCreatedByAdmin &&
@@ -276,6 +296,15 @@ export class RoomComponent implements OnInit, OnDestroy {
         .pipe(
           filter((res: boolean) => res),
           switchMap(() => {
+            this.room.playerIds = this.room.playerIds.filter(
+              (playerId) =>
+                playerId !== this.playerService.currentPlayerSig()!.userId
+            );
+
+            return this.roomService.updateRoom(this.room);
+          }),
+          takeUntil(this.destroyed$),
+          switchMap(() => {
             this.loading = true;
             this.playerService.currentPlayerSig()!.currentRoomWins = [];
             this.playerService.currentPlayerSig()!.isOver = false;
@@ -283,54 +312,36 @@ export class RoomComponent implements OnInit, OnDestroy {
             return this.playerService.updatePlayer(
               this.playerService.currentPlayerSig()!
             );
-          }),
-          takeUntil(this.destroyed$),
-          tap(() => {
-            this.loading = true;
-            this.room.playerIds = this.room.playerIds.filter(
-              (playerId) =>
-                playerId !== this.playerService.currentPlayerSig()!.userId
-            );
-
-            this.updateRoomAndHandleResponse(
-              () => {
-                this.roomService.currentRoomSig.set(undefined);
-                this.playerService.currentPlayersSig.set([]);
-                this.loading = false;
-                this.router.navigate(['/']);
-                this.toastr.info(
-                  'Vous venez de quitter une room',
-                  'Game Time',
-                  {
-                    positionClass: 'toast-bottom-center',
-                    toastClass: 'ngx-toastr custom info',
-                  }
-                );
-              },
-              (error: HttpErrorResponse) => {
-                this.loading = false;
-                if (error.message.includes('No document to update')) {
-                  this.router.navigate(['/']);
-                  this.toastr.info(
-                    'Vous venez de quitter une room',
-                    'Game Time',
-                    {
-                      positionClass: 'toast-bottom-center',
-                      toastClass: 'ngx-toastr custom info',
-                    }
-                  );
-                } else {
-                  this.toastr.error(error.message, 'Game Time', {
-                    positionClass: 'toast-bottom-center',
-                    toastClass: 'ngx-toastr custom error',
-                  });
-                }
-              }
-            );
-          }),
-          takeUntil(this.destroyed$)
+          })
         )
-        .subscribe();
+        .subscribe({
+          next: () => {
+            this.roomService.currentRoomSig.set(undefined);
+            this.playerService.currentPlayersSig.set([]);
+            this.loading = false;
+            this.router.navigate(['/']);
+            this.toastr.info('Vous venez de quitter une room', 'Game Time', {
+              positionClass: 'toast-bottom-center',
+              toastClass: 'ngx-toastr custom info',
+            });
+            this.loading = false;
+          },
+          error: (error: HttpErrorResponse) => {
+            this.loading = false;
+            if (error.message.includes('No document to update')) {
+              this.router.navigate(['/']);
+              this.toastr.info('Vous venez de quitter une room', 'Game Time', {
+                positionClass: 'toast-bottom-center',
+                toastClass: 'ngx-toastr custom info',
+              });
+            } else {
+              this.toastr.error(error.message, 'Game Time', {
+                positionClass: 'toast-bottom-center',
+                toastClass: 'ngx-toastr custom error',
+              });
+            }
+          },
+        });
     }
   }
 
@@ -450,34 +461,6 @@ export class RoomComponent implements OnInit, OnDestroy {
       (this.isResultPageActive && userId === this.room.userId) ||
       (!this.room.isStarted && userId === this.room.userId)
     );
-  }
-
-  updateRoomAndHandleResponse(
-    onSuccess: () => void,
-    onError?: (error: HttpErrorResponse) => void
-  ): void {
-    this.roomService
-      .updateRoom(this.room)
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe({
-        next: () => {
-          onSuccess();
-          this.loading = false;
-        },
-        error: (error: HttpErrorResponse) => {
-          this.loading = false;
-          if (onError) {
-            onError(error);
-          } else if (
-            !error.message.includes('Missing or insufficient permissions.')
-          ) {
-            this.toastr.error(error.message, 'Game Time', {
-              positionClass: 'toast-bottom-center',
-              toastClass: 'ngx-toastr custom error',
-            });
-          }
-        },
-      });
   }
 
   openAddRoomDialog(): void {
