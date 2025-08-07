@@ -301,6 +301,7 @@ export class RoomComponent implements OnInit, OnDestroy {
                 playerId !== this.playerService.currentPlayerSig()!.userId
             );
 
+            //FIXME
             return this.roomService.updateRoom(this.room);
           }),
           takeUntil(this.destroyed$),
