@@ -46,6 +46,7 @@ export class RoomComponent implements OnInit, OnDestroy {
   isNextButtonAvailable = false;
   isSeeResultsAvailable = false;
   isResultPageActive = false;
+  userLeft = false;
   drapeauxGameKey = gameMap['drapeaux'].key;
   @ViewChild(WordGamesComponent) wordGamesComponent!: WordGamesComponent;
 
@@ -73,7 +74,8 @@ export class RoomComponent implements OnInit, OnDestroy {
             !(
               room.isCreatedByAdmin &&
               this.playerService.currentPlayerSig()!.isAdmin
-            )
+            ) &&
+            !this.userLeft
           ) {
             this.room.playerIds.push(
               this.playerService.currentPlayerSig()!.userId!
@@ -253,11 +255,14 @@ export class RoomComponent implements OnInit, OnDestroy {
           filter((res: boolean) => res),
           switchMap(() => {
             this.loading = true;
+            this.userLeft = true;
+
             this.players.forEach((player) => {
               player.currentRoomWins = [];
               player.isOver = false;
               player.finishDate = null;
             });
+
             return this.playerService.updatePlayers(this.players);
           }),
           takeUntil(this.destroyed$),
@@ -297,6 +302,8 @@ export class RoomComponent implements OnInit, OnDestroy {
           filter((res: boolean) => res),
           switchMap(() => {
             this.loading = true;
+            this.userLeft = true;
+
             this.room.playerIds = this.room.playerIds.filter(
               (playerId) =>
                 playerId !== this.playerService.currentPlayerSig()!.userId
@@ -309,6 +316,7 @@ export class RoomComponent implements OnInit, OnDestroy {
             this.playerService.currentPlayerSig()!.currentRoomWins = [];
             this.playerService.currentPlayerSig()!.isOver = false;
             this.playerService.currentPlayerSig()!.finishDate = null;
+
             return this.playerService.updatePlayer(
               this.playerService.currentPlayerSig()!
             );
