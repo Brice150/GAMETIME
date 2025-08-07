@@ -99,23 +99,27 @@ export class RoomComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: (players) => {
-          this.players = players.sort((a, b) => {
-            if (!this.room.isStarted) {
-              return -1;
-            }
+          if (!this.room.isStarted) {
+            this.players = players;
+          } else {
+            this.players = players.sort((a, b) => {
+              const aTrueCount = a.currentRoomWins.filter(Boolean).length;
+              const bTrueCount = b.currentRoomWins.filter(Boolean).length;
 
-            const aTrueCount = a.currentRoomWins.filter(Boolean).length;
-            const bTrueCount = b.currentRoomWins.filter(Boolean).length;
+              if (bTrueCount !== aTrueCount) {
+                return bTrueCount - aTrueCount;
+              }
 
-            if (bTrueCount !== aTrueCount) {
-              return bTrueCount - aTrueCount;
-            }
+              const aFinish = a.finishDate
+                ? this.toJsDate(a.finishDate).getTime()
+                : Infinity;
+              const bFinish = b.finishDate
+                ? this.toJsDate(b.finishDate).getTime()
+                : Infinity;
 
-            const aFinish = this.toJsDate(a.finishDate).getTime();
-            const bFinish = this.toJsDate(b.finishDate).getTime();
-
-            return aFinish - bFinish;
-          });
+              return aFinish - bFinish;
+            });
+          }
           if (this.playerService.currentPlayerSig()!.isOver) {
             this.isResultPageActive = true;
           } else if (
@@ -229,9 +233,15 @@ export class RoomComponent implements OnInit, OnDestroy {
           filter((res: boolean) => res),
           switchMap(() => {
             this.loading = true;
-            return this.roomService.deleteRoom(this.room.id!);
+            this.players.forEach((player) => {
+              player.currentRoomWins = [];
+              player.isOver = false;
+              player.finishDate = null;
+            });
+            return this.playerService.updatePlayers(this.players);
           }),
-          takeUntil(this.destroyed$)
+          takeUntil(this.destroyed$),
+          switchMap(() => this.roomService.deleteRoom(this.room.id!))
         )
         .subscribe({
           next: () => {
@@ -265,6 +275,16 @@ export class RoomComponent implements OnInit, OnDestroy {
         .afterClosed()
         .pipe(
           filter((res: boolean) => res),
+          switchMap(() => {
+            this.loading = true;
+            this.playerService.currentPlayerSig()!.currentRoomWins = [];
+            this.playerService.currentPlayerSig()!.isOver = false;
+            this.playerService.currentPlayerSig()!.finishDate = null;
+            return this.playerService.updatePlayer(
+              this.playerService.currentPlayerSig()!
+            );
+          }),
+          takeUntil(this.destroyed$),
           tap(() => {
             this.loading = true;
             this.room.playerIds = this.room.playerIds.filter(
