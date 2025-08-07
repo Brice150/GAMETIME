@@ -296,17 +296,16 @@ export class RoomComponent implements OnInit, OnDestroy {
         .pipe(
           filter((res: boolean) => res),
           switchMap(() => {
+            this.loading = true;
             this.room.playerIds = this.room.playerIds.filter(
               (playerId) =>
                 playerId !== this.playerService.currentPlayerSig()!.userId
             );
 
-            //FIXME
             return this.roomService.updateRoom(this.room);
           }),
           takeUntil(this.destroyed$),
           switchMap(() => {
-            this.loading = true;
             this.playerService.currentPlayerSig()!.currentRoomWins = [];
             this.playerService.currentPlayerSig()!.isOver = false;
             this.playerService.currentPlayerSig()!.finishDate = null;
@@ -325,7 +324,6 @@ export class RoomComponent implements OnInit, OnDestroy {
               positionClass: 'toast-bottom-center',
               toastClass: 'ngx-toastr custom info',
             });
-            this.loading = false;
           },
           error: (error: HttpErrorResponse) => {
             this.loading = false;
