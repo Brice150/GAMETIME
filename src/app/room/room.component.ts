@@ -464,6 +464,25 @@ export class RoomComponent implements OnInit, OnDestroy {
     );
   }
 
+  openDialogs(): void {
+    if (
+      this.room.isStarted &&
+      this.players.some((player) => !player.isOver || !player.finishDate)
+    ) {
+      const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+        data: "rejouer alors que tous les joueurs n'ont pas encore terminé",
+      });
+
+      dialogRef
+        .afterClosed()
+        .pipe(filter((res: boolean) => res))
+        .subscribe(() => this.openAddRoomDialog());
+      return;
+    }
+
+    this.openAddRoomDialog();
+  }
+
   openAddRoomDialog(): void {
     const dialogRef = this.dialog.open(AddRoomDialogComponent, {
       data: 'startAgain',
