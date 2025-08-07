@@ -6,7 +6,7 @@
     </mat-slide-toggle>
   </div>
   <div class="players">
-    @for (otherPlayer of sortedPlayers; track $index; let i = $index) {
+    @for (otherPlayer of players; track $index; let i = $index) {
     <div
       class="player"
       [ngClass]="{ 'alt-color': otherPlayer.userId !== room.userId }"

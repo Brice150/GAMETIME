@@ -47,12 +47,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   destroyed$ = new Subject<void>();
   @Output() logoutEvent = new EventEmitter<void>();
 
-  get sortedPlayers() {
-    return [...this.players].sort(
-      (a, b) => b.currentRoomWins.length - a.currentRoomWins.length
-    );
-  }
-
   constructor() {
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
@@ -99,7 +93,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe((players) => {
-        this.players = players;
+        this.players = players.sort(
+          (a, b) => b.currentRoomWins.length - a.currentRoomWins.length
+        );
       });
   }
 

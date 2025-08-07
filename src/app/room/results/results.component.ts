@@ -15,24 +15,4 @@ export class ResultsComponent {
   room = input.required<Room>();
   player = input.required<Player>();
   players = input.required<Player[]>();
-
-  get sortedPlayers() {
-    return [...this.players()].sort((a, b) => {
-      const aTrueCount = a.currentRoomWins.filter(Boolean).length;
-      const bTrueCount = b.currentRoomWins.filter(Boolean).length;
-
-      if (bTrueCount !== aTrueCount) {
-        return bTrueCount - aTrueCount;
-      }
-
-      const aFinish = this.toJsDate(a.finishDate).getTime();
-      const bFinish = this.toJsDate(b.finishDate).getTime();
-
-      return aFinish - bFinish;
-    });
-  }
-
-  toJsDate(date: any): Date {
-    return typeof date?.toDate === 'function' ? date.toDate() : new Date(date);
-  }
 }

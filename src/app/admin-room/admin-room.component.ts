@@ -45,22 +45,6 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
   destroyed$ = new Subject<void>();
   hideResults = true;
 
-  get sortedPlayers() {
-    return [...this.players].sort((a, b) => {
-      const aTrueCount = a.currentRoomWins.filter(Boolean).length;
-      const bTrueCount = b.currentRoomWins.filter(Boolean).length;
-
-      if (bTrueCount !== aTrueCount) {
-        return bTrueCount - aTrueCount;
-      }
-
-      const aFinish = this.toJsDate(a.finishDate).getTime();
-      const bFinish = this.toJsDate(b.finishDate).getTime();
-
-      return aFinish - bFinish;
-    });
-  }
-
   ngOnInit(): void {
     this.activatedRoute.params
       .pipe(
@@ -76,7 +60,19 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: (players) => {
-          this.players = players;
+          this.players = players.sort((a, b) => {
+            const aTrueCount = a.currentRoomWins.filter(Boolean).length;
+            const bTrueCount = b.currentRoomWins.filter(Boolean).length;
+
+            if (bTrueCount !== aTrueCount) {
+              return bTrueCount - aTrueCount;
+            }
+
+            const aFinish = this.toJsDate(a.finishDate).getTime();
+            const bFinish = this.toJsDate(b.finishDate).getTime();
+
+            return aFinish - bFinish;
+          });
           this.loading = false;
         },
         error: (error: HttpErrorResponse) => {

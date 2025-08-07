@@ -1,5 +1,5 @@
 <div class="players">
-  @for (otherPlayer of sortedPlayers; track $index; let i = $index) {
+  @for (otherPlayer of players(); track $index; let i = $index) {
   <div
     class="player"
     [ngClass]="{ 'alt-color': otherPlayer.userId !== player().userId }"
@@ -7,16 +7,12 @@
     <div class="flex">
       <span class="username">{{ otherPlayer.username }}</span>
       <div class="medals">
-        @if (otherPlayer.isOver) {
         <span class="victory-number">{{
           room().gameName | medalsNumber : otherPlayer
         }}</span>
-        } @else {
-        <i class="bx bx-loader-alt bx-spin" style="color: var(--primary)"></i>
-        }
         <i class="bx bxs-medal"></i>
       </div>
-      @if (sortedPlayers.length > 1) {
+      @if (players().length > 1) {
       <div class="podium">
         @if (i + 1 === 1) {
         <i class="bx bxs-trophy" style="color: gold"></i>

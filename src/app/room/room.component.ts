@@ -99,7 +99,23 @@ export class RoomComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: (players) => {
-          this.players = players;
+          this.players = players.sort((a, b) => {
+            if (!this.room.isStarted) {
+              return -1;
+            }
+
+            const aTrueCount = a.currentRoomWins.filter(Boolean).length;
+            const bTrueCount = b.currentRoomWins.filter(Boolean).length;
+
+            if (bTrueCount !== aTrueCount) {
+              return bTrueCount - aTrueCount;
+            }
+
+            const aFinish = this.toJsDate(a.finishDate).getTime();
+            const bFinish = this.toJsDate(b.finishDate).getTime();
+
+            return aFinish - bFinish;
+          });
           if (this.playerService.currentPlayerSig()!.isOver) {
             this.isResultPageActive = true;
           } else if (
@@ -124,6 +140,10 @@ export class RoomComponent implements OnInit, OnDestroy {
           }
         },
       });
+  }
+
+  toJsDate(date: any): Date {
+    return typeof date?.toDate === 'function' ? date.toDate() : new Date(date);
   }
 
   ngOnDestroy(): void {

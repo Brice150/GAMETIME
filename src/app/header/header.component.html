@@ -42,7 +42,7 @@
   </div>
   @if (room!.isStarted && !player().isOver) {
   <div class="players">
-    @for (otherPlayer of sortedPlayers; track $index) {
+    @for (otherPlayer of players; track $index) {
     <div
       class="player"
       [ngClass]="{ 'alt-color': otherPlayer.userId !== player().userId }"
