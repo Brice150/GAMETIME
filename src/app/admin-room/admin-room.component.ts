@@ -60,19 +60,27 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: (players) => {
-          this.players = players.sort((a, b) => {
-            const aTrueCount = a.currentRoomWins.filter(Boolean).length;
-            const bTrueCount = b.currentRoomWins.filter(Boolean).length;
+          if (!this.room.isStarted) {
+            this.players = players;
+          } else {
+            this.players = players.sort((a, b) => {
+              const aTrueCount = a.currentRoomWins.filter(Boolean).length;
+              const bTrueCount = b.currentRoomWins.filter(Boolean).length;
 
-            if (bTrueCount !== aTrueCount) {
-              return bTrueCount - aTrueCount;
-            }
+              if (bTrueCount !== aTrueCount) {
+                return bTrueCount - aTrueCount;
+              }
 
-            const aFinish = this.toJsDate(a.finishDate).getTime();
-            const bFinish = this.toJsDate(b.finishDate).getTime();
+              const aFinish = a.finishDate
+                ? this.toJsDate(a.finishDate).getTime()
+                : Infinity;
+              const bFinish = b.finishDate
+                ? this.toJsDate(b.finishDate).getTime()
+                : Infinity;
 
-            return aFinish - bFinish;
-          });
+              return aFinish - bFinish;
+            });
+          }
           this.loading = false;
         },
         error: (error: HttpErrorResponse) => {

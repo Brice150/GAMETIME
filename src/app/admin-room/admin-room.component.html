@@ -44,9 +44,10 @@
           <span class="description" [class.blurred]="hideResults">{{
             response
           }}</span>
-          @if (otherPlayer.currentRoomWins[j] === true) {
+          @if (otherPlayer.currentRoomWins[j] === true && room.isStarted) {
           <i class="bx bx-check"></i>
-          } @else if (otherPlayer.currentRoomWins[j] === false) {
+          } @else if (otherPlayer.currentRoomWins[j] === false &&
+          room.isStarted) {
           <i class="bx bx-x" style="color: red"></i>
           } @else {
           <i class="bx bx-loader-alt bx-spin" style="color: var(--accent)"></i>

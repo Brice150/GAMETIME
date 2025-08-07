@@ -63,8 +63,9 @@ export class RoomComponent implements OnInit, OnDestroy {
           this.room = room;
 
           if (
+            this.playerService.currentPlayerSig()?.userId &&
             this.room.playerIds.includes(
-              this.playerService.currentPlayerSig()!.userId!
+              this.playerService.currentPlayerSig()?.userId!
             )
           ) {
             return of(room);
@@ -73,12 +74,13 @@ export class RoomComponent implements OnInit, OnDestroy {
           if (
             !(
               room.isCreatedByAdmin &&
-              this.playerService.currentPlayerSig()!.isAdmin
+              this.playerService.currentPlayerSig() &&
+              this.playerService.currentPlayerSig()?.isAdmin
             ) &&
             !this.userLeft
           ) {
             this.room.playerIds.push(
-              this.playerService.currentPlayerSig()!.userId!
+              this.playerService.currentPlayerSig()?.userId!
             );
 
             this.roomService
@@ -105,7 +107,7 @@ export class RoomComponent implements OnInit, OnDestroy {
             return of(room);
           } else if (
             room.isCreatedByAdmin &&
-            this.playerService.currentPlayerSig()!.isAdmin
+            this.playerService.currentPlayerSig()?.isAdmin
           ) {
             this.router.navigate(['/admin', room.id]);
           }
@@ -142,10 +144,10 @@ export class RoomComponent implements OnInit, OnDestroy {
               return aFinish - bFinish;
             });
           }
-          if (this.playerService.currentPlayerSig()!.isOver) {
+          if (this.playerService.currentPlayerSig()?.isOver) {
             this.isResultPageActive = true;
           } else if (
-            this.playerService.currentPlayerSig()!.currentRoomWins.length ===
+            this.playerService.currentPlayerSig()?.currentRoomWins.length ===
             this.room.responses.length
           ) {
             this.isSeeResultsAvailable = true;
@@ -178,6 +180,10 @@ export class RoomComponent implements OnInit, OnDestroy {
   }
 
   updatePlayerGame(stepWon: boolean): void {
+    if (!this.playerService.currentPlayerSig()) {
+      return;
+    }
+
     if (stepWon) {
       const stat = this.playerService
         .currentPlayerSig()!
@@ -232,19 +238,19 @@ export class RoomComponent implements OnInit, OnDestroy {
 
     if (
       this.room.responses.length !==
-      this.playerService.currentPlayerSig()!.currentRoomWins.length
+      this.playerService.currentPlayerSig()?.currentRoomWins.length
     ) {
       this.isNextButtonAvailable = true;
     } else {
       this.isSeeResultsAvailable = true;
     }
     this.playerService.currentPlayerSig.set(
-      this.playerService.currentPlayerSig()!
+      this.playerService.currentPlayerSig()
     );
   }
 
   openDialog(): void {
-    if (this.playerService.currentPlayerSig()!.userId === this.room.userId) {
+    if (this.playerService.currentPlayerSig()?.userId === this.room.userId) {
       const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
         data: 'supprimer cette room',
       });
@@ -306,13 +312,17 @@ export class RoomComponent implements OnInit, OnDestroy {
 
             this.room.playerIds = this.room.playerIds.filter(
               (playerId) =>
-                playerId !== this.playerService.currentPlayerSig()!.userId
+                playerId !== this.playerService.currentPlayerSig()?.userId
             );
 
             return this.roomService.updateRoom(this.room);
           }),
           takeUntil(this.destroyed$),
           switchMap(() => {
+            if (!this.playerService.currentPlayerSig()) {
+              return of(undefined);
+            }
+
             this.playerService.currentPlayerSig()!.currentRoomWins = [];
             this.playerService.currentPlayerSig()!.isOver = false;
             this.playerService.currentPlayerSig()!.finishDate = null;
@@ -358,6 +368,10 @@ export class RoomComponent implements OnInit, OnDestroy {
   }
 
   seeResults(): void {
+    if (!this.playerService.currentPlayerSig()) {
+      return;
+    }
+
     this.loading = true;
     this.playerService.currentPlayerSig()!.isOver = true;
     this.playerService.currentPlayerSig()!.finishDate = new Date();
@@ -370,7 +384,7 @@ export class RoomComponent implements OnInit, OnDestroy {
           this.isSeeResultsAvailable = false;
           this.isResultPageActive = true;
           this.playerService.currentPlayerSig.set(
-            this.playerService.currentPlayerSig()!
+            this.playerService.currentPlayerSig()
           );
           this.loading = false;
         },
@@ -429,7 +443,7 @@ export class RoomComponent implements OnInit, OnDestroy {
           this.playerService.currentPlayerSig.set(
             this.players.filter(
               (player) =>
-                player.userId === this.playerService.currentPlayerSig()!.userId
+                player.userId === this.playerService.currentPlayerSig()?.userId
             )[0]
           );
 

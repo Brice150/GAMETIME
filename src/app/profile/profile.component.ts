@@ -130,7 +130,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.loading = true;
       const newUsername = this.profileForm.value.username;
       const usernameChanged =
-        newUsername !== this.playerService.currentPlayerSig()!.username;
+        newUsername !== this.playerService.currentPlayerSig()?.username;
 
       this.profileService
         .updateProfile(this.profileForm.value)
