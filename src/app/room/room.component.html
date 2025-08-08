@@ -10,6 +10,7 @@
     [room]="room"
     [player]="playerService.currentPlayerSig()!"
     [players]="players"
+    (deleteEvent)="removePlayer($event)"
   ></app-results>
   } } @else {
   <app-waiting-room

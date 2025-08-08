@@ -32,6 +32,8 @@
           }}</span>
           <i class="bx bxs-medal"></i>
         </div>
+      </div>
+      <div class="score">
         @if (players.length > 1) {
         <div class="podium">
           @if (i + 1 === 1) {
@@ -45,8 +47,7 @@
           }
         </div>
         }
-      </div>
-      <div class="time">
+        <span>-</span>
         <span>{{
           room.startDate | durationBetweenDates : otherPlayer.finishDate
         }}</span>

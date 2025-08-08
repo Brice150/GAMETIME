@@ -21,19 +21,25 @@
 
 .players .player .flex {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  gap: 20px;
+  height: 30px;
 }
 
 .players .player .username {
   font-size: 18px;
   font-weight: 600;
-  text-align: center;
+  width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .players .player .podium {
   font-size: 28px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .players .player .podium .order {
@@ -99,15 +105,48 @@
   font-size: 28px;
 }
 
-.time {
+.score {
   margin-top: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
-  height: 20px;
+  gap: 20px;
 }
 
-.time span {
+.score span {
   font-weight: bold;
+}
+
+.button-container-delete {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: -10px;
+}
+
+.button-container-delete .delete {
+  cursor: pointer;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: var(--light-radius);
+  color: red;
+  transition: 0.5s ease;
+  border: none;
+  background-color: var(--primary);
+}
+
+.button-container-delete .delete.share {
+  width: 50px;
+}
+
+.button-container-delete .delete:hover {
+  background-color: red;
+  color: var(--primary);
+}
+
+.button-container-delete .delete i {
+  font-size: 30px;
 }
