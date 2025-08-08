@@ -5,12 +5,12 @@
   flex-direction: column;
 }
 
-.container {
+.flag {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 160px;
-  min-height: 100px;
+  min-height: 90px;
   background-color: var(--primary);
 }
 
