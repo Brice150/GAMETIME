@@ -7,71 +7,81 @@
   </div>
   <div class="players">
     @for (otherPlayer of players; track $index; let i = $index) {
-    <div
-      class="player"
-      [ngClass]="{ 'alt-color': otherPlayer.userId !== room.userId }"
-    >
-      <div class="flex">
-        @if ((!room.isStarted || allPlayersDone()) && otherPlayer.userId !==
-        room.userId) {
-        <div class="button-container-delete">
-          <button
-            type="button"
-            (click)="removePlayer(otherPlayer.userId!)"
-            title="Supprimer"
-            class="delete share"
-          >
-            <i class="bx bxs-trash"></i>
-          </button>
-        </div>
-        }
-        <span class="username">{{ otherPlayer.username }}</span>
-        <div class="medals">
-          <span class="victory-number">{{
-            room.gameName | medalsNumber : otherPlayer
-          }}</span>
-          <i class="bx bxs-medal"></i>
-        </div>
-      </div>
-      <div class="score">
-        @if (players.length > 1) {
-        <div class="podium">
-          @if (i + 1 === 1) {
-          <i class="bx bxs-trophy" style="color: gold"></i>
-          } @else if (i + 1 === 2) {
-          <i class="bx bxs-trophy" style="color: silver"></i>
-          }@else if (i + 1 === 3) {
-          <i class="bx bxs-trophy" style="color: #cd7f32"></i>
-          } @else {
-          <span class="order">{{ i + 1 }}</span>
+    <div class="container">
+      <div
+        class="player"
+        [ngClass]="{ 'alt-color': otherPlayer.userId !== room.userId }"
+      >
+        <div class="flex">
+          <span class="username">{{ otherPlayer.username }}</span>
+          @if (otherPlayer.isReady && room.userId !== otherPlayer.userId) {
+          <i class="bx bxs-check-circle" title="Prêt"></i>
+          } @else if (room.userId !== otherPlayer.userId) {
+          <i class="bx bxs-x-circle" title="Pas prêt" style="color: red"></i>
           }
+          <div class="medals">
+            <span class="victory-number">{{
+              room.gameName | medalsNumber : otherPlayer
+            }}</span>
+            <i class="bx bxs-medal"></i>
+          </div>
         </div>
-        <span>-</span>
-        }@if (otherPlayer.finishDate) {
-        <span>{{
-          room.startDate | durationBetweenDates : otherPlayer.finishDate
-        }}</span>
-        } @else {
-        <i class="bx bx-loader-alt bx-spin" style="color: var(--accent)"></i>
-        }
-      </div>
-      <div class="responses">
-        @for (response of room.responses; track $index; let j = $index) {
-        <div class="response">
-          <span class="description" [class.blurred]="hideResults">{{
-            response
+        <div class="score">
+          @if (players.length > 1) {
+          <div class="podium">
+            @if (i + 1 === 1) {
+            <i class="bx bxs-trophy" style="color: gold"></i>
+            } @else if (i + 1 === 2) {
+            <i class="bx bxs-trophy" style="color: silver"></i>
+            }@else if (i + 1 === 3) {
+            <i class="bx bxs-trophy" style="color: #cd7f32"></i>
+            } @else {
+            <span class="order">{{ i + 1 }}</span>
+            }
+          </div>
+          <span>-</span>
+          }@if (otherPlayer.finishDate) {
+          <span>{{
+            room.startDate | durationBetweenDates : otherPlayer.finishDate
           }}</span>
-          @if (otherPlayer.currentRoomWins[j] === true && room.isStarted) {
-          <i class="bx bx-check"></i>
-          } @else if (otherPlayer.currentRoomWins[j] === false &&
-          room.isStarted) {
-          <i class="bx bx-x" style="color: red"></i>
           } @else {
           <i class="bx bx-loader-alt bx-spin" style="color: var(--accent)"></i>
           }
         </div>
-        }
+        <div class="responses">
+          @for (response of room.responses; track $index; let j = $index) {
+          <div class="response">
+            <span class="description" [class.blurred]="hideResults">{{
+              response
+            }}</span>
+            @if (otherPlayer.currentRoomWins[j] === true && room.isStarted) {
+            <i class="bx bx-check"></i>
+            } @else if (otherPlayer.currentRoomWins[j] === false &&
+            room.isStarted) {
+            <i class="bx bx-x" style="color: red"></i>
+            } @else {
+            <i
+              class="bx bx-loader-alt bx-spin"
+              style="color: var(--accent)"
+            ></i>
+            }
+          </div>
+          }
+        </div>
       </div>
+      @if ((!room.isStarted || allPlayersDone()) && otherPlayer.userId !==
+      room.userId) {
+      <div class="button-container-delete">
+        <button
+          type="button"
+          (click)="removePlayer(otherPlayer.userId!)"
+          title="Supprimer"
+          class="delete share"
+        >
+          <i class="bx bxs-trash"></i>
+        </button>
+      </div>
+      }
     </div>
     } @empty {
     <div class="player">

@@ -228,6 +228,20 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
   }
 
   openAddRoomDialog(): void {
+    if (
+      this.players.some(
+        (player) =>
+          player.userId !== this.playerService.currentPlayerSig()?.userId &&
+          !player.isReady
+      )
+    ) {
+      this.toastr.error('Tous les joueurs ne sont pas prêts', 'Game Time', {
+        positionClass: 'toast-bottom-center',
+        toastClass: 'ngx-toastr custom error',
+      });
+      return;
+    }
+
     const dialogRef = this.dialog.open(AddRoomDialogComponent, {
       data: 'startAgain',
     });
