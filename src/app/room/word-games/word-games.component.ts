@@ -16,10 +16,16 @@ import { WordInputComponent } from './word-input/word-input.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Player } from 'src/app/core/interfaces/player';
 import { Subject, takeUntil } from 'rxjs';
+import { ContinentPipe } from '../../shared/pipes/continent.pipe';
 
 @Component({
   selector: 'app-word-games',
-  imports: [CommonModule, WordInputComponent, MatProgressSpinnerModule],
+  imports: [
+    CommonModule,
+    WordInputComponent,
+    MatProgressSpinnerModule,
+    ContinentPipe,
+  ],
   templateUrl: './word-games.component.html',
   styleUrl: './word-games.component.css',
 })

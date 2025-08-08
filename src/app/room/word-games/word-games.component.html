@@ -1,10 +1,13 @@
 @if (!isOver) { @if (room().gameName === drapeauxGameKey) {
-<div class="flag">
-  @if(!loading) {
-  <img [src]="imageUrl" alt="Drapeau.png" />
-  } @else {
-  <mat-spinner diameter="34"></mat-spinner>
-  }
+<div class="container">
+  <span class="continent">{{ room().continentFilter | continent }}</span>
+  <div class="flag">
+    @if(!loading) {
+    <img [src]="imageUrl" alt="Drapeau.png" />
+    } @else {
+    <mat-spinner diameter="34"></mat-spinner>
+    }
+  </div>
 </div>
 }
 <app-word-input
