@@ -39,11 +39,14 @@
         <span class="order">{{ i + 1 }}</span>
         }
       </div>
-      }
       <span>-</span>
+      } @if (otherPlayer.finishDate) {
       <span>{{
         room().startDate | durationBetweenDates : otherPlayer.finishDate
       }}</span>
+      } @else {
+      <i class="bx bx-loader-alt bx-spin" style="color: var(--accent)"></i>
+      }
     </div>
     <div class="responses">
       @for (response of room().responses; track $index; let j = $index) {

@@ -138,6 +138,10 @@ mat-spinner {
   font-weight: bold;
 }
 
+.score .bx-loader-alt {
+  font-size: 28px;
+}
+
 .blurred {
   filter: blur(5px);
   user-select: none;
