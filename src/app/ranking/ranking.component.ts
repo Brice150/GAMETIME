@@ -38,7 +38,20 @@ export class RankingComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: (players) => {
-          this.players = players;
+          this.players = players.sort((a, b) => {
+            const aStat = a.stats.find(
+              (stat) => stat.gameName === this.gameName
+            );
+            const bStat = b.stats.find(
+              (stat) => stat.gameName === this.gameName
+            );
+
+            const aMedals = aStat ? aStat.medalsNumber : 0;
+            const bMedals = bStat ? bStat.medalsNumber : 0;
+
+            return bMedals - aMedals;
+          });
+
           this.loading = false;
         },
         error: (error: HttpErrorResponse) => {

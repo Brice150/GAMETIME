@@ -223,7 +223,7 @@ export class RoomComponent implements OnInit, OnDestroy {
         .currentPlayerSig()!
         .stats.find((stat) => stat.gameName === this.room.gameName);
       if (stat) {
-        stat.medalsNumer += 1;
+        stat.medalsNumber += 1;
       }
     }
 

@@ -1,10 +1,6 @@
 <section>
   @if(!loading) {
-  <div class="toggle-container">
-    <mat-slide-toggle [(ngModel)]="isDrapeauSelected">
-      Drapeau
-    </mat-slide-toggle>
-  </div>
+
   <div class="players">
     @for (otherPlayer of players; track $index; let i = $index) {
     <div
@@ -15,11 +11,24 @@
       }"
     >
       <span class="username">{{ otherPlayer.username }}</span>
-      <div class="medals">
-        <span class="victory-number">{{
-          gameName | medalsNumber : otherPlayer
-        }}</span>
-        <i class="bx bxs-medal"></i>
+      <div class="podium">
+        @if (i + 1 === 1) {
+        <i class="bx bxs-trophy" style="color: gold"></i>
+        } @else if (i + 1 === 2) {
+        <i class="bx bxs-trophy" style="color: silver"></i>
+        }@else if (i + 1 === 3) {
+        <i class="bx bxs-trophy" style="color: #cd7f32"></i>
+        } @else {
+        <span class="order">{{ i + 1 }}</span>
+        }
+      </div>
+      <div class="space">
+        <div class="medals">
+          <span class="victory-number">{{
+            gameName | medalsNumber : otherPlayer
+          }}</span>
+          <i class="bx bxs-medal"></i>
+        </div>
       </div>
     </div>
     }

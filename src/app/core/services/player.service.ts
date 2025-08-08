@@ -97,11 +97,11 @@ export class PlayerService {
 
         const statMotus: Stat = {
           gameName: gameMap['motus'].key,
-          medalsNumer: 0,
+          medalsNumber: 0,
         };
         const statDrapeaux: Stat = {
           gameName: gameMap['drapeaux'].key,
-          medalsNumer: 0,
+          medalsNumber: 0,
         };
 
         const player: Player = {

@@ -42,7 +42,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   menuItems = [
     { path: '/', title: 'Accueil', icon: 'bx bxs-home' },
     { path: '/profil', title: 'Profil', icon: 'bx bxs-user' },
-    { path: '/classement', title: 'Classement', icon: 'bx bxs-user' },
+    { path: '/classement', title: 'Classement', icon: 'bx bxs-trophy' },
     {
       path: '/room/' + this.localStorageService.getRoomId(),
       title: 'Room',
