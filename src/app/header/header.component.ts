@@ -18,6 +18,7 @@ import { Room } from '../core/interfaces/room';
 import { RoomService } from '../core/services/room.service';
 import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
 import { PlayerService } from '../core/services/player.service';
+import { LocalStorageService } from '../core/services/local-storage.service';
 
 @Component({
   selector: 'app-header',
@@ -36,10 +37,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
   location = inject(Location);
   roomService = inject(RoomService);
   playerService = inject(PlayerService);
+  localStorageService = inject(LocalStorageService);
   currentUrl = '';
   menuItems = [
     { path: '/', title: 'Accueil', icon: 'bx bxs-home' },
     { path: '/profil', title: 'Profil', icon: 'bx bxs-user' },
+    { path: '/room', title: 'Room', icon: 'bx bx-play' },
   ];
   player = input.required<Player>();
   room?: Room;
@@ -67,28 +70,18 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.roomService.roomReady$
       .pipe(
         takeUntil(this.destroyed$),
-        tap((room) => {
-          if (room) {
-            this.room = room;
-            this.menuItems = this.menuItems.filter(
-              (item) => !item.path.startsWith('/room/')
-            );
-            this.menuItems.push({
-              path: '/room/' + room.id,
-              title: 'Room',
-              icon: 'bx bx-play',
-            });
-          } else {
-            this.room = undefined;
-            this.menuItems = this.menuItems.filter(
-              (item) => !item.path.startsWith('/room/')
-            );
-          }
-        }),
         switchMap((room) => {
+          const item = this.menuItems.find((item) => item.title === 'Room');
+          if (item) {
+            item.path = '/room/' + this.localStorageService.getRoomId();
+          }
+
           if (!room || !room.playerIds?.length) {
             return of([]);
           }
+
+          this.room = room;
+
           return this.playerService.playersReady$;
         })
       )

@@ -181,8 +181,8 @@ export class RoomComponent implements OnInit, OnDestroy {
           if (this.playerService.currentPlayerSig()?.isOver) {
             this.isResultPageActive = true;
           } else if (
-            this.playerService.currentPlayerSig()?.currentRoomWins.length ===
-            this.room.responses.length
+            this.playerService.currentPlayerSig()?.currentRoomWins?.length ===
+            this.room.responses?.length
           ) {
             this.isSeeResultsAvailable = true;
           } else {
