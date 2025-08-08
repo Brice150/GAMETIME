@@ -42,12 +42,18 @@ export class HeaderComponent implements OnInit, OnDestroy {
   menuItems = [
     { path: '/', title: 'Accueil', icon: 'bx bxs-home' },
     { path: '/profil', title: 'Profil', icon: 'bx bxs-user' },
-    { path: '/room', title: 'Room', icon: 'bx bx-play' },
+    { path: '/classement', title: 'Classement', icon: 'bx bxs-user' },
+    {
+      path: '/room/' + this.localStorageService.getRoomId(),
+      title: 'Room',
+      icon: 'bx bx-play',
+    },
   ];
   player = input.required<Player>();
   room?: Room;
   players: Player[] = [];
   destroyed$ = new Subject<void>();
+  pageTitle = '';
   @Output() logoutEvent = new EventEmitter<void>();
 
   constructor() {
@@ -55,6 +61,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         this.currentUrl = event.urlAfterRedirects;
+        this.updateTitle();
       });
   }
 
@@ -81,6 +88,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
           }
 
           this.room = room;
+          this.updateTitle();
 
           return this.playerService.playersReady$;
         })
@@ -97,14 +105,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.destroyed$.complete();
   }
 
-  getTitle(): string {
+  updateTitle(): void {
     if (this.isRoomPage()) {
-      return this.room?.gameName ?? '';
+      this.pageTitle = this.room?.gameName ?? '';
+      return;
     }
 
     const staticTitles = [
       { path: '/', title: 'Game Time' },
       { path: '/profil', title: 'Profil' },
+      { path: '/classement', title: 'Classement' },
       { path: '/admin', title: 'Admin' },
     ];
 
@@ -120,7 +130,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       .sort((a, b) => b.path.length - a.path.length)
       .find((item) => this.currentUrl.startsWith(item.path));
 
-    return matched ? matched.title : '';
+    this.pageTitle = matched ? matched.title : '';
   }
 
   logout(): void {

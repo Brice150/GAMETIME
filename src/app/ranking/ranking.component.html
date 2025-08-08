@@ -1,0 +1,30 @@
+<section>
+  @if(!loading) {
+  <div class="toggle-container">
+    <mat-slide-toggle [(ngModel)]="isDrapeauSelected">
+      Drapeau
+    </mat-slide-toggle>
+  </div>
+  <div class="players">
+    @for (otherPlayer of players; track $index; let i = $index) {
+    <div
+      class="player"
+      [ngClass]="{
+        'alt-color':
+          otherPlayer.userId !== playerService.currentPlayerSig()?.userId
+      }"
+    >
+      <span class="username">{{ otherPlayer.username }}</span>
+      <div class="medals">
+        <span class="victory-number">{{
+          gameName | medalsNumber : otherPlayer
+        }}</span>
+        <i class="bx bxs-medal"></i>
+      </div>
+    </div>
+    }
+  </div>
+  } @else {
+  <mat-spinner></mat-spinner>
+  }
+</section>

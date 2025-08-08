@@ -1,6 +1,6 @@
 <header>
   <div class="project-title">
-    <h1>{{ getTitle() || "Game Time" }}</h1>
+    <h1>{{ pageTitle }}</h1>
   </div>
   <div class="switch-container">
     <button mat-button [matMenuTriggerFor]="menu" class="menu" title="Menu">
@@ -40,7 +40,7 @@
       <i class="bx bxs-medal"></i>
     </div>
   </div>
-  @if (room!.isStarted && !player().isOver) {
+  @if (room?.isStarted && !player().isOver) {
   <div class="players">
     @for (otherPlayer of players; track $index) {
     <div

@@ -68,6 +68,13 @@ export class PlayerService {
     >;
   }
 
+  getAllPlayers(): Observable<Player[]> {
+    const playersCollection = query(collection(this.firestore, 'players'));
+    return collectionData(playersCollection, { idField: 'id' }) as Observable<
+      Player[]
+    >;
+  }
+
   addPlayer(): Observable<string | null | undefined> {
     const userId = this.userService.auth.currentUser?.uid;
     const email = this.userService.auth.currentUser?.email;
