@@ -106,6 +106,7 @@ export class PlayerService {
           isOver: false,
           currentRoomWins: [],
           finishDate: null,
+          isReady: false,
         };
         return from(setDoc(playerDoc, { ...player })).pipe(map(() => email));
       })

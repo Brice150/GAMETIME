@@ -301,6 +301,7 @@ export class RoomComponent implements OnInit, OnDestroy {
               player.currentRoomWins = [];
               player.isOver = false;
               player.finishDate = null;
+              player.isReady = false;
             });
 
             return this.playerService.updatePlayers(this.players);
@@ -360,6 +361,7 @@ export class RoomComponent implements OnInit, OnDestroy {
             this.playerService.currentPlayerSig()!.currentRoomWins = [];
             this.playerService.currentPlayerSig()!.isOver = false;
             this.playerService.currentPlayerSig()!.finishDate = null;
+            this.playerService.currentPlayerSig()!.isReady = false;
 
             return this.playerService.updatePlayer(
               this.playerService.currentPlayerSig()!
@@ -370,6 +372,9 @@ export class RoomComponent implements OnInit, OnDestroy {
           next: () => {
             this.roomService.currentRoomSig.set(undefined);
             this.playerService.currentPlayersSig.set([]);
+            this.playerService.currentPlayerSig.set(
+              this.playerService.currentPlayerSig()
+            );
             this.loading = false;
             this.router.navigate(['/']);
             this.toastr.info('Vous venez de quitter une room', 'Game Time', {
@@ -409,6 +414,7 @@ export class RoomComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.playerService.currentPlayerSig()!.isOver = true;
     this.playerService.currentPlayerSig()!.finishDate = new Date();
+    this.playerService.currentPlayerSig()!.isReady = false;
 
     this.playerService
       .updatePlayer(this.playerService.currentPlayerSig()!)
@@ -460,6 +466,7 @@ export class RoomComponent implements OnInit, OnDestroy {
           this.players.forEach((player) => {
             player.isOver = false;
             player.finishDate = null;
+            player.isReady = false;
             player.currentRoomWins = [];
           });
           return this.playerService.updatePlayers(this.players);
@@ -518,19 +525,39 @@ export class RoomComponent implements OnInit, OnDestroy {
     );
   }
 
+  shouldShowReadyButton(): boolean {
+    const userId = this.playerService.currentPlayerSig()?.userId;
+    return (
+      (this.isResultPageActive && userId !== this.room.userId) ||
+      (!this.room.isStarted && userId !== this.room.userId)
+    );
+  }
+
+  ready(): void {
+    this.playerService.currentPlayerSig()!.isReady =
+      !this.playerService.currentPlayerSig()!.isReady;
+
+    this.playerService
+      .updatePlayer(this.playerService.currentPlayerSig()!)
+      .subscribe(() =>
+        this.playerService.currentPlayerSig.set(
+          this.playerService.currentPlayerSig()
+        )
+      );
+  }
+
   openDialogs(): void {
     if (
-      this.room.isStarted &&
-      this.players.some((player) => !player.isOver || !player.finishDate)
+      this.players.some(
+        (player) =>
+          player.userId !== this.playerService.currentPlayerSig()?.userId &&
+          !player.isReady
+      )
     ) {
-      const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-        data: "rejouer alors que tous les joueurs n'ont pas encore terminé",
+      this.toastr.error('Tous les joueurs ne sont pas prêts', 'Game Time', {
+        positionClass: 'toast-bottom-center',
+        toastClass: 'ngx-toastr custom error',
       });
-
-      dialogRef
-        .afterClosed()
-        .pipe(filter((res: boolean) => res))
-        .subscribe(() => this.openAddRoomDialog());
       return;
     }
 

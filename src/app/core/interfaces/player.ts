@@ -9,4 +9,5 @@ export interface Player {
   isOver: boolean;
   currentRoomWins: boolean[];
   finishDate: Date | null;
+  isReady: boolean;
 }

@@ -46,9 +46,23 @@
       <i class="bx bx-play"></i>
       <span class="text">Jouer</span>
     </button>
+    } @else if (shouldShowReadyButton()) {
+    <button
+      type="button"
+      (click)="ready()"
+      [title]="playerService.currentPlayerSig()!.isReady ? 'Pas prêt' : 'Prêt'"
+      [ngClass]="{ delete: playerService.currentPlayerSig()!.isReady }"
+    >
+      @if (playerService.currentPlayerSig()!.isReady) {
+      <i class="bx bxs-x-circle"></i>
+      <span class="text">Pas prêt</span>
+      } @else {
+      <i class="bx bxs-check-circle"></i>
+      <span class="text">Prêt</span>
+      }
+    </button>
     }
   </div>
-
   } @else {
   <mat-spinner></mat-spinner>
   }
