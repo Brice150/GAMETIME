@@ -47,6 +47,7 @@ export class RoomComponent implements OnInit, OnDestroy {
   isSeeResultsAvailable = false;
   isResultPageActive = false;
   userLeft = false;
+  userKickedOut = false;
   drapeauxGameKey = gameMap['drapeaux'].key;
   @ViewChild(WordGamesComponent) wordGamesComponent!: WordGamesComponent;
 
@@ -61,7 +62,35 @@ export class RoomComponent implements OnInit, OnDestroy {
         ),
         switchMap((room: Room | null) => {
           if (!room) {
+            this.router.navigate(['/']);
+            if (!this.userLeft) {
+              this.toastr.info("L'hôte a supprimé la room", 'Game Time', {
+                positionClass: 'toast-bottom-center',
+                toastClass: 'ngx-toastr custom info',
+              });
+            }
             return of(null);
+          }
+
+          if (
+            this.room.playerIds &&
+            this.room.playerIds.length > 0 &&
+            room.playerIds &&
+            room.playerIds.length > 0 &&
+            this.playerService.currentPlayerSig()?.userId &&
+            this.room.playerIds.includes(
+              this.playerService.currentPlayerSig()?.userId!
+            ) &&
+            !room.playerIds.includes(
+              this.playerService.currentPlayerSig()?.userId!
+            )
+          ) {
+            this.userKickedOut = true;
+            this.router.navigate(['/']);
+            this.toastr.info('Vous avez été exclu de la room', 'Game Time', {
+              positionClass: 'toast-bottom-center',
+              toastClass: 'ngx-toastr custom info',
+            });
           }
 
           this.room = room;
@@ -81,7 +110,8 @@ export class RoomComponent implements OnInit, OnDestroy {
               this.playerService.currentPlayerSig() &&
               this.playerService.currentPlayerSig()?.isAdmin
             ) &&
-            !this.userLeft
+            !this.userLeft &&
+            !this.userKickedOut
           ) {
             this.room.playerIds.push(
               this.playerService.currentPlayerSig()?.userId!
@@ -535,5 +565,24 @@ export class RoomComponent implements OnInit, OnDestroy {
           this.start();
         },
       });
+  }
+
+  removePlayer(userId: string): void {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: 'supprimer le joueur de la room',
+    });
+
+    dialogRef
+      .afterClosed()
+      .pipe(
+        filter((res: boolean) => res),
+        switchMap(() => {
+          this.room.playerIds = this.room.playerIds.filter(
+            (playerId) => playerId !== userId
+          );
+          return this.roomService.updateRoom(this.room);
+        })
+      )
+      .subscribe();
   }
 }
