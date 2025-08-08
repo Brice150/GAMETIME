@@ -7,6 +7,14 @@
   gap: 10px;
 }
 
+.players .container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position: relative;
+}
+
 .players .player {
   display: flex;
   justify-content: space-between;
@@ -17,6 +25,10 @@
   padding: 10px;
   width: 270px;
   height: 30px;
+}
+
+.players .player i {
+  font-size: 28px;
 }
 
 .players .player.alt-color {
@@ -72,7 +84,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-left: -10px;
+  position: absolute;
+  right: -60px;
+  top: 0;
 }
 
 .button-container-delete .delete {
@@ -100,4 +114,12 @@
 
 .button-container-delete .delete i {
   font-size: 30px;
+}
+
+@media screen and (max-width: 450px) {
+  .button-container-delete {
+    position: relative;
+    right: unset;
+    top: 5px;
+  }
 }

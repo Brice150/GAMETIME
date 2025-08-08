@@ -1,9 +1,23 @@
 <div class="players">
   @for (otherPlayer of players(); track $index; let i = $index) {
-  <div
-    class="player"
-    [ngClass]="{ 'alt-color': otherPlayer.userId !== player().userId }"
-  >
+  <div class="container">
+    <div
+      class="player"
+      [ngClass]="{ 'alt-color': otherPlayer.userId !== player().userId }"
+    >
+      <span class="username">{{ otherPlayer.username }}</span>
+      @if (otherPlayer.isReady && room().userId !== otherPlayer.userId) {
+      <i class="bx bxs-check-circle" title="Prêt"></i>
+      } @else if (room().userId !== otherPlayer.userId) {
+      <i class="bx bxs-x-circle" title="Pas prêt" style="color: red"></i>
+      }
+      <div class="medals">
+        <span class="victory-number">{{
+          room().gameName | medalsNumber : otherPlayer
+        }}</span>
+        <i class="bx bxs-medal"></i>
+      </div>
+    </div>
     @if (otherPlayer.userId !== player().userId && room().userId ===
     player().userId) {
     <div class="button-container-delete">
@@ -17,13 +31,6 @@
       </button>
     </div>
     }
-    <span class="username">{{ otherPlayer.username }}</span>
-    <div class="medals">
-      <span class="victory-number">{{
-        room().gameName | medalsNumber : otherPlayer
-      }}</span>
-      <i class="bx bxs-medal"></i>
-    </div>
   </div>
   }
   <div class="player spinner">
