@@ -1,6 +1,20 @@
 <section>
   @if(!loading) {
-
+  <div class="games">
+    @for (game of games; track game.key) {
+    <button
+      type="button"
+      [title]="game.label"
+      [ngClass]="{ active: gameSelected === game.key }"
+      (click)="sortPlayers(game.key)"
+    >
+      <div class="flex">
+        <i class="{{ game.icon }}"></i>
+        <span class="game">{{ game.label }}</span>
+      </div>
+    </button>
+    }
+  </div>
   <div class="players">
     @for (otherPlayer of players; track $index; let i = $index) {
     <div
@@ -25,7 +39,7 @@
       <div class="space">
         <div class="medals">
           <span class="victory-number">{{
-            gameName | medalsNumber : otherPlayer
+            gameSelected | medalsNumber : otherPlayer
           }}</span>
           <i class="bx bxs-medal"></i>
         </div>

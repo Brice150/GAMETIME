@@ -8,6 +8,60 @@ section {
   margin-top: 20px;
 }
 
+.games {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 90%;
+  max-width: 600px;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 200px;
+  cursor: pointer;
+  padding: 12px;
+  background-color: var(--primary);
+  color: var(--accent);
+  border-radius: 10px;
+  transition: 0.5s ease;
+  border: none;
+}
+
+button.active {
+  background-color: var(--accent);
+  color: var(--primary);
+  cursor: default;
+}
+
+button:hover {
+  background-color: var(--accent);
+  color: var(--primary);
+}
+
+button i {
+  font-size: 32px;
+}
+
+button .game {
+  font-size: 22px;
+  font-weight: 500;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+button .flex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
 .players {
   margin-top: 20px;
   display: flex;

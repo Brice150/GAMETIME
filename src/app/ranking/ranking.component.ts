@@ -5,7 +5,7 @@ import { Player } from '../core/interfaces/player';
 import { PlayerService } from '../core/services/player.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
-import { gameMap } from 'src/assets/data/games';
+import { gameMap, games } from 'src/assets/data/games';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { FormsModule } from '@angular/forms';
@@ -29,7 +29,11 @@ export class RankingComponent implements OnInit, OnDestroy {
   destroyed$ = new Subject<void>();
   loading: boolean = true;
   players: Player[] = [];
-  gameName: string = gameMap['drapeaux'].key;
+  sortedPlayers: Player[] = [];
+  games = games;
+  motusGameKey = gameMap['motus'].key;
+  drapeauxGameKey = gameMap['drapeaux'].key;
+  gameSelected: string = this.drapeauxGameKey;
   isDrapeauSelected = true;
 
   ngOnInit(): void {
@@ -38,20 +42,8 @@ export class RankingComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: (players) => {
-          this.players = players.sort((a, b) => {
-            const aStat = a.stats.find(
-              (stat) => stat.gameName === this.gameName
-            );
-            const bStat = b.stats.find(
-              (stat) => stat.gameName === this.gameName
-            );
-
-            const aMedals = aStat ? aStat.medalsNumber : 0;
-            const bMedals = bStat ? bStat.medalsNumber : 0;
-
-            return bMedals - aMedals;
-          });
-
+          this.players = players;
+          this.sortPlayers(this.gameSelected);
           this.loading = false;
         },
         error: (error: HttpErrorResponse) => {
@@ -69,5 +61,19 @@ export class RankingComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroyed$.next();
     this.destroyed$.complete();
+  }
+
+  sortPlayers(gameSelected: string): void {
+    this.gameSelected = gameSelected;
+
+    this.sortedPlayers = this.players.sort((a, b) => {
+      const aStat = a.stats.find((stat) => stat.gameName === this.gameSelected);
+      const bStat = b.stats.find((stat) => stat.gameName === this.gameSelected);
+
+      const aMedals = aStat ? aStat.medalsNumber : 0;
+      const bMedals = bStat ? bStat.medalsNumber : 0;
+
+      return bMedals - aMedals;
+    });
   }
 }
