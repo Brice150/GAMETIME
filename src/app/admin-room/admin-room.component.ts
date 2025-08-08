@@ -17,6 +17,7 @@ import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
 import { AddRoomDialogComponent } from '../shared/components/add-room-dialog/add-room-dialog.component';
 import { RoomForm } from '../core/interfaces/room-form';
 import { MatDialog } from '@angular/material/dialog';
+import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-admin-room',
@@ -252,5 +253,25 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
           this.start();
         },
       });
+  }
+
+  removePlayer(userId: string): void {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: 'supprimer le joueur de la room',
+    });
+
+    dialogRef
+      .afterClosed()
+      .pipe(
+        filter((res: boolean) => res),
+        switchMap(() => {
+          this.room.playerIds = this.room.playerIds.filter(
+            (playerId) => playerId !== userId
+          );
+
+          return this.roomService.updateRoom(this.room);
+        })
+      )
+      .subscribe();
   }
 }

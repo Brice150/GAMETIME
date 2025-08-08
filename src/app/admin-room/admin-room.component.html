@@ -12,6 +12,19 @@
       [ngClass]="{ 'alt-color': otherPlayer.userId !== room.userId }"
     >
       <div class="flex">
+        @if ((!room.isStarted || allPlayersDone()) && otherPlayer.userId !==
+        room.userId) {
+        <div class="button-container-delete">
+          <button
+            type="button"
+            (click)="removePlayer(otherPlayer.userId!)"
+            title="Supprimer"
+            class="delete share"
+          >
+            <i class="bx bxs-trash"></i>
+          </button>
+        </div>
+        }
         <span class="username">{{ otherPlayer.username }}</span>
         <div class="medals">
           <span class="victory-number">{{
@@ -59,7 +72,7 @@
     } @empty {
     <div class="player">
       <div class="flex">
-        <span class="username">Admin room</span>
+        <span class="username">0 players</span>
       </div>
       <div class="responses">
         @for (response of room.responses; track $index; let j = $index) {

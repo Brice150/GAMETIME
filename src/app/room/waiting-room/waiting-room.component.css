@@ -75,34 +75,29 @@
   margin-left: -10px;
 }
 
-button {
+.button-container-delete .delete {
   cursor: pointer;
-  color: var(--accent);
   padding: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
   border-radius: var(--light-radius);
+  color: red;
   transition: 0.5s ease;
   border: none;
   background-color: var(--primary);
 }
 
-button.share {
+.button-container-delete .delete.share {
   width: 50px;
 }
 
-.delete {
-  color: red;
-  transition: 0.5s ease;
-}
-
-button:hover {
+.button-container-delete .delete:hover {
   background-color: red;
   color: var(--primary);
 }
 
-button i {
+.button-container-delete .delete i {
   font-size: 30px;
 }

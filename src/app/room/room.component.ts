@@ -74,9 +74,7 @@ export class RoomComponent implements OnInit, OnDestroy {
 
           if (
             this.room.playerIds &&
-            this.room.playerIds.length > 0 &&
             room.playerIds &&
-            room.playerIds.length > 0 &&
             this.playerService.currentPlayerSig()?.userId &&
             this.room.playerIds.includes(
               this.playerService.currentPlayerSig()?.userId!
