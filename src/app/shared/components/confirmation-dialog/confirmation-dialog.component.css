@@ -11,7 +11,7 @@ section {
   justify-content: space-between;
   flex-direction: column;
   max-width: 700px;
-  width: 80%;
+  width: 90%;
 }
 
 section h1 {
@@ -26,6 +26,8 @@ section h1 {
   align-items: center;
   width: 100%;
   margin-top: 20px;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .button-container button {
