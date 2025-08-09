@@ -101,18 +101,19 @@ export class RoomComponent implements OnInit, OnDestroy {
               this.playerService.currentPlayerSig()?.userId!
             )
           ) {
-            return of(room);
+            return of(this.room);
           }
 
           if (
             !(
-              room.isCreatedByAdmin &&
+              this.room.isCreatedByAdmin &&
               this.playerService.currentPlayerSig() &&
               this.playerService.currentPlayerSig()?.isAdmin
             ) &&
             !this.userLeft &&
             !this.userKickedOut
           ) {
+            this.localStorageService.newGame(this.room.id!);
             this.room.playerIds.push(
               this.playerService.currentPlayerSig()?.userId!
             );
@@ -138,15 +139,15 @@ export class RoomComponent implements OnInit, OnDestroy {
                   }
                 },
               });
-            return of(room);
+            return of(this.room);
           } else if (
-            room.isCreatedByAdmin &&
+            this.room.isCreatedByAdmin &&
             this.playerService.currentPlayerSig()?.isAdmin
           ) {
-            this.router.navigate(['/admin', room.id]);
+            this.router.navigate(['/admin', this.room.id]);
           }
 
-          return of(room);
+          return of(this.room);
         }),
         switchMap((room) => {
           if (!room || !room.playerIds?.length) {
