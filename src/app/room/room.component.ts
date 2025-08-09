@@ -313,12 +313,13 @@ export class RoomComponent implements OnInit, OnDestroy {
           next: () => {
             this.roomService.currentRoomSig.set(undefined);
             this.playerService.currentPlayersSig.set([]);
-            this.loading = false;
+            this.localStorageService.clearLocalStorage();
             this.router.navigate(['/']);
             this.toastr.info('La room a été supprimée', 'Game Time', {
               positionClass: 'toast-bottom-center',
               toastClass: 'ngx-toastr custom info',
             });
+            this.loading = false;
           },
           error: (error: HttpErrorResponse) => {
             this.loading = false;
@@ -375,12 +376,13 @@ export class RoomComponent implements OnInit, OnDestroy {
             this.playerService.currentPlayerSig.set(
               this.playerService.currentPlayerSig()
             );
-            this.loading = false;
+            this.localStorageService.clearLocalStorage();
             this.router.navigate(['/']);
             this.toastr.info('Vous venez de quitter une room', 'Game Time', {
               positionClass: 'toast-bottom-center',
               toastClass: 'ngx-toastr custom info',
             });
+            this.loading = false;
           },
           error: (error: HttpErrorResponse) => {
             this.loading = false;

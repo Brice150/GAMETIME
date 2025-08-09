@@ -39,16 +39,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   playerService = inject(PlayerService);
   localStorageService = inject(LocalStorageService);
   currentUrl = '';
-  menuItems = [
-    { path: '/', title: 'Accueil', icon: 'bx bxs-home' },
-    { path: '/profil', title: 'Profil', icon: 'bx bxs-user' },
-    { path: '/classement', title: 'Classement', icon: 'bx bxs-trophy' },
-    {
-      path: '/room/' + this.localStorageService.getRoomId(),
-      title: 'Room',
-      icon: 'bx bx-play',
-    },
-  ];
   player = input.required<Player>();
   room?: Room;
   players: Player[] = [];
@@ -66,23 +56,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (this.player().isAdmin) {
-      this.menuItems.push({
-        path: '/admin',
-        title: 'Admin',
-        icon: 'bx bxs-cog',
-      });
-    }
-
     this.roomService.roomReady$
       .pipe(
         takeUntil(this.destroyed$),
         switchMap((room) => {
-          const item = this.menuItems.find((item) => item.title === 'Room');
-          if (item) {
-            item.path = '/room/' + this.localStorageService.getRoomId();
-          }
-
           if (!room || !room.playerIds?.length) {
             return of([]);
           }

@@ -7,17 +7,62 @@
       <i class="bx bx-menu"></i>
     </button>
     <mat-menu #menu="matMenu">
-      @for (item of menuItems; track $index) {
       <button
         type="button"
-        [routerLink]="item.path"
+        routerLink="/"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
-        [title]="item.title"
+        title="Accueil"
         mat-menu-item
       >
-        <i [class]="item.icon"></i>
-        <span class="description">{{ item.title }}</span>
+        <i class="bx bxs-home"></i>
+        <span class="description">Accueil</span>
+      </button>
+      <button
+        type="button"
+        routerLink="/profil"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        title="Profil"
+        mat-menu-item
+      >
+        <i class="bx bxs-user"></i>
+        <span class="description">Profil</span>
+      </button>
+      <button
+        type="button"
+        routerLink="/classement"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        title="Classement"
+        mat-menu-item
+      >
+        <i class="bx bxs-trophy"></i>
+        <span class="description">Classement</span>
+      </button>
+      @if (localStorageService.getRoomId()) {
+      <button
+        type="button"
+        [routerLink]="'/room/' + localStorageService.getRoomId()"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        title="Room"
+        mat-menu-item
+      >
+        <i class="bx bx-play"></i>
+        <span class="description">Room</span>
+      </button>
+      } @if (player().isAdmin) {
+      <button
+        type="button"
+        routerLink="/admin"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        title="Admin"
+        mat-menu-item
+      >
+        <i class="bx bxs-cog"></i>
+        <span class="description">Admin</span>
       </button>
       }
       <button
