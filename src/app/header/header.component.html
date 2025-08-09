@@ -1,6 +1,13 @@
 <header>
   <div class="project-title">
-    <h1>{{ pageTitle }}</h1>
+    @if (!isRoomPage() && router.url !== '/' && !router.url.startsWith('/room'))
+    {
+    <h1>{{ router.url.replace("/", "") }}</h1>
+    } @else if(!isRoomPage()) {
+    <h1>Game Time</h1>
+    }@else {
+    <h1>{{ room?.gameName }}</h1>
+    }
   </div>
   <div class="switch-container">
     <button mat-button [matMenuTriggerFor]="menu" class="menu" title="Menu">
