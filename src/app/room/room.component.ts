@@ -62,6 +62,7 @@ export class RoomComponent implements OnInit, OnDestroy {
         ),
         switchMap((room: Room | null) => {
           if (!room) {
+            this.localStorageService.clearLocalStorage();
             this.router.navigate(['/']);
             if (!this.userLeft) {
               this.toastr.info("L'hôte a supprimé la room", 'Game Time', {
@@ -84,6 +85,7 @@ export class RoomComponent implements OnInit, OnDestroy {
             )
           ) {
             this.userKickedOut = true;
+            this.localStorageService.clearLocalStorage();
             this.router.navigate(['/']);
             this.toastr.info('Vous avez été exclu de la room', 'Game Time', {
               positionClass: 'toast-bottom-center',
