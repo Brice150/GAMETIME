@@ -10,6 +10,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { FormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { OrdinalPipe } from '../shared/pipes/ordinal.pipe';
 
 @Component({
   selector: 'app-ranking',
@@ -19,6 +20,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     MedalsNumberPipe,
     FormsModule,
     MatSlideToggleModule,
+    OrdinalPipe,
   ],
   templateUrl: './ranking.component.html',
   styleUrl: './ranking.component.css',
@@ -35,6 +37,7 @@ export class RankingComponent implements OnInit, OnDestroy {
   drapeauxGameKey = gameMap['drapeaux'].key;
   gameSelected: string = this.drapeauxGameKey;
   isDrapeauSelected = true;
+  currentPlayerPosition?: number;
 
   ngOnInit(): void {
     this.playerService
@@ -75,5 +78,13 @@ export class RankingComponent implements OnInit, OnDestroy {
 
       return bMedals - aMedals;
     });
+
+    const currentPlayer = this.playerService.currentPlayerSig();
+    if (currentPlayer) {
+      const index = this.sortedPlayers.findIndex(
+        (p) => p.userId === currentPlayer.userId
+      );
+      this.currentPlayerPosition = index >= 0 ? index + 1 : undefined;
+    }
   }
 }
