@@ -71,9 +71,15 @@ export class WordInputComponent implements OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (!changes['response']?.firstChange) {
-      this.ngOnInit();
+    if (
+      changes['response']?.firstChange ||
+      changes['room']?.previousValue.isReadyNotificationActivated !==
+        changes['room']?.currentValue.isReadyNotificationActivated
+    ) {
+      return;
     }
+
+    this.ngOnInit();
   }
 
   onKeyDown(event: KeyboardEvent) {
