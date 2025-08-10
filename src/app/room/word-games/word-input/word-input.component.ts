@@ -112,13 +112,13 @@ export class WordInputComponent implements OnInit {
         }
       } else {
         this.toastr.error('Tentative invalide', 'Game Time', {
-          positionClass: 'toast-bottom-center',
+          positionClass: 'toast-top-center',
           toastClass: 'ngx-toastr custom error',
         });
       }
     } else {
       this.toastr.error('Tentative vide', 'Game Time', {
-        positionClass: 'toast-bottom-center',
+        positionClass: 'toast-top-center',
         toastClass: 'ngx-toastr custom error',
       });
     }

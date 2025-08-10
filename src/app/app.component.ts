@@ -43,7 +43,7 @@ export class AppComponent implements OnInit, OnDestroy {
         error: (error: HttpErrorResponse) => {
           if (!error.message.includes('Missing or insufficient permissions.')) {
             this.toastr.error(error.message, 'Game Time', {
-              positionClass: 'toast-bottom-center',
+              positionClass: 'toast-top-center',
               toastClass: 'ngx-toastr custom error',
             });
           }
@@ -64,14 +64,14 @@ export class AppComponent implements OnInit, OnDestroy {
         next: () => {
           this.router.navigate(['/connect']);
           this.toastr.info('Vous avez été déconnecté', 'Game Time', {
-            positionClass: 'toast-bottom-center',
+            positionClass: 'toast-top-center',
             toastClass: 'ngx-toastr custom info',
           });
         },
         error: (error: HttpErrorResponse) => {
           if (!error.message.includes('Missing or insufficient permissions.')) {
             this.toastr.error(error.message, 'Game Time', {
-              positionClass: 'toast-bottom-center',
+              positionClass: 'toast-top-center',
               toastClass: 'ngx-toastr custom error',
             });
           }

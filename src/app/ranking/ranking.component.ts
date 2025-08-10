@@ -53,7 +53,7 @@ export class RankingComponent implements OnInit, OnDestroy {
           this.loading = false;
           if (!error.message.includes('Missing or insufficient permissions.')) {
             this.toastr.error(error.message, 'Game Time', {
-              positionClass: 'toast-bottom-center',
+              positionClass: 'toast-top-center',
               toastClass: 'ngx-toastr custom error',
             });
           }

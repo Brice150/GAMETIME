@@ -78,7 +78,7 @@ export class LoginComponent implements OnInit, OnDestroy {
               email: userCredential.user.email!,
             });
             this.toastr.info('Bienvenue sur Game Time', 'Game Time', {
-              positionClass: 'toast-bottom-center',
+              positionClass: 'toast-top-center',
               toastClass: 'ngx-toastr custom info',
             });
           },
@@ -87,7 +87,7 @@ export class LoginComponent implements OnInit, OnDestroy {
             if (error.message.includes('auth/invalid-credential')) {
               this.invalidLogin = true;
               this.toastr.error('Mauvais email ou mot de passe', 'Game Time', {
-                positionClass: 'toast-bottom-center',
+                positionClass: 'toast-top-center',
                 toastClass: 'ngx-toastr custom error',
               });
               setTimeout(() => {
@@ -98,7 +98,7 @@ export class LoginComponent implements OnInit, OnDestroy {
                 !error.message.includes('Missing or insufficient permissions.')
               ) {
                 this.toastr.error(error.message, 'Game Time', {
-                  positionClass: 'toast-bottom-center',
+                  positionClass: 'toast-top-center',
                   toastClass: 'ngx-toastr custom error',
                 });
               }
@@ -122,7 +122,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.router.navigate(['/']);
           this.userService.currentUserSig.set({ email: email! });
           this.toastr.info('Bienvenue sur Game Time', 'Game Time', {
-            positionClass: 'toast-bottom-center',
+            positionClass: 'toast-top-center',
             toastClass: 'ngx-toastr custom info',
           });
         },
@@ -132,7 +132,7 @@ export class LoginComponent implements OnInit, OnDestroy {
             !error.message.includes('auth/popup-closed-by-user')
           ) {
             this.toastr.error(error.message, 'Game Time', {
-              positionClass: 'toast-bottom-center',
+              positionClass: 'toast-top-center',
               toastClass: 'ngx-toastr custom error',
             });
           }
@@ -153,7 +153,7 @@ export class LoginComponent implements OnInit, OnDestroy {
               'Un email de réinitialisation de mot de passe a été envoyé à votre adresse email',
               'Game Time',
               {
-                positionClass: 'toast-bottom-center',
+                positionClass: 'toast-top-center',
                 toastClass: 'ngx-toastr custom info',
               }
             );
@@ -164,7 +164,7 @@ export class LoginComponent implements OnInit, OnDestroy {
               !error.message.includes('Missing or insufficient permissions.')
             ) {
               this.toastr.error(error.message, 'Game Time', {
-                positionClass: 'toast-bottom-center',
+                positionClass: 'toast-top-center',
                 toastClass: 'ngx-toastr custom error',
               });
             }

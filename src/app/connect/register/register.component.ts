@@ -109,7 +109,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
             this.router.navigate(['/']);
             this.userService.currentUserSig.set({ email: email! });
             this.toastr.info('Bienvenue sur Game Time', 'Game Time', {
-              positionClass: 'toast-bottom-center',
+              positionClass: 'toast-top-center',
               toastClass: 'ngx-toastr custom info',
             });
           },
@@ -119,7 +119,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
               !error.message.includes('Missing or insufficient permissions.')
             ) {
               this.toastr.error(error.message, 'Game Time', {
-                positionClass: 'toast-bottom-center',
+                positionClass: 'toast-top-center',
                 toastClass: 'ngx-toastr custom error',
               });
             }
@@ -142,7 +142,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
           this.router.navigate(['/']);
           this.userService.currentUserSig.set({ email: email! });
           this.toastr.info('Bienvenue sur Game Time', 'Game Time', {
-            positionClass: 'toast-bottom-center',
+            positionClass: 'toast-top-center',
             toastClass: 'ngx-toastr custom info',
           });
         },
@@ -152,7 +152,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
             !error.message.includes('auth/popup-closed-by-user')
           ) {
             this.toastr.error(error.message, 'Game Time', {
-              positionClass: 'toast-bottom-center',
+              positionClass: 'toast-top-center',
               toastClass: 'ngx-toastr custom error',
             });
           }

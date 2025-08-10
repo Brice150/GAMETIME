@@ -94,7 +94,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
           this.loading = false;
           if (!error.message.includes('Missing or insufficient permissions.')) {
             this.toastr.error(error.message, 'Game Time', {
-              positionClass: 'toast-bottom-center',
+              positionClass: 'toast-top-center',
               toastClass: 'ngx-toastr custom error',
             });
           }
@@ -121,7 +121,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
         'Lien de la partie copié, envoyez ce lien à vos amis pour jouer en multijoueur !',
         'Game Time',
         {
-          positionClass: 'toast-bottom-center',
+          positionClass: 'toast-top-center',
           toastClass: 'ngx-toastr custom info',
         }
       );
@@ -134,7 +134,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
         'Pour être lancée, une room doit avoir des joueurs',
         'Admin',
         {
-          positionClass: 'toast-bottom-center',
+          positionClass: 'toast-top-center',
           toastClass: 'ngx-toastr custom error',
         }
       );
@@ -184,7 +184,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
           this.loading = false;
           if (!error.message.includes('Missing or insufficient permissions.')) {
             this.toastr.error(error.message, 'Game Time', {
-              positionClass: 'toast-bottom-center',
+              positionClass: 'toast-top-center',
               toastClass: 'ngx-toastr custom error',
             });
           }
@@ -215,7 +215,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
           this.loading = false;
           if (!error.message.includes('Missing or insufficient permissions.')) {
             this.toastr.error(error.message, 'Game Time', {
-              positionClass: 'toast-bottom-center',
+              positionClass: 'toast-top-center',
               toastClass: 'ngx-toastr custom error',
             });
           }
@@ -242,7 +242,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.destroyed$))
         .subscribe(() =>
           this.toastr.error('Tous les joueurs ne sont pas prêts', 'Game Time', {
-            positionClass: 'toast-bottom-center',
+            positionClass: 'toast-top-center',
             toastClass: 'ngx-toastr custom error',
           })
         );

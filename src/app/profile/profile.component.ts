@@ -150,7 +150,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
           next: () => {
             this.loading = false;
             this.toastr.info('Profil modifié', 'Profil', {
-              positionClass: 'toast-bottom-center',
+              positionClass: 'toast-top-center',
               toastClass: 'ngx-toastr custom info',
             });
             if (usernameChanged) {
@@ -168,13 +168,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
                 'Merci de vous déconnecter et de vous reconnecter pour effectuer cette action',
                 'Profil',
                 {
-                  positionClass: 'toast-bottom-center',
+                  positionClass: 'toast-top-center',
                   toastClass: 'ngx-toastr custom error',
                 }
               );
             } else {
               this.toastr.info(error.message, 'Profil', {
-                positionClass: 'toast-bottom-center',
+                positionClass: 'toast-top-center',
                 toastClass: 'ngx-toastr custom error',
               });
             }
@@ -220,7 +220,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
           this.loading = false;
           this.router.navigate(['/connect']);
           this.toastr.info('Profil supprimé', 'Profil', {
-            positionClass: 'toast-bottom-center',
+            positionClass: 'toast-top-center',
             toastClass: 'ngx-toastr custom info',
           });
         },
@@ -231,13 +231,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
               'Merci de vous déconnecter et de vous reconnecter pour effectuer cette action',
               'Profil',
               {
-                positionClass: 'toast-bottom-center',
+                positionClass: 'toast-top-center',
                 toastClass: 'ngx-toastr custom error',
               }
             );
           } else {
             this.toastr.info(error.message, 'Profil', {
-              positionClass: 'toast-bottom-center',
+              positionClass: 'toast-top-center',
               toastClass: 'ngx-toastr custom error',
             });
           }

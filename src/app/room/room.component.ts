@@ -68,7 +68,7 @@ export class RoomComponent implements OnInit, OnDestroy {
             this.router.navigate(['/']);
             if (!this.userLeft) {
               this.toastr.info("L'hôte a supprimé la room", 'Game Time', {
-                positionClass: 'toast-bottom-center',
+                positionClass: 'toast-top-center',
                 toastClass: 'ngx-toastr custom info',
               });
             }
@@ -90,7 +90,7 @@ export class RoomComponent implements OnInit, OnDestroy {
             this.localStorageService.clearLocalStorage();
             this.router.navigate(['/']);
             this.toastr.info('Vous avez été exclu de la room', 'Game Time', {
-              positionClass: 'toast-bottom-center',
+              positionClass: 'toast-top-center',
               toastClass: 'ngx-toastr custom info',
             });
           }
@@ -109,7 +109,7 @@ export class RoomComponent implements OnInit, OnDestroy {
               "L'hôte veut lancer la room, cliquez sur prêt",
               'Game Time',
               {
-                positionClass: 'toast-bottom-center',
+                positionClass: 'toast-top-center',
                 toastClass: 'ngx-toastr custom info',
               }
             );
@@ -153,7 +153,7 @@ export class RoomComponent implements OnInit, OnDestroy {
                     )
                   ) {
                     this.toastr.error(error.message, 'Game Time', {
-                      positionClass: 'toast-bottom-center',
+                      positionClass: 'toast-top-center',
                       toastClass: 'ngx-toastr custom error',
                     });
                   }
@@ -219,7 +219,7 @@ export class RoomComponent implements OnInit, OnDestroy {
           this.loading = false;
           if (!error.message.includes('Missing or insufficient permissions.')) {
             this.toastr.error(error.message, 'Game Time', {
-              positionClass: 'toast-bottom-center',
+              positionClass: 'toast-top-center',
               toastClass: 'ngx-toastr custom error',
             });
           }
@@ -256,7 +256,7 @@ export class RoomComponent implements OnInit, OnDestroy {
             this.room.gameName.charAt(0).toUpperCase() +
               this.room.gameName.slice(1),
             {
-              positionClass: 'toast-bottom-center',
+              positionClass: 'toast-top-center',
               toastClass: 'ngx-toastr custom info',
             }
           );
@@ -276,7 +276,7 @@ export class RoomComponent implements OnInit, OnDestroy {
         error: (error: HttpErrorResponse) => {
           if (!error.message.includes('Missing or insufficient permissions.')) {
             this.toastr.error(error.message, 'Game Time', {
-              positionClass: 'toast-bottom-center',
+              positionClass: 'toast-top-center',
               toastClass: 'ngx-toastr custom error',
             });
           }
@@ -291,7 +291,7 @@ export class RoomComponent implements OnInit, OnDestroy {
         this.room.gameName.charAt(0).toUpperCase() +
           this.room.gameName.slice(1),
         {
-          positionClass: 'toast-bottom-center',
+          positionClass: 'toast-top-center',
           toastClass: 'ngx-toastr custom info',
         }
       );
@@ -301,7 +301,7 @@ export class RoomComponent implements OnInit, OnDestroy {
         this.room.gameName.charAt(0).toUpperCase() +
           this.room.gameName.slice(1),
         {
-          positionClass: 'toast-bottom-center',
+          positionClass: 'toast-top-center',
           toastClass: 'ngx-toastr custom error',
         }
       );
@@ -353,7 +353,7 @@ export class RoomComponent implements OnInit, OnDestroy {
             this.localStorageService.clearLocalStorage();
             this.router.navigate(['/']);
             this.toastr.info('La room a été supprimée', 'Game Time', {
-              positionClass: 'toast-bottom-center',
+              positionClass: 'toast-top-center',
               toastClass: 'ngx-toastr custom info',
             });
             this.loading = false;
@@ -364,7 +364,7 @@ export class RoomComponent implements OnInit, OnDestroy {
               !error.message.includes('Missing or insufficient permissions.')
             ) {
               this.toastr.error(error.message, 'Game Time', {
-                positionClass: 'toast-bottom-center',
+                positionClass: 'toast-top-center',
                 toastClass: 'ngx-toastr custom error',
               });
             }
@@ -416,7 +416,7 @@ export class RoomComponent implements OnInit, OnDestroy {
             this.localStorageService.clearLocalStorage();
             this.router.navigate(['/']);
             this.toastr.info('Vous venez de quitter une room', 'Game Time', {
-              positionClass: 'toast-bottom-center',
+              positionClass: 'toast-top-center',
               toastClass: 'ngx-toastr custom info',
             });
             this.loading = false;
@@ -426,12 +426,12 @@ export class RoomComponent implements OnInit, OnDestroy {
             if (error.message.includes('No document to update')) {
               this.router.navigate(['/']);
               this.toastr.info('Vous venez de quitter une room', 'Game Time', {
-                positionClass: 'toast-bottom-center',
+                positionClass: 'toast-top-center',
                 toastClass: 'ngx-toastr custom info',
               });
             } else {
               this.toastr.error(error.message, 'Game Time', {
-                positionClass: 'toast-bottom-center',
+                positionClass: 'toast-top-center',
                 toastClass: 'ngx-toastr custom error',
               });
             }
@@ -470,7 +470,7 @@ export class RoomComponent implements OnInit, OnDestroy {
         error: (error: HttpErrorResponse) => {
           if (!error.message.includes('Missing or insufficient permissions.')) {
             this.toastr.error(error.message, 'Game Time', {
-              positionClass: 'toast-bottom-center',
+              positionClass: 'toast-top-center',
               toastClass: 'ngx-toastr custom error',
             });
           }
@@ -534,7 +534,7 @@ export class RoomComponent implements OnInit, OnDestroy {
           this.loading = false;
           if (!error.message.includes('Missing or insufficient permissions.')) {
             this.toastr.error(error.message, 'Game Time', {
-              positionClass: 'toast-bottom-center',
+              positionClass: 'toast-top-center',
               toastClass: 'ngx-toastr custom error',
             });
           }
@@ -550,7 +550,7 @@ export class RoomComponent implements OnInit, OnDestroy {
         'Lien de la partie copié, envoyez ce lien à vos amis pour jouer en multijoueur !',
         'Game Time',
         {
-          positionClass: 'toast-bottom-center',
+          positionClass: 'toast-top-center',
           toastClass: 'ngx-toastr custom info',
         }
       );
@@ -601,7 +601,7 @@ export class RoomComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.destroyed$))
         .subscribe(() =>
           this.toastr.error('Tous les joueurs ne sont pas prêts', 'Game Time', {
-            positionClass: 'toast-bottom-center',
+            positionClass: 'toast-top-center',
             toastClass: 'ngx-toastr custom error',
           })
         );
