@@ -1,0 +1,76 @@
+import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { ToastrService } from 'ngx-toastr';
+import { Subject, takeUntil } from 'rxjs';
+import { gameMap, games } from 'src/assets/data/games';
+import { PlayerService } from '../core/services/player.service';
+import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
+
+@Component({
+  selector: 'app-success',
+  imports: [
+    CommonModule,
+    MatProgressSpinnerModule,
+    FormsModule,
+    MatSlideToggleModule,
+  ],
+  providers: [MedalsNumberPipe],
+  templateUrl: './success.component.html',
+  styleUrl: './success.component.css',
+})
+export class SuccessComponent implements OnInit, OnDestroy {
+  playerService = inject(PlayerService);
+  toastr = inject(ToastrService);
+  medalsNumberPipe = inject(MedalsNumberPipe);
+  destroyed$ = new Subject<void>();
+  loading: boolean = true;
+  games = games;
+  motusGameKey = gameMap['motus'].key;
+  drapeauxGameKey = gameMap['drapeaux'].key;
+  gameSelected: string = this.drapeauxGameKey;
+  isDrapeauSelected = true;
+  motusMedalsNumber = 0;
+  drapeauxMedalsNumber = 0;
+
+  ngOnInit(): void {
+    this.playerService.playerReady$.pipe(takeUntil(this.destroyed$)).subscribe({
+      next: () => {
+        this.getMedalsNumber();
+        this.loading = false;
+      },
+      error: (error: HttpErrorResponse) => {
+        this.loading = false;
+        if (!error.message.includes('Missing or insufficient permissions.')) {
+          this.toastr.error(error.message, 'Game Time', {
+            positionClass: 'toast-bottom-center',
+            toastClass: 'ngx-toastr custom error',
+          });
+        }
+      },
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
+  }
+
+  getMedalsNumber(): void {
+    this.motusMedalsNumber = this.medalsNumberPipe.transform(
+      this.motusGameKey,
+      this.playerService.currentPlayerSig()!
+    );
+    this.drapeauxMedalsNumber = this.medalsNumberPipe.transform(
+      this.drapeauxGameKey,
+      this.playerService.currentPlayerSig()!
+    );
+  }
+
+  changeGame(gameSelected: string): void {
+    this.gameSelected = gameSelected;
+  }
+}

@@ -9,11 +9,13 @@ import { HomeComponent } from './home/home.component';
 import { ProfileComponent } from './profile/profile.component';
 import { RoomComponent } from './room/room.component';
 import { RankingComponent } from './ranking/ranking.component';
+import { SuccessComponent } from './success/success.component';
 
 export const routes: Routes = [
   { path: 'connect', component: ConnectComponent, canActivate: [noUserGuard] },
   { path: '', component: HomeComponent, canActivate: [userGuard] },
   { path: 'profil', component: ProfileComponent, canActivate: [userGuard] },
+  { path: 'succes', component: SuccessComponent, canActivate: [userGuard] },
   { path: 'classement', component: RankingComponent, canActivate: [userGuard] },
   {
     path: 'room/:id',

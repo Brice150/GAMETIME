@@ -1,0 +1,129 @@
+section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  color: var(--primary);
+  width: 100%;
+  margin-top: 20px;
+}
+
+.games {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 90%;
+  max-width: 600px;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 200px;
+  cursor: pointer;
+  padding: 12px;
+  background-color: var(--primary);
+  color: var(--accent);
+  border-radius: 10px;
+  transition: 0.5s ease;
+  border: none;
+}
+
+button.active {
+  background-color: var(--accent);
+  color: var(--primary);
+  cursor: default;
+}
+
+button:hover {
+  background-color: var(--accent);
+  color: var(--primary);
+}
+
+button i {
+  font-size: 32px;
+}
+
+button .game {
+  font-size: 22px;
+  font-weight: 500;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+button .flex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.success-container {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.success-container .success {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: var(--light-radius);
+  background-color: var(--primary);
+  color: var(--accent);
+  padding: 10px;
+}
+
+.success .space {
+  width: 80px;
+}
+
+.success-container .success .username {
+  font-size: 18px;
+  font-weight: 600;
+  width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.success-container .success .medals {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  background-color: var(--accent);
+  color: var(--primary);
+  border-radius: var(--light-radius);
+  padding: 3px 0;
+  padding-left: 10px;
+  padding-right: 5px;
+}
+
+.victory-number {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.medals i {
+  font-size: 28px;
+}
+
+mat-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+::ng-deep .mdc-circular-progress__indeterminate-circle-graphic {
+  stroke: var(--accent) !important;
+}

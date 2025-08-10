@@ -1,0 +1,77 @@
+<section>
+  @if(!loading) {
+  <div class="games">
+    @for (game of games; track game.key) {
+    <button
+      type="button"
+      [title]="game.label"
+      [ngClass]="{ active: gameSelected === game.key }"
+      (click)="changeGame(game.key)"
+    >
+      <div class="flex">
+        <i class="{{ game.icon }}"></i>
+        <span class="game">{{ game.label }}</span>
+      </div>
+    </button>
+    }
+  </div>
+  <div class="success-container">
+    <div class="success">
+      <span class="username">Obtenir 10 médailles</span>
+      <div class="space">
+        <div class="medals">
+          <span class="victory-number">1</span>
+          <i class="bx bxs-medal"></i>
+        </div>
+      </div>
+    </div>
+    <div class="success">
+      <span class="username">Obtenir 25 médailles</span>
+      <div class="space">
+        <div class="medals">
+          <span class="victory-number">2</span>
+          <i class="bx bxs-medal"></i>
+        </div>
+      </div>
+    </div>
+    <div class="success">
+      <span class="username">Obtenir 50 médailles</span>
+      <div class="space">
+        <div class="medals">
+          <span class="victory-number">3</span>
+          <i class="bx bxs-medal"></i>
+        </div>
+      </div>
+    </div>
+    <div class="success">
+      <span class="username">Obtenir 100 médailles</span>
+      <div class="space">
+        <div class="medals">
+          <span class="victory-number">5</span>
+          <i class="bx bxs-medal"></i>
+        </div>
+      </div>
+    </div>
+    <div class="success">
+      <span class="username">Obtenir 300 médailles</span>
+      <div class="space">
+        <div class="medals">
+          <span class="victory-number">10</span>
+          <i class="bx bxs-medal"></i>
+        </div>
+      </div>
+    </div>
+    <div class="success">
+      <span class="username">Obtenir 1000 médailles</span>
+      <div class="space">
+        <div class="medals">
+          <span class="victory-number">20</span>
+          <i class="bx bxs-medal"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+  } @else {
+  <mat-spinner></mat-spinner>
+  }
+</section>

@@ -40,6 +40,17 @@
       </button>
       <button
         type="button"
+        routerLink="/succes"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        title="Succes"
+        mat-menu-item
+      >
+        <i class="bx bxs-medal"></i>
+        <span class="description">Succès</span>
+      </button>
+      <button
+        type="button"
         routerLink="/classement"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
