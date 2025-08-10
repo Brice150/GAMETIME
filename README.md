@@ -21,17 +21,25 @@ Backend/Database : Firebase
 ### Accueil
 
 - Select the game you want to play
-- Choose options for the game including multiplayer mode
+- Choose options for the game
 
-### Profile
+### Profil
 
 - Modify your profile
 - Delete your account (needs confirmation)
 
 ### Room
 
-- If you selected multiplayer mode, you can share a link for the others to connect to your room
+- Share a link for the others to connect to your room
 - After a game finishes, you can compare your results with other players
+
+### Succès
+
+- Discover your upcoming achievements and the rewards you can earn
+
+### Classement
+
+- Check your ranking compared to other players
 
 ### Motus
 
