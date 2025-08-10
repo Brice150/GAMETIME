@@ -74,8 +74,10 @@ button .flex {
 
 .success-container .success {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  flex-direction: column;
+  gap: 10px;
   border-radius: var(--light-radius);
   background-color: var(--primary);
   color: var(--accent);
@@ -89,7 +91,7 @@ button .flex {
 .success-container .success .username {
   font-size: 18px;
   font-weight: 600;
-  width: 250px;
+  width: 200px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -115,6 +117,56 @@ button .flex {
 
 .medals i {
   font-size: 28px;
+}
+
+.description {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.description span {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--accent);
+}
+
+.description .number {
+  background-color: var(--primary);
+  padding: 5px;
+  border-radius: var(--light-radius);
+}
+
+.success .title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.success .progress-bar {
+  position: relative;
+  width: 100%;
+  height: 8px;
+  background: rgba(224, 224, 224, 0.595);
+  border-radius: 5px;
+  overflow: hidden;
+  margin-top: 6px;
+}
+
+.success .progress-fill {
+  height: 100%;
+  background: linear-gradient(to right, rgb(0, 0, 255), rgb(0, 200, 255));
+  transition: width 0.4s ease;
+}
+
+.success .progress-info {
+  text-align: center;
+  font-size: 14px;
+  color: var(--secondary);
+  font-weight: bold;
 }
 
 mat-spinner {

@@ -18,6 +18,7 @@ import { ConfirmationDialogComponent } from '../shared/components/confirmation-d
 import { ResultsComponent } from './results/results.component';
 import { WaitingRoomComponent } from './waiting-room/waiting-room.component';
 import { WordGamesComponent } from './word-games/word-games.component';
+import { goals } from 'src/assets/data/goals';
 
 @Component({
   selector: 'app-room',
@@ -49,6 +50,7 @@ export class RoomComponent implements OnInit, OnDestroy {
   userLeft = false;
   userKickedOut = false;
   drapeauxGameKey = gameMap['drapeaux'].key;
+  goals = goals;
   @ViewChild(WordGamesComponent) wordGamesComponent!: WordGamesComponent;
 
   ngOnInit(): void {
@@ -245,6 +247,20 @@ export class RoomComponent implements OnInit, OnDestroy {
         .stats.find((stat) => stat.gameName === this.room.gameName);
       if (stat) {
         stat.medalsNumber += 1;
+
+        const goal = goals.find((goal) => goal.target === stat.medalsNumber);
+        if (goal) {
+          stat.medalsNumber += goal.reward;
+          this.toastr.info(
+            'Vous avez obtenu le succès : ' + goal.label,
+            this.room.gameName.charAt(0).toUpperCase() +
+              this.room.gameName.slice(1),
+            {
+              positionClass: 'toast-bottom-center',
+              toastClass: 'ngx-toastr custom info',
+            }
+          );
+        }
       }
     }
 

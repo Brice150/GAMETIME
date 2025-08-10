@@ -15,61 +15,46 @@
     </button>
     }
   </div>
+  <div class="description">
+    <span>Vous avez</span>
+    <div class="number">
+      @if (gameSelected === motusGameKey) {
+      <span>{{ motusMedalsNumber }} médailles</span>
+      } @else {
+      <span>{{ drapeauxMedalsNumber }} médailles</span>
+      }
+    </div>
+  </div>
   <div class="success-container">
+    @for (goal of goals; track $index) {
     <div class="success">
-      <span class="username">Obtenir 10 médailles</span>
-      <div class="space">
-        <div class="medals">
-          <span class="victory-number">1</span>
-          <i class="bx bxs-medal"></i>
+      <div class="title">
+        <span
+          class="username"
+          [appStrikeThrough]="getProgress(goal.target) === 100"
+          >{{ goal.label }}</span
+        >
+        <div class="space">
+          <div class="medals">
+            <span class="victory-number">{{ goal.reward }}</span>
+            <i class="bx bxs-medal"></i>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="success">
-      <span class="username">Obtenir 25 médailles</span>
-      <div class="space">
-        <div class="medals">
-          <span class="victory-number">2</span>
-          <i class="bx bxs-medal"></i>
-        </div>
+
+      @if (getProgress(goal.target) !== 100) {
+      <div class="progress-bar">
+        <div
+          class="progress-fill"
+          [style.width.%]="getProgress(goal.target)"
+        ></div>
       </div>
+      <span class="progress-info">
+        {{ currentMedals }} / {{ goal.target }}
+      </span>
+      }
     </div>
-    <div class="success">
-      <span class="username">Obtenir 50 médailles</span>
-      <div class="space">
-        <div class="medals">
-          <span class="victory-number">3</span>
-          <i class="bx bxs-medal"></i>
-        </div>
-      </div>
-    </div>
-    <div class="success">
-      <span class="username">Obtenir 100 médailles</span>
-      <div class="space">
-        <div class="medals">
-          <span class="victory-number">5</span>
-          <i class="bx bxs-medal"></i>
-        </div>
-      </div>
-    </div>
-    <div class="success">
-      <span class="username">Obtenir 300 médailles</span>
-      <div class="space">
-        <div class="medals">
-          <span class="victory-number">10</span>
-          <i class="bx bxs-medal"></i>
-        </div>
-      </div>
-    </div>
-    <div class="success">
-      <span class="username">Obtenir 1000 médailles</span>
-      <div class="space">
-        <div class="medals">
-          <span class="victory-number">20</span>
-          <i class="bx bxs-medal"></i>
-        </div>
-      </div>
-    </div>
+    }
   </div>
   } @else {
   <mat-spinner></mat-spinner>

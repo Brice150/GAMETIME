@@ -9,6 +9,8 @@ import { Subject, takeUntil } from 'rxjs';
 import { gameMap, games } from 'src/assets/data/games';
 import { PlayerService } from '../core/services/player.service';
 import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
+import { StrikeThroughDirective } from './strike-through.directive';
+import { goals } from 'src/assets/data/goals';
 
 @Component({
   selector: 'app-success',
@@ -17,6 +19,7 @@ import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
     MatProgressSpinnerModule,
     FormsModule,
     MatSlideToggleModule,
+    StrikeThroughDirective,
   ],
   providers: [MedalsNumberPipe],
   templateUrl: './success.component.html',
@@ -35,6 +38,13 @@ export class SuccessComponent implements OnInit, OnDestroy {
   isDrapeauSelected = true;
   motusMedalsNumber = 0;
   drapeauxMedalsNumber = 0;
+  goals = goals;
+
+  get currentMedals(): number {
+    return this.gameSelected === this.motusGameKey
+      ? this.motusMedalsNumber
+      : this.drapeauxMedalsNumber;
+  }
 
   ngOnInit(): void {
     this.playerService.playerReady$.pipe(takeUntil(this.destroyed$)).subscribe({
@@ -68,6 +78,11 @@ export class SuccessComponent implements OnInit, OnDestroy {
       this.drapeauxGameKey,
       this.playerService.currentPlayerSig()!
     );
+  }
+
+  getProgress(target: number): number {
+    const progress = (this.currentMedals / target) * 100;
+    return progress > 100 ? 100 : progress;
   }
 
   changeGame(gameSelected: string): void {
