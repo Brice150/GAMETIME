@@ -139,6 +139,7 @@ export class RoomService {
       startDate: null,
       startAgainNumber: 0,
       isCreatedByAdmin: isCreatedByAdmin,
+      isReadyNotificationActivated: false,
     };
   }
 

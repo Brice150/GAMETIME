@@ -96,6 +96,24 @@ export class RoomComponent implements OnInit, OnDestroy {
           this.room = room;
 
           if (
+            this.room.isReadyNotificationActivated &&
+            !this.playerService.currentPlayerSig()?.isReady &&
+            this.playerService.currentPlayerSig()?.userId !==
+              this.room.userId &&
+            (this.playerService.currentPlayerSig()?.finishDate ||
+              !this.room.isStarted)
+          ) {
+            this.toastr.info(
+              "L'hôte veut lancer la room, cliquez sur prêt",
+              'Game Time',
+              {
+                positionClass: 'toast-bottom-center',
+                toastClass: 'ngx-toastr custom info',
+              }
+            );
+          }
+
+          if (
             this.playerService.currentPlayerSig()?.userId &&
             this.room.playerIds.includes(
               this.playerService.currentPlayerSig()?.userId!
@@ -452,6 +470,7 @@ export class RoomComponent implements OnInit, OnDestroy {
     this.room.startDate = new Date();
     this.room.startAgainNumber += 1;
     this.room.isStarted = true;
+    this.room.isReadyNotificationActivated = false;
 
     this.roomService.generateResponses(
       this.room.gameName,
@@ -559,10 +578,17 @@ export class RoomComponent implements OnInit, OnDestroy {
           !player.isReady
       )
     ) {
-      this.toastr.error('Tous les joueurs ne sont pas prêts', 'Game Time', {
-        positionClass: 'toast-bottom-center',
-        toastClass: 'ngx-toastr custom error',
-      });
+      this.room.isReadyNotificationActivated =
+        !this.room.isReadyNotificationActivated;
+      this.roomService
+        .updateRoom(this.room)
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe(() =>
+          this.toastr.error('Tous les joueurs ne sont pas prêts', 'Game Time', {
+            positionClass: 'toast-bottom-center',
+            toastClass: 'ngx-toastr custom error',
+          })
+        );
       return;
     }
 

@@ -235,10 +235,17 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
           !player.isReady
       )
     ) {
-      this.toastr.error('Tous les joueurs ne sont pas prêts', 'Game Time', {
-        positionClass: 'toast-bottom-center',
-        toastClass: 'ngx-toastr custom error',
-      });
+      this.room.isReadyNotificationActivated =
+        !this.room.isReadyNotificationActivated;
+      this.roomService
+        .updateRoom(this.room)
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe(() =>
+          this.toastr.error('Tous les joueurs ne sont pas prêts', 'Game Time', {
+            positionClass: 'toast-bottom-center',
+            toastClass: 'ngx-toastr custom error',
+          })
+        );
       return;
     }
 
