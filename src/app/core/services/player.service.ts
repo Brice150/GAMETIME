@@ -1,4 +1,5 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import {
   collection,
   collectionData,
@@ -21,12 +22,11 @@ import {
   switchMap,
   take,
 } from 'rxjs';
+import { animalsWithEmojis } from 'src/assets/data/animals';
 import { gameMap } from 'src/assets/data/games';
-import { v4 as uuidv4 } from 'uuid';
 import { Player } from '../interfaces/player';
 import { Stat } from '../interfaces/stat';
 import { UserService } from './user.service';
-import { toObservable } from '@angular/core/rxjs-interop';
 
 @Injectable({ providedIn: 'root' })
 export class PlayerService {
@@ -92,7 +92,7 @@ export class PlayerService {
         if (players.length > 0) {
           return of(void 0).pipe(map(() => email));
         }
-        const username = `User#${this.generateUsernameSuffix()}`;
+        const username = this.generateRandomAnimalUsername();
         const playerDoc = doc(this.playersCollection);
 
         const statMotus: Stat = {
@@ -118,6 +118,12 @@ export class PlayerService {
         return from(setDoc(playerDoc, { ...player })).pipe(map(() => email));
       })
     );
+  }
+
+  generateRandomAnimalUsername(): string {
+    const randomIndex = Math.floor(Math.random() * animalsWithEmojis.length);
+    const animal = animalsWithEmojis[randomIndex];
+    return `${animal.name} ${animal.emoji}`;
   }
 
   updatePlayer(player: Player): Observable<void> {
@@ -160,10 +166,5 @@ export class PlayerService {
       }),
       map(() => undefined)
     );
-  }
-
-  generateUsernameSuffix(): string {
-    const uuid = uuidv4();
-    return uuid.replace(/-/g, '').slice(-4);
   }
 }
