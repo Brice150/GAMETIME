@@ -128,14 +128,14 @@ button:hover {
   padding-right: 5px;
   min-height: 36px;
   margin-top: 70px;
-  width: 165px;
+  width: 200px;
 }
 
 .players .player {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 150px;
+  width: 100%;
   font-size: 15px;
   font-weight: bold;
   color: var(--accent);
@@ -161,6 +161,14 @@ button:hover {
 
 .slash {
   margin: 0 2px;
+}
+
+.username {
+  width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
 }
 
 ::ng-deep .mat-mdc-menu-content {

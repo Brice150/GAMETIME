@@ -80,7 +80,7 @@ button .flex {
   background-color: var(--primary);
   color: var(--accent);
   padding: 10px;
-  width: 270px;
+  width: 280px;
   height: 30px;
 }
 
@@ -99,6 +99,7 @@ button .flex {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-align: left;
 }
 
 .players .player .podium {
@@ -124,13 +125,14 @@ button .flex {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 5px;
+  gap: 3px;
   background-color: var(--accent);
   color: var(--primary);
   border-radius: var(--light-radius);
   padding: 3px 0;
   padding-left: 10px;
   padding-right: 5px;
+  width: 65px;
 }
 
 .players .player.alt-color .medals {

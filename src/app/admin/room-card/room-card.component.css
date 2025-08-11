@@ -114,7 +114,11 @@ button i {
 .players .player .username {
   font-size: 18px;
   font-weight: 600;
-  text-align: center;
+  width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
 }
 
 .players .player .medals {
