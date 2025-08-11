@@ -27,18 +27,17 @@ import { ToastrService } from 'ngx-toastr';
 import {
   catchError,
   filter,
+  Observable,
   of,
   Subject,
   switchMap,
-  take,
   takeUntil,
 } from 'rxjs';
+import { PlayerService } from '../core/services/player.service';
 import { ProfileService } from '../core/services/profile.service';
+import { RoomService } from '../core/services/room.service';
 import { UserService } from '../core/services/user.service';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
-import { PlayerService } from '../core/services/player.service';
-import { Player } from '../core/interfaces/player';
-import { RoomService } from '../core/services/room.service';
 
 @Component({
   selector: 'app-profil',
@@ -88,21 +87,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
             Validators.maxLength(40),
           ],
         ],
-        password: [
-          '',
-          [
-            Validators.required,
-            Validators.minLength(6),
-            Validators.maxLength(40),
-          ],
-        ],
+        password: ['', [Validators.minLength(6), Validators.maxLength(40)]],
         passwordConfirmation: [
           '',
-          [
-            Validators.required,
-            Validators.minLength(6),
-            Validators.maxLength(40),
-          ],
+          [Validators.minLength(6), Validators.maxLength(40)],
         ],
       },
       { validators: this.passwordMatchValidator }
@@ -129,57 +117,69 @@ export class ProfileComponent implements OnInit, OnDestroy {
     if (this.profileForm.valid) {
       this.loading = true;
       const newUsername = this.profileForm.value.username;
+      const newPassword = this.profileForm.value.password;
+
       const usernameChanged =
         newUsername !== this.playerService.currentPlayerSig()?.username;
+      const passwordChanged = !!newPassword && newPassword.trim().length > 0;
 
-      this.profileService
-        .updateProfile(this.profileForm.value)
-        .pipe(
-          switchMap(() => {
-            if (usernameChanged) {
-              return this.playerService.updatePlayer({
+      let request$: Observable<any> = of(null);
+
+      if (usernameChanged && passwordChanged) {
+        request$ = this.profileService
+          .updateProfile(this.profileForm.value)
+          .pipe(
+            switchMap(() =>
+              this.playerService.updatePlayer({
                 ...this.playerService.currentPlayerSig()!,
                 username: newUsername,
-              });
+              })
+            )
+          );
+      } else if (passwordChanged) {
+        request$ = this.profileService.updateProfile(this.profileForm.value);
+      } else if (usernameChanged) {
+        request$ = this.playerService.updatePlayer({
+          ...this.playerService.currentPlayerSig()!,
+          username: newUsername,
+        });
+      }
+
+      request$.pipe(takeUntil(this.destroyed$)).subscribe({
+        next: () => {
+          this.loading = false;
+          this.toastr.info('Profil modifié', 'Profil', {
+            positionClass: 'toast-top-center',
+            toastClass: 'ngx-toastr custom info',
+          });
+
+          if (usernameChanged) {
+            const newPlayer = this.playerService.currentPlayerSig();
+            if (newPlayer) {
+              newPlayer.username = newUsername;
             }
-            return of(null);
-          }),
-          takeUntil(this.destroyed$)
-        )
-        .subscribe({
-          next: () => {
-            this.loading = false;
-            this.toastr.info('Profil modifié', 'Profil', {
-              positionClass: 'toast-top-center',
-              toastClass: 'ngx-toastr custom info',
-            });
-            if (usernameChanged) {
-              const newPlayer = this.playerService.currentPlayerSig();
-              if (newPlayer) {
-                newPlayer.username = newUsername;
-              }
-              this.playerService.currentPlayerSig.set(newPlayer);
-            }
-          },
-          error: (error: HttpErrorResponse) => {
-            this.loading = false;
-            if (error.message.includes('auth/requires-recent-login')) {
-              this.toastr.info(
-                'Merci de vous déconnecter et de vous reconnecter pour effectuer cette action',
-                'Profil',
-                {
-                  positionClass: 'toast-top-center',
-                  toastClass: 'ngx-toastr custom error',
-                }
-              );
-            } else {
-              this.toastr.info(error.message, 'Profil', {
+            this.playerService.currentPlayerSig.set(newPlayer);
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          this.loading = false;
+          if (error.message.includes('auth/requires-recent-login')) {
+            this.toastr.info(
+              'Merci de vous déconnecter et de vous reconnecter pour effectuer cette action',
+              'Profil',
+              {
                 positionClass: 'toast-top-center',
                 toastClass: 'ngx-toastr custom error',
-              });
-            }
-          },
-        });
+              }
+            );
+          } else {
+            this.toastr.info(error.message, 'Profil', {
+              positionClass: 'toast-top-center',
+              toastClass: 'ngx-toastr custom error',
+            });
+          }
+        },
+      });
     } else {
       this.profileForm.markAllAsTouched();
     }
