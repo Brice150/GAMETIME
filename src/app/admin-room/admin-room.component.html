@@ -102,8 +102,13 @@
   </div>
   <div class="button-container">
     @if (!room.isStarted || allPlayersDone()) {
-    <button type="button" (click)="share()" title="Multijoueur" class="share">
-      <i class="bx bx-link"></i>
+    <button
+      type="button"
+      (click)="multiplayer()"
+      title="Multijoueur"
+      class="share"
+    >
+      <i class="bx bxs-user-plus"></i>
       <span class="text">Multijoueur</span>
     </button>
     <button type="button" (click)="openAddRoomDialog()" title="Lancer">

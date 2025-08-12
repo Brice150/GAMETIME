@@ -1,0 +1,35 @@
+<section mat-dialog-content>
+  <h1>Vous pouvez jouer en multijoueur en partageant</h1>
+  <div class="content">
+    <div class="element">
+      <span class="title"
+        >Ce code : <span class="code">{{ roomCode }}</span></span
+      >
+      <button
+        type="button"
+        title="Copier code"
+        (click)="copyCode()"
+        class="share"
+      >
+        <i class="bx bxs-copy-alt"></i>
+      </button>
+    </div>
+    <div class="element">
+      <span class="title">Ou l'url</span>
+      <button
+        type="button"
+        title="Copier url"
+        (click)="copyLink()"
+        class="share"
+      >
+        <i class="bx bx-link"></i>
+      </button>
+    </div>
+  </div>
+  <div class="button-container">
+    <button type="button" title="Fermer" (click)="cancel()" class="delete">
+      <i class="bx bx-x"></i>
+      <span class="text">Fermer</span>
+    </button>
+  </div>
+</section>

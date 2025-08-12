@@ -1,0 +1,15 @@
+<form (ngSubmit)="joinRoom()">
+  <input
+    maxlength="4"
+    (keydown)="onKeyDown($event)"
+    [(ngModel)]="roomCode"
+    [ngModelOptions]="{ standalone: true }"
+  />
+  <span class="placeholder">____</span>
+  <div class="button-container">
+    <button type="submit" title="Rejoindre">
+      <i class="bx bxs-log-in-circle"></i>
+      <span class="text">Rejoindre</span>
+    </button>
+  </div>
+</form>

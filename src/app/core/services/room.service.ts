@@ -52,6 +52,16 @@ export class RoomService {
     return docData(roomDoc, { idField: 'id' }) as Observable<Room>;
   }
 
+  getRoomsByCode(roomCode: string): Observable<Room[]> {
+    const roomsCollection = query(
+      collection(this.firestore, 'rooms'),
+      where('roomCode', '==', roomCode)
+    );
+    return collectionData(roomsCollection, { idField: 'id' }) as Observable<
+      Room[]
+    >;
+  }
+
   addRoom(room: Room): Observable<string> {
     const roomDoc = doc(this.roomsCollection);
     room.id = roomDoc.id;
@@ -140,7 +150,17 @@ export class RoomService {
       startAgainNumber: 0,
       isCreatedByAdmin: isCreatedByAdmin,
       isReadyNotificationActivated: false,
+      roomCode: this.generateRoomCode(),
     };
+  }
+
+  generateRoomCode(): string {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let code = '';
+    for (let i = 0; i < 4; i++) {
+      code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return code;
   }
 
   generateResponses(

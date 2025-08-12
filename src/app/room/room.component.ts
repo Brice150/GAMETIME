@@ -5,8 +5,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { filter, forkJoin, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import { filter, of, Subject, switchMap, takeUntil } from 'rxjs';
 import { gameMap } from 'src/assets/data/games';
+import { goals } from 'src/assets/data/goals';
 import { Player } from '../core/interfaces/player';
 import { Room } from '../core/interfaces/room';
 import { RoomForm } from '../core/interfaces/room-form';
@@ -15,10 +16,10 @@ import { PlayerService } from '../core/services/player.service';
 import { RoomService } from '../core/services/room.service';
 import { AddRoomDialogComponent } from '../shared/components/add-room-dialog/add-room-dialog.component';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
+import { MultiplayerDialogComponent } from '../shared/components/multiplayer-dialog/multiplayer-dialog.component';
 import { ResultsComponent } from './results/results.component';
 import { WaitingRoomComponent } from './waiting-room/waiting-room.component';
 import { WordGamesComponent } from './word-games/word-games.component';
-import { goals } from 'src/assets/data/goals';
 
 @Component({
   selector: 'app-room',
@@ -542,18 +543,9 @@ export class RoomComponent implements OnInit, OnDestroy {
       });
   }
 
-  share(): void {
-    const link = window.location.href;
-
-    navigator.clipboard.writeText(link).then(() => {
-      this.toastr.info(
-        'Lien de la partie copié, envoyez ce lien à vos amis pour jouer en multijoueur !',
-        'Game Time',
-        {
-          positionClass: 'toast-top-center',
-          toastClass: 'ngx-toastr custom info',
-        }
-      );
+  multiplayer(): void {
+    this.dialog.open(MultiplayerDialogComponent, {
+      data: this.room.roomCode,
     });
   }
 

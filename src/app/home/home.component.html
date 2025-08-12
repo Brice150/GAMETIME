@@ -79,7 +79,10 @@
       </div>
     </button>
   </div>
-  } } @else {
+  }
+  <span class="description">Voulez-vous rejoindre une room existante ?</span>
+  <app-join-room (joinRoomEvent)="joinRoom($event)"></app-join-room>
+  } @else {
   <mat-spinner></mat-spinner>
   }
 </section>

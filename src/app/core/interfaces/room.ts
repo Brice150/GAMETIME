@@ -17,4 +17,5 @@ export interface Room {
   startAgainNumber: number;
   isCreatedByAdmin: boolean;
   isReadyNotificationActivated: boolean;
+  roomCode: string;
 }

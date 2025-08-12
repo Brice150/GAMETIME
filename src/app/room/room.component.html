@@ -36,9 +36,14 @@
       <i class="bx bxs-medal"></i>
       <span class="text">Résultats</span>
     </button>
-    } @else if (!room.isStarted) {
-    <button type="button" (click)="share()" title="Multijoueur" class="share">
-      <i class="bx bx-link"></i>
+    } @else if (!room.isStarted || isResultPageActive) {
+    <button
+      type="button"
+      (click)="multiplayer()"
+      title="Multijoueur"
+      class="share"
+    >
+      <i class="bx bxs-user-plus"></i>
       <span class="text">Multijoueur</span>
     </button>
     } @if (shouldShowPlayButton()) {

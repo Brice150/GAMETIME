@@ -18,6 +18,7 @@ import { AddRoomDialogComponent } from '../shared/components/add-room-dialog/add
 import { RoomForm } from '../core/interfaces/room-form';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
+import { MultiplayerDialogComponent } from '../shared/components/multiplayer-dialog/multiplayer-dialog.component';
 
 @Component({
   selector: 'app-admin-room',
@@ -111,20 +112,9 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
     return typeof date?.toDate === 'function' ? date.toDate() : new Date(date);
   }
 
-  share(): void {
-    let link = window.location.href;
-
-    link = link.replace('/admin/', '/room/');
-
-    navigator.clipboard.writeText(link).then(() => {
-      this.toastr.info(
-        'Lien de la partie copié, envoyez ce lien à vos amis pour jouer en multijoueur !',
-        'Game Time',
-        {
-          positionClass: 'toast-top-center',
-          toastClass: 'ngx-toastr custom info',
-        }
-      );
+  multiplayer(): void {
+    this.dialog.open(MultiplayerDialogComponent, {
+      data: this.room.roomCode,
     });
   }
 

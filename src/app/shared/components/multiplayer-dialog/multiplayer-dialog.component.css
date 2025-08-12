@@ -16,8 +16,39 @@ section {
 
 section h1 {
   font-size: 20px;
-  color: red;
+  color: var(--accent);
   text-align: center;
+}
+
+section .content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+section .content .element {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+section .content .element .title {
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--secondary);
+  text-align: left;
+  width: 160px;
+}
+
+section .content .element .code {
+  color: var(--accent);
+  margin-left: 10px;
+  font-size: 22px;
+  letter-spacing: 1px;
 }
 
 .button-container {
@@ -30,7 +61,7 @@ section h1 {
   flex-wrap: wrap;
 }
 
-.button-container button {
+button {
   cursor: pointer;
   color: var(--accent);
   padding: 5px;
@@ -40,9 +71,13 @@ section h1 {
   gap: 10px;
   border-radius: var(--light-radius);
   transition: 0.5s ease;
-  width: 110px;
+  width: 160px;
   border: none;
   background-color: var(--primary);
+}
+
+button.share {
+  width: 50px;
 }
 
 section .button-container .delete {
@@ -50,20 +85,21 @@ section .button-container .delete {
   transition: 0.5s ease;
 }
 
-section .button-container button:hover {
+section button:hover {
   background-color: var(--accent);
   color: var(--primary);
 }
 
 section .button-container .delete:hover {
   background-color: red;
+  color: var(--primary);
 }
 
-section .button-container button i {
+section button i {
   font-size: 40px;
 }
 
-section .button-container button .text {
+section button .text {
   font-size: 20px;
   font-weight: 500;
   font-family: Roboto, "Helvetica Neue", sans-serif;

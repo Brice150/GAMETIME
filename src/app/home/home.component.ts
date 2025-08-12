@@ -7,12 +7,13 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSliderModule } from '@angular/material/slider';
 import { Router, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { Subject, switchMap, takeUntil } from 'rxjs';
+import { Subject, switchMap, take, takeUntil } from 'rxjs';
 import { gameMap, games } from 'src/assets/data/games';
 import { LocalStorageService } from '../core/services/local-storage.service';
 import { PlayerService } from '../core/services/player.service';
 import { RoomService } from '../core/services/room.service';
 import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
+import { JoinRoomComponent } from './join-room/join-room.component';
 
 @Component({
   selector: 'app-home',
@@ -24,6 +25,7 @@ import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
     FormsModule,
     MatSlideToggleModule,
     MedalsNumberPipe,
+    JoinRoomComponent,
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
@@ -127,6 +129,25 @@ export class HomeComponent implements OnDestroy {
             });
           }
         },
+      });
+  }
+
+  joinRoom(roomCode: string): void {
+    this.roomService
+      .getRoomsByCode(roomCode)
+      .pipe(take(1))
+      .subscribe((rooms) => {
+        if (rooms && rooms.length > 0) {
+          const room = rooms[0];
+          this.localStorageService.newGame(room.id!);
+          this.loading = false;
+          this.router.navigate([`/room/${room.id!}`]);
+        } else {
+          this.toastr.error('Aucune room trouvée avec ce code', 'Game Time', {
+            positionClass: 'toast-top-center',
+            toastClass: 'ngx-toastr custom error',
+          });
+        }
       });
   }
 }
