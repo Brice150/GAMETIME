@@ -40,29 +40,42 @@
     </mat-slider>
   </div>
 
-  @if (gameSelected === motusGameKey || gameSelected === drapeauxGameKey) {
   <div class="slider-container top">
     <span>
       {{
         gameSelected === motusGameKey
           ? "Taille du mot de départ"
-          : "Filtre par continent"
+          : gameSelected === drapeauxGameKey
+          ? "Filtre par continent"
+          : "Filtre par catégorie"
       }}
     </span>
     <mat-slider
       [min]="gameSelected === motusGameKey ? 5 : 1"
-      [max]="gameSelected === motusGameKey ? maxWordLength : 6"
+      [max]="
+        gameSelected === motusGameKey
+          ? maxWordLength
+          : gameSelected === drapeauxGameKey
+          ? 6
+          : 5
+      "
       step="1"
       discrete
       [displayWith]="
-        gameSelected === drapeauxGameKey ? formatLabel : defaultFormatLabel
+        gameSelected === drapeauxGameKey
+          ? formatLabelContinent
+          : gameSelected === marquesGameKey
+          ? formatLabelCategory
+          : defaultFormatLabel
       "
-      [ngClass]="{ showContinent: gameSelected === drapeauxGameKey }"
+      [ngClass]="{
+        showContinent:
+          gameSelected === drapeauxGameKey || gameSelected === marquesGameKey
+      }"
     >
       <input matSliderThumb [(ngModel)]="dynamicSliderValue" />
     </mat-slider>
   </div>
-  }
 
   <div class="toggle-container dialog">
     @if (gameSelected === motusGameKey) {
@@ -74,6 +87,10 @@
     </mat-slide-toggle>
     } @else if (gameSelected === drapeauxGameKey) {
     <mat-slide-toggle [(ngModel)]="showFirstLetterDrapeaux">
+      Afficher 1<sup>ère</sup> lettre
+    </mat-slide-toggle>
+    } @else if (gameSelected === marquesGameKey) {
+    <mat-slide-toggle [(ngModel)]="showFirstLetterMarques">
       Afficher 1<sup>ère</sup> lettre
     </mat-slide-toggle>
     }

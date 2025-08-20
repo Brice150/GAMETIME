@@ -139,10 +139,12 @@ export class AdminComponent implements OnInit {
                 roomData.gameSelected,
                 roomData.showFirstLetterMotus,
                 roomData.showFirstLetterDrapeaux,
+                roomData.showFirstLetterMarques,
                 roomData.stepsNumber,
                 roomData.isWordLengthIncreasing,
                 roomData.startWordLength,
                 roomData.continentFilter,
+                roomData.categoryFilter,
                 '',
                 true
               );

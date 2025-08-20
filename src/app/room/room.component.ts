@@ -50,7 +50,9 @@ export class RoomComponent implements OnInit, OnDestroy {
   isResultPageActive = false;
   userLeft = false;
   userKickedOut = false;
+  motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
+  marquesGameKey = gameMap['marques'].key;
   goals = goals;
   @ViewChild(WordGamesComponent) wordGamesComponent!: WordGamesComponent;
 
@@ -493,9 +495,11 @@ export class RoomComponent implements OnInit, OnDestroy {
       this.room.gameName,
       this.room.stepsNumber,
       this.room.continentFilter,
+      this.room.categoryFilter,
       this.room.isWordLengthIncreasing,
       this.room.startWordLength,
       this.room.countries,
+      this.room.brands,
       this.room.responses
     );
 
@@ -615,13 +619,16 @@ export class RoomComponent implements OnInit, OnDestroy {
         next: (roomData: RoomForm) => {
           if (roomData && roomData.gameSelected) {
             this.room.gameName = roomData.gameSelected;
-            if (roomData.gameSelected === 'motus') {
+            if (roomData.gameSelected === this.motusGameKey) {
               this.room.showFirstLetter = roomData.showFirstLetterMotus;
-            } else if (roomData.gameSelected === 'drapeaux') {
+            } else if (roomData.gameSelected === this.drapeauxGameKey) {
               this.room.showFirstLetter = roomData.showFirstLetterDrapeaux;
+            } else if (roomData.gameSelected === this.marquesGameKey) {
+              this.room.showFirstLetter = roomData.showFirstLetterMarques;
             }
             this.room.stepsNumber = roomData.stepsNumber;
             this.room.continentFilter = roomData.continentFilter;
+            this.room.categoryFilter = roomData.categoryFilter;
             this.room.isWordLengthIncreasing = roomData.isWordLengthIncreasing;
             this.room.startWordLength = roomData.startWordLength;
           }

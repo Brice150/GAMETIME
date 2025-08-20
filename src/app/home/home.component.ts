@@ -43,23 +43,31 @@ export class HomeComponent implements OnDestroy {
   stepsNumber: number = 3;
   startWordLength: number = 5;
   continentFilter: number = 1;
+  categoryFilter: number = 1;
   isWordLengthIncreasing = true;
   showFirstLetterMotus = true;
   showFirstLetterDrapeaux = false;
+  showFirstLetterMarques = false;
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
+  marquesGameKey = gameMap['marques'].key;
 
   get dynamicSliderValue(): number {
-    return this.gameSelected === this.motusGameKey
-      ? this.startWordLength
-      : this.continentFilter;
+    if (this.gameSelected === this.motusGameKey) return this.startWordLength;
+    else if (this.gameSelected === this.drapeauxGameKey)
+      return this.continentFilter;
+    else if (this.gameSelected === this.marquesGameKey)
+      return this.categoryFilter;
+    return this.startWordLength;
   }
 
   set dynamicSliderValue(value: number) {
     if (this.gameSelected === this.motusGameKey) {
       this.startWordLength = value;
-    } else {
+    } else if (this.gameSelected === this.drapeauxGameKey) {
       this.continentFilter = value;
+    } else if (this.gameSelected === this.marquesGameKey) {
+      this.categoryFilter = value;
     }
   }
 
@@ -75,7 +83,7 @@ export class HomeComponent implements OnDestroy {
     this.destroyed$.complete();
   }
 
-  formatLabel(index: number): string {
+  formatLabelContinent(index: number): string {
     const continentLabels = [
       '', // index 0 unused
       'Monde',
@@ -89,6 +97,18 @@ export class HomeComponent implements OnDestroy {
     return continentLabels[index];
   }
 
+  formatLabelCategory(index: number): string {
+    const categoryLabels = [
+      '', // index 0 unused
+      'Tout',
+      'Voitures',
+      'Digital',
+      'Mode',
+      'Aliments',
+    ];
+    return categoryLabels[index];
+  }
+
   defaultFormatLabel(value: number): string {
     return value.toString();
   }
@@ -100,10 +120,12 @@ export class HomeComponent implements OnDestroy {
       this.gameSelected,
       this.showFirstLetterMotus,
       this.showFirstLetterDrapeaux,
+      this.showFirstLetterMarques,
       this.stepsNumber,
       this.isWordLengthIncreasing,
       this.startWordLength,
       this.continentFilter,
+      this.categoryFilter,
       this.playerService.currentPlayerSig()?.userId!,
       false
     );

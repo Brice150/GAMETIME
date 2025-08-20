@@ -11,6 +11,11 @@ export const games: Game[] = [
     label: 'Drapeaux',
     icon: 'bx bxs-flag',
   },
+  {
+    key: 'marques',
+    label: 'Marques',
+    icon: 'bx bxs-package',
+  },
 ];
 
 export const gameMap = Object.fromEntries(

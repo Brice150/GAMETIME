@@ -21,10 +21,13 @@ import {
   switchMap,
   take,
 } from 'rxjs';
+import { brands } from 'src/assets/data/brands';
 import { countries } from 'src/assets/data/countries';
 import { gameMap } from 'src/assets/data/games';
 import { words } from 'src/assets/data/words';
+import { BrandCategory } from '../enums/brand-category';
 import { Continent } from '../enums/continent.enum';
+import { Brand } from '../interfaces/brand';
 import { Country } from '../interfaces/country';
 import { Room } from '../interfaces/room';
 import { UserService } from './user.service';
@@ -36,6 +39,7 @@ export class RoomService {
   roomsCollection = collection(this.firestore, 'rooms');
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
+  marquesGameKey = gameMap['marques'].key;
   currentRoomSig = signal<Room | null | undefined>(undefined);
 
   readonly roomReady$ = toObservable(computed(() => this.currentRoomSig()));
@@ -110,28 +114,36 @@ export class RoomService {
     gameSelected: string,
     showFirstLetterMotus: boolean,
     showFirstLetterDrapeaux: boolean,
+    showFirstLetterMarques: boolean,
     stepsNumber: number,
     isWordLengthIncreasing: boolean,
     startWordLength: number,
     continentFilter: number,
+    categoryFilter: number,
     playerId: string,
     isCreatedByAdmin: boolean
   ): Room {
-    const showFirstLetter: boolean =
-      gameSelected === this.motusGameKey
-        ? showFirstLetterMotus
-        : showFirstLetterDrapeaux;
+    let showFirstLetter: boolean = false;
+    if (gameSelected === this.motusGameKey)
+      showFirstLetter = showFirstLetterMotus;
+    else if (gameSelected === this.drapeauxGameKey)
+      showFirstLetter = showFirstLetterDrapeaux;
+    else if (gameSelected === this.marquesGameKey)
+      showFirstLetter = showFirstLetterMarques;
 
     let countries: Country[] = [];
+    let brands: Brand[] = [];
     let responses: string[] = [];
 
     this.generateResponses(
       gameSelected,
       stepsNumber,
       continentFilter,
+      categoryFilter,
       isWordLengthIncreasing,
       startWordLength,
       countries,
+      brands,
       responses
     );
 
@@ -142,10 +154,12 @@ export class RoomService {
       showFirstLetter: showFirstLetter,
       stepsNumber: stepsNumber,
       continentFilter: continentFilter,
+      categoryFilter: categoryFilter,
       isWordLengthIncreasing: isWordLengthIncreasing,
       startWordLength: startWordLength,
       responses: responses,
       countries: countries,
+      brands: brands,
       startDate: null,
       startAgainNumber: 0,
       isCreatedByAdmin: isCreatedByAdmin,
@@ -167,9 +181,11 @@ export class RoomService {
     gameSelected: string,
     stepsNumber: number,
     continentFilter: number,
+    categoryFilter: number,
     isWordLengthIncreasing: boolean,
     startWordLength: number,
     countries: Country[],
+    brands: Brand[],
     responses: string[]
   ): void {
     if (gameSelected === this.drapeauxGameKey) {
@@ -182,6 +198,14 @@ export class RoomService {
         0,
         responses.length,
         ...generatedCountries.map((country) => country.name)
+      );
+    } else if (gameSelected === this.marquesGameKey) {
+      const generatedBrands = this.generateBrands(stepsNumber, categoryFilter);
+      brands.splice(0, brands.length, ...generatedBrands);
+      responses.splice(
+        0,
+        responses.length,
+        ...generatedBrands.map((brand) => brand.name)
       );
     } else if (gameSelected === this.motusGameKey) {
       const generatedWords = this.generateMotusWords(
@@ -228,41 +252,53 @@ export class RoomService {
   }
 
   generateCountries(stepsNumber: number, continentFilter: number): Country[] {
-    const countriesToGenerate: Country[] = [];
-    const usedCountryNames = new Set<string>();
+    return this.generateRandomItems(
+      countries,
+      stepsNumber,
+      continentFilter === Continent.Monde ? null : continentFilter,
+      (country, continent) => country.continent === continent,
+      (country) => country.name
+    );
+  }
+
+  generateBrands(stepsNumber: number, categoryFilter: number): Brand[] {
+    return this.generateRandomItems(
+      brands,
+      stepsNumber,
+      categoryFilter === BrandCategory.Tout ? null : categoryFilter,
+      (brand, category) => brand.category === category,
+      (brand) => brand.name
+    );
+  }
+
+  generateRandomItems<T>(
+    items: T[],
+    stepsNumber: number,
+    filterValue: any,
+    filterFn: (item: T, filterValue: any) => boolean,
+    getNameFn: (item: T) => string
+  ): T[] {
+    const generated: T[] = [];
+    const usedNames = new Set<string>();
 
     const pool =
-      continentFilter === Continent.Monde
-        ? countries
-        : countries.filter((c) => c.continent === continentFilter);
+      filterValue === null
+        ? items
+        : items.filter((item) => filterFn(item, filterValue));
 
     let attempts = 0;
-    while (countriesToGenerate.length < stepsNumber && attempts < 1000) {
+    while (generated.length < stepsNumber && attempts < 1000) {
       const randomIndex = Math.floor(Math.random() * pool.length);
       const candidate = pool[randomIndex];
 
-      if (!usedCountryNames.has(candidate.name)) {
-        usedCountryNames.add(candidate.name);
-        countriesToGenerate.push(candidate);
+      if (!usedNames.has(getNameFn(candidate))) {
+        usedNames.add(getNameFn(candidate));
+        generated.push(candidate);
       }
 
       attempts++;
     }
 
-    return countriesToGenerate;
-  }
-
-  newCountry(continentFilter: number): Country {
-    if (continentFilter === Continent.Monde) {
-      const randomIndex = Math.floor(Math.random() * countries.length);
-      return countries[randomIndex];
-    } else {
-      const filteredCountries = countries.filter(
-        (country) => country.continent === continentFilter
-      );
-
-      const randomIndex = Math.floor(Math.random() * filteredCountries.length);
-      return filteredCountries[randomIndex];
-    }
+    return generated;
   }
 }

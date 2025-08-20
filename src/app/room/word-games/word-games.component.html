@@ -1,9 +1,14 @@
-@if (!isOver) { @if (room().gameName === drapeauxGameKey) {
+@if (!isOver) { @if (room().gameName === drapeauxGameKey || room().gameName ===
+marquesGameKey) {
 <div class="container">
+  @if (room().gameName === drapeauxGameKey) {
   <span class="continent">{{ room().continentFilter | continent }}</span>
+  } @else if (room().gameName === marquesGameKey) {
+  <span class="continent">{{ room().categoryFilter | category }}</span>
+  }
   <div class="flag">
     @if(!loading) {
-    <img [src]="imageUrl" alt="Drapeau.png" />
+    <img [src]="imageUrl" alt="Image.png" />
     } @else {
     <mat-spinner diameter="34"></mat-spinner>
     }

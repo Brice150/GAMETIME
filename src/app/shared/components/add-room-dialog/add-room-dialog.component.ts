@@ -18,25 +18,33 @@ export class AddRoomDialogComponent implements OnInit {
   stepsNumber: number = 3;
   startWordLength: number = 5;
   continentFilter: number = 1;
+  categoryFilter: number = 1;
   isWordLengthIncreasing = true;
   showFirstLetterMotus = true;
   showFirstLetterDrapeaux = false;
+  showFirstLetterMarques = false;
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
-  gameSelected: string = 'motus';
+  marquesGameKey = gameMap['marques'].key;
+  gameSelected: string = this.drapeauxGameKey;
   startAgainMode = false;
 
   get dynamicSliderValue(): number {
-    return this.gameSelected === this.motusGameKey
-      ? this.startWordLength
-      : this.continentFilter;
+    if (this.gameSelected === this.motusGameKey) return this.startWordLength;
+    else if (this.gameSelected === this.drapeauxGameKey)
+      return this.continentFilter;
+    else if (this.gameSelected === this.marquesGameKey)
+      return this.categoryFilter;
+    return this.startWordLength;
   }
 
   set dynamicSliderValue(value: number) {
     if (this.gameSelected === this.motusGameKey) {
       this.startWordLength = value;
-    } else {
+    } else if (this.gameSelected === this.drapeauxGameKey) {
       this.continentFilter = value;
+    } else if (this.gameSelected === this.marquesGameKey) {
+      this.categoryFilter = value;
     }
   }
 
@@ -58,7 +66,7 @@ export class AddRoomDialogComponent implements OnInit {
     }
   }
 
-  formatLabel(index: number): string {
+  formatLabelContinent(index: number): string {
     const continentLabels = [
       '', // index 0 unused
       'Monde',
@@ -70,6 +78,18 @@ export class AddRoomDialogComponent implements OnInit {
     ];
 
     return continentLabels[index];
+  }
+
+  formatLabelCategory(index: number): string {
+    const categoryLabels = [
+      '', // index 0 unused
+      'Tout',
+      'Voitures',
+      'Digital',
+      'Mode',
+      'Aliments',
+    ];
+    return categoryLabels[index];
   }
 
   defaultFormatLabel(value: number): string {
@@ -85,10 +105,12 @@ export class AddRoomDialogComponent implements OnInit {
       gameSelected: this.gameSelected,
       showFirstLetterMotus: this.showFirstLetterMotus,
       showFirstLetterDrapeaux: this.showFirstLetterDrapeaux,
+      showFirstLetterMarques: this.showFirstLetterMarques,
       stepsNumber: this.stepsNumber,
       isWordLengthIncreasing: this.isWordLengthIncreasing,
       startWordLength: this.startWordLength,
       continentFilter: this.continentFilter,
+      categoryFilter: this.categoryFilter,
     } as RoomForm);
   }
 

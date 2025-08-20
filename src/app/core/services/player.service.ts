@@ -103,12 +103,16 @@ export class PlayerService {
           gameName: gameMap['drapeaux'].key,
           medalsNumber: 0,
         };
+        const statMarques: Stat = {
+          gameName: gameMap['marques'].key,
+          medalsNumber: 0,
+        };
 
         const player: Player = {
           id: playerDoc.id,
           userId: userId,
           username: username,
-          stats: [statMotus, statDrapeaux],
+          stats: [statMotus, statDrapeaux, statMarques],
           isAdmin: false,
           isOver: false,
           currentRoomWins: [],

@@ -19,6 +19,7 @@ import { RoomForm } from '../core/interfaces/room-form';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { MultiplayerDialogComponent } from '../shared/components/multiplayer-dialog/multiplayer-dialog.component';
+import { gameMap } from 'src/assets/data/games';
 
 @Component({
   selector: 'app-admin-room',
@@ -46,6 +47,9 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
   router = inject(Router);
   destroyed$ = new Subject<void>();
   hideResults = true;
+  motusGameKey = gameMap['motus'].key;
+  drapeauxGameKey = gameMap['drapeaux'].key;
+  marquesGameKey = gameMap['marques'].key;
 
   ngOnInit(): void {
     this.activatedRoute.params
@@ -145,9 +149,11 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
       this.room.gameName,
       this.room.stepsNumber,
       this.room.continentFilter,
+      this.room.categoryFilter,
       this.room.isWordLengthIncreasing,
       this.room.startWordLength,
       this.room.countries,
+      this.room.brands,
       this.room.responses
     );
 
@@ -250,13 +256,16 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
         next: (roomData: RoomForm) => {
           if (roomData && roomData.gameSelected) {
             this.room.gameName = roomData.gameSelected;
-            if (roomData.gameSelected === 'motus') {
+            if (roomData.gameSelected === this.motusGameKey) {
               this.room.showFirstLetter = roomData.showFirstLetterMotus;
-            } else if (roomData.gameSelected === 'drapeaux') {
+            } else if (roomData.gameSelected === this.drapeauxGameKey) {
               this.room.showFirstLetter = roomData.showFirstLetterDrapeaux;
+            } else if (roomData.gameSelected === this.marquesGameKey) {
+              this.room.showFirstLetter = roomData.showFirstLetterMarques;
             }
             this.room.stepsNumber = roomData.stepsNumber;
             this.room.continentFilter = roomData.continentFilter;
+            this.room.categoryFilter = roomData.categoryFilter;
             this.room.isWordLengthIncreasing = roomData.isWordLengthIncreasing;
             this.room.startWordLength = roomData.startWordLength;
           }

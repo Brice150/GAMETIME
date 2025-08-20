@@ -8,15 +8,16 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { ToastrService } from 'ngx-toastr';
-import { Room } from 'src/app/core/interfaces/room';
-import { CountryService } from 'src/app/core/services/country.service';
-import { gameMap } from 'src/assets/data/games';
-import { WordInputComponent } from './word-input/word-input.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { Player } from 'src/app/core/interfaces/player';
+import { ToastrService } from 'ngx-toastr';
 import { Subject, takeUntil } from 'rxjs';
+import { Player } from 'src/app/core/interfaces/player';
+import { Room } from 'src/app/core/interfaces/room';
+import { ImageService } from 'src/app/core/services/image.service';
+import { gameMap } from 'src/assets/data/games';
+import { CategoryPipe } from '../../shared/pipes/category.pipe';
 import { ContinentPipe } from '../../shared/pipes/continent.pipe';
+import { WordInputComponent } from './word-input/word-input.component';
 
 @Component({
   selector: 'app-word-games',
@@ -25,6 +26,7 @@ import { ContinentPipe } from '../../shared/pipes/continent.pipe';
     WordInputComponent,
     MatProgressSpinnerModule,
     ContinentPipe,
+    CategoryPipe,
   ],
   templateUrl: './word-games.component.html',
   styleUrl: './word-games.component.css',
@@ -34,8 +36,9 @@ export class WordGamesComponent implements OnInit, OnDestroy {
   imageUrl: string = '';
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
+  marquesGameKey = gameMap['marques'].key;
   toastr = inject(ToastrService);
-  countryService = inject(CountryService);
+  imageService = inject(ImageService);
   isOver = false;
   loading = false;
   readonly room = input.required<Room>();
@@ -66,8 +69,20 @@ export class WordGamesComponent implements OnInit, OnDestroy {
 
     if (this.room().gameName === this.drapeauxGameKey) {
       this.loading = true;
-      this.countryService
+      this.imageService
         .getDrapeauImage(this.room().countries[index || 0].code)
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe({
+          next: (blob) => {
+            this.imageUrl = URL.createObjectURL(blob);
+            this.loading = false;
+          },
+          error: () => (this.loading = false),
+        });
+    } else if (this.room().gameName === this.marquesGameKey) {
+      this.loading = true;
+      this.imageService
+        .getLogoMarque(this.room().brands[index || 0].website)
         .pipe(takeUntil(this.destroyed$))
         .subscribe({
           next: (blob) => {

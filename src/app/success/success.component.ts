@@ -34,16 +34,21 @@ export class SuccessComponent implements OnInit, OnDestroy {
   games = games;
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
+  marquesGameKey = gameMap['marques'].key;
   gameSelected: string = this.drapeauxGameKey;
   isDrapeauSelected = true;
   motusMedalsNumber = 0;
   drapeauxMedalsNumber = 0;
+  marquesMedalsNumber = 0;
   goals = goals;
 
   get currentMedals(): number {
-    return this.gameSelected === this.motusGameKey
-      ? this.motusMedalsNumber
-      : this.drapeauxMedalsNumber;
+    if (this.gameSelected === this.motusGameKey) return this.motusMedalsNumber;
+    if (this.gameSelected === this.drapeauxGameKey)
+      return this.drapeauxMedalsNumber;
+    if (this.gameSelected === this.marquesGameKey)
+      return this.marquesMedalsNumber;
+    return 0;
   }
 
   ngOnInit(): void {
@@ -76,6 +81,10 @@ export class SuccessComponent implements OnInit, OnDestroy {
     );
     this.drapeauxMedalsNumber = this.medalsNumberPipe.transform(
       this.drapeauxGameKey,
+      this.playerService.currentPlayerSig()!
+    );
+    this.marquesMedalsNumber = this.medalsNumberPipe.transform(
+      this.marquesGameKey,
       this.playerService.currentPlayerSig()!
     );
   }

@@ -35,6 +35,7 @@ export class RankingComponent implements OnInit, OnDestroy {
   games = games;
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
+  marquesGameKey = gameMap['marques'].key;
   gameSelected: string = this.drapeauxGameKey;
   isDrapeauSelected = true;
   currentPlayerPosition?: number;

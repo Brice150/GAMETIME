@@ -1,3 +1,4 @@
+import { Brand } from './brand';
 import { Country } from './country';
 
 export interface Room {
@@ -9,10 +10,12 @@ export interface Room {
   showFirstLetter: boolean;
   stepsNumber: number;
   continentFilter: number;
+  categoryFilter: number;
   isWordLengthIncreasing: boolean;
   startWordLength: number;
   responses: string[];
   countries: Country[];
+  brands: Brand[];
   startDate: Date | null;
   startAgainNumber: number;
   isCreatedByAdmin: boolean;
