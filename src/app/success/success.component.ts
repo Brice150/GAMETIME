@@ -2,15 +2,18 @@ import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ToastrService } from 'ngx-toastr';
 import { Subject, takeUntil } from 'rxjs';
 import { gameMap, games } from 'src/assets/data/games';
+import { goals } from 'src/assets/data/goals';
 import { PlayerService } from '../core/services/player.service';
 import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
 import { StrikeThroughDirective } from './strike-through.directive';
-import { goals } from 'src/assets/data/goals';
 
 @Component({
   selector: 'app-success',
@@ -20,6 +23,9 @@ import { goals } from 'src/assets/data/goals';
     FormsModule,
     MatSlideToggleModule,
     StrikeThroughDirective,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
   ],
   providers: [MedalsNumberPipe],
   templateUrl: './success.component.html',

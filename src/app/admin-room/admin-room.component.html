@@ -1,14 +1,16 @@
 <section>
   @if (!loading) { @if (room.startDate) {
-  <span class="description">Commencé le {{ room.startDate | customDate }}</span>
-  } @else {
-  <span class="description">Pas encore commencé</span>
-  }
+  <span class="description-title"
+    >Commencé le {{ room.startDate | customDate }}</span
+  >
   <div class="toggle-container">
     <mat-slide-toggle [(ngModel)]="hideResults">
       Cacher résultats
     </mat-slide-toggle>
   </div>
+  } @else {
+  <span class="description-title">Pas encore commencé</span>
+  }
   <div class="players">
     @for (otherPlayer of players; track $index; let i = $index) {
     <div class="container">

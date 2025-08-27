@@ -18,18 +18,19 @@
   </div>
   } @else {
   <h1>Veuillez configurer la room</h1>
-  <div class="button-container margin">
-    @for (game of games; track game.key) {
-    <button
-      type="button"
-      [title]="game.label"
-      [ngClass]="{ active: gameSelected === game.key }"
-      (click)="gameSelected = game.key"
-    >
-      <i class="{{ game.icon }}"></i>
-      <span class="text">{{ game.label }}</span>
-    </button>
-    }
+  <div class="games">
+    <mat-form-field>
+      <mat-select [(ngModel)]="gameSelected" name="game" class="cap">
+        @for (game of games; track $index) {
+        <mat-option [value]="game.key" class="cap-option">
+          <div class="flex">
+            <i class="{{ game.icon }}"></i>
+            <span class="game">{{ game.label }}</span>
+          </div>
+        </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
   </div>
 
   @if (gameSelected) {

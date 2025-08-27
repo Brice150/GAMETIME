@@ -2,6 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSliderModule } from '@angular/material/slider';
 import { RoomForm } from 'src/app/core/interfaces/room-form';
@@ -9,7 +12,15 @@ import { gameMap, games } from 'src/assets/data/games';
 
 @Component({
   selector: 'app-add-room-dialog',
-  imports: [CommonModule, MatSliderModule, FormsModule, MatSlideToggleModule],
+  imports: [
+    CommonModule,
+    MatSliderModule,
+    FormsModule,
+    MatSlideToggleModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+  ],
   templateUrl: './add-room-dialog.component.html',
   styleUrl: './add-room-dialog.component.css',
 })

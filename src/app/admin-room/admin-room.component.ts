@@ -142,7 +142,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
 
     this.room.countries = [];
     this.room.responses = [];
-
+    this.room.brands = [];
     this.room.isStarted = true;
     this.room.startDate = new Date();
     this.room.startAgainNumber += 1;
@@ -249,7 +249,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
     }
 
     const dialogRef = this.dialog.open(AddRoomDialogComponent, {
-      data: 'startAgain',
+      data: this.room.startDate ? 'startAgain' : '',
     });
 
     dialogRef

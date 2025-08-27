@@ -6,15 +6,13 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ToastrService } from 'ngx-toastr';
-import { filter, map, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import { filter, map, of, Subject, switchMap, takeUntil } from 'rxjs';
 import { Player } from '../core/interfaces/player';
 import { Room } from '../core/interfaces/room';
 import { PlayerService } from '../core/services/player.service';
 import { RoomService } from '../core/services/room.service';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { RoomCardComponent } from './room-card/room-card.component';
-import { AddRoomDialogComponent } from '../shared/components/add-room-dialog/add-room-dialog.component';
-import { RoomForm } from '../core/interfaces/room-form';
 
 @Component({
   selector: 'app-admin',
@@ -124,35 +122,25 @@ export class AdminComponent implements OnInit {
       });
   }
 
-  openAddRoomDialog(): void {
-    const dialogRef = this.dialog.open(AddRoomDialogComponent);
+  addRoom(): void {
+    this.loading = true;
 
-    dialogRef
-      .afterClosed()
+    const newRoom = {
+      gameName: 'room',
+      playerIds: [] as string[],
+      isStarted: false,
+      startDate: null,
+      startAgainNumber: 0,
+      isCreatedByAdmin: true,
+      isReadyNotificationActivated: false,
+      roomCode: this.roomService.generateRoomCode(),
+    };
+
+    this.roomService
+      .deleteUserRooms()
       .pipe(
-        filter((roomData: RoomForm) => !!roomData),
-        switchMap((roomData: RoomForm) => {
-          this.loading = true;
-          return this.roomService.deleteUserRooms().pipe(
-            switchMap(() => {
-              const newRoom = this.roomService.startRoom(
-                roomData.gameSelected,
-                roomData.showFirstLetterMotus,
-                roomData.showFirstLetterDrapeaux,
-                roomData.showFirstLetterMarques,
-                roomData.stepsNumber,
-                roomData.isWordLengthIncreasing,
-                roomData.startWordLength,
-                roomData.continentFilter,
-                roomData.categoryFilter,
-                '',
-                true
-              );
-              return this.roomService.addRoom(newRoom);
-            })
-          );
-        }),
-        takeUntil(this.destroyed$)
+        takeUntil(this.destroyed$),
+        switchMap(() => this.roomService.addRoom(newRoom as Room))
       )
       .subscribe({
         next: () => {
