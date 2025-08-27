@@ -135,7 +135,7 @@ export class AdminComponent implements OnInit {
           this.loading = true;
           return this.roomService.deleteUserRooms().pipe(
             switchMap(() => {
-              const newRoom = this.roomService.newRoom(
+              const newRoom = this.roomService.startRoom(
                 roomData.gameSelected,
                 roomData.showFirstLetterMotus,
                 roomData.showFirstLetterDrapeaux,

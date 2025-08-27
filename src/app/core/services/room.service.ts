@@ -110,7 +110,7 @@ export class RoomService {
     );
   }
 
-  newRoom(
+  startRoom(
     gameSelected: string,
     showFirstLetterMotus: boolean,
     showFirstLetterDrapeaux: boolean,

@@ -18,7 +18,7 @@ section .description {
 }
 
 .games {
-  margin-top: 40px;
+  margin-top: 20px;
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -28,30 +28,18 @@ section .description {
   flex-wrap: wrap;
 }
 
-button {
+.game-container {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  width: 200px;
-  cursor: pointer;
-  padding: 12px;
+  width: 180px;
+  padding: 10px 6px;
   background-color: var(--primary);
   color: var(--accent);
   border-radius: 10px;
   transition: 0.5s ease;
   border: none;
-}
-
-button.active {
-  background-color: var(--accent);
-  color: var(--primary);
-  cursor: default;
-}
-
-button:hover {
-  background-color: var(--accent);
-  color: var(--primary);
 }
 
 .medals {
@@ -71,39 +59,61 @@ button:hover {
   font-size: 32px;
 }
 
-button i {
+.game-container i {
   font-size: 32px;
 }
 
-button .game {
+.game-container .game {
   font-size: 22px;
   font-weight: 500;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
-button .flex {
+.game-container .flex {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
 }
 
-.play-container {
-  margin-top: 40px;
+.button-container {
   display: flex;
-  align-items: center;
   justify-content: center;
-  flex-direction: column;
-  gap: 10px;
+  align-items: center;
+  width: 100%;
+  gap: 20px;
   flex-wrap: wrap;
-  margin-left: 10px;
-  margin-right: 10px;
+  margin-top: 20px;
 }
 
-.play-container .play {
+.button-container button {
+  cursor: pointer;
+  color: var(--accent);
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: var(--light-radius);
+  transition: 0.5s ease;
   width: 150px;
-  height: 50px;
-  margin-bottom: 20px;
+  border: none;
+  background-color: var(--primary);
+}
+
+.button-container button:hover {
+  background-color: var(--accent);
+  color: var(--primary);
+}
+
+.button-container button i {
+  font-size: 30px;
+}
+
+.button-container button .text {
+  font-size: 20px;
+  font-weight: 500;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
 mat-spinner {

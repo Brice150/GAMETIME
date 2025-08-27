@@ -1,15 +1,10 @@
 <section>
   @if (!loading) {
-  <span class="description">À quel jeu voulez-vous jouer aujourd'hui ?</span>
+  <span class="description">Voici vos dernières stats :</span>
 
   <div class="games">
     @for (game of games; track game.key) {
-    <button
-      type="button"
-      [title]="game.label"
-      [ngClass]="{ active: gameSelected === game.key }"
-      (click)="gameSelected = game.key"
-    >
+    <div class="game-container">
       <div class="flex">
         <i class="{{ game.icon }}"></i>
         <span class="game">{{ game.label }}</span>
@@ -20,82 +15,15 @@
         }}</span>
         <i class="bx bxs-medal"></i>
       </div>
-    </button>
+    </div>
     }
   </div>
-
-  @if (gameSelected) {
-  <div class="slider-container top">
-    <span>Nombre de manches</span>
-    <mat-slider min="1" max="8" step="1" discrete>
-      <input matSliderThumb [(ngModel)]="stepsNumber" />
-    </mat-slider>
-  </div>
-  <div class="slider-container top">
-    <span>
-      {{
-        gameSelected === motusGameKey
-          ? "Taille du mot de départ"
-          : gameSelected === drapeauxGameKey
-          ? "Filtre par continent"
-          : "Filtre par catégorie"
-      }}
-    </span>
-    <mat-slider
-      [min]="gameSelected === motusGameKey ? 5 : 1"
-      [max]="
-        gameSelected === motusGameKey
-          ? maxWordLength
-          : gameSelected === drapeauxGameKey
-          ? 6
-          : 5
-      "
-      step="1"
-      discrete
-      [displayWith]="
-        gameSelected === drapeauxGameKey
-          ? formatLabelContinent
-          : gameSelected === marquesGameKey
-          ? formatLabelCategory
-          : defaultFormatLabel
-      "
-      [ngClass]="{
-        showContinent:
-          gameSelected === drapeauxGameKey || gameSelected === marquesGameKey
-      }"
-    >
-      <input matSliderThumb [(ngModel)]="dynamicSliderValue" />
-    </mat-slider>
-  </div>
-
-  <div class="toggle-container home">
-    @if (gameSelected === motusGameKey) {
-    <mat-slide-toggle [(ngModel)]="isWordLengthIncreasing">
-      Croissance progressive
-    </mat-slide-toggle>
-    <mat-slide-toggle [(ngModel)]="showFirstLetterMotus">
-      Afficher 1<sup>ère</sup> lettre
-    </mat-slide-toggle>
-    } @else if (gameSelected === drapeauxGameKey) {
-    <mat-slide-toggle [(ngModel)]="showFirstLetterDrapeaux">
-      Afficher 1<sup>ère</sup> lettre
-    </mat-slide-toggle>
-    } @else if (gameSelected === marquesGameKey) {
-    <mat-slide-toggle [(ngModel)]="showFirstLetterMarques">
-      Afficher 1<sup>ère</sup> lettre
-    </mat-slide-toggle>
-    }
-  </div>
-
-  <div class="play-container">
-    <button type="button" class="play" title="Jouer" (click)="play()">
-      <div class="flex">
-        <i class="bx bx-play"></i>
-        <span class="game">Jouer</span>
-      </div>
+  <div class="button-container">
+    <button type="button" (click)="play()" title="Jouer">
+      <i class="bx bx-play"></i>
+      <span class="text">Jouer</span>
     </button>
   </div>
-  }
   <span class="description">Voulez-vous rejoindre une room existante ?</span>
   <app-join-room (joinRoomEvent)="joinRoom($event)"></app-join-room>
   } @else {

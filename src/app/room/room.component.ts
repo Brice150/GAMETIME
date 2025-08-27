@@ -485,6 +485,7 @@ export class RoomComponent implements OnInit, OnDestroy {
     this.loading = true;
 
     this.room.countries = [];
+    this.room.brands = [];
     this.room.responses = [];
     this.room.startDate = new Date();
     this.room.startAgainNumber += 1;
@@ -609,7 +610,7 @@ export class RoomComponent implements OnInit, OnDestroy {
 
   openAddRoomDialog(): void {
     const dialogRef = this.dialog.open(AddRoomDialogComponent, {
-      data: 'startAgain',
+      data: this.room.startDate ? 'startAgain' : '',
     });
 
     dialogRef

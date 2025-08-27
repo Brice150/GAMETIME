@@ -14,6 +14,7 @@ import { PlayerService } from '../core/services/player.service';
 import { RoomService } from '../core/services/room.service';
 import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
 import { JoinRoomComponent } from './join-room/join-room.component';
+import { Room } from '../core/interfaces/room';
 
 @Component({
   selector: 'app-home',
@@ -31,7 +32,6 @@ import { JoinRoomComponent } from './join-room/join-room.component';
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnDestroy {
-  gameSelected: string = '';
   loading: boolean = false;
   playerService = inject(PlayerService);
   roomService = inject(RoomService);
@@ -40,101 +40,31 @@ export class HomeComponent implements OnDestroy {
   destroyed$ = new Subject<void>();
   router = inject(Router);
   games = games;
-  stepsNumber: number = 3;
-  startWordLength: number = 5;
-  continentFilter: number = 1;
-  categoryFilter: number = 1;
-  isWordLengthIncreasing = true;
-  showFirstLetterMotus = true;
-  showFirstLetterDrapeaux = false;
-  showFirstLetterMarques = false;
-  motusGameKey = gameMap['motus'].key;
-  drapeauxGameKey = gameMap['drapeaux'].key;
-  marquesGameKey = gameMap['marques'].key;
-
-  get dynamicSliderValue(): number {
-    if (this.gameSelected === this.motusGameKey) return this.startWordLength;
-    else if (this.gameSelected === this.drapeauxGameKey)
-      return this.continentFilter;
-    else if (this.gameSelected === this.marquesGameKey)
-      return this.categoryFilter;
-    return this.startWordLength;
-  }
-
-  set dynamicSliderValue(value: number) {
-    if (this.gameSelected === this.motusGameKey) {
-      this.startWordLength = value;
-    } else if (this.gameSelected === this.drapeauxGameKey) {
-      this.continentFilter = value;
-    } else if (this.gameSelected === this.marquesGameKey) {
-      this.categoryFilter = value;
-    }
-  }
-
-  get maxWordLength(): number {
-    if (this.isWordLengthIncreasing) {
-      return 13 - (this.stepsNumber - 1);
-    }
-    return 13;
-  }
 
   ngOnDestroy(): void {
     this.destroyed$.next();
     this.destroyed$.complete();
   }
 
-  formatLabelContinent(index: number): string {
-    const continentLabels = [
-      '', // index 0 unused
-      'Monde',
-      'Europe',
-      'Asie',
-      'Afrique',
-      'Amérique',
-      'Océanie',
-    ];
-
-    return continentLabels[index];
-  }
-
-  formatLabelCategory(index: number): string {
-    const categoryLabels = [
-      '', // index 0 unused
-      'Tout',
-      'Voitures',
-      'Digital',
-      'Mode',
-      'Aliments',
-    ];
-    return categoryLabels[index];
-  }
-
-  defaultFormatLabel(value: number): string {
-    return value.toString();
-  }
-
   play(): void {
     this.loading = true;
 
-    const newRoom = this.roomService.newRoom(
-      this.gameSelected,
-      this.showFirstLetterMotus,
-      this.showFirstLetterDrapeaux,
-      this.showFirstLetterMarques,
-      this.stepsNumber,
-      this.isWordLengthIncreasing,
-      this.startWordLength,
-      this.continentFilter,
-      this.categoryFilter,
-      this.playerService.currentPlayerSig()?.userId!,
-      false
-    );
+    const newRoom = {
+      gameName: 'room',
+      playerIds: [this.playerService.currentPlayerSig()?.userId!],
+      isStarted: false,
+      startDate: null,
+      startAgainNumber: 0,
+      isCreatedByAdmin: false,
+      isReadyNotificationActivated: false,
+      roomCode: this.roomService.generateRoomCode(),
+    };
 
     this.roomService
       .deleteUserRooms()
       .pipe(
         takeUntil(this.destroyed$),
-        switchMap(() => this.roomService.addRoom(newRoom))
+        switchMap(() => this.roomService.addRoom(newRoom as Room))
       )
       .subscribe({
         next: (roomId) => {
