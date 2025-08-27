@@ -1,15 +1,15 @@
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { ToastrService } from 'ngx-toastr';
 import { Subject, takeUntil } from 'rxjs';
+import { gameMap, games } from 'src/assets/data/games';
 import { Player } from '../core/interfaces/player';
 import { PlayerService } from '../core/services/player.service';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
-import { gameMap, games } from 'src/assets/data/games';
-import { HttpErrorResponse } from '@angular/common/http';
-import { ToastrService } from 'ngx-toastr';
-import { FormsModule } from '@angular/forms';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { OrdinalPipe } from '../shared/pipes/ordinal.pipe';
 
 @Component({
@@ -37,7 +37,6 @@ export class RankingComponent implements OnInit, OnDestroy {
   drapeauxGameKey = gameMap['drapeaux'].key;
   marquesGameKey = gameMap['marques'].key;
   gameSelected: string = this.drapeauxGameKey;
-  isDrapeauSelected = true;
   currentPlayerPosition?: number;
 
   ngOnInit(): void {
@@ -70,7 +69,7 @@ export class RankingComponent implements OnInit, OnDestroy {
   sortPlayers(gameSelected: string): void {
     this.gameSelected = gameSelected;
 
-    this.sortedPlayers = this.players.sort((a, b) => {
+    this.sortedPlayers = [...this.players].sort((a, b) => {
       const aStat = a.stats.find((stat) => stat.gameName === this.gameSelected);
       const bStat = b.stats.find((stat) => stat.gameName === this.gameSelected);
 

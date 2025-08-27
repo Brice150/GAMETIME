@@ -34,12 +34,12 @@
         {{ currentPlayerPosition
         }}<sup>{{ currentPlayerPosition | ordinal }}</sup>
       </span>
-      <span> / {{ sortedPlayers.length }}</span>
+      <span> / {{ players.length }}</span>
     </div>
   </div>
   }
   <div class="players">
-    @for (otherPlayer of players; track $index; let i = $index) {
+    @for (otherPlayer of sortedPlayers; track $index; let i = $index) {
     <div
       class="player"
       [ngClass]="{

@@ -106,7 +106,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
         .subscribe({
           next: (email) => {
             this.loading = false;
-            this.router.navigate(['/']);
+            this.router.navigate(['/profil']);
             this.userService.currentUserSig.set({ email: email! });
             this.toastr.info('Bienvenue sur Game Time', 'Game Time', {
               positionClass: 'toast-top-center',
@@ -139,7 +139,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: (email) => {
-          this.router.navigate(['/']);
+          this.router.navigate(['/profil']);
           this.userService.currentUserSig.set({ email: email! });
           this.toastr.info('Bienvenue sur Game Time', 'Game Time', {
             positionClass: 'toast-top-center',

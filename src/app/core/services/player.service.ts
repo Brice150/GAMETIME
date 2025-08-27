@@ -92,7 +92,7 @@ export class PlayerService {
         if (players.length > 0) {
           return of(void 0).pipe(map(() => email));
         }
-        const username = this.generateRandomAnimalUsername();
+        const username = this.generateRandomAnimalUsername(email);
         const playerDoc = doc(this.playersCollection);
 
         const statMotus: Stat = {
@@ -124,10 +124,28 @@ export class PlayerService {
     );
   }
 
-  generateRandomAnimalUsername(): string {
-    const randomIndex = Math.floor(Math.random() * animalsWithEmojis.length);
-    const animal = animalsWithEmojis[randomIndex];
-    return `${animal.name} ${animal.emoji}`;
+  generateRandomAnimalUsername(email?: string | null): string {
+    const animal =
+      animalsWithEmojis[Math.floor(Math.random() * animalsWithEmojis.length)];
+    const nameFromEmail = this.extractNameFromEmail(email);
+
+    const formatName = (str: string) =>
+      str.charAt(0).toUpperCase() + str.slice(1);
+
+    const finalName = nameFromEmail ? formatName(nameFromEmail) : animal.name;
+
+    return `${finalName} ${animal.emoji}`;
+  }
+
+  extractNameFromEmail(email?: string | null): string | null {
+    if (!email || !email.includes('@')) return null;
+
+    const prefix = email.split('@')[0];
+    const base = prefix.includes('.') ? prefix.split('.')[0] : prefix;
+
+    const cleaned = base.replace(/[^a-zA-Z0-9]/g, '');
+
+    return cleaned;
   }
 
   updatePlayer(player: Player): Observable<void> {
