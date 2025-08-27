@@ -11,12 +11,6 @@
       } @else if (room().userId !== otherPlayer.userId) {
       <i class="bx bxs-x-circle" title="Pas prêt" style="color: red"></i>
       }
-      <div class="medals">
-        <span class="victory-number">{{
-          room().gameName | medalsNumber : otherPlayer
-        }}</span>
-        <i class="bx bxs-medal"></i>
-      </div>
     </div>
     @if (otherPlayer.userId !== player().userId && room().userId ===
     player().userId) {

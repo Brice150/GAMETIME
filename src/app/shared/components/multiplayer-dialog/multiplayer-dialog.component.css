@@ -41,7 +41,7 @@ section .content .element .title {
   font-weight: bold;
   color: var(--secondary);
   text-align: left;
-  width: 160px;
+  width: 180px;
 }
 
 section .content .element .code {

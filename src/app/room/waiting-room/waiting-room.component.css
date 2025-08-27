@@ -45,32 +45,6 @@
   text-align: left;
 }
 
-.players .player .medals {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 5px;
-  background-color: var(--accent);
-  color: var(--primary);
-  border-radius: var(--light-radius);
-  padding: 3px 0;
-  padding-left: 10px;
-  padding-right: 5px;
-}
-
-.players .player.alt-color .medals {
-  background-color: var(--secondary);
-}
-
-.victory-number {
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.medals i {
-  font-size: 28px;
-}
-
 .players .player.spinner {
   display: flex;
   justify-content: center;
