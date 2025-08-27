@@ -1,5 +1,9 @@
 <section>
-  @if (!loading) {
+  @if (!loading) { @if (room.startDate) {
+  <span class="description">Commencé le {{ room.startDate | customDate }}</span>
+  } @else {
+  <span class="description">Pas encore commencé</span>
+  }
   <div class="toggle-container">
     <mat-slide-toggle [(ngModel)]="hideResults">
       Cacher résultats

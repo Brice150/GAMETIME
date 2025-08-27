@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -20,6 +20,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { MultiplayerDialogComponent } from '../shared/components/multiplayer-dialog/multiplayer-dialog.component';
 import { gameMap } from 'src/assets/data/games';
+import { CustomDatePipe } from '../shared/pipes/custom-date.pipe';
 
 @Component({
   selector: 'app-admin-room',
@@ -30,9 +31,11 @@ import { gameMap } from 'src/assets/data/games';
     FormsModule,
     MatSlideToggleModule,
     MedalsNumberPipe,
+    CustomDatePipe,
   ],
   templateUrl: './admin-room.component.html',
   styleUrl: './admin-room.component.css',
+  providers: [DatePipe],
 })
 export class AdminRoomComponent implements OnInit, OnDestroy {
   loading: boolean = true;

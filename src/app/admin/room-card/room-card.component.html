@@ -1,5 +1,4 @@
 <div class="container">
-  @if (room().userId === player().userId) {
   <div class="button-container-delete">
     <button
       type="button"
@@ -10,7 +9,6 @@
       <i class="bx bxs-trash"></i>
     </button>
   </div>
-  }
   <div class="button-container-look">
     <button type="button" [routerLink]="room().id" title="Voir" class="share">
       <i class="bx bxs-search"></i>
@@ -34,8 +32,8 @@
       </div>
     </div>
     }@empty {
-    <div class="player admin">
-      <span class="username">Admin room - 0 players</span>
+    <div class="player">
+      <span class="username">Vide</span>
     </div>
     }
   </div>

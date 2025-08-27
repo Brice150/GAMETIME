@@ -10,7 +10,6 @@
     @for (room of rooms; track $index) {
     <app-room-card
       [room]="room"
-      [player]="playerService.currentPlayerSig()!"
       [players]="playersByRoom[room.id!]"
       (deleteEvent)="openDialog(room.id!)"
       title="Résultats"

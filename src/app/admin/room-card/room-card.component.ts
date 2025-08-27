@@ -13,7 +13,6 @@ import { MedalsNumberPipe } from '../../shared/pipes/medals-number.pipe';
 })
 export class RoomCardComponent {
   room = input.required<Room>();
-  player = input.required<Player>();
   players = input.required<Player[]>();
   @Output() deleteEvent = new EventEmitter<void>();
 

@@ -101,12 +101,6 @@ button i {
   height: 34px;
 }
 
-.players .player.admin {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .players .player.alt-color {
   color: var(--secondary);
 }
