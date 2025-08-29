@@ -2,7 +2,12 @@
   @if(!loading) {
   <form>
     <mat-form-field>
-      <mat-select [(ngModel)]="gameSelected" name="game" class="cap">
+      <mat-select
+        [(ngModel)]="gameSelected"
+        name="game"
+        class="cap"
+        (ngModelChange)="sortPlayers()"
+      >
         @for (game of games; track $index) {
         <mat-option [value]="game.key" class="cap-option">
           <div class="flex">

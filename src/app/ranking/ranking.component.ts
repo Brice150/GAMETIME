@@ -49,7 +49,7 @@ export class RankingComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (players) => {
           this.players = players;
-          this.sortPlayers(this.gameSelected);
+          this.sortPlayers();
           this.loading = false;
         },
         error: (error: HttpErrorResponse) => {
@@ -69,9 +69,7 @@ export class RankingComponent implements OnInit, OnDestroy {
     this.destroyed$.complete();
   }
 
-  sortPlayers(gameSelected: string): void {
-    this.gameSelected = gameSelected;
-
+  sortPlayers(): void {
     this.sortedPlayers = [...this.players].sort((a, b) => {
       const aStat = a.stats.find((stat) => stat.gameName === this.gameSelected);
       const bStat = b.stats.find((stat) => stat.gameName === this.gameSelected);
