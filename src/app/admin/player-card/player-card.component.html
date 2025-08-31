@@ -1,0 +1,25 @@
+<form [formGroup]="playerForm" (ngSubmit)="update()">
+  <mat-form-field>
+    <mat-label>Nom d'utilisateur</mat-label>
+    <input matInput formControlName="username" />
+  </mat-form-field>
+  <div class="container">
+    <mat-form-field>
+      <mat-label>Drapeaux</mat-label>
+      <input matInput type="number" formControlName="drapeauxMedalsNumber" />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Marques</mat-label>
+      <input matInput type="number" formControlName="marquesMedalsNumber" />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Motus</mat-label>
+      <input matInput type="number" formControlName="motusMedalsNumber" />
+    </mat-form-field>
+  </div>
+  <div class="buttons-container">
+    <button type="submit" title="Modifier" class="share">
+      <i class="bx bxs-edit-alt"></i>
+    </button>
+  </div>
+</form>

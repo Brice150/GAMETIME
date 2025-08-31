@@ -12,6 +12,7 @@ import { Room } from '../core/interfaces/room';
 import { PlayerService } from '../core/services/player.service';
 import { RoomService } from '../core/services/room.service';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
+import { PlayerCardComponent } from './player-card/player-card.component';
 import { RoomCardComponent } from './room-card/room-card.component';
 
 @Component({
@@ -22,6 +23,7 @@ import { RoomCardComponent } from './room-card/room-card.component';
     MatProgressSpinnerModule,
     FormsModule,
     MatSlideToggleModule,
+    PlayerCardComponent,
   ],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.css',
@@ -33,8 +35,10 @@ export class AdminComponent implements OnInit {
   toastr = inject(ToastrService);
   dialog = inject(MatDialog);
   rooms: Room[] = [];
+  players: Player[] = [];
   playersByRoom: Record<string, Player[]> = {};
   loading: boolean = true;
+  roomMode: boolean = true;
 
   ngOnInit(): void {
     this.roomService
@@ -80,6 +84,25 @@ export class AdminComponent implements OnInit {
           }
         },
       });
+
+    this.playerService
+      .getAllPlayers()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: (players) => {
+          this.players = this.sortPlayers(players);
+          this.loading = false;
+        },
+        error: (error: HttpErrorResponse) => {
+          this.loading = false;
+          if (!error.message.includes('Missing or insufficient permissions.')) {
+            this.toastr.error(error.message, 'Game Time', {
+              positionClass: 'toast-top-center',
+              toastClass: 'ngx-toastr custom error',
+            });
+          }
+        },
+      });
   }
 
   ngOnDestroy(): void {
@@ -87,7 +110,7 @@ export class AdminComponent implements OnInit {
     this.destroyed$.complete();
   }
 
-  openDialog(roomId: string): void {
+  deleteRoom(roomId: string): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       data: 'supprimer cette room',
     });
@@ -160,5 +183,33 @@ export class AdminComponent implements OnInit {
           }
         },
       });
+  }
+
+  updatePlayer(player: Player): void {
+    this.playerService
+      .updatePlayer(player)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: () => {
+          this.toastr.info('Joueur modifié', 'Admin', {
+            positionClass: 'toast-top-center',
+            toastClass: 'ngx-toastr custom info',
+          });
+        },
+        error: (error: HttpErrorResponse) => {
+          if (!error.message.includes('Missing or insufficient permissions.')) {
+            this.toastr.error(error.message, 'Game Time', {
+              positionClass: 'toast-top-center',
+              toastClass: 'ngx-toastr custom error',
+            });
+          }
+        },
+      });
+  }
+
+  sortPlayers(players: Player[]): Player[] {
+    return [...players]
+      .sort((a, b) => a.username.localeCompare(b.username))
+      .filter((player) => !player.isAdmin);
   }
 }

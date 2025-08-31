@@ -1,5 +1,11 @@
 <section>
   @if(!loading) {
+  <div class="toggle-container">
+    <mat-slide-toggle [(ngModel)]="roomMode"
+      >Afficher les rooms</mat-slide-toggle
+    >
+  </div>
+  @if (roomMode) {
   <div class="button-container">
     <button type="button" (click)="addRoom()" title="Ajouter">
       <i class="bx bx-plus"></i>
@@ -11,12 +17,20 @@
     <app-room-card
       [room]="room"
       [players]="playersByRoom[room.id!]"
-      (deleteEvent)="openDialog(room.id!)"
-      title="Résultats"
+      (deleteEvent)="deleteRoom(room.id!)"
     ></app-room-card>
     }
   </div>
   } @else {
+  <div class="players">
+    @for (player of players; track $index) {
+    <app-player-card
+      [player]="player"
+      (updateEvent)="updatePlayer($event)"
+    ></app-player-card>
+    }
+  </div>
+  } } @else {
   <mat-spinner></mat-spinner>
   }
 </section>

@@ -29,6 +29,16 @@ section .rooms {
   margin-bottom: 20px;
 }
 
+section .players {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
 .button-container {
   display: flex;
   justify-content: center;
@@ -84,21 +94,14 @@ mat-slide-toggle {
   max-width: 320px;
 }
 
-::ng-deep
-  .toggle-container.admin
-  .mat-mdc-slide-toggle
-  .mat-internal-form-field {
+::ng-deep .mat-mdc-slide-toggle .mat-internal-form-field {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
 }
 
-::ng-deep
-  .toggle-container.admin
-  .mat-mdc-slide-toggle
-  .mdc-switch:enabled
-  + .mdc-label {
+::ng-deep .mat-mdc-slide-toggle .mdc-switch:enabled + .mdc-label {
   font-size: 20px;
   font-weight: 500;
   color: var(--secondary);
