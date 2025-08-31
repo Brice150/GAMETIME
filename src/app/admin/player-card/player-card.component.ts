@@ -41,7 +41,14 @@ export class PlayerCardComponent implements OnInit {
 
   ngOnInit(): void {
     this.playerForm = this.fb.group({
-      username: [this.player().username, Validators.required],
+      username: [
+        this.player().username,
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(40),
+        ],
+      ],
       drapeauxMedalsNumber: [
         this.player().stats.filter(
           (stat) => stat.gameName === this.drapeauxGameKey
