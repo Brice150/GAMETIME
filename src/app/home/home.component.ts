@@ -49,15 +49,17 @@ export class HomeComponent implements OnDestroy {
   play(): void {
     this.loading = true;
 
+    const roomCode = this.roomService.generateRoomCode();
+
     const newRoom = {
-      gameName: 'room',
+      gameName: roomCode,
       playerIds: [this.playerService.currentPlayerSig()?.userId!],
       isStarted: false,
       startDate: null,
       startAgainNumber: 0,
       isCreatedByAdmin: false,
       isReadyNotificationActivated: false,
-      roomCode: this.roomService.generateRoomCode(),
+      roomCode: roomCode,
     };
 
     this.roomService

@@ -148,15 +148,17 @@ export class AdminComponent implements OnInit {
   addRoom(): void {
     this.loading = true;
 
+    const roomCode = this.roomService.generateRoomCode();
+
     const newRoom = {
-      gameName: 'room',
+      gameName: roomCode,
       playerIds: [] as string[],
       isStarted: false,
       startDate: null,
       startAgainNumber: 0,
       isCreatedByAdmin: true,
       isReadyNotificationActivated: false,
-      roomCode: this.roomService.generateRoomCode(),
+      roomCode: roomCode,
     };
 
     this.roomService

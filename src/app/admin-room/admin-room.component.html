@@ -1,5 +1,6 @@
 <section>
   @if (!loading) { @if (room.startDate) {
+  <span class="description-title first">{{ room.gameName | uppercase }}</span>
   <span class="description-title"
     >Commencé le {{ room.startDate | customDate }}</span
   >

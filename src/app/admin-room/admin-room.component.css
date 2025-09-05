@@ -16,6 +16,12 @@ section .description-title {
   width: 90%;
 }
 
+section .description-title.first {
+  font-weight: 800;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+
 mat-spinner {
   position: absolute;
   top: 50%;
