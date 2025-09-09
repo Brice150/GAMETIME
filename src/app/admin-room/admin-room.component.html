@@ -1,6 +1,8 @@
 <section>
   @if (!loading) { @if (room.startDate) {
-  <span class="description-title first">{{ room.gameName | uppercase }}</span>
+  <span class="description-title first"
+    >{{ room.gameName | uppercase }} | {{ room.roomCode | uppercase }}</span
+  >
   <span class="description-title"
     >Commencé le {{ room.startDate | customDate }}</span
   >
@@ -126,6 +128,11 @@
     <button type="button" (click)="stop()" title="Arrêter" class="delete">
       <i class="bx bxs-error-alt"></i>
       <span class="text">Arrêter</span>
+    </button>
+    } @if(!room.isCreatedByAdmin) {
+    <button type="button" (click)="joinRoom()" title="Rejoindre" class="share">
+      <i class="bx bxs-door-open"></i>
+      <span class="text">Rejoindre</span>
     </button>
     }
   </div>

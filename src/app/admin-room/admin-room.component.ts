@@ -2,25 +2,25 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { filter, of, Subject, switchMap, takeUntil } from 'rxjs';
+import { gameMap } from 'src/assets/data/games';
+import { Player } from '../core/interfaces/player';
 import { Room } from '../core/interfaces/room';
+import { RoomForm } from '../core/interfaces/room-form';
 import { LocalStorageService } from '../core/services/local-storage.service';
 import { PlayerService } from '../core/services/player.service';
 import { RoomService } from '../core/services/room.service';
-import { DurationBetweenDatesPipe } from '../shared/pipes/duration.pipe';
-import { Player } from '../core/interfaces/player';
-import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
 import { AddRoomDialogComponent } from '../shared/components/add-room-dialog/add-room-dialog.component';
-import { RoomForm } from '../core/interfaces/room-form';
-import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { MultiplayerDialogComponent } from '../shared/components/multiplayer-dialog/multiplayer-dialog.component';
-import { gameMap } from 'src/assets/data/games';
 import { CustomDatePipe } from '../shared/pipes/custom-date.pipe';
+import { DurationBetweenDatesPipe } from '../shared/pipes/duration.pipe';
+import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
 
 @Component({
   selector: 'app-admin-room',
@@ -296,5 +296,9 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe();
+  }
+
+  joinRoom(): void {
+    this.router.navigate(['/room', this.room.id]);
   }
 }

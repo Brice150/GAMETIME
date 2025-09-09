@@ -95,7 +95,8 @@
       </button>
     </mat-menu>
   </div>
-  @if (isRoomPage() && room?.isStarted && !player().isOver) {
+  @if (isRoomPage() && room?.isStarted && !player().isOver && !room?.isLoading)
+  {
   <div class="switch-container medals-container">
     <div class="medals">
       <span class="victory-number">{{

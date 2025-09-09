@@ -208,7 +208,8 @@ export class RoomComponent implements OnInit, OnDestroy {
             this.isResultPageActive = true;
           } else if (
             this.playerService.currentPlayerSig()?.currentRoomWins?.length ===
-            this.room.responses?.length
+              this.room.responses?.length &&
+            !this.room.isLoading
           ) {
             this.isSeeResultsAvailable = true;
           } else {
@@ -216,7 +217,7 @@ export class RoomComponent implements OnInit, OnDestroy {
           }
           this.roomService.currentRoomSig.set(this.room);
           this.playerService.currentPlayersSig.set(this.players);
-          this.loading = false;
+          this.loading = this.room.isLoading ?? false;
         },
         error: (error: HttpErrorResponse) => {
           this.loading = false;
@@ -487,22 +488,8 @@ export class RoomComponent implements OnInit, OnDestroy {
     this.room.countries = [];
     this.room.brands = [];
     this.room.responses = [];
-    this.room.startDate = new Date();
-    this.room.startAgainNumber += 1;
-    this.room.isStarted = true;
     this.room.isReadyNotificationActivated = false;
-
-    this.roomService.generateResponses(
-      this.room.gameName,
-      this.room.stepsNumber,
-      this.room.continentFilter,
-      this.room.categoryFilter,
-      this.room.isWordLengthIncreasing,
-      this.room.startWordLength,
-      this.room.countries,
-      this.room.brands,
-      this.room.responses
-    );
+    this.room.isLoading = true;
 
     this.roomService
       .updateRoom(this.room)
@@ -516,6 +503,26 @@ export class RoomComponent implements OnInit, OnDestroy {
             player.currentRoomWins = [];
           });
           return this.playerService.updatePlayers(this.players);
+        }),
+        switchMap(() => {
+          this.room.startDate = new Date();
+          this.room.startAgainNumber += 1;
+          this.room.isStarted = true;
+
+          this.roomService.generateResponses(
+            this.room.gameName,
+            this.room.stepsNumber,
+            this.room.continentFilter,
+            this.room.categoryFilter,
+            this.room.isWordLengthIncreasing,
+            this.room.startWordLength,
+            this.room.countries,
+            this.room.brands,
+            this.room.responses
+          );
+
+          this.room.isLoading = false;
+          return this.roomService.updateRoom(this.room);
         })
       )
       .subscribe({
@@ -525,13 +532,14 @@ export class RoomComponent implements OnInit, OnDestroy {
             this.room.startAgainNumber
           );
           this.isResultPageActive = false;
+
           this.roomService.currentRoomSig.set(this.room);
           this.playerService.currentPlayersSig.set(this.players);
           this.playerService.currentPlayerSig.set(
-            this.players.filter(
+            this.players.find(
               (player) =>
                 player.userId === this.playerService.currentPlayerSig()?.userId
-            )[0]
+            )!
           );
 
           this.loading = false;

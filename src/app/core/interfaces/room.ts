@@ -21,4 +21,5 @@ export interface Room {
   isCreatedByAdmin: boolean;
   isReadyNotificationActivated: boolean;
   roomCode: string;
+  isLoading?: boolean;
 }
