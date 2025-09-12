@@ -6,6 +6,6 @@ export interface RoomForm {
   stepsNumber: number;
   isWordLengthIncreasing: boolean;
   startWordLength: number;
-  continentFilter: number;
   categoryFilter: number;
+  difficultyFilter: number;
 }

@@ -6,6 +6,7 @@ import {
   LOCALE_ID,
   provideZoneChangeDetection,
 } from '@angular/core';
+import { getAI, GoogleAIBackend } from '@angular/fire/ai';
 import {
   FirebaseApp,
   initializeApp,
@@ -22,6 +23,8 @@ import { routes } from './app.routes';
 
 const firebaseApp: FirebaseApp = initializeApp(environment.firebase);
 
+const ai = getAI(firebaseApp, { backend: new GoogleAIBackend() });
+
 registerLocaleData(localeFr);
 
 export const appConfig: ApplicationConfig = {
@@ -36,6 +39,10 @@ export const appConfig: ApplicationConfig = {
     provideFirestore(() => getFirestore()),
     { provide: MAT_DATE_LOCALE, useValue: 'fr-FR' },
     { provide: LOCALE_ID, useValue: 'fr-FR' },
+    {
+      provide: 'AI',
+      useValue: ai,
+    },
     {
       provide: GoogleAuthProvider,
       useValue: new GoogleAuthProvider(),

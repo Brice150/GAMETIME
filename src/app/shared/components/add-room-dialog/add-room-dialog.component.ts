@@ -28,8 +28,8 @@ export class AddRoomDialogComponent implements OnInit {
   games = games;
   stepsNumber: number = 3;
   startWordLength: number = 5;
-  continentFilter: number = 1;
   categoryFilter: number = 1;
+  difficultyFilter: number = 2;
   isWordLengthIncreasing = true;
   showFirstLetterMotus = true;
   showFirstLetterDrapeaux = false;
@@ -37,27 +37,9 @@ export class AddRoomDialogComponent implements OnInit {
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
   marquesGameKey = gameMap['marques'].key;
+  quizGameKey = gameMap['quiz'].key;
   gameSelected: string = this.drapeauxGameKey;
   startAgainMode = false;
-
-  get dynamicSliderValue(): number {
-    if (this.gameSelected === this.motusGameKey) return this.startWordLength;
-    else if (this.gameSelected === this.drapeauxGameKey)
-      return this.continentFilter;
-    else if (this.gameSelected === this.marquesGameKey)
-      return this.categoryFilter;
-    return this.startWordLength;
-  }
-
-  set dynamicSliderValue(value: number) {
-    if (this.gameSelected === this.motusGameKey) {
-      this.startWordLength = value;
-    } else if (this.gameSelected === this.drapeauxGameKey) {
-      this.continentFilter = value;
-    } else if (this.gameSelected === this.marquesGameKey) {
-      this.categoryFilter = value;
-    }
-  }
 
   get maxWordLength(): number {
     if (this.isWordLengthIncreasing) {
@@ -91,8 +73,8 @@ export class AddRoomDialogComponent implements OnInit {
     return continentLabels[index];
   }
 
-  formatLabelCategory(index: number): string {
-    const categoryLabels = [
+  formatLabelMarques(index: number): string {
+    const marquesLabels = [
       '', // index 0 unused
       'Tout',
       'Voitures',
@@ -100,11 +82,30 @@ export class AddRoomDialogComponent implements OnInit {
       'Mode',
       'Aliments',
     ];
-    return categoryLabels[index];
+    return marquesLabels[index];
   }
 
-  defaultFormatLabel(value: number): string {
-    return value.toString();
+  formatLabelQuizCategory(index: number): string {
+    const quizLabels = [
+      '', // index 0 unused
+      'Général',
+      'Sciences',
+      'Histoire',
+      'Géographie',
+      'Arts',
+      'Sport',
+    ];
+    return quizLabels[index];
+  }
+
+  formatLabelQuizDifficulty(index: number): string {
+    const quizLabels = [
+      '', // index 0 unused
+      'Facile',
+      'Moyenne',
+      'Difficile',
+    ];
+    return quizLabels[index];
   }
 
   cancel(): void {
@@ -120,8 +121,8 @@ export class AddRoomDialogComponent implements OnInit {
       stepsNumber: this.stepsNumber,
       isWordLengthIncreasing: this.isWordLengthIncreasing,
       startWordLength: this.startWordLength,
-      continentFilter: this.continentFilter,
       categoryFilter: this.categoryFilter,
+      difficultyFilter: this.difficultyFilter,
     } as RoomForm);
   }
 

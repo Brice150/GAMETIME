@@ -40,6 +40,7 @@ export class RoomService {
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
   marquesGameKey = gameMap['marques'].key;
+  quizGameKey = gameMap['quiz'].key;
   currentRoomSig = signal<Room | null | undefined>(undefined);
 
   readonly roomReady$ = toObservable(computed(() => this.currentRoomSig()));
@@ -110,64 +111,6 @@ export class RoomService {
     );
   }
 
-  startRoom(
-    gameSelected: string,
-    showFirstLetterMotus: boolean,
-    showFirstLetterDrapeaux: boolean,
-    showFirstLetterMarques: boolean,
-    stepsNumber: number,
-    isWordLengthIncreasing: boolean,
-    startWordLength: number,
-    continentFilter: number,
-    categoryFilter: number,
-    playerId: string,
-    isCreatedByAdmin: boolean
-  ): Room {
-    let showFirstLetter: boolean = false;
-    if (gameSelected === this.motusGameKey)
-      showFirstLetter = showFirstLetterMotus;
-    else if (gameSelected === this.drapeauxGameKey)
-      showFirstLetter = showFirstLetterDrapeaux;
-    else if (gameSelected === this.marquesGameKey)
-      showFirstLetter = showFirstLetterMarques;
-
-    let countries: Country[] = [];
-    let brands: Brand[] = [];
-    let responses: string[] = [];
-
-    this.generateResponses(
-      gameSelected,
-      stepsNumber,
-      continentFilter,
-      categoryFilter,
-      isWordLengthIncreasing,
-      startWordLength,
-      countries,
-      brands,
-      responses
-    );
-
-    return {
-      gameName: gameSelected,
-      playerIds: !isCreatedByAdmin ? [playerId] : [],
-      isStarted: false,
-      showFirstLetter: showFirstLetter,
-      stepsNumber: stepsNumber,
-      continentFilter: continentFilter,
-      categoryFilter: categoryFilter,
-      isWordLengthIncreasing: isWordLengthIncreasing,
-      startWordLength: startWordLength,
-      responses: responses,
-      countries: countries,
-      brands: brands,
-      startDate: null,
-      startAgainNumber: 0,
-      isCreatedByAdmin: isCreatedByAdmin,
-      isReadyNotificationActivated: false,
-      roomCode: this.generateRoomCode(),
-    };
-  }
-
   generateRoomCode(): string {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     let code = '';
@@ -180,7 +123,6 @@ export class RoomService {
   generateResponses(
     gameSelected: string,
     stepsNumber: number,
-    continentFilter: number,
     categoryFilter: number,
     isWordLengthIncreasing: boolean,
     startWordLength: number,
@@ -191,7 +133,7 @@ export class RoomService {
     if (gameSelected === this.drapeauxGameKey) {
       const generatedCountries = this.generateCountries(
         stepsNumber,
-        continentFilter
+        categoryFilter
       );
       countries.splice(0, countries.length, ...generatedCountries);
       responses.splice(

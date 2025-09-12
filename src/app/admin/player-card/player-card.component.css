@@ -166,14 +166,14 @@ button i {
   color: var(--accent) !important;
 }
 
-@media screen and (max-width: 720px) {
+@media screen and (max-width: 740px) {
   form {
     flex-direction: column;
     gap: 2px;
   }
 }
 
-@media screen and (max-width: 340px) {
+@media screen and (max-width: 450px) {
   form .container {
     flex-direction: column;
   }

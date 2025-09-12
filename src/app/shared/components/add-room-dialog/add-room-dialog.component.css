@@ -220,17 +220,17 @@ mat-slide-toggle {
   fill: var(--primary) !important;
 }
 
-::ng-deep .showContinent .mdc-slider__value-indicator-container {
+::ng-deep .showLarger .mdc-slider__value-indicator-container {
   transform: none !important;
   left: -25% !important;
 }
 
-::ng-deep .showContinent .mdc-slider__value-indicator {
+::ng-deep .showLarger .mdc-slider__value-indicator {
   width: 70px !important;
   border-radius: var(--light-radius) !important;
 }
 
-::ng-deep .showContinent .mdc-slider__value-indicator-text {
+::ng-deep .showLarger .mdc-slider__value-indicator-text {
   transform: none !important;
   width: 70px !important;
 }

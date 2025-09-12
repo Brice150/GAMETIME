@@ -5,12 +5,13 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { filter, of, Subject, switchMap, takeUntil } from 'rxjs';
+import { filter, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { gameMap } from 'src/assets/data/games';
 import { goals } from 'src/assets/data/goals';
 import { Player } from '../core/interfaces/player';
 import { Room } from '../core/interfaces/room';
 import { RoomForm } from '../core/interfaces/room-form';
+import { AiService } from '../core/services/ai.service';
 import { LocalStorageService } from '../core/services/local-storage.service';
 import { PlayerService } from '../core/services/player.service';
 import { RoomService } from '../core/services/room.service';
@@ -40,6 +41,7 @@ export class RoomComponent implements OnInit, OnDestroy {
   toastr = inject(ToastrService);
   activatedRoute = inject(ActivatedRoute);
   localStorageService = inject(LocalStorageService);
+  aiService = inject(AiService);
   dialog = inject(MatDialog);
   destroyed$ = new Subject<void>();
   loading: boolean = true;
@@ -53,6 +55,7 @@ export class RoomComponent implements OnInit, OnDestroy {
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
   marquesGameKey = gameMap['marques'].key;
+  quizGameKey = gameMap['quiz'].key;
   goals = goals;
   @ViewChild(WordGamesComponent) wordGamesComponent!: WordGamesComponent;
 
@@ -487,6 +490,7 @@ export class RoomComponent implements OnInit, OnDestroy {
 
     this.room.countries = [];
     this.room.brands = [];
+    this.room.questions = [];
     this.room.responses = [];
     this.room.isReadyNotificationActivated = false;
     this.room.isLoading = true;
@@ -509,10 +513,19 @@ export class RoomComponent implements OnInit, OnDestroy {
           this.room.startAgainNumber += 1;
           this.room.isStarted = true;
 
+          if (this.room.gameName === this.quizGameKey) {
+            this.aiService.generate(this.room).pipe(
+              tap((response) => {
+                const AiResponse = this.aiService.getAiResponse(response);
+                this.room.questions = AiResponse.questions;
+                this.room.responses = AiResponse.responses;
+              })
+            );
+          }
+
           this.roomService.generateResponses(
             this.room.gameName,
             this.room.stepsNumber,
-            this.room.continentFilter,
             this.room.categoryFilter,
             this.room.isWordLengthIncreasing,
             this.room.startWordLength,
@@ -521,6 +534,10 @@ export class RoomComponent implements OnInit, OnDestroy {
             this.room.responses
           );
 
+          return of(this.room);
+        }),
+        switchMap((room) => {
+          this.room = room;
           this.room.isLoading = false;
           return this.roomService.updateRoom(this.room);
         })
@@ -636,7 +653,7 @@ export class RoomComponent implements OnInit, OnDestroy {
               this.room.showFirstLetter = roomData.showFirstLetterMarques;
             }
             this.room.stepsNumber = roomData.stepsNumber;
-            this.room.continentFilter = roomData.continentFilter;
+            this.room.difficultyFilter = roomData.difficultyFilter;
             this.room.categoryFilter = roomData.categoryFilter;
             this.room.isWordLengthIncreasing = roomData.isWordLengthIncreasing;
             this.room.startWordLength = roomData.startWordLength;

@@ -37,6 +37,7 @@ export class PlayerCardComponent implements OnInit {
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
   marquesGameKey = gameMap['marques'].key;
+  quizGameKey = gameMap['quiz'].key;
   @Output() updateEvent = new EventEmitter<Player>();
 
   ngOnInit(): void {
@@ -50,21 +51,25 @@ export class PlayerCardComponent implements OnInit {
         ],
       ],
       drapeauxMedalsNumber: [
-        this.player().stats.filter(
+        this.player().stats.find(
           (stat) => stat.gameName === this.drapeauxGameKey
-        )[0].medalsNumber,
+        )?.medalsNumber,
         [Validators.required, Validators.min(0), Validators.max(99999)],
       ],
       marquesMedalsNumber: [
-        this.player().stats.filter(
+        this.player().stats.find(
           (stat) => stat.gameName === this.marquesGameKey
-        )[0].medalsNumber,
+        )?.medalsNumber,
         [Validators.required, Validators.min(0), Validators.max(99999)],
       ],
       motusMedalsNumber: [
-        this.player().stats.filter(
-          (stat) => stat.gameName === this.motusGameKey
-        )[0].medalsNumber,
+        this.player().stats.find((stat) => stat.gameName === this.motusGameKey)
+          ?.medalsNumber,
+        [Validators.required, Validators.min(0), Validators.max(99999)],
+      ],
+      quizMedalsNumber: [
+        this.player().stats.find((stat) => stat.gameName === this.quizGameKey)
+          ?.medalsNumber,
         [Validators.required, Validators.min(0), Validators.max(99999)],
       ],
     });
@@ -84,11 +89,15 @@ export class PlayerCardComponent implements OnInit {
         gameName: this.marquesGameKey,
         medalsNumber: this.playerForm.value.marquesMedalsNumber,
       };
+      const statQuiz: Stat = {
+        gameName: this.quizGameKey,
+        medalsNumber: this.playerForm.value.quizMedalsNumber,
+      };
 
       const updatedPlayer: Player = {
         ...this.player(),
         username: this.playerForm.value.username,
-        stats: [statMotus, statDrapeaux, statMarques],
+        stats: [statMotus, statDrapeaux, statMarques, statQuiz],
       };
       this.updateEvent.emit(updatedPlayer);
       this.playerForm.markAsPristine();

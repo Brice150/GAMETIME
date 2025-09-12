@@ -8,13 +8,13 @@ import { MatSliderModule } from '@angular/material/slider';
 import { Router, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Subject, switchMap, take, takeUntil } from 'rxjs';
-import { gameMap, games } from 'src/assets/data/games';
+import { games } from 'src/assets/data/games';
+import { Room } from '../core/interfaces/room';
 import { LocalStorageService } from '../core/services/local-storage.service';
 import { PlayerService } from '../core/services/player.service';
 import { RoomService } from '../core/services/room.service';
 import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
 import { JoinRoomComponent } from './join-room/join-room.component';
-import { Room } from '../core/interfaces/room';
 
 @Component({
   selector: 'app-home',

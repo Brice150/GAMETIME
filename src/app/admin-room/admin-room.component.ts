@@ -8,10 +8,12 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { filter, of, Subject, switchMap, takeUntil } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { gameMap } from 'src/assets/data/games';
 import { Player } from '../core/interfaces/player';
 import { Room } from '../core/interfaces/room';
 import { RoomForm } from '../core/interfaces/room-form';
+import { AiService } from '../core/services/ai.service';
 import { LocalStorageService } from '../core/services/local-storage.service';
 import { PlayerService } from '../core/services/player.service';
 import { RoomService } from '../core/services/room.service';
@@ -46,6 +48,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
   playerService = inject(PlayerService);
   toastr = inject(ToastrService);
   localStorageService = inject(LocalStorageService);
+  aiService = inject(AiService);
   dialog = inject(MatDialog);
   router = inject(Router);
   destroyed$ = new Subject<void>();
@@ -53,6 +56,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
   marquesGameKey = gameMap['marques'].key;
+  quizGameKey = gameMap['quiz'].key;
 
   ngOnInit(): void {
     this.activatedRoute.params
@@ -141,24 +145,11 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
     this.loading = true;
 
     this.room.countries = [];
-    this.room.responses = [];
     this.room.brands = [];
-    this.room.isStarted = true;
-    this.room.startDate = new Date();
-    this.room.startAgainNumber += 1;
-    this.room.isStarted = true;
-
-    this.roomService.generateResponses(
-      this.room.gameName,
-      this.room.stepsNumber,
-      this.room.continentFilter,
-      this.room.categoryFilter,
-      this.room.isWordLengthIncreasing,
-      this.room.startWordLength,
-      this.room.countries,
-      this.room.brands,
-      this.room.responses
-    );
+    this.room.questions = [];
+    this.room.responses = [];
+    this.room.isReadyNotificationActivated = false;
+    this.room.isLoading = true;
 
     this.roomService
       .updateRoom(this.room)
@@ -168,11 +159,43 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
           this.players.forEach((player) => {
             player.isOver = false;
             player.finishDate = null;
+            player.isReady = false;
             player.currentRoomWins = [];
           });
-          return this.playerService
-            .updatePlayers(this.players)
-            .pipe(takeUntil(this.destroyed$));
+          return this.playerService.updatePlayers(this.players);
+        }),
+        switchMap(() => {
+          this.room.startDate = new Date();
+          this.room.startAgainNumber += 1;
+          this.room.isStarted = true;
+
+          if (this.room.gameName === this.quizGameKey) {
+            this.aiService.generate(this.room).pipe(
+              tap((response) => {
+                const AiResponse = this.aiService.getAiResponse(response);
+                this.room.questions = AiResponse.questions;
+                this.room.responses = AiResponse.responses;
+              })
+            );
+          }
+
+          this.roomService.generateResponses(
+            this.room.gameName,
+            this.room.stepsNumber,
+            this.room.categoryFilter,
+            this.room.isWordLengthIncreasing,
+            this.room.startWordLength,
+            this.room.countries,
+            this.room.brands,
+            this.room.responses
+          );
+
+          return of(this.room);
+        }),
+        switchMap((room) => {
+          this.room = room;
+          this.room.isLoading = false;
+          return this.roomService.updateRoom(this.room);
         })
       )
       .subscribe({
@@ -267,7 +290,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
               this.room.showFirstLetter = roomData.showFirstLetterMarques;
             }
             this.room.stepsNumber = roomData.stepsNumber;
-            this.room.continentFilter = roomData.continentFilter;
+            this.room.difficultyFilter = roomData.difficultyFilter;
             this.room.categoryFilter = roomData.categoryFilter;
             this.room.isWordLengthIncreasing = roomData.isWordLengthIncreasing;
             this.room.startWordLength = roomData.startWordLength;

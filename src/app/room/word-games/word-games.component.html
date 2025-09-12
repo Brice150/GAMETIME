@@ -2,7 +2,7 @@
 marquesGameKey) {
 <div class="container">
   @if (room().gameName === drapeauxGameKey) {
-  <span class="continent">{{ room().continentFilter | continent }}</span>
+  <span class="continent">{{ room().categoryFilter | continent }}</span>
   } @else if (room().gameName === marquesGameKey) {
   <span class="continent">{{ room().categoryFilter | category }}</span>
   }

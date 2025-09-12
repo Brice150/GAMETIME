@@ -41,11 +41,13 @@ export class SuccessComponent implements OnInit, OnDestroy {
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
   marquesGameKey = gameMap['marques'].key;
+  quizGameKey = gameMap['quiz'].key;
   gameSelected: string = this.drapeauxGameKey;
   isDrapeauSelected = true;
   motusMedalsNumber = 0;
   drapeauxMedalsNumber = 0;
   marquesMedalsNumber = 0;
+  quizMedalsNumber = 0;
   goals = goals;
 
   get currentMedals(): number {
@@ -54,6 +56,7 @@ export class SuccessComponent implements OnInit, OnDestroy {
       return this.drapeauxMedalsNumber;
     if (this.gameSelected === this.marquesGameKey)
       return this.marquesMedalsNumber;
+    if (this.gameSelected === this.quizGameKey) return this.quizMedalsNumber;
     return 0;
   }
 
@@ -87,6 +90,10 @@ export class SuccessComponent implements OnInit, OnDestroy {
     );
     this.drapeauxMedalsNumber = this.medalsNumberPipe.transform(
       this.drapeauxGameKey,
+      this.playerService.currentPlayerSig()!
+    );
+    this.marquesMedalsNumber = this.medalsNumberPipe.transform(
+      this.marquesGameKey,
       this.playerService.currentPlayerSig()!
     );
     this.marquesMedalsNumber = this.medalsNumberPipe.transform(
