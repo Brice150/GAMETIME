@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { filter, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import { filter, map, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { gameMap } from 'src/assets/data/games';
 import { goals } from 'src/assets/data/goals';
 import { Player } from '../core/interfaces/player';
@@ -514,12 +514,13 @@ export class RoomComponent implements OnInit, OnDestroy {
           this.room.isStarted = true;
 
           if (this.room.gameName === this.quizGameKey) {
-            this.aiService.generate(this.room).pipe(
+            return this.aiService.generate(this.room).pipe(
               tap((response) => {
                 const AiResponse = this.aiService.getAiResponse(response);
                 this.room.questions = AiResponse.questions;
                 this.room.responses = AiResponse.responses;
-              })
+              }),
+              map(() => this.room)
             );
           }
 

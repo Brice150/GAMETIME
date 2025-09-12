@@ -8,7 +8,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { filter, of, Subject, switchMap, takeUntil } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { gameMap } from 'src/assets/data/games';
 import { Player } from '../core/interfaces/player';
 import { Room } from '../core/interfaces/room';
@@ -170,12 +170,13 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
           this.room.isStarted = true;
 
           if (this.room.gameName === this.quizGameKey) {
-            this.aiService.generate(this.room).pipe(
+            return this.aiService.generate(this.room).pipe(
               tap((response) => {
                 const AiResponse = this.aiService.getAiResponse(response);
                 this.room.questions = AiResponse.questions;
                 this.room.responses = AiResponse.responses;
-              })
+              }),
+              map(() => this.room)
             );
           }
 
