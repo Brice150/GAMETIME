@@ -60,6 +60,7 @@ export class RoomComponent implements OnInit, OnDestroy {
   quizGameKey = gameMap['quiz'].key;
   goals = goals;
   @ViewChild(WordGamesComponent) wordGamesComponent!: WordGamesComponent;
+  @ViewChild(AiGamesComponent) aiGamesComponent!: AiGamesComponent;
 
   ngOnInit(): void {
     this.activatedRoute.params
@@ -450,7 +451,11 @@ export class RoomComponent implements OnInit, OnDestroy {
   }
 
   next(): void {
-    this.wordGamesComponent?.new();
+    if (this.room.gameName === this.quizGameKey) {
+      this.aiGamesComponent?.new();
+    } else {
+      this.wordGamesComponent?.new();
+    }
     this.isNextButtonAvailable = false;
   }
 

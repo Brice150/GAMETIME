@@ -6,7 +6,7 @@
     [player]="playerService.currentPlayerSig()!"
     (finishedStepEvent)="updatePlayerGame($event)"
   ></app-word-games>
-  }@else {
+  } @else {
   <app-ai-games
     [room]="room"
     [player]="playerService.currentPlayerSig()!"
