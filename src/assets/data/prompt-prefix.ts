@@ -11,10 +11,10 @@ Le quiz doit respecter le format suivant :
     {
       "description": "[énoncé clair en français, adapté au thème et à la difficulté, compatible avec des réponses courtes]",
       "answers": [
-        "[réponse correcte, max 3 mots]",
-        "[mauvaise réponse 1, max 3 mots]",
-        "[mauvaise réponse 2, max 3 mots]",
-        "[mauvaise réponse 3, max 3 mots]"
+        "[réponse (correcte ou non), max 3 mots]",
+        "[réponse (correcte ou non), max 3 mots]",
+        "[réponse (correcte ou non), max 3 mots]",
+        "[réponse (correcte ou non), max 3 mots]"
       ]
     }
   ],
@@ -26,7 +26,7 @@ Le quiz doit respecter le format suivant :
 Règles à suivre :
 - Générer exactement [stepsNumber] questions.
 - Chaque question doit avoir **4 réponses** : 1 correcte et 3 incorrectes.
-- La réponse correcte doit toujours apparaître dans le tableau \`answers\` ET dans le tableau \`responses\`.
+- La réponse correcte doit être placée **dans une position aléatoire** dans \`answers\`, et listée dans \`responses\` dans l'ordre des questions.
 - Les réponses doivent être plausibles, cohérentes avec le thème et la difficulté, et comporter **au maximum trois mots**.
 - Les questions doivent être formulées de manière concise pour correspondre à des réponses de trois mots ou moins.
 - Le JSON ne doit contenir **que** les champs \`questions\` et \`responses\`.
@@ -38,11 +38,11 @@ Exemple (pour 2 questions, thème “géographie”, difficulté “facile”) :
   "questions": [
     {
       "description": "Quelle est la capitale française ?",
-      "answers": ["Paris", "Lyon", "Marseille", "Nice"]
+      "answers": ["Lyon", "Paris", "Nice", "Marseille"]
     },
     {
       "description": "Plus grand continent ?",
-      "answers": ["Asie", "Europe", "Afrique", "Amérique Sud"]
+      "answers": ["Europe", "Afrique", "Asie", "Amérique Sud"]
     }
   ],
   "responses": ["Paris", "Asie"]

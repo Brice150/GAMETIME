@@ -9,6 +9,7 @@
   }@else {
   <app-ai-games
     [room]="room"
+    [player]="playerService.currentPlayerSig()!"
     (finishedStepEvent)="updatePlayerGame($event)"
   ></app-ai-games>
   }} @else {

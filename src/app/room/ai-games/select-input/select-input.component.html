@@ -1,0 +1,20 @@
+<div class="container">
+  <div class="question">
+    <span>{{ room().questions[index].description }}</span>
+  </div>
+  <div class="answers">
+    @for (answer of room().questions[index].answers; track $index) {
+    <div
+      class="answer"
+      (click)="submitAnswer(answer)"
+      [title]="answer"
+      [ngClass]="{
+        right: isOver && answer === room().responses[index],
+        wrong: isOver && answer !== room().responses[index]
+      }"
+    >
+      <span>{{ answer }}</span>
+    </div>
+    }
+  </div>
+</div>

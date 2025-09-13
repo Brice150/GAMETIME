@@ -1,1 +1,13 @@
-<p>ai-games works!</p>
+@if (!isOver) {
+<div class="container">
+  <span class="description"
+    >{{ room().categoryFilter | quizCategory }} |
+    {{ room().difficultyFilter | difficulty }}</span
+  >
+</div>
+<app-select-input
+  [index]="index"
+  [room]="room()"
+  (emitEvent)="handleEvent($event)"
+></app-select-input>
+}

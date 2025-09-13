@@ -1,0 +1,82 @@
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 90%;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.container .question {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--primary);
+  padding: 10px;
+  border-radius: var(--light-radius);
+  max-width: 1000px;
+}
+
+.container .question span {
+  color: var(--accent);
+  font-size: 20px;
+  text-align: center;
+}
+
+.container .answers {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.container .answers .answer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--primary);
+  color: var(--accent);
+  padding: 5px;
+  border-radius: var(--light-radius);
+  cursor: pointer;
+  min-width: 135px;
+  max-width: 400px;
+  min-height: 80px;
+  transition: 0.5s ease;
+}
+
+.container .answers .answer.right {
+  background-color: green;
+  color: var(--primary);
+  cursor: default;
+}
+
+.container .answers .answer.wrong {
+  background-color: red;
+  color: var(--primary);
+  cursor: default;
+}
+
+.container .answers .answer:not(.right):not(.wrong):hover {
+  background-color: var(--accent);
+  color: var(--primary);
+}
+
+.container .answers .answer span {
+  font-size: 20px;
+  text-align: center;
+}
+
+@media (max-width: 370px) {
+  .container .answers {
+    grid-template-columns: 1fr;
+  }
+}
