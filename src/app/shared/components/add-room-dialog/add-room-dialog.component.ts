@@ -7,6 +7,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSliderModule } from '@angular/material/slider';
+import { BrandCategory } from 'src/app/core/enums/brand-category.enum';
+import { Continent } from 'src/app/core/enums/continent.enum';
+import { Difficulty } from 'src/app/core/enums/difficulty.enum';
+import { QuizCategory } from 'src/app/core/enums/quiz-category.enum';
 import { RoomForm } from 'src/app/core/interfaces/room-form';
 import { gameMap, games } from 'src/assets/data/games';
 
@@ -60,52 +64,19 @@ export class AddRoomDialogComponent implements OnInit {
   }
 
   formatLabelContinent(index: number): string {
-    const continentLabels = [
-      '', // index 0 unused
-      'Monde',
-      'Europe',
-      'Asie',
-      'Afrique',
-      'Amérique',
-      'Océanie',
-    ];
-
-    return continentLabels[index];
+    return Continent[index] ?? Continent[1];
   }
 
   formatLabelMarques(index: number): string {
-    const marquesLabels = [
-      '', // index 0 unused
-      'Tout',
-      'Voitures',
-      'Digital',
-      'Mode',
-      'Aliments',
-    ];
-    return marquesLabels[index];
+    return BrandCategory[index] ?? BrandCategory[1];
   }
 
   formatLabelQuizCategory(index: number): string {
-    const quizLabels = [
-      '', // index 0 unused
-      'Général',
-      'Sciences',
-      'Histoire',
-      'Géographie',
-      'Arts',
-      'Sport',
-    ];
-    return quizLabels[index];
+    return QuizCategory[index] ?? QuizCategory[1];
   }
 
   formatLabelQuizDifficulty(index: number): string {
-    const quizLabels = [
-      '', // index 0 unused
-      'Facile',
-      'Moyenne',
-      'Difficile',
-    ];
-    return quizLabels[index];
+    return Difficulty[index] ?? Difficulty[2];
   }
 
   cancel(): void {

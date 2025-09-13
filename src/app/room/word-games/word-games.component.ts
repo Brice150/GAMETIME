@@ -15,7 +15,7 @@ import { Player } from 'src/app/core/interfaces/player';
 import { Room } from 'src/app/core/interfaces/room';
 import { ImageService } from 'src/app/core/services/image.service';
 import { gameMap } from 'src/assets/data/games';
-import { CategoryPipe } from '../../shared/pipes/category.pipe';
+import { BrandCategoryPipe } from '../../shared/pipes/brand-category.pipe';
 import { ContinentPipe } from '../../shared/pipes/continent.pipe';
 import { WordInputComponent } from './word-input/word-input.component';
 
@@ -26,7 +26,7 @@ import { WordInputComponent } from './word-input/word-input.component';
     WordInputComponent,
     MatProgressSpinnerModule,
     ContinentPipe,
-    CategoryPipe,
+    BrandCategoryPipe,
   ],
   templateUrl: './word-games.component.html',
   styleUrl: './word-games.component.css',

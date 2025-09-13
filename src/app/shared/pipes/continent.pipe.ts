@@ -7,6 +7,6 @@ import { Continent } from 'src/app/core/enums/continent.enum';
 })
 export class ContinentPipe implements PipeTransform {
   transform(continentFilter: number): string {
-    return Continent[continentFilter] ?? '';
+    return Continent[continentFilter] ?? Continent[1];
   }
 }

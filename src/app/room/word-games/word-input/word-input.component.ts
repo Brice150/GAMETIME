@@ -12,7 +12,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { Room } from 'src/app/core/interfaces/room';
-import { WordTry } from 'src/app/core/interfaces/wordTry';
+import { WordTry } from 'src/app/core/interfaces/word-try';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
 import { emojies } from 'src/assets/data/emojis';
 

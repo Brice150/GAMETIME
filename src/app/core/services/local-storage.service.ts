@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { WordTry } from '../interfaces/wordTry';
+import { WordTry } from '../interfaces/word-try';
 
 @Injectable({ providedIn: 'root' })
 export class LocalStorageService {

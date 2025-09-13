@@ -25,7 +25,7 @@ import { brands } from 'src/assets/data/brands';
 import { countries } from 'src/assets/data/countries';
 import { gameMap } from 'src/assets/data/games';
 import { words } from 'src/assets/data/words';
-import { BrandCategory } from '../enums/brand-category';
+import { BrandCategory } from '../enums/brand-category.enum';
 import { Continent } from '../enums/continent.enum';
 import { Brand } from '../interfaces/brand';
 import { Country } from '../interfaces/country';
