@@ -7,8 +7,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { filter, of, Subject, switchMap, takeUntil } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { filter, Observable, of, Subject, switchMap, takeUntil } from 'rxjs';
+import { map, retry, tap } from 'rxjs/operators';
 import { gameMap } from 'src/assets/data/games';
 import { Player } from '../core/interfaces/player';
 import { Room } from '../core/interfaces/room';
@@ -168,31 +168,9 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
           this.room.startDate = new Date();
           this.room.startAgainNumber += 1;
           this.room.isStarted = true;
-
-          if (this.room.gameName === this.quizGameKey) {
-            return this.aiService.generate(this.room).pipe(
-              tap((response) => {
-                const AiResponse = this.aiService.getAiResponse(response);
-                this.room.questions = AiResponse.questions;
-                this.room.responses = AiResponse.responses;
-              }),
-              map(() => this.room)
-            );
-          }
-
-          this.roomService.generateResponses(
-            this.room.gameName,
-            this.room.stepsNumber,
-            this.room.categoryFilter,
-            this.room.isWordLengthIncreasing,
-            this.room.startWordLength,
-            this.room.countries,
-            this.room.brands,
-            this.room.responses
-          );
-
-          return of(this.room);
+          return this.generateQuestions();
         }),
+        retry(2),
         switchMap((room) => {
           this.room = room;
           this.room.isLoading = false;
@@ -204,7 +182,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
           this.loading = false;
         },
         error: (error: HttpErrorResponse) => {
-          this.loading = false;
+          this.resetRoom();
           if (!error.message.includes('Missing or insufficient permissions.')) {
             this.toastr.error(error.message, 'Game Time', {
               positionClass: 'toast-top-center',
@@ -212,6 +190,46 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
             });
           }
         },
+      });
+  }
+
+  generateQuestions(): Observable<Room> {
+    if (this.room.gameName === this.quizGameKey) {
+      return this.aiService.generate(this.room).pipe(
+        tap((response) => {
+          const aiResponse = this.aiService.getAiResponse(response);
+          this.room.questions = aiResponse.questions;
+          this.room.responses = aiResponse.responses;
+        }),
+        map(() => this.room)
+      );
+    }
+
+    this.roomService.generateResponses(
+      this.room.gameName,
+      this.room.stepsNumber,
+      this.room.categoryFilter,
+      this.room.isWordLengthIncreasing,
+      this.room.startWordLength,
+      this.room.countries,
+      this.room.brands,
+      this.room.responses
+    );
+
+    return of(this.room);
+  }
+
+  resetRoom(): void {
+    this.room.isStarted = false;
+    this.room.startDate = null;
+    this.room.isReadyNotificationActivated = false;
+    this.room.isLoading = false;
+
+    this.roomService
+      .updateRoom(this.room)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(() => {
+        this.loading = false;
       });
   }
 
