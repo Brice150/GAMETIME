@@ -1,11 +1,17 @@
 <section>
-  @if(!loading) { @if (room.isStarted) { @if(!isResultPageActive) {
+  @if(!loading) { @if (room.isStarted) { @if(!isResultPageActive) { @if
+  (room.gameName !== quizGameKey) {
   <app-word-games
     [room]="room"
     [player]="playerService.currentPlayerSig()!"
     (finishedStepEvent)="updatePlayerGame($event)"
   ></app-word-games>
-  } @else {
+  }@else {
+  <app-ai-games
+    [room]="room"
+    (finishedStepEvent)="updatePlayerGame($event)"
+  ></app-ai-games>
+  }} @else {
   <app-results
     [room]="room"
     [player]="playerService.currentPlayerSig()!"
@@ -68,7 +74,7 @@
     </button>
     }
   </div>
-  } @else { @if (room.gameName === quizGameKey) {
+  } @else { @if (room.isLoading && room.gameName === quizGameKey) {
   <div class="ai-container">
     <mat-spinner class="ai"></mat-spinner>
     <span>L'IA génère les questions</span>

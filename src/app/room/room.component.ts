@@ -21,12 +21,14 @@ import { MultiplayerDialogComponent } from '../shared/components/multiplayer-dia
 import { ResultsComponent } from './results/results.component';
 import { WaitingRoomComponent } from './waiting-room/waiting-room.component';
 import { WordGamesComponent } from './word-games/word-games.component';
+import { AiGamesComponent } from './ai-games/ai-games.component';
 
 @Component({
   selector: 'app-room',
   imports: [
     CommonModule,
     WordGamesComponent,
+    AiGamesComponent,
     WaitingRoomComponent,
     ResultsComponent,
     MatProgressSpinnerModule,

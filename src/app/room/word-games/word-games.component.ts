@@ -9,7 +9,6 @@ import {
   Output,
 } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { ToastrService } from 'ngx-toastr';
 import { Subject, takeUntil } from 'rxjs';
 import { Player } from 'src/app/core/interfaces/player';
 import { Room } from 'src/app/core/interfaces/room';
@@ -37,7 +36,6 @@ export class WordGamesComponent implements OnInit, OnDestroy {
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
   marquesGameKey = gameMap['marques'].key;
-  toastr = inject(ToastrService);
   imageService = inject(ImageService);
   isOver = false;
   loading = false;

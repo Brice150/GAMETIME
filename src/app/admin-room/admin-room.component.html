@@ -136,7 +136,7 @@
     </button>
     }
   </div>
-  } @else { @if (room.gameName === quizGameKey) {
+  } @else { @if (room.isLoading && room.gameName === quizGameKey) {
   <div class="ai-container">
     <mat-spinner class="ai"></mat-spinner>
     <span>L'IA génère les questions</span>
