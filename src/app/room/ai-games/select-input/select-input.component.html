@@ -4,17 +4,17 @@
   </div>
   <div class="answers">
     @for (answer of room().questions[index].answers; track $index) {
-    <div
+    <button
+      type="button"
       class="answer"
       (click)="submitAnswer(answer)"
-      [title]="answer"
       [ngClass]="{
         right: isOver && answer === room().responses[index],
         wrong: isOver && answer !== room().responses[index]
       }"
     >
-      <span>{{ answer }}</span>
-    </div>
+      {{ answer }}
+    </button>
     }
   </div>
 </div>

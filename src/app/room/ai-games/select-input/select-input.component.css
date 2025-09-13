@@ -50,6 +50,10 @@
   min-width: 135px;
   max-width: 400px;
   min-height: 80px;
+  font-size: 20px;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  text-align: center;
+  border: none;
   transition: 0.5s ease;
 }
 
@@ -68,11 +72,6 @@
 .container .answers .answer:not(.right):not(.wrong):hover {
   background-color: var(--accent);
   color: var(--primary);
-}
-
-.container .answers .answer span {
-  font-size: 20px;
-  text-align: center;
 }
 
 @media (max-width: 370px) {
