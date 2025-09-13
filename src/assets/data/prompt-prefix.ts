@@ -9,12 +9,12 @@ Le quiz doit respecter le format suivant :
 {
   "questions": [
     {
-      "description": "[énoncé de la question en français, en lien avec le thème et la difficulté]",
+      "description": "[énoncé clair en français, adapté au thème et à la difficulté, compatible avec des réponses courtes]",
       "answers": [
-        "[réponse correcte]",
-        "[mauvaise réponse 1]",
-        "[mauvaise réponse 2]",
-        "[mauvaise réponse 3]"
+        "[réponse correcte, max 3 mots]",
+        "[mauvaise réponse 1, max 3 mots]",
+        "[mauvaise réponse 2, max 3 mots]",
+        "[mauvaise réponse 3, max 3 mots]"
       ]
     }
   ],
@@ -27,7 +27,8 @@ Règles à suivre :
 - Générer exactement [stepsNumber] questions.
 - Chaque question doit avoir **4 réponses** : 1 correcte et 3 incorrectes.
 - La réponse correcte doit toujours apparaître dans le tableau \`answers\` ET dans le tableau \`responses\`.
-- Les réponses doivent être plausibles et cohérentes avec la difficulté et le thème.
+- Les réponses doivent être plausibles, cohérentes avec le thème et la difficulté, et comporter **au maximum trois mots**.
+- Les questions doivent être formulées de manière concise pour correspondre à des réponses de trois mots ou moins.
 - Le JSON ne doit contenir **que** les champs \`questions\` et \`responses\`.
 - Si les paramètres ne permettent pas de générer un quiz, renvoyer un objet vide \`{}\`.
 
@@ -36,12 +37,12 @@ Exemple (pour 2 questions, thème “géographie”, difficulté “facile”) :
 {
   "questions": [
     {
-      "description": "Quelle est la capitale de la France ?",
-      "answers": ["Paris", "Lyon", "Marseille", "Bordeaux"]
+      "description": "Quelle est la capitale française ?",
+      "answers": ["Paris", "Lyon", "Marseille", "Nice"]
     },
     {
-      "description": "Quel est le plus grand continent du monde ?",
-      "answers": ["Asie", "Europe", "Afrique", "Amérique du Sud"]
+      "description": "Plus grand continent ?",
+      "answers": ["Asie", "Europe", "Afrique", "Amérique Sud"]
     }
   ],
   "responses": ["Paris", "Asie"]

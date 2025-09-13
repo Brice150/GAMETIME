@@ -100,7 +100,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
               return aFinish - bFinish;
             });
           }
-          this.loading = false;
+          this.loading = this.room.isLoading ?? false;
         },
         error: (error: HttpErrorResponse) => {
           this.loading = false;

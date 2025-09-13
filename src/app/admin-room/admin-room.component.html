@@ -136,7 +136,12 @@
     </button>
     }
   </div>
+  } @else { @if (room.gameName === quizGameKey) {
+  <div class="ai-container">
+    <mat-spinner class="ai"></mat-spinner>
+    <span>L'IA génère les questions</span>
+  </div>
   } @else {
   <mat-spinner></mat-spinner>
-  }
+  } }
 </section>
