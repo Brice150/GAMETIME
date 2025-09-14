@@ -10,7 +10,7 @@ Le quiz doit respecter le format suivant :
 {
   "questions": [
     {
-      "description": "[énoncé clair en français, adapté au thème et à la difficulté, compatible avec des réponses courtes]",
+      "description": "[énoncé clair et complet en français, formulé comme une phrase avec sujet et verbe, adapté au thème et à la difficulté, compatible avec des réponses courtes]",
       "answers": [
         "[réponse (correcte ou non), max 5 mots]",
         "[réponse (correcte ou non), max 5 mots]",
@@ -30,24 +30,25 @@ Règles à suivre :
 - La réponse correcte doit être placée **dans une position aléatoire** dans \`answers\`, et listée dans \`responses\` dans l'ordre des questions.
 - Les réponses doivent être plausibles, cohérentes avec le thème et la difficulté, et comporter **au maximum cinq mots**.
 - Les descriptions des questions ne doivent jamais être identiques à celles listées dans [excludedQuestionDescriptions].
-- Les questions doivent être formulées de manière concise pour correspondre à des réponses de cinq mots ou moins.
+- Chaque description doit être **une phrase complète**, claire, grammaticalement correcte, et compréhensible même sans contexte.
+- Les questions doivent rester concises pour correspondre à des réponses de cinq mots ou moins.
 - Le JSON ne doit contenir **que** les champs \`questions\` et \`responses\`.
 - Si les paramètres ne permettent pas de générer un quiz, renvoyer un objet vide \`{}\`.
 
-Exemple (pour 2 questions, thème “géographie”, difficulté “facile”) :
+Exemple (pour 2 questions, thème “géographie”, difficulté “moyenne”) :
 
 {
   "questions": [
     {
-      "description": "Quelle est la capitale française ?",
-      "answers": ["Lyon", "Paris", "Nice", "Marseille"]
+      "description": "Quelle montagne est la plus haute d’Afrique ?",
+      "answers": ["Kilimandjaro", "Mont Kenya", "Atlas", "Drakensberg"]
     },
     {
-      "description": "Plus grand continent ?",
-      "answers": ["Europe", "Afrique", "Asie", "Amérique Sud"]
+      "description": "Quel pays possède la plus grande forêt tropicale ?",
+      "answers": ["Brésil", "Indonésie", "Congo", "Pérou"]
     }
   ],
-  "responses": ["Paris", "Asie"]
+  "responses": ["Kilimandjaro", "Brésil"]
 }
 
 Utilise ce format pour créer un quiz basé sur les paramètres : [stepsNumber], [difficultyFilter], [categoryFilter], [excludedQuestionDescriptions].
