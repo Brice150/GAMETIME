@@ -14,24 +14,25 @@ import {
   Subject,
   switchMap,
   takeUntil,
-  tap,
 } from 'rxjs';
 import { gameMap } from 'src/assets/data/games';
 import { goals } from 'src/assets/data/goals';
+import { ExcludedUserQuestions } from '../core/interfaces/excluded-user-questions';
 import { Player } from '../core/interfaces/player';
 import { Room } from '../core/interfaces/room';
 import { RoomForm } from '../core/interfaces/room-form';
 import { AiService } from '../core/services/ai.service';
+import { ExcludedQuestionsService } from '../core/services/excluded-questions.service';
 import { LocalStorageService } from '../core/services/local-storage.service';
 import { PlayerService } from '../core/services/player.service';
 import { RoomService } from '../core/services/room.service';
 import { AddRoomDialogComponent } from '../shared/components/add-room-dialog/add-room-dialog.component';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { MultiplayerDialogComponent } from '../shared/components/multiplayer-dialog/multiplayer-dialog.component';
+import { AiGamesComponent } from './ai-games/ai-games.component';
 import { ResultsComponent } from './results/results.component';
 import { WaitingRoomComponent } from './waiting-room/waiting-room.component';
 import { WordGamesComponent } from './word-games/word-games.component';
-import { AiGamesComponent } from './ai-games/ai-games.component';
 
 @Component({
   selector: 'app-room',
@@ -49,6 +50,7 @@ import { AiGamesComponent } from './ai-games/ai-games.component';
 export class RoomComponent implements OnInit, OnDestroy {
   roomService = inject(RoomService);
   playerService = inject(PlayerService);
+  excludedQuestionsService = inject(ExcludedQuestionsService);
   router = inject(Router);
   toastr = inject(ToastrService);
   activatedRoute = inject(ActivatedRoute);
@@ -69,6 +71,7 @@ export class RoomComponent implements OnInit, OnDestroy {
   marquesGameKey = gameMap['marques'].key;
   quizGameKey = gameMap['quiz'].key;
   goals = goals;
+  excludedUserQuestions: ExcludedUserQuestions = {} as ExcludedUserQuestions;
   @ViewChild(WordGamesComponent) wordGamesComponent!: WordGamesComponent;
   @ViewChild(AiGamesComponent) aiGamesComponent!: AiGamesComponent;
 
@@ -237,6 +240,23 @@ export class RoomComponent implements OnInit, OnDestroy {
         },
         error: (error: HttpErrorResponse) => {
           this.loading = false;
+          if (!error.message.includes('Missing or insufficient permissions.')) {
+            this.toastr.error(error.message, 'Game Time', {
+              positionClass: 'toast-top-center',
+              toastClass: 'ngx-toastr custom error',
+            });
+          }
+        },
+      });
+
+    this.excludedQuestionsService
+      .getExcludedQuestions()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: (excludedUserQuestions) => {
+          this.excludedUserQuestions = excludedUserQuestions[0];
+        },
+        error: (error: HttpErrorResponse) => {
           if (!error.message.includes('Missing or insufficient permissions.')) {
             this.toastr.error(error.message, 'Game Time', {
               positionClass: 'toast-top-center',
@@ -533,7 +553,6 @@ export class RoomComponent implements OnInit, OnDestroy {
           this.room.isStarted = true;
           return this.generateQuestions();
         }),
-        retry(2),
         switchMap((room) => {
           this.room = room;
           this.room.isLoading = false;
@@ -573,14 +592,21 @@ export class RoomComponent implements OnInit, OnDestroy {
 
   generateQuestions(): Observable<Room> {
     if (this.room.gameName === this.quizGameKey) {
-      return this.aiService.generate(this.room).pipe(
-        tap((response) => {
-          const aiResponse = this.aiService.getAiResponse(response);
-          this.room.questions = aiResponse.questions;
-          this.room.responses = aiResponse.responses;
-        }),
-        map(() => this.room)
-      );
+      return this.aiService
+        .generate(this.room, this.excludedUserQuestions)
+        .pipe(
+          switchMap((response) => {
+            const aiResponse = this.aiService.getAiResponse(response);
+            this.room.questions = aiResponse.questions;
+            this.room.responses = aiResponse.responses;
+
+            const descriptions = this.room.questions.map((q) => q.description);
+            return this.excludedQuestionsService
+              .addOrUpdateExcludedQuestions(descriptions)
+              .pipe(map(() => this.room));
+          }),
+          retry(2)
+        );
     }
 
     this.roomService.generateResponses(

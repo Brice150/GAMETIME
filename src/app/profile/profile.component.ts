@@ -33,6 +33,7 @@ import {
   switchMap,
   takeUntil,
 } from 'rxjs';
+import { ExcludedQuestionsService } from '../core/services/excluded-questions.service';
 import { PlayerService } from '../core/services/player.service';
 import { ProfileService } from '../core/services/profile.service';
 import { RoomService } from '../core/services/room.service';
@@ -62,6 +63,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   userService = inject(UserService);
   playerService = inject(PlayerService);
   roomService = inject(RoomService);
+  excludedQuestionsService = inject(ExcludedQuestionsService);
   dialog = inject(MatDialog);
   router = inject(Router);
   injector = inject(Injector);
@@ -198,6 +200,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
           this.loading = true;
           return this.roomService.deleteUserRooms();
         }),
+        switchMap(() =>
+          this.excludedQuestionsService.deleteUserExcludedQuestions()
+        ),
         switchMap(() => this.playerService.deleteUserPlayer()),
         switchMap(() =>
           this.profileService.deleteProfile().pipe(
