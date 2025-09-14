@@ -96,8 +96,8 @@ export class SuccessComponent implements OnInit, OnDestroy {
       this.marquesGameKey,
       this.playerService.currentPlayerSig()!
     );
-    this.marquesMedalsNumber = this.medalsNumberPipe.transform(
-      this.marquesGameKey,
+    this.quizMedalsNumber = this.medalsNumberPipe.transform(
+      this.quizGameKey,
       this.playerService.currentPlayerSig()!
     );
   }

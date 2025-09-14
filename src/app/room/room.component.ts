@@ -719,7 +719,18 @@ export class RoomComponent implements OnInit, OnDestroy {
 
   openAddRoomDialog(): void {
     const dialogRef = this.dialog.open(AddRoomDialogComponent, {
-      data: this.room.startDate ? 'startAgain' : '',
+      data: {
+        stepsNumber: this.room.stepsNumber,
+        startWordLength: this.room.startWordLength,
+        categoryFilter: this.room.categoryFilter?.toString(),
+        difficultyFilter: this.room.difficultyFilter,
+        isWordLengthIncreasing: this.room.isWordLengthIncreasing,
+        showFirstLetterMotus: this.room.showFirstLetter,
+        showFirstLetterDrapeaux: this.room.showFirstLetter,
+        showFirstLetterMarques: this.room.showFirstLetter,
+        gameSelected: this.room.gameName,
+        startAgainMode: !!this.room.startDate,
+      },
     });
 
     dialogRef

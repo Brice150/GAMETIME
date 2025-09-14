@@ -55,12 +55,25 @@ export class AddRoomDialogComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<AddRoomDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: string
+    @Inject(MAT_DIALOG_DATA) public data: RoomForm
   ) {}
 
   ngOnInit(): void {
     if (this.data) {
-      this.startAgainMode = this.data === 'startAgain';
+      this.startAgainMode = !!this.data.startAgainMode;
+      if (this.startAgainMode) {
+        this.stepsNumber = this.data.stepsNumber ?? 3;
+        this.startWordLength = this.data.startWordLength ?? 5;
+        this.categoryFilter =
+          this.data.categoryFilter?.toString() ?? themes[0].key;
+        this.difficultyFilter = this.data.difficultyFilter ?? 2;
+        this.isWordLengthIncreasing = this.data.isWordLengthIncreasing ?? true;
+        this.showFirstLetterMotus = this.data.showFirstLetterMotus ?? true;
+        this.showFirstLetterDrapeaux =
+          this.data.showFirstLetterDrapeaux ?? false;
+        this.showFirstLetterMarques = this.data.showFirstLetterMarques ?? false;
+        this.gameSelected = this.data.gameSelected ?? this.drapeauxGameKey;
+      }
     }
   }
 
