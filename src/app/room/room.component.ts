@@ -584,10 +584,25 @@ export class RoomComponent implements OnInit, OnDestroy {
         error: (error: HttpErrorResponse) => {
           this.resetRoom();
           if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastr.error(error.message, 'Game Time', {
-              positionClass: 'toast-top-center',
-              toastClass: 'ngx-toastr custom error',
-            });
+            if (
+              !error.message.includes(
+                'Gemini Developer API is overloaded. Please try again later.'
+              )
+            ) {
+              this.toastr.error(error.message, 'Game Time', {
+                positionClass: 'toast-top-center',
+                toastClass: 'ngx-toastr custom error',
+              });
+            } else {
+              this.toastr.error(
+                "L'IA est saturée veuillez réessayer plus tard",
+                'Game Time',
+                {
+                  positionClass: 'toast-top-center',
+                  toastClass: 'ngx-toastr custom error',
+                }
+              );
+            }
           }
         },
       });

@@ -15,20 +15,37 @@ export class AiService {
   private model: GenerativeModel;
 
   constructor(@Inject('AI') private ai: AI) {
-    this.model = getGenerativeModel(this.ai, { model: 'gemini-2.5-flash' });
+    this.model = getGenerativeModel(this.ai, {
+      model: 'gemini-2.5-flash-lite',
+    });
   }
 
   generate(
     room: Room,
     excludedUserQuestions: ExcludedUserQuestions
   ): Observable<string> {
-    const promise = this.model
-      .generateContent(this.createPrompt(room, excludedUserQuestions))
-      .then((result) => {
-        return result.response.text();
+    const run = () =>
+      this.model
+        .generateContent(this.createPrompt(room, excludedUserQuestions))
+        .then((result) => result.response.text());
+
+    const withRetry = (attempt = 1): Promise<string> =>
+      run().catch((err) => {
+        if (
+          err.message?.includes(
+            'Gemini Developer API is overloaded. Please try again later.'
+          ) &&
+          attempt < 3
+        ) {
+          const delay = 10_000;
+          return new Promise((resolve) =>
+            setTimeout(() => resolve(withRetry(attempt + 1)), delay)
+          );
+        }
+        throw err;
       });
 
-    return from(promise);
+    return from(withRetry());
   }
 
   createPrompt(
