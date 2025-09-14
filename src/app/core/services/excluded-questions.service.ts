@@ -22,6 +22,7 @@ import {
 } from 'rxjs';
 import { ExcludedUserQuestions } from '../interfaces/excluded-user-questions';
 import { UserService } from './user.service';
+import { AiTheme } from '../interfaces/ai-theme';
 
 @Injectable({ providedIn: 'root' })
 export class ExcludedQuestionsService {
@@ -43,7 +44,10 @@ export class ExcludedQuestionsService {
     }) as Observable<ExcludedUserQuestions[]>;
   }
 
-  addOrUpdateExcludedQuestions(descriptions: string[]): Observable<void> {
+  addOrUpdateExcludedQuestions(
+    categoryFilter: number,
+    descriptions: string[]
+  ): Observable<void> {
     const userId = this.userService.auth.currentUser?.uid;
     if (!userId) {
       return of(undefined);
@@ -57,15 +61,18 @@ export class ExcludedQuestionsService {
     return from(getDocs(userQuery)).pipe(
       switchMap((snapshot) => {
         if (snapshot.empty) {
-          const uniqueDescriptions = Array.from(new Set(descriptions)).slice(
-            -30
-          );
+          const unique = Array.from(new Set(descriptions)).slice(-30);
 
           const newDocRef = doc(this.excludedQuestionsCollection);
           return from(
             setDoc(newDocRef, {
               userId,
-              descriptions: uniqueDescriptions,
+              themes: [
+                {
+                  categoryFilter,
+                  descriptions: unique,
+                },
+              ],
             })
           );
         } else {
@@ -76,18 +83,27 @@ export class ExcludedQuestionsService {
           );
           const existingData = existingDoc.data() as ExcludedUserQuestions;
 
-          const combined = [
-            ...(existingData.descriptions || []),
-            ...descriptions,
-          ];
-
-          const uniqueDescriptions = combined.filter(
-            (item, index) => combined.indexOf(item) === index
+          const themes = existingData.themes ?? [];
+          const idx = themes.findIndex(
+            (t) => t.categoryFilter === categoryFilter
           );
 
-          const last30 = uniqueDescriptions.slice(-30);
+          if (idx === -1) {
+            const newTheme: AiTheme = {
+              categoryFilter,
+              descriptions: Array.from(new Set(descriptions)).slice(-30),
+            };
+            themes.push(newTheme);
+          } else {
+            const combined = [
+              ...(themes[idx].descriptions ?? []),
+              ...descriptions,
+            ];
+            const unique = Array.from(new Set(combined)).slice(-30);
+            themes[idx] = { ...themes[idx], descriptions: unique };
+          }
 
-          return from(updateDoc(existingRef, { descriptions: last30 }));
+          return from(updateDoc(existingRef, { themes }));
         }
       })
     );

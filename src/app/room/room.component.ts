@@ -605,7 +605,10 @@ export class RoomComponent implements OnInit, OnDestroy {
 
             const descriptions = this.room.questions.map((q) => q.description);
             return this.excludedQuestionsService
-              .addOrUpdateExcludedQuestions(descriptions)
+              .addOrUpdateExcludedQuestions(
+                this.room.categoryFilter,
+                descriptions
+              )
               .pipe(map(() => this.room));
           })
         );

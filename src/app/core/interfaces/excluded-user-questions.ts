@@ -1,5 +1,7 @@
+import { AiTheme } from './ai-theme';
+
 export interface ExcludedUserQuestions {
   id: string;
-  descriptions: string[];
+  themes: AiTheme[];
   userId: string;
 }

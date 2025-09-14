@@ -37,19 +37,24 @@ export class AiService {
   ): string {
     const stepsNumber = room.stepsNumber?.toString() || '3';
     const difficultyFilter = Difficulty[room.difficultyFilter] ?? Difficulty[2];
-    const categoryFilter =
+
+    const categoryLabel =
       themes.find((theme) => theme.key === room.categoryFilter.toString())
         ?.label ?? themes[0].label;
-    const excludedDescriptionsString = excludedUserQuestions?.descriptions
-      ?.length
-      ? '\n' +
-        excludedUserQuestions.descriptions.map((d) => `- ${d}`).join('\n')
-      : ' Aucune question exclue';
+
+    const themeForRoom = excludedUserQuestions?.themes?.find(
+      (t) => t.categoryFilter === room.categoryFilter
+    );
+
+    const excludedDescriptionsString =
+      themeForRoom && themeForRoom.descriptions.length > 0
+        ? '\n' + themeForRoom.descriptions.map((d) => `- ${d}`).join('\n')
+        : ' Aucune question exclue';
 
     const finalPrompt = promptPrefix.replace(
       /(Utilise ce format pour créer un quiz basé sur les paramètres :).*/,
       (_, prefix) =>
-        `${prefix}\n[stepsNumber] = ${stepsNumber}\n[difficultyFilter] = ${difficultyFilter}\n[categoryFilter] = ${categoryFilter}\n[excludedQuestionDescriptions] =${excludedDescriptionsString}`
+        `${prefix}\n[stepsNumber] = ${stepsNumber}\n[difficultyFilter] = ${difficultyFilter}\n[categoryFilter] = ${categoryLabel}\n[excludedQuestionDescriptions] =${excludedDescriptionsString}`
     );
 
     return finalPrompt;
