@@ -57,11 +57,15 @@ export class ExcludedQuestionsService {
     return from(getDocs(userQuery)).pipe(
       switchMap((snapshot) => {
         if (snapshot.empty) {
+          const uniqueDescriptions = Array.from(new Set(descriptions)).slice(
+            -30
+          );
+
           const newDocRef = doc(this.excludedQuestionsCollection);
           return from(
             setDoc(newDocRef, {
               userId,
-              descriptions,
+              descriptions: uniqueDescriptions,
             })
           );
         } else {
@@ -72,16 +76,20 @@ export class ExcludedQuestionsService {
           );
           const existingData = existingDoc.data() as ExcludedUserQuestions;
 
-          const mergedDescriptions = Array.from(
-            new Set([...(existingData.descriptions || []), ...descriptions])
+          const combined = [
+            ...(existingData.descriptions || []),
+            ...descriptions,
+          ];
+
+          const uniqueDescriptions = combined.filter(
+            (item, index) => combined.indexOf(item) === index
           );
 
-          return from(
-            updateDoc(existingRef, { descriptions: mergedDescriptions })
-          );
+          const last30 = uniqueDescriptions.slice(-30);
+
+          return from(updateDoc(existingRef, { descriptions: last30 }));
         }
-      }),
-      map(() => undefined)
+      })
     );
   }
 

@@ -604,8 +604,7 @@ export class RoomComponent implements OnInit, OnDestroy {
             return this.excludedQuestionsService
               .addOrUpdateExcludedQuestions(descriptions)
               .pipe(map(() => this.room));
-          }),
-          retry(2)
+          })
         );
     }
 
