@@ -1,6 +1,6 @@
-import { Game } from 'src/app/core/interfaces/game';
+import { KeyLabel } from 'src/app/core/interfaces/key-label';
 
-export const games: Game[] = [
+export const games: KeyLabel[] = [
   {
     key: 'drapeaux',
     label: 'Drapeaux',
