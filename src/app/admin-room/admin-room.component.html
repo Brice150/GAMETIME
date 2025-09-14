@@ -139,7 +139,11 @@
   } @else { @if (room.isLoading && room.gameName === quizGameKey) {
   <div class="ai-container">
     <mat-spinner class="ai"></mat-spinner>
-    <span>L'IA génère les questions</span>
+    <span
+      >L'IA génère les questions du thème
+      {{ room.categoryFilter | quizCategory }} en difficulté
+      {{ room.difficultyFilter | difficulty }}</span
+    >
   </div>
   } @else {
   <mat-spinner></mat-spinner>

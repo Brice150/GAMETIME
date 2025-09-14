@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { QuizCategory } from 'src/app/core/enums/quiz-category.enum';
+import { themes } from 'src/assets/data/themes';
 
 @Pipe({
   name: 'quizCategory',
@@ -7,6 +7,9 @@ import { QuizCategory } from 'src/app/core/enums/quiz-category.enum';
 })
 export class QuizCategoryPipe implements PipeTransform {
   transform(categoryFilter: number): string {
-    return QuizCategory[categoryFilter] ?? QuizCategory[1];
+    return (
+      themes.find((theme) => theme.key === categoryFilter.toString())?.label ??
+      themes[0].label
+    );
   }
 }

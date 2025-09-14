@@ -43,7 +43,7 @@ mat-spinner:not(.ai) {
   align-items: center;
   flex-direction: column;
   gap: 30px;
-  width: 100%;
+  width: 90%;
 }
 
 .ai-container span {

@@ -19,6 +19,7 @@
   } @else {
   <h1>Veuillez configurer la room</h1>
   <div class="games">
+    <span class="description">Jeu</span>
     <mat-form-field>
       <mat-select [(ngModel)]="gameSelected" name="game" class="cap">
         @for (game of games; track $index) {
@@ -35,27 +36,20 @@
 
   @if (gameSelected) {
   <div class="slider-container top">
-    <span>Nombre de manches</span>
+    <span class="description">Nombre de manches</span>
     <mat-slider min="1" max="8" step="1" discrete>
       <input matSliderThumb [(ngModel)]="stepsNumber" />
     </mat-slider>
   </div>
 
-  <div class="slider-container top">
-    <span>
-      {{
-        gameSelected === motusGameKey
-          ? "Taille du mot de départ"
-          : gameSelected === drapeauxGameKey
-          ? "Filtre par continent"
-          : "Filtre par catégorie"
-      }}
-    </span>
+  <div class="slider-container top2">
     @if(gameSelected === motusGameKey) {
+    <span class="description">Taille du mot de départ</span>
     <mat-slider min="5" [max]="maxWordLength" step="1" discrete>
       <input matSliderThumb [(ngModel)]="startWordLength" />
     </mat-slider>
     } @else if (gameSelected === drapeauxGameKey) {
+    <span class="description">Filtre par continent</span>
     <mat-slider
       min="1"
       max="6"
@@ -69,6 +63,7 @@
       <input matSliderThumb [(ngModel)]="categoryFilter" />
     </mat-slider>
     } @else if (gameSelected === marquesGameKey) {
+    <span class="description">Filtre par catégorie</span>
     <mat-slider
       min="1"
       max="5"
@@ -81,25 +76,12 @@
     >
       <input matSliderThumb [(ngModel)]="categoryFilter" />
     </mat-slider>
-    } @else if (gameSelected === quizGameKey) {
-    <mat-slider
-      min="1"
-      max="6"
-      step="1"
-      discrete
-      [displayWith]="formatLabelQuizCategory"
-      [ngClass]="{
-        showLarger: true
-      }"
-    >
-      <input matSliderThumb [(ngModel)]="categoryFilter" />
-    </mat-slider>
     }
   </div>
 
   @if(gameSelected === quizGameKey) {
-  <div class="slider-container top">
-    <span>Difficulté</span>
+  <div class="slider-container top2">
+    <span class="description">Difficulté</span>
     <mat-slider
       min="1"
       max="4"
@@ -113,8 +95,22 @@
       <input matSliderThumb [(ngModel)]="difficultyFilter" />
     </mat-slider>
   </div>
-  }
-
+  <div class="games top">
+    <span class="description">Thème</span>
+    <mat-form-field>
+      <mat-select [(ngModel)]="categoryFilter" name="category" class="cap">
+        @for (theme of themes; track $index) {
+        <mat-option [value]="theme.key" class="cap-option">
+          <div class="flex">
+            <i class="{{ theme.icon }}"></i>
+            <span class="game">{{ theme.label }}</span>
+          </div>
+        </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
+  } @if (gameSelected !== quizGameKey) {
   <div class="toggle-container dialog">
     @if (gameSelected === motusGameKey) {
     <mat-slide-toggle [(ngModel)]="isWordLengthIncreasing">
@@ -133,7 +129,7 @@
     </mat-slide-toggle>
     }
   </div>
-  }
+  } }
   <div class="button-container">
     <button type="button" title="Annuler" (click)="cancel()" class="delete">
       <i class="bx bx-x"></i>

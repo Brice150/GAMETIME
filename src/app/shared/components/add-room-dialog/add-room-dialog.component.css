@@ -22,6 +22,10 @@ section {
   width: 300px;
 }
 
+.games.top {
+  margin-top: 40px;
+}
+
 mat-form-field {
   width: 100%;
 }
@@ -132,12 +136,16 @@ section .button-container button .text {
   margin-top: 20px;
 }
 
+.slider-container.top2 {
+  margin-top: 30px;
+}
+
 .slider-container mat-slider {
   width: 80%;
   max-width: 300px;
 }
 
-.slider-container span {
+.description {
   font-size: 20px;
   font-weight: 500;
   color: var(--secondary);

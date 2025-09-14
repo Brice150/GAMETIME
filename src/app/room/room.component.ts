@@ -10,7 +10,6 @@ import {
   map,
   Observable,
   of,
-  retry,
   Subject,
   switchMap,
   takeUntil,
@@ -29,6 +28,8 @@ import { RoomService } from '../core/services/room.service';
 import { AddRoomDialogComponent } from '../shared/components/add-room-dialog/add-room-dialog.component';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { MultiplayerDialogComponent } from '../shared/components/multiplayer-dialog/multiplayer-dialog.component';
+import { DifficultyPipe } from '../shared/pipes/difficulty.pipe';
+import { QuizCategoryPipe } from '../shared/pipes/quiz-category.pipe';
 import { AiGamesComponent } from './ai-games/ai-games.component';
 import { ResultsComponent } from './results/results.component';
 import { WaitingRoomComponent } from './waiting-room/waiting-room.component';
@@ -43,6 +44,8 @@ import { WordGamesComponent } from './word-games/word-games.component';
     WaitingRoomComponent,
     ResultsComponent,
     MatProgressSpinnerModule,
+    DifficultyPipe,
+    QuizCategoryPipe,
   ],
   templateUrl: './room.component.html',
   styleUrl: './room.component.css',

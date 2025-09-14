@@ -3,10 +3,10 @@ import { AI, GenerativeModel, getGenerativeModel } from 'firebase/ai';
 import { from, Observable } from 'rxjs';
 import { promptPrefix } from 'src/assets/data/prompt-prefix';
 import { Difficulty } from '../enums/difficulty.enum';
-import { QuizCategory } from '../enums/quiz-category.enum';
 import { AiResponse } from '../interfaces/ai-response';
 import { ExcludedUserQuestions } from '../interfaces/excluded-user-questions';
 import { Room } from '../interfaces/room';
+import { themes } from 'src/assets/data/themes';
 
 @Injectable({
   providedIn: 'root',
@@ -37,7 +37,9 @@ export class AiService {
   ): string {
     const stepsNumber = room.stepsNumber?.toString() || '3';
     const difficultyFilter = Difficulty[room.difficultyFilter] ?? Difficulty[2];
-    const categoryFilter = QuizCategory[room.categoryFilter] ?? QuizCategory[1];
+    const categoryFilter =
+      themes.find((theme) => theme.key === room.categoryFilter.toString())
+        ?.label ?? themes[0].label;
     const excludedDescriptionsString = excludedUserQuestions?.descriptions
       ?.length
       ? '\n' +

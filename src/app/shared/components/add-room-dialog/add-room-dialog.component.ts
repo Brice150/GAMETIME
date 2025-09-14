@@ -10,9 +10,9 @@ import { MatSliderModule } from '@angular/material/slider';
 import { BrandCategory } from 'src/app/core/enums/brand-category.enum';
 import { Continent } from 'src/app/core/enums/continent.enum';
 import { Difficulty } from 'src/app/core/enums/difficulty.enum';
-import { QuizCategory } from 'src/app/core/enums/quiz-category.enum';
 import { RoomForm } from 'src/app/core/interfaces/room-form';
 import { gameMap, games } from 'src/assets/data/games';
+import { themes } from 'src/assets/data/themes';
 
 @Component({
   selector: 'app-add-room-dialog',
@@ -30,9 +30,10 @@ import { gameMap, games } from 'src/assets/data/games';
 })
 export class AddRoomDialogComponent implements OnInit {
   games = games;
+  themes = themes;
   stepsNumber: number = 3;
   startWordLength: number = 5;
-  categoryFilter: number = 1;
+  categoryFilter: string = themes[0].key;
   difficultyFilter: number = 2;
   isWordLengthIncreasing = true;
   showFirstLetterMotus = true;
@@ -71,10 +72,6 @@ export class AddRoomDialogComponent implements OnInit {
     return BrandCategory[index] ?? BrandCategory[1];
   }
 
-  formatLabelQuizCategory(index: number): string {
-    return QuizCategory[index] ?? QuizCategory[1];
-  }
-
   formatLabelQuizDifficulty(index: number): string {
     return Difficulty[index] ?? Difficulty[2];
   }
@@ -92,7 +89,7 @@ export class AddRoomDialogComponent implements OnInit {
       stepsNumber: this.stepsNumber,
       isWordLengthIncreasing: this.isWordLengthIncreasing,
       startWordLength: this.startWordLength,
-      categoryFilter: this.categoryFilter,
+      categoryFilter: Number(this.categoryFilter),
       difficultyFilter: this.difficultyFilter,
     } as RoomForm);
   }

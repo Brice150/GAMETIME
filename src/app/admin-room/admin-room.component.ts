@@ -8,7 +8,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { filter, Observable, of, Subject, switchMap, takeUntil } from 'rxjs';
-import { map, retry } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { gameMap } from 'src/assets/data/games';
 import { ExcludedUserQuestions } from '../core/interfaces/excluded-user-questions';
 import { Player } from '../core/interfaces/player';
@@ -23,8 +23,10 @@ import { AddRoomDialogComponent } from '../shared/components/add-room-dialog/add
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { MultiplayerDialogComponent } from '../shared/components/multiplayer-dialog/multiplayer-dialog.component';
 import { CustomDatePipe } from '../shared/pipes/custom-date.pipe';
+import { DifficultyPipe } from '../shared/pipes/difficulty.pipe';
 import { DurationBetweenDatesPipe } from '../shared/pipes/duration.pipe';
 import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
+import { QuizCategoryPipe } from '../shared/pipes/quiz-category.pipe';
 
 @Component({
   selector: 'app-admin-room',
@@ -36,6 +38,8 @@ import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
     MatSlideToggleModule,
     MedalsNumberPipe,
     CustomDatePipe,
+    DifficultyPipe,
+    QuizCategoryPipe,
   ],
   templateUrl: './admin-room.component.html',
   styleUrl: './admin-room.component.css',
