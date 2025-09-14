@@ -141,8 +141,9 @@
     <mat-spinner class="ai"></mat-spinner>
     <span
       >L'IA génère les questions du thème
-      {{ room.categoryFilter | quizCategory }} en difficulté
-      {{ room.difficultyFilter | difficulty }}</span
+      <span class="accent">{{ room.categoryFilter | quizCategory }}</span>
+      en difficulté
+      <span class="accent">{{ room.difficultyFilter | difficulty }}</span></span
     >
   </div>
   } @else {
