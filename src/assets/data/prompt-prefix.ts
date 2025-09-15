@@ -27,7 +27,7 @@ Le quiz doit respecter le format suivant :
 Règles à suivre :
 - Générer exactement [stepsNumber] questions.
 - Chaque question doit avoir **4 réponses** : 1 correcte et 3 incorrectes.
-- La réponse correcte doit être placée **dans une position aléatoire** dans \`answers\`, et listée dans \`responses\` dans l'ordre des questions.
+- La réponse correcte doit être placée dans \`answers\` et listée dans \`responses\` dans l'ordre des questions.
 - Les réponses doivent être plausibles, cohérentes avec le thème et la difficulté, et comporter **au maximum cinq mots**.
 - Les descriptions des questions ne doivent jamais être identiques à celles listées dans [excludedQuestionDescriptions].
 - Chaque description doit être **une phrase complète**, claire, grammaticalement correcte, et compréhensible même sans contexte.
