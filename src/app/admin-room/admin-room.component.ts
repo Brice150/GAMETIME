@@ -239,7 +239,9 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
         .pipe(
           switchMap((response) => {
             const aiResponse = this.aiService.getAiResponse(response);
-            this.room.questions = aiResponse.questions;
+            this.room.questions = this.aiService.mixResponsesOrder(
+              aiResponse.questions
+            );
             this.room.responses = aiResponse.responses;
 
             const descriptions = this.room.questions.map((q) => q.description);

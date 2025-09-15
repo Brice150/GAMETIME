@@ -7,6 +7,7 @@ import { AiResponse } from '../interfaces/ai-response';
 import { ExcludedUserQuestions } from '../interfaces/excluded-user-questions';
 import { Room } from '../interfaces/room';
 import { themes } from 'src/assets/data/themes';
+import { Question } from '../interfaces/question';
 
 @Injectable({
   providedIn: 'root',
@@ -81,5 +82,22 @@ export class AiService {
     const jsonMatch = text.match(/```json\s*([\s\S]*?)\s*```/);
     const jsonString = jsonMatch ? jsonMatch[1] : text;
     return JSON.parse(jsonString) as AiResponse;
+  }
+
+  mixResponsesOrder(questions: Question[]): Question[] {
+    return questions.map((question) => {
+      const shuffledAnswers = [...question.answers];
+      for (let i = shuffledAnswers.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledAnswers[i], shuffledAnswers[j]] = [
+          shuffledAnswers[j],
+          shuffledAnswers[i],
+        ];
+      }
+      return {
+        ...question,
+        answers: shuffledAnswers,
+      };
+    });
   }
 }
