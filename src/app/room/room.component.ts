@@ -502,7 +502,7 @@ export class RoomComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.playerService.currentPlayerSig()!.isOver = true;
     this.playerService.currentPlayerSig()!.finishDate = new Date();
-    this.playerService.currentPlayerSig()!.isReady = false;
+    this.playerService.currentPlayerSig()!.isReady = true;
 
     this.playerService
       .updatePlayer(this.playerService.currentPlayerSig()!)
@@ -674,10 +674,9 @@ export class RoomComponent implements OnInit, OnDestroy {
   }
 
   shouldShowReadyButton(): boolean {
-    const userId = this.playerService.currentPlayerSig()?.userId;
     return (
-      (this.isResultPageActive && userId !== this.room.userId) ||
-      (!this.room.isStarted && userId !== this.room.userId)
+      !this.room.isStarted &&
+      this.playerService.currentPlayerSig()?.userId !== this.room.userId
     );
   }
 
