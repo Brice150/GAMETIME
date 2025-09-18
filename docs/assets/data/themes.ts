@@ -3,8 +3,8 @@ import { KeyLabel } from 'src/app/core/interfaces/key-label';
 export const themes: KeyLabel[] = [
   {
     key: '1',
-    label: 'Général',
-    icon: 'bx bxs-brain',
+    label: 'Aléatoire',
+    icon: 'bx bx-infinite',
   },
   {
     key: '2',
@@ -50,5 +50,20 @@ export const themes: KeyLabel[] = [
     key: '10',
     label: 'Cuisine',
     icon: 'bx bxs-bowl-rice',
+  },
+  {
+    key: '11',
+    label: 'Finance',
+    icon: 'bx bxs-dollar-circle',
+  },
+  {
+    key: '12',
+    label: 'Plantes',
+    icon: 'bx bxs-leaf',
+  },
+  {
+    key: '13',
+    label: 'Inventions',
+    icon: 'bx bxs-radiation',
   },
 ];
