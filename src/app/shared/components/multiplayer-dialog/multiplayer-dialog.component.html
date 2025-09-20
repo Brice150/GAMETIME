@@ -15,7 +15,7 @@
       </button>
     </div>
     <div class="element">
-      <span class="title">Ou l'url</span>
+      <span class="title">Ou l'url :</span>
       <button
         type="button"
         title="Copier url"
@@ -26,11 +26,13 @@
       </button>
     </div>
     <div class="element qr-code">
-      <span class="title">Ou le QR code</span>
+      <span class="title">Ou le QR code :</span>
       <qrcode
         [qrdata]="link"
         [width]="200"
         [errorCorrectionLevel]="'M'"
+        [colorDark]="'#0000ff'"
+        [colorLight]="'#ffffff'"
       ></qrcode>
     </div>
   </div>
