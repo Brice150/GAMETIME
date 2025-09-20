@@ -129,7 +129,7 @@
       <i class="bx bxs-error-alt"></i>
       <span class="text">Arrêter</span>
     </button>
-    } @if(!room.isCreatedByAdmin) {
+    } @if(canJoin()) {
     <button type="button" (click)="joinRoom()" title="Rejoindre" class="share">
       <i class="bx bxs-door-open"></i>
       <span class="text">Rejoindre</span>

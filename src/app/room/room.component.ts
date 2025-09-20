@@ -31,7 +31,8 @@ import { MultiplayerDialogComponent } from '../shared/components/multiplayer-dia
 import { DifficultyPipe } from '../shared/pipes/difficulty.pipe';
 import { QuizCategoryPipe } from '../shared/pipes/quiz-category.pipe';
 import { AiGamesComponent } from './ai-games/ai-games.component';
-import { ResultsComponent } from './results/results.component';
+import { ResultsDetailsComponent } from './results-details/results-details.component';
+import { ResultsPodiumComponent } from './results-podium/results-podium.component';
 import { WaitingRoomComponent } from './waiting-room/waiting-room.component';
 import { WordGamesComponent } from './word-games/word-games.component';
 
@@ -42,7 +43,8 @@ import { WordGamesComponent } from './word-games/word-games.component';
     WordGamesComponent,
     AiGamesComponent,
     WaitingRoomComponent,
-    ResultsComponent,
+    ResultsPodiumComponent,
+    ResultsDetailsComponent,
     MatProgressSpinnerModule,
     DifficultyPipe,
     QuizCategoryPipe,
@@ -66,6 +68,7 @@ export class RoomComponent implements OnInit, OnDestroy {
   players: Player[] = [];
   isNextButtonAvailable = false;
   isResultPageActive = false;
+  isDetailModeActive = false;
   userLeft = false;
   userKickedOut = false;
   motusGameKey = gameMap['motus'].key;
@@ -810,5 +813,9 @@ export class RoomComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe();
+  }
+
+  seeDetails(): void {
+    this.isDetailModeActive = !this.isDetailModeActive;
   }
 }

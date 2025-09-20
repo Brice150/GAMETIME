@@ -5,12 +5,12 @@ import { Room } from 'src/app/core/interfaces/room';
 import { DurationBetweenDatesPipe } from 'src/app/shared/pipes/duration.pipe';
 
 @Component({
-  selector: 'app-results',
+  selector: 'app-results-podium',
   imports: [CommonModule, DurationBetweenDatesPipe],
-  templateUrl: './results.component.html',
-  styleUrl: './results.component.css',
+  templateUrl: './results-podium.component.html',
+  styleUrl: './results-podium.component.css',
 })
-export class ResultsComponent {
+export class ResultsPodiumComponent {
   room = input.required<Room>();
   player = input.required<Player>();
   players = input.required<Player[]>();

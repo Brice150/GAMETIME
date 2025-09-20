@@ -403,4 +403,13 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
   joinRoom(): void {
     this.router.navigate(['/room', this.room.id]);
   }
+
+  canJoin(): boolean {
+    return (
+      !this.room.isCreatedByAdmin &&
+      !this.room.playerIds.includes(
+        this.playerService.currentPlayerSig()?.userId!
+      )
+    );
+  }
 }
