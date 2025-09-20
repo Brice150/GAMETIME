@@ -1,17 +1,16 @@
+.players {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .players .container {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-}
-
-.players {
-  margin-top: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  gap: 20px;
 }
 
 .players .player {
@@ -91,31 +90,6 @@
 }
 
 .medals i {
-  font-size: 28px;
-}
-
-.players .player .responses {
-  margin-top: 15px;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  gap: 10px;
-  width: 100%;
-}
-
-.players .player .responses .response {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-}
-
-.players .player .responses .response .description {
-  font-size: 18px;
-  text-transform: uppercase;
-}
-
-.players .player .responses .response i {
   font-size: 28px;
 }
 
