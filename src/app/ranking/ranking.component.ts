@@ -14,6 +14,7 @@ import { Player } from '../core/interfaces/player';
 import { PlayerService } from '../core/services/player.service';
 import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
 import { OrdinalPipe } from '../shared/pipes/ordinal.pipe';
+import { TotalMedalsNumberPipe } from '../shared/pipes/total-medals-number.pipe';
 
 @Component({
   selector: 'app-ranking',
@@ -27,6 +28,7 @@ import { OrdinalPipe } from '../shared/pipes/ordinal.pipe';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
+    TotalMedalsNumberPipe,
   ],
   templateUrl: './ranking.component.html',
   styleUrl: './ranking.component.css',
@@ -39,7 +41,7 @@ export class RankingComponent implements OnInit, OnDestroy {
   players: Player[] = [];
   sortedPlayers: Player[] = [];
   games = games;
-  gameSelected: string = this.games[0].key;
+  gameSelected: string = 'general';
   currentPlayerPosition?: number;
 
   ngOnInit(): void {
@@ -70,22 +72,44 @@ export class RankingComponent implements OnInit, OnDestroy {
   }
 
   sortPlayers(): void {
-    this.sortedPlayers = [...this.players].sort((a, b) => {
-      const aStat = a.stats.find((stat) => stat.gameName === this.gameSelected);
-      const bStat = b.stats.find((stat) => stat.gameName === this.gameSelected);
+    if (this.gameSelected === 'general') {
+      this.sortedPlayers = [...this.players].sort((a, b) => {
+        const aTotal =
+          a.stats?.reduce((sum, s) => sum + (s.medalsNumber ?? 0), 0) ?? 0;
+        const bTotal =
+          b.stats?.reduce((sum, s) => sum + (s.medalsNumber ?? 0), 0) ?? 0;
+        return bTotal - aTotal;
+      });
 
-      const aMedals = aStat ? aStat.medalsNumber : 0;
-      const bMedals = bStat ? bStat.medalsNumber : 0;
+      const currentPlayer = this.playerService.currentPlayerSig();
+      if (currentPlayer) {
+        const index = this.sortedPlayers.findIndex(
+          (p) => p.userId === currentPlayer.userId
+        );
+        this.currentPlayerPosition = index >= 0 ? index + 1 : undefined;
+      }
+    } else {
+      this.sortedPlayers = [...this.players].sort((a, b) => {
+        const aStat = a.stats.find(
+          (stat) => stat.gameName === this.gameSelected
+        );
+        const bStat = b.stats.find(
+          (stat) => stat.gameName === this.gameSelected
+        );
 
-      return bMedals - aMedals;
-    });
+        const aMedals = aStat ? aStat.medalsNumber : 0;
+        const bMedals = bStat ? bStat.medalsNumber : 0;
 
-    const currentPlayer = this.playerService.currentPlayerSig();
-    if (currentPlayer) {
-      const index = this.sortedPlayers.findIndex(
-        (p) => p.userId === currentPlayer.userId
-      );
-      this.currentPlayerPosition = index >= 0 ? index + 1 : undefined;
+        return bMedals - aMedals;
+      });
+
+      const currentPlayer = this.playerService.currentPlayerSig();
+      if (currentPlayer) {
+        const index = this.sortedPlayers.findIndex(
+          (p) => p.userId === currentPlayer.userId
+        );
+        this.currentPlayerPosition = index >= 0 ? index + 1 : undefined;
+      }
     }
   }
 }

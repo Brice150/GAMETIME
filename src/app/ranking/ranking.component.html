@@ -8,6 +8,12 @@
         class="cap"
         (ngModelChange)="sortPlayers()"
       >
+        <mat-option value="general" class="cap-option">
+          <div class="flex">
+            <i class="bx bxs-universal-access"></i>
+            <span class="game">Général</span>
+          </div>
+        </mat-option>
         @for (game of games; track $index) {
         <mat-option [value]="game.key" class="cap-option">
           <div class="flex">
@@ -65,9 +71,15 @@
       </div>
       <div class="space">
         <div class="medals">
+          @if (gameSelected !== 'general') {
           <span class="victory-number">{{
             gameSelected | medalsNumber : otherPlayer
           }}</span>
+          } @else {
+          <span class="victory-number">{{
+            otherPlayer | totalMedalsNumber
+          }}</span>
+          }
           <i class="bx bxs-medal"></i>
         </div>
       </div>
