@@ -169,7 +169,19 @@
   font-size: 30px;
 }
 
-.space {
-  margin: 0 5px;
-  font-weight: bold;
+@media screen and (max-width: 370px) {
+  .players .player {
+    width: 270px;
+  }
+
+  .players .player .flex {
+    height: unset;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .players .player .username {
+    text-align: center;
+  }
 }
