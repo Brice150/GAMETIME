@@ -6,20 +6,6 @@
       [ngClass]="{ 'alt-color': otherPlayer.userId !== player().userId }"
     >
       <div class="flex">
-        <span class="username">{{ otherPlayer.username }}</span>
-        @if (otherPlayer.isReady && room().userId !== otherPlayer.userId) {
-        <i class="bx bxs-check-circle" title="Prêt"></i>
-        } @else if (room().userId !== otherPlayer.userId) {
-        <i class="bx bxs-x-circle" title="Pas prêt" style="color: red"></i>
-        }
-        <div class="medals">
-          <span class="victory-number">{{
-            room().gameName | medalsNumber : otherPlayer
-          }}</span>
-          <i class="bx bxs-medal"></i>
-        </div>
-      </div>
-      <div class="score">
         @if (players().length > 1) {
         <div class="podium">
           @if (i + 1 === 1) {
@@ -32,29 +18,21 @@
           <span class="order">{{ i + 1 }}</span>
           }
         </div>
-        <span>-</span>
-        } @if (otherPlayer.finishDate) {
-        <span>{{
-          room().startDate | durationBetweenDates : otherPlayer.finishDate
-        }}</span>
-        } @else {
-        <i class="bx bx-loader-alt bx-spin" style="color: var(--accent)"></i>
         }
-      </div>
-      <div class="responses">
-        @for (response of room().responses; track $index; let j = $index) {
-        <div class="response">
-          <span class="description">{{ response }}</span>
-          @if (otherPlayer.currentRoomWins[j] === true && room().isStarted) {
-          <i class="bx bx-check"></i>
-          } @else if (otherPlayer.currentRoomWins[j] === false &&
-          room().isStarted) {
-          <i class="bx bx-x" style="color: red"></i>
+        <span class="username">{{ otherPlayer.username }}</span>
+        <div class="medals">
+          <span class="victory-number"
+            >{{ getWinsCount(otherPlayer) }} /
+            {{ room().responses.length }}</span
+          >
+          @if (otherPlayer.finishDate) {
+          <span class="victory-number time">{{
+            room().startDate | durationBetweenDates : otherPlayer.finishDate
+          }}</span>
           } @else {
-          <i class="bx bx-loader-alt bx-spin" style="color: var(--accent)"></i>
+          <i class="bx bx-loader-alt bx-spin" style="color: var(--primary)"></i>
           }
         </div>
-        }
       </div>
     </div>
     @if (otherPlayer.userId !== player().userId && room().userId ===
@@ -62,7 +40,7 @@
     <div class="button-container-delete">
       <button
         type="button"
-        (click)="delete(otherPlayer.userId!)"
+        (click)="delete(otherPlayer)"
         title="Supprimer"
         class="delete share"
       >

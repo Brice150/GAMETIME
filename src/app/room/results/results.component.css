@@ -10,7 +10,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 20px;
 }
 
@@ -19,7 +19,7 @@
   background-color: var(--primary);
   color: var(--accent);
   padding: 10px;
-  width: 270px;
+  width: 340px;
 }
 
 .players .player i {
@@ -68,7 +68,7 @@
 
 .players .player .medals {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   gap: 5px;
   background-color: var(--accent);
@@ -77,6 +77,8 @@
   padding: 3px 0;
   padding-left: 10px;
   padding-right: 5px;
+  width: 120px;
+  height: 28px;
 }
 
 .players .player.alt-color .medals {
@@ -165,4 +167,9 @@
 
 .button-container-delete .delete i {
   font-size: 30px;
+}
+
+.space {
+  margin: 0 5px;
+  font-weight: bold;
 }

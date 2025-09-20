@@ -28,13 +28,13 @@ export class DurationBetweenDatesPipe implements PipeTransform {
     const tenth = Math.floor((diffMs % 1000) / 100);
 
     if (days > 0) {
-      return `${days} j ${hours} h`;
+      return `${days}j ${hours}h`;
     } else if (hours > 0) {
-      return `${hours} h ${minutes} min`;
+      return `${hours}h ${minutes}m`;
     } else if (minutes > 0) {
-      return `${minutes} min ${seconds} s`;
+      return `${minutes}m ${seconds}s`;
     } else {
-      return `${seconds}.${tenth} s`;
+      return `${seconds}.${tenth}s`;
     }
   }
 

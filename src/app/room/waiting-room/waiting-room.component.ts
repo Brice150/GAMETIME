@@ -14,9 +14,9 @@ export class WaitingRoomComponent {
   room = input.required<Room>();
   player = input.required<Player>();
   players = input.required<Player[]>();
-  @Output() deleteEvent = new EventEmitter<string>();
+  @Output() deleteEvent = new EventEmitter<Player>();
 
-  delete(userId: string): void {
-    this.deleteEvent.emit(userId);
+  delete(player: Player): void {
+    this.deleteEvent.emit(player);
   }
 }
