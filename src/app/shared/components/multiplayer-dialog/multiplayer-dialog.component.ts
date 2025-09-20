@@ -2,10 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
+import { QRCodeComponent } from 'angularx-qrcode';
 
 @Component({
   selector: 'app-multiplayer-dialog',
-  imports: [CommonModule],
+  imports: [CommonModule, QRCodeComponent],
   templateUrl: './multiplayer-dialog.component.html',
   styleUrl: './multiplayer-dialog.component.css',
 })

@@ -25,6 +25,14 @@
         <i class="bx bx-link"></i>
       </button>
     </div>
+    <div class="element qr-code">
+      <span class="title">Ou le QR code</span>
+      <qrcode
+        [qrdata]="link"
+        [width]="200"
+        [errorCorrectionLevel]="'M'"
+      ></qrcode>
+    </div>
   </div>
   <div class="button-container">
     <button type="button" title="Fermer" (click)="cancel()" class="delete">
