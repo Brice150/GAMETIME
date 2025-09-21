@@ -4,31 +4,41 @@
     <div class="result">
       <span class="me">Moi</span>
     </div>
-    @if (otherPlayer()) {
-    <div class="result">
-      <span class="other" style="color: var(--secondary)">{{
-        otherPlayer()!.username
-      }}</span>
-    </div>
+    @if (selectedOther) {
+    <form class="result">
+      <mat-form-field>
+        <mat-select
+          [ngModel]="selectedOther.userId"
+          name="otherPlayer"
+          (ngModelChange)="setOtherPlayer($event)"
+        >
+          @for (player of otherPlayers; track $index; let i = $index) {
+          <mat-option [value]="player.userId" [attr.data-track]="player.userId">
+            <span class="other">{{ player.username }}</span>
+          </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </form>
     }
   </div>
-  @for (response of room().responses; track $index; let i = $index) {
+  @for (response of room.responses; track $index; let i = $index) {
   <div class="response">
     <span class="value">{{ response }}</span>
     <div class="result me">
-      @if (player().currentRoomWins[i] === true) {
+      @if (player.currentRoomWins[i] === true) {
       <i class="bx bx-check" style="color: rgb(0, 211, 0)"></i>
-      } @else if (player().currentRoomWins[i] === false) {
+      } @else if (player.currentRoomWins[i] === false) {
       <i class="bx bx-x" style="color: red"></i>
       } @else {
       <i class="bx bx-loader-alt bx-spin" style="color: var(--accent)"></i>
       }
     </div>
-    @if (otherPlayer()) {
+    @if (selectedOther) {
     <div class="result other">
-      @if (otherPlayer()!.currentRoomWins[i] === true) {
+      @if (selectedOther.currentRoomWins[i] === true) {
       <i class="bx bx-check" style="color: rgb(0, 211, 0)"></i>
-      } @else if (otherPlayer()!.currentRoomWins[i] === false) {
+      } @else if (selectedOther.currentRoomWins[i] === false) {
       <i class="bx bx-x" style="color: red"></i>
       } @else {
       <i class="bx bx-loader-alt bx-spin" style="color: var(--accent)"></i>

@@ -35,6 +35,7 @@ import { ResultsDetailsComponent } from './results-details/results-details.compo
 import { ResultsPodiumComponent } from './results-podium/results-podium.component';
 import { WaitingRoomComponent } from './waiting-room/waiting-room.component';
 import { WordGamesComponent } from './word-games/word-games.component';
+import { Timestamp } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-room',
@@ -122,7 +123,16 @@ export class RoomComponent implements OnInit, OnDestroy {
             });
           }
 
-          if (room.startDate != this.room.startDate) {
+          const start1 =
+            this.room.startDate instanceof Timestamp
+              ? this.room.startDate.toDate()
+              : this.room.startDate;
+          const start2 =
+            room.startDate instanceof Timestamp
+              ? room.startDate.toDate()
+              : room.startDate;
+
+          if (start1?.getTime() !== start2?.getTime()) {
             this.isResultPageActive = false;
           }
 
