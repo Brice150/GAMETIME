@@ -1,10 +1,8 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { filter, Observable, of, Subject, switchMap, takeUntil } from 'rxjs';
@@ -19,27 +17,28 @@ import { ExcludedQuestionsService } from '../core/services/excluded-questions.se
 import { LocalStorageService } from '../core/services/local-storage.service';
 import { PlayerService } from '../core/services/player.service';
 import { RoomService } from '../core/services/room.service';
+import { ResultsPodiumComponent } from '../room/results-podium/results-podium.component';
+import { WaitingRoomComponent } from '../room/waiting-room/waiting-room.component';
 import { AddRoomDialogComponent } from '../shared/components/add-room-dialog/add-room-dialog.component';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { MultiplayerDialogComponent } from '../shared/components/multiplayer-dialog/multiplayer-dialog.component';
 import { CustomDatePipe } from '../shared/pipes/custom-date.pipe';
 import { DifficultyPipe } from '../shared/pipes/difficulty.pipe';
-import { DurationBetweenDatesPipe } from '../shared/pipes/duration.pipe';
-import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
 import { QuizCategoryPipe } from '../shared/pipes/quiz-category.pipe';
+import { AdminResultsDetailsComponent } from './admin-results-details/admin-results-details.component';
 
 @Component({
   selector: 'app-admin-room',
   imports: [
     CommonModule,
-    DurationBetweenDatesPipe,
     MatProgressSpinnerModule,
-    FormsModule,
-    MatSlideToggleModule,
-    MedalsNumberPipe,
     CustomDatePipe,
     DifficultyPipe,
     QuizCategoryPipe,
+    AdminResultsDetailsComponent,
+    ResultsPodiumComponent,
+    WaitingRoomComponent,
+    AdminResultsDetailsComponent,
   ],
   templateUrl: './admin-room.component.html',
   styleUrl: './admin-room.component.css',
@@ -59,12 +58,12 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
   dialog = inject(MatDialog);
   router = inject(Router);
   destroyed$ = new Subject<void>();
-  hideResults = true;
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
   marquesGameKey = gameMap['marques'].key;
   quizGameKey = gameMap['quiz'].key;
   excludedUserQuestions: ExcludedUserQuestions = {} as ExcludedUserQuestions;
+  isDetailModeActive = false;
 
   ngOnInit(): void {
     this.activatedRoute.params
@@ -287,6 +286,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
 
     this.players.forEach((player) => {
       player.finishDate = new Date();
+      player.isReady = true;
       for (let i = 0; i < this.room.responses.length; i++) {
         if (player.currentRoomWins[i] === undefined) {
           player.currentRoomWins.push(false);
@@ -317,28 +317,53 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
     return this.players.every((player) => !!player.finishDate);
   }
 
-  openAddRoomDialog(): void {
-    if (
+  openDialogs(): void {
+    const playerNotReady =
+      !this.room.isStarted &&
       this.players.some(
         (player) =>
           player.userId !== this.playerService.currentPlayerSig()?.userId &&
           !player.isReady
-      )
-    ) {
+      );
+
+    const playerNotDone =
+      this.room.isStarted &&
+      this.players.some(
+        (player) =>
+          player.userId !== this.playerService.currentPlayerSig()?.userId &&
+          !player.finishDate
+      );
+
+    if (playerNotReady || playerNotDone) {
       this.room.isReadyNotificationActivated =
         !this.room.isReadyNotificationActivated;
       this.roomService
         .updateRoom(this.room)
         .pipe(takeUntil(this.destroyed$))
-        .subscribe(() =>
-          this.toastr.error('Tous les joueurs ne sont pas prêts', 'Game Time', {
-            positionClass: 'toast-top-center',
-            toastClass: 'ngx-toastr custom error',
-          })
-        );
+        .subscribe(() => {
+          if (playerNotReady) {
+            this.toastr.info(
+              'Tous les joueurs ne sont pas prêts',
+              'Game Time',
+              {
+                positionClass: 'toast-top-center',
+                toastClass: 'ngx-toastr custom info',
+              }
+            );
+          } else if (playerNotDone) {
+            this.toastr.info("Tous les joueurs n'ont pas fini", 'Game Time', {
+              positionClass: 'toast-top-center',
+              toastClass: 'ngx-toastr custom info',
+            });
+          }
+        });
       return;
     }
 
+    this.openAddRoomDialog();
+  }
+
+  openAddRoomDialog(): void {
     const dialogRef = this.dialog.open(AddRoomDialogComponent, {
       data: {
         stepsNumber: this.room.stepsNumber,
@@ -380,7 +405,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
       });
   }
 
-  removePlayer(userId: string): void {
+  removePlayer(otherPlayer: Player): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       data: 'supprimer le joueur de la room',
     });
@@ -390,10 +415,16 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
       .pipe(
         filter((res: boolean) => res),
         switchMap(() => {
-          this.room.playerIds = this.room.playerIds.filter(
-            (playerId) => playerId !== userId
-          );
+          otherPlayer.currentRoomWins = [];
+          otherPlayer.finishDate = null;
+          otherPlayer.isReady = false;
 
+          return this.playerService.updatePlayer(otherPlayer);
+        }),
+        switchMap(() => {
+          this.room.playerIds = this.room.playerIds.filter(
+            (playerId) => playerId !== otherPlayer.userId
+          );
           return this.roomService.updateRoom(this.room);
         })
       )
@@ -411,5 +442,9 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
         this.playerService.currentPlayerSig()?.userId!
       )
     );
+  }
+
+  seeDetails(): void {
+    this.isDetailModeActive = !this.isDetailModeActive;
   }
 }

@@ -1,0 +1,31 @@
+<div class="toggle-container">
+  <mat-slide-toggle [(ngModel)]="hideResults">
+    Cacher résultats
+  </mat-slide-toggle>
+</div>
+<div class="responses">
+  <div class="response title">
+    <span class="value">Réponses</span>
+    @for (player of players; track $index) {
+    <div class="result">
+      <span class="other">{{ player.username }}</span>
+    </div>
+    }
+  </div>
+  @for (response of room.responses; track $index; let i = $index) {
+  <div class="response">
+    <span class="value" [class.blurred]="hideResults">{{ response }}</span>
+    @for (player of players; track $index) {
+    <div class="result other">
+      @if (player.currentRoomWins[i] === true) {
+      <i class="bx bx-check" style="color: rgb(0, 211, 0)"></i>
+      } @else if (player.currentRoomWins[i] === false) {
+      <i class="bx bx-x" style="color: red"></i>
+      } @else {
+      <i class="bx bx-loader-alt bx-spin" style="color: var(--accent)"></i>
+      }
+    </div>
+    }
+  </div>
+  }
+</div>

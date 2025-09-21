@@ -9,7 +9,6 @@ import { Room } from 'src/app/core/interfaces/room';
 
 @Component({
   selector: 'app-results-details',
-  standalone: true,
   imports: [
     CommonModule,
     FormsModule,

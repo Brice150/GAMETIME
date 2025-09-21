@@ -14,6 +14,7 @@ section .description-title {
   color: var(--secondary);
   text-align: center;
   width: 90%;
+  margin-bottom: 20px;
 }
 
 section .description-title.first {
@@ -193,11 +194,6 @@ mat-spinner:not(.ai) {
   font-size: 28px;
 }
 
-.blurred {
-  filter: blur(5px);
-  user-select: none;
-}
-
 .button-container {
   display: flex;
   justify-content: center;
@@ -252,21 +248,6 @@ mat-spinner:not(.ai) {
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
-.toggle-container {
-  margin-top: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  gap: 20px;
-  width: 235px;
-}
-
-mat-slide-toggle {
-  width: 100%;
-  max-width: 320px;
-}
-
 .button-container-delete {
   display: flex;
   justify-content: center;
@@ -299,38 +280,4 @@ mat-slide-toggle {
 
 .button-container-delete .delete i {
   font-size: 30px;
-}
-
-::ng-deep .mat-mdc-slide-toggle .mat-internal-form-field {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-}
-
-::ng-deep .mat-mdc-slide-toggle .mdc-switch:enabled + .mdc-label {
-  font-size: 20px;
-  font-weight: 500;
-  color: var(--secondary);
-  margin: 0;
-}
-
-::ng-deep .mdc-switch__track::after {
-  background: var(--accent) !important;
-}
-
-::ng-deep .mdc-switch--selected:enabled .mdc-switch__handle::after {
-  background: var(--primary) !important;
-}
-
-::ng-deep .mdc-switch--selected .mdc-switch__icon {
-  fill: var(--accent) !important;
-}
-
-::ng-deep .mdc-switch__track::before {
-  background: var(--primary) !important;
-}
-
-::ng-deep .mdc-switch--unselected .mdc-switch__icon {
-  fill: var(--primary) !important;
 }
