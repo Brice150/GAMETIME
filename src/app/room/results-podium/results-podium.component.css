@@ -1,4 +1,5 @@
-.players .container {
+:host {
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -6,12 +7,18 @@
 }
 
 .players {
-  margin-top: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 20px;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.players .container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 .players .player {
@@ -19,7 +26,7 @@
   background-color: var(--primary);
   color: var(--accent);
   padding: 10px;
-  width: 270px;
+  width: 340px;
 }
 
 .players .player i {
@@ -68,7 +75,7 @@
 
 .players .player .medals {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   gap: 5px;
   background-color: var(--accent);
@@ -77,6 +84,8 @@
   padding: 3px 0;
   padding-left: 10px;
   padding-right: 5px;
+  width: 120px;
+  height: 28px;
 }
 
 .players .player.alt-color .medals {
@@ -89,31 +98,6 @@
 }
 
 .medals i {
-  font-size: 28px;
-}
-
-.players .player .responses {
-  margin-top: 15px;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  gap: 10px;
-  width: 100%;
-}
-
-.players .player .responses .response {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-}
-
-.players .player .responses .response .description {
-  font-size: 18px;
-  text-transform: uppercase;
-}
-
-.players .player .responses .response i {
   font-size: 28px;
 }
 
@@ -165,4 +149,21 @@
 
 .button-container-delete .delete i {
   font-size: 30px;
+}
+
+@media screen and (max-width: 370px) {
+  .players .player {
+    width: 270px;
+  }
+
+  .players .player .flex {
+    height: unset;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .players .player .username {
+    text-align: center;
+  }
 }

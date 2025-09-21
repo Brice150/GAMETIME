@@ -1,3 +1,11 @@
+:host {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
 .players {
   margin-top: 20px;
   display: flex;
@@ -12,19 +20,20 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  position: relative;
 }
 
 .players .player {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   border-radius: var(--light-radius);
   background-color: var(--primary);
   color: var(--accent);
   padding: 10px;
-  width: 270px;
-  height: 30px;
+  width: 340px;
+}
+
+.players .player.spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .players .player i {
@@ -33,6 +42,13 @@
 
 .players .player.alt-color {
   color: var(--secondary);
+}
+
+.players .player .flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 30px;
 }
 
 .players .player .username {
@@ -45,23 +61,46 @@
   text-align: left;
 }
 
-.players .player.spinner {
+.players .player .end {
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 10px;
 }
 
-::ng-deep .mdc-circular-progress__indeterminate-circle-graphic {
-  stroke: var(--accent) !important;
+.players .player .medals {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 5px;
+  background-color: var(--accent);
+  color: var(--primary);
+  border-radius: var(--light-radius);
+  padding: 3px 0;
+  padding-left: 10px;
+  padding-right: 5px;
+  width: 70px;
+  height: 28px;
+}
+
+.players .player.alt-color .medals {
+  background-color: var(--secondary);
+}
+
+.victory-number {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.medals i {
+  font-size: 28px;
 }
 
 .button-container-delete {
   display: flex;
   justify-content: center;
   align-items: center;
-  position: absolute;
-  right: -60px;
-  top: 0;
+  margin-top: 5px;
 }
 
 .button-container-delete .delete {
@@ -91,10 +130,19 @@
   font-size: 30px;
 }
 
-@media screen and (max-width: 450px) {
-  .button-container-delete {
-    position: relative;
-    right: unset;
-    top: 5px;
+@media screen and (max-width: 370px) {
+  .players .player {
+    width: 270px;
+  }
+
+  .players .player .flex {
+    height: unset;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .players .player .username {
+    text-align: center;
   }
 }

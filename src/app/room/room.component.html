@@ -12,14 +12,20 @@
     [player]="playerService.currentPlayerSig()!"
     (finishedStepEvent)="updatePlayerGame($event)"
   ></app-ai-games>
-  }} @else {
-  <app-results
+  }} @else { @if (isDetailModeActive) {
+  <app-results-details
+    [room]="room"
+    [player]="playerService.currentPlayerSig()!"
+    [players]="players"
+  ></app-results-details>
+  } @else {
+  <app-results-podium
     [room]="room"
     [player]="playerService.currentPlayerSig()!"
     [players]="players"
     (deleteEvent)="removePlayer($event)"
-  ></app-results>
-  } } @else {
+  ></app-results-podium>
+  } } } @else {
   <app-waiting-room
     [room]="room"
     [player]="playerService.currentPlayerSig()!"
@@ -38,12 +44,28 @@
       <i class="bx bxs-skip-next-circle"></i>
       <span class="text">Suivant</span>
     </button>
-    } @else if (isSeeResultsAvailable) {
-    <button type="button" (click)="seeResults()" title="Résultats">
-      <i class="bx bxs-medal"></i>
-      <span class="text">Résultats</span>
+    } @else if (!room.isStarted || isResultPageActive) { @if
+    (isResultPageActive) { @if (isDetailModeActive) {
+    <button
+      type="button"
+      (click)="seeDetails()"
+      title="Voir podium"
+      class="share"
+    >
+      <i class="bx bxs-trophy"></i>
+      <span class="text">Voir podium</span>
     </button>
-    } @else if (!room.isStarted || isResultPageActive) {
+    } @else {
+    <button
+      type="button"
+      (click)="seeDetails()"
+      title="Voir détails"
+      class="share"
+    >
+      <i class="bx bxs-user-detail"></i>
+      <span class="text">Voir détails</span>
+    </button>
+    } }
     <button
       type="button"
       (click)="multiplayer()"

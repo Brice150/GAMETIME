@@ -65,7 +65,10 @@ export class WordGamesComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (this.room().gameName === this.drapeauxGameKey) {
+    if (
+      this.room().gameName === this.drapeauxGameKey &&
+      this.room().countries?.length > 0
+    ) {
       this.loading = true;
       this.imageService
         .getDrapeauImage(this.room().countries[index || 0].code)

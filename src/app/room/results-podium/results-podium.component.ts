@@ -1,17 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, input, Output } from '@angular/core';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Player } from 'src/app/core/interfaces/player';
 import { Room } from 'src/app/core/interfaces/room';
-import { TotalMedalsNumberPipe } from '../../shared/pipes/total-medals-number.pipe';
+import { DurationBetweenDatesPipe } from 'src/app/shared/pipes/duration.pipe';
 
 @Component({
-  selector: 'app-waiting-room',
-  imports: [CommonModule, MatProgressSpinnerModule, TotalMedalsNumberPipe],
-  templateUrl: './waiting-room.component.html',
-  styleUrl: './waiting-room.component.css',
+  selector: 'app-results-podium',
+  imports: [CommonModule, DurationBetweenDatesPipe],
+  templateUrl: './results-podium.component.html',
+  styleUrl: './results-podium.component.css',
 })
-export class WaitingRoomComponent {
+export class ResultsPodiumComponent {
   room = input.required<Room>();
   player = input.required<Player>();
   players = input.required<Player[]>();
@@ -19,5 +18,9 @@ export class WaitingRoomComponent {
 
   delete(player: Player): void {
     this.deleteEvent.emit(player);
+  }
+
+  getWinsCount(player: Player): number {
+    return player.currentRoomWins.filter((win) => !!win).length;
   }
 }

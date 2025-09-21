@@ -118,7 +118,6 @@ export class PlayerService {
           username: username,
           stats: [statMotus, statDrapeaux, statMarques, statQuiz],
           isAdmin: false,
-          isOver: false,
           currentRoomWins: [],
           finishDate: null,
           isReady: false,

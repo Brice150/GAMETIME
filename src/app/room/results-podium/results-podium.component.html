@@ -1,0 +1,53 @@
+<div class="players">
+  @for (otherPlayer of players(); track $index; let i = $index) {
+  <div class="container">
+    <div
+      class="player"
+      [ngClass]="{ 'alt-color': otherPlayer.userId !== player().userId }"
+    >
+      <div class="flex">
+        @if (players().length > 1) {
+        <div class="podium">
+          @if (i + 1 === 1) {
+          <i class="bx bxs-trophy" style="color: gold"></i>
+          } @else if (i + 1 === 2) {
+          <i class="bx bxs-trophy" style="color: silver"></i>
+          }@else if (i + 1 === 3) {
+          <i class="bx bxs-trophy" style="color: #cd7f32"></i>
+          } @else {
+          <span class="order">{{ i + 1 }}</span>
+          }
+        </div>
+        }
+        <span class="username">{{ otherPlayer.username }}</span>
+        <div class="medals">
+          <span class="victory-number"
+            >{{ getWinsCount(otherPlayer) }} /
+            {{ room().responses.length }}</span
+          >
+          @if (otherPlayer.finishDate) {
+          <span class="victory-number time">{{
+            room().startDate | durationBetweenDates : otherPlayer.finishDate
+          }}</span>
+          } @else {
+          <i class="bx bx-loader-alt bx-spin" style="color: var(--primary)"></i>
+          }
+        </div>
+      </div>
+    </div>
+    @if (otherPlayer.userId !== player().userId && room().userId ===
+    player().userId) {
+    <div class="button-container-delete">
+      <button
+        type="button"
+        (click)="delete(otherPlayer)"
+        title="Supprimer"
+        class="delete share"
+      >
+        <i class="bx bxs-trash"></i>
+      </button>
+    </div>
+    }
+  </div>
+  }
+</div>

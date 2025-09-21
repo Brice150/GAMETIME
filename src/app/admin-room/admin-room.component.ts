@@ -182,7 +182,6 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
         takeUntil(this.destroyed$),
         switchMap(() => {
           this.players.forEach((player) => {
-            player.isOver = false;
             player.finishDate = null;
             player.isReady = false;
             player.currentRoomWins = [];
@@ -287,7 +286,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
     this.loading = true;
 
     this.players.forEach((player) => {
-      player.isOver = true;
+      player.finishDate = new Date();
       for (let i = 0; i < this.room.responses.length; i++) {
         if (player.currentRoomWins[i] === undefined) {
           player.currentRoomWins.push(false);
@@ -315,7 +314,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
   }
 
   allPlayersDone(): boolean {
-    return this.players.every((player) => player.isOver);
+    return this.players.every((player) => !!player.finishDate);
   }
 
   openAddRoomDialog(): void {
@@ -403,5 +402,14 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
 
   joinRoom(): void {
     this.router.navigate(['/room', this.room.id]);
+  }
+
+  canJoin(): boolean {
+    return (
+      !this.room.isCreatedByAdmin &&
+      !this.room.playerIds.includes(
+        this.playerService.currentPlayerSig()?.userId!
+      )
+    );
   }
 }
