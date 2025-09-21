@@ -2,6 +2,18 @@
   @if (!loading) {
   <span class="description">Voici vos dernières stats :</span>
 
+  <div class="game-container first">
+    <div class="flex">
+      <i class="bx bxs-universal-access"></i>
+      <span class="game">Général</span>
+    </div>
+    <div class="medals" style="color: var(--accent)">
+      <span class="victory-number">{{
+        playerService.currentPlayerSig()! | totalMedalsNumber
+      }}</span>
+      <i class="bx bxs-medal"></i>
+    </div>
+  </div>
   <div class="games">
     @for (game of games; track game.key) {
     <div class="game-container">

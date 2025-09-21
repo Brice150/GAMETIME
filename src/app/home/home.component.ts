@@ -14,6 +14,7 @@ import { LocalStorageService } from '../core/services/local-storage.service';
 import { PlayerService } from '../core/services/player.service';
 import { RoomService } from '../core/services/room.service';
 import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
+import { TotalMedalsNumberPipe } from '../shared/pipes/total-medals-number.pipe';
 import { JoinRoomComponent } from './join-room/join-room.component';
 
 @Component({
@@ -27,6 +28,7 @@ import { JoinRoomComponent } from './join-room/join-room.component';
     MatSlideToggleModule,
     MedalsNumberPipe,
     JoinRoomComponent,
+    TotalMedalsNumberPipe,
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
