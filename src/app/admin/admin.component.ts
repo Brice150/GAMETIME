@@ -121,14 +121,22 @@ export class AdminComponent implements OnInit {
         filter((res: boolean) => res),
         switchMap(() => {
           this.loading = true;
-          return this.roomService.deleteRoom(roomId);
+
+          this.playersByRoom[roomId].forEach((player) => {
+            player.currentRoomWins = [];
+            player.finishDate = null;
+            player.isReady = false;
+          });
+
+          return this.playerService.updatePlayers(this.playersByRoom[roomId]);
         }),
-        takeUntil(this.destroyed$)
+        takeUntil(this.destroyed$),
+        switchMap(() => this.roomService.deleteRoom(roomId))
       )
       .subscribe({
         next: () => {
           this.loading = false;
-          this.toastr.info('Room supprimée', 'Admin', {
+          this.toastr.info('La room a été supprimée', 'Admin', {
             positionClass: 'toast-top-center',
             toastClass: 'ngx-toastr custom info',
           });
