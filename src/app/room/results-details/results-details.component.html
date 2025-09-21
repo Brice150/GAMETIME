@@ -6,7 +6,9 @@
     </div>
     @if (otherPlayer()) {
     <div class="result">
-      <span class="other">{{ otherPlayer()!.username }}</span>
+      <span class="other" style="color: var(--secondary)">{{
+        otherPlayer()!.username
+      }}</span>
     </div>
     }
   </div>
@@ -14,23 +16,23 @@
   <div class="response">
     <span class="value">{{ response }}</span>
     <div class="result me">
-      @if (!player().finishDate) {
-      <i class="bx bx-loader-alt bx-spin" style="color: var(--accent)"></i>
-      } @else { @if (player().currentRoomWins[i]) {
+      @if (player().currentRoomWins[i] === true) {
       <i class="bx bx-check" style="color: rgb(0, 211, 0)"></i>
-      } @else {
+      } @else if (player().currentRoomWins[i] === false) {
       <i class="bx bx-x" style="color: red"></i>
-      } }
+      } @else {
+      <i class="bx bx-loader-alt bx-spin" style="color: var(--accent)"></i>
+      }
     </div>
     @if (otherPlayer()) {
     <div class="result other">
-      @if (!otherPlayer()!.finishDate) {
-      <i class="bx bx-loader-alt bx-spin" style="color: var(--accent)"></i>
-      } @else { @if (otherPlayer()!.currentRoomWins[i]) {
+      @if (otherPlayer()!.currentRoomWins[i] === true) {
       <i class="bx bx-check" style="color: rgb(0, 211, 0)"></i>
-      } @else {
+      } @else if (otherPlayer()!.currentRoomWins[i] === false) {
       <i class="bx bx-x" style="color: red"></i>
-      } }
+      } @else {
+      <i class="bx bx-loader-alt bx-spin" style="color: var(--accent)"></i>
+      }
     </div>
     }
   </div>
