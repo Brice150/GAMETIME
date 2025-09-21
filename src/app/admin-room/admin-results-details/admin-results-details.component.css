@@ -9,12 +9,15 @@
 .responses {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: start;
   flex-direction: column;
   gap: 10px;
   background-color: var(--primary);
   border-radius: var(--light-radius);
   padding: 10px;
+  overflow-x: auto;
+  width: 90%;
+  max-width: max-content;
 }
 
 .responses .response {
