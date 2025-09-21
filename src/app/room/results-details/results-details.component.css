@@ -92,11 +92,11 @@ mat-select {
   background-color: var(--primary) !important;
 }
 
-::ng-deep .mat-mdc-select {
+::ng-deep .result .mat-mdc-select {
   color: var(--secondary) !important;
 }
 
-::ng-deep .mat-mdc-select-arrow svg {
+::ng-deep .result .mat-mdc-select-arrow svg {
   fill: var(--secondary) !important;
 }
 
@@ -164,7 +164,7 @@ mat-select {
   border-radius: var(--light-radius) !important;
 }
 
-::ng-deep .mat-mdc-select-value {
+::ng-deep .result .mat-mdc-select-value {
   font-size: 18px;
   font-weight: 600;
   font-family: Roboto, "Helvetica Neue", sans-serif;
