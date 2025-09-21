@@ -14,7 +14,7 @@
   </div>
   @for (response of room.responses; track $index; let i = $index) {
   <div class="response">
-    <span class="value" [class.blurred]="hideResults">{{ response }}</span>
+    <span class="value" [ngClass]="{ hide: hideResults }">{{ response }}</span>
     @for (player of players; track $index) {
     <div class="result other">
       @if (player.currentRoomWins[i] === true) {

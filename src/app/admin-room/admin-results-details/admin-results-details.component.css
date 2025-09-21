@@ -67,8 +67,9 @@ form.result {
   width: 130px;
 }
 
-.blurred {
-  filter: blur(5px);
+.hide {
+  filter: blur(10px);
+  background-color: var(--secondary);
   user-select: none;
 }
 

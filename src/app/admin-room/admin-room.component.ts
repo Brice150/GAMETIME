@@ -285,7 +285,9 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
     this.loading = true;
 
     this.players.forEach((player) => {
-      player.finishDate = new Date();
+      if (!player.finishDate) {
+        player.finishDate = new Date();
+      }
       player.isReady = true;
       for (let i = 0; i < this.room.responses.length; i++) {
         if (player.currentRoomWins[i] === undefined) {
