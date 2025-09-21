@@ -1,3 +1,11 @@
+:host {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
 .players {
   margin-top: 20px;
   display: flex;

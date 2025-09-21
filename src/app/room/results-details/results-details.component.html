@@ -1,1 +1,38 @@
-<p>results-detail works!</p>
+<div class="responses">
+  <div class="response title">
+    <span class="value">Réponses</span>
+    <div class="result">
+      <span class="me">Moi</span>
+    </div>
+    @if (otherPlayer()) {
+    <div class="result">
+      <span class="other">{{ otherPlayer()!.username }}</span>
+    </div>
+    }
+  </div>
+  @for (response of room().responses; track $index; let i = $index) {
+  <div class="response">
+    <span class="value">{{ response }}</span>
+    <div class="result me">
+      @if (!player().finishDate) {
+      <i class="bx bx-loader-alt bx-spin" style="color: var(--accent)"></i>
+      } @else { @if (player().currentRoomWins[i]) {
+      <i class="bx bx-check" style="color: rgb(0, 211, 0)"></i>
+      } @else {
+      <i class="bx bx-x" style="color: red"></i>
+      } }
+    </div>
+    @if (otherPlayer()) {
+    <div class="result other">
+      @if (!otherPlayer()!.finishDate) {
+      <i class="bx bx-loader-alt bx-spin" style="color: var(--accent)"></i>
+      } @else { @if (otherPlayer()!.currentRoomWins[i]) {
+      <i class="bx bx-check" style="color: rgb(0, 211, 0)"></i>
+      } @else {
+      <i class="bx bx-x" style="color: red"></i>
+      } }
+    </div>
+    }
+  </div>
+  }
+</div>

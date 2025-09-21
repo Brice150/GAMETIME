@@ -12,7 +12,8 @@
     [player]="playerService.currentPlayerSig()!"
     (finishedStepEvent)="updatePlayerGame($event)"
   ></app-ai-games>
-  }} @else { @if (isDetailModeActive) {<app-results-details
+  }} @else { @if (isDetailModeActive) {
+  <app-results-details
     [room]="room"
     [player]="playerService.currentPlayerSig()!"
     [players]="players"

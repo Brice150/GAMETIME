@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { Player } from 'src/app/core/interfaces/player';
 import { Room } from 'src/app/core/interfaces/room';
 
@@ -13,4 +13,7 @@ export class ResultsDetailsComponent {
   room = input.required<Room>();
   player = input.required<Player>();
   players = input.required<Player[]>();
+  otherPlayer = computed(() =>
+    this.players()?.find((p) => p.userId !== this.player().userId)
+  );
 }
