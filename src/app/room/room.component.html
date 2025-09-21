@@ -34,12 +34,12 @@
   ></app-waiting-room>
   }
   <div class="button-container">
+    @if (!isFinishing) {
     <button type="button" title="Quitter" (click)="openDialog()" class="delete">
       <i class="bx bxs-log-out"></i>
       <span class="text">Quitter</span>
     </button>
-
-    @if (isNextButtonAvailable) {
+    } @if (isNextButtonAvailable) {
     <button type="button" (click)="next()" title="Suivant">
       <i class="bx bxs-skip-next-circle"></i>
       <span class="text">Suivant</span>

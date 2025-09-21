@@ -1,7 +1,7 @@
 export const promptPrefix = `
 Crée un quiz en français sous forme d'objet JSON, selon les paramètres suivants :
 - [stepsNumber] : nombre total de questions à générer.
-- [difficultyFilter] : filtre de difficulté (facile, moyenne, avancee ou hardcore).
+- [difficultyFilter] : filtre de difficulté (facile, moyenne, avancee ou impossible).
 - [categoryFilter] : thème des questions.
 - [excludedQuestionDescriptions] : liste des descriptions de questions déjà utilisées et qu'il ne faut jamais reposer.
 

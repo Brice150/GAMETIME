@@ -72,6 +72,7 @@ export class RoomComponent implements OnInit, OnDestroy {
   isDetailModeActive = false;
   userLeft = false;
   userKickedOut = false;
+  isFinishing = false;
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
   marquesGameKey = gameMap['marques'].key;
@@ -417,7 +418,6 @@ export class RoomComponent implements OnInit, OnDestroy {
               positionClass: 'toast-top-center',
               toastClass: 'ngx-toastr custom info',
             });
-            this.loading = false;
           },
           error: (error: HttpErrorResponse) => {
             this.loading = false;
@@ -479,7 +479,6 @@ export class RoomComponent implements OnInit, OnDestroy {
               positionClass: 'toast-top-center',
               toastClass: 'ngx-toastr custom info',
             });
-            this.loading = false;
           },
           error: (error: HttpErrorResponse) => {
             this.loading = false;
@@ -514,6 +513,8 @@ export class RoomComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.isFinishing = true;
+
     const finishDate = new Date();
 
     setTimeout(() => {
@@ -530,6 +531,7 @@ export class RoomComponent implements OnInit, OnDestroy {
             this.playerService.currentPlayerSig.set(
               this.playerService.currentPlayerSig()
             );
+            this.isFinishing = false;
             this.loading = false;
           },
           error: (error: HttpErrorResponse) => {
