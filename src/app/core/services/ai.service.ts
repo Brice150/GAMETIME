@@ -65,8 +65,16 @@ export class AiService {
       room.categoryFilter.toString() === themes[0].key
     ) {
       promptToUse = promptRandomPrefix;
-      categoriesList = themes
-        .filter((theme) => theme.key !== themes[0].key)
+
+      let availableThemes = themes.filter(
+        (theme) => theme.key !== themes[0].key
+      );
+
+      availableThemes = availableThemes.sort(() => Math.random() - 0.5);
+
+      const stepsNum = parseInt(stepsNumber, 10);
+      categoriesList = availableThemes
+        .slice(0, stepsNum)
         .map((theme) => theme.label);
     } else {
       const categoryLabel =
