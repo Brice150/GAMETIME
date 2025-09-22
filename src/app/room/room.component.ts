@@ -73,6 +73,7 @@ export class RoomComponent implements OnInit, OnDestroy {
   userLeft = false;
   userKickedOut = false;
   isFinishing = false;
+  waitTimeout = false;
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
   marquesGameKey = gameMap['marques'].key;
@@ -509,13 +510,14 @@ export class RoomComponent implements OnInit, OnDestroy {
   }
 
   seeResults(): void {
-    if (!this.playerService.currentPlayerSig()) {
+    if (!this.playerService.currentPlayerSig() || this.waitTimeout) {
       return;
     }
 
     this.isFinishing = true;
-
     const finishDate = new Date();
+
+    this.waitTimeout = true;
 
     setTimeout(() => {
       this.loading = true;
@@ -533,8 +535,10 @@ export class RoomComponent implements OnInit, OnDestroy {
             );
             this.isFinishing = false;
             this.loading = false;
+            this.waitTimeout = false;
           },
           error: (error: HttpErrorResponse) => {
+            this.waitTimeout = false;
             if (
               !error.message.includes('Missing or insufficient permissions.')
             ) {
