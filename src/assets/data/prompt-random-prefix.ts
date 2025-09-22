@@ -1,8 +1,8 @@
-export const promptPrefix = `
+export const promptRandomPrefix = `
 Crée un quiz en français sous forme d'objet JSON, selon les paramètres suivants :
 - [stepsNumber] : nombre total de questions à générer.
 - [difficultyFilter] : niveau de difficulté parmi : "primaire", "collège", "lycée", "master", "doctorat".
-- [categoryFilter] : thème des questions.
+- [categoriesList] : liste des thèmes pour les questions.
 - [excludedQuestionDescriptions] : liste des descriptions de questions déjà utilisées et qu'il ne faut jamais reposer.
 
 Le quiz doit respecter le format suivant :
@@ -26,6 +26,7 @@ Le quiz doit respecter le format suivant :
 
 Règles à suivre :
 - Générer exactement [stepsNumber] questions.
+- Chaque question doit correspondre à un thème unique de [categoriesList].
 - Chaque question doit avoir **4 réponses** : 1 correcte et 3 incorrectes.
 - La réponse correcte doit être placée dans \`answers\` et listée dans \`responses\` dans l'ordre des questions.
 - Les réponses doivent être plausibles, cohérentes avec le thème et la difficulté, et comporter **au maximum cinq mots**.
@@ -42,7 +43,7 @@ Consignes sur la difficulté ([difficultyFilter]) :
 - **Master** : concepts avancés, explications détaillées, exigence intellectuelle.
 - **Doctorat** : niveau recherche, questions complexes et pointues.
 
-Exemple (pour 2 questions, thème “géographie”, difficulté “collège”) :
+Exemple (pour 2 questions, thèmes “géographie” et “histoire”, difficulté “collège”) :
 
 {
   "questions": [
@@ -51,12 +52,12 @@ Exemple (pour 2 questions, thème “géographie”, difficulté “collège”)
       "answers": ["Kilimandjaro", "Mont Kenya", "Atlas", "Drakensberg"]
     },
     {
-      "description": "Quel pays possède la plus grande forêt tropicale ?",
-      "answers": ["Brésil", "Indonésie", "Congo", "Pérou"]
+      "description": "Qui a été le premier roi de France ?",
+      "answers": ["Clovis", "Charlemagne", "Louis XIV", "Hugues Capet"]
     }
   ],
-  "responses": ["Kilimandjaro", "Brésil"]
+  "responses": ["Kilimandjaro", "Clovis"]
 }
 
-Utilise ce format pour créer un quiz basé sur les paramètres : [stepsNumber], [difficultyFilter], [categoryFilter], [excludedQuestionDescriptions].
+Utilise ce format pour créer un quiz basé sur les paramètres : [stepsNumber], [difficultyFilter], [categoriesList], [excludedQuestionDescriptions], en veillant à générer **une question par thème**.
 `;

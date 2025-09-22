@@ -1,6 +1,7 @@
 export enum Difficulty {
-  Facile = 1,
-  Moyenne,
-  Avancee,
-  Impossible,
+  Primaire = 1,
+  College,
+  Lycee,
+  Master,
+  Doctorat,
 }

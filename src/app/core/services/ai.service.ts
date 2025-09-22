@@ -2,12 +2,13 @@ import { Inject, Injectable } from '@angular/core';
 import { AI, GenerativeModel, getGenerativeModel } from 'firebase/ai';
 import { from, Observable } from 'rxjs';
 import { promptPrefix } from 'src/assets/data/prompt-prefix';
+import { promptRandomPrefix } from 'src/assets/data/prompt-random-prefix';
+import { themes } from 'src/assets/data/themes';
 import { Difficulty } from '../enums/difficulty.enum';
 import { AiResponse } from '../interfaces/ai-response';
 import { ExcludedUserQuestions } from '../interfaces/excluded-user-questions';
-import { Room } from '../interfaces/room';
-import { themes } from 'src/assets/data/themes';
 import { Question } from '../interfaces/question';
+import { Room } from '../interfaces/room';
 
 @Injectable({
   providedIn: 'root',
@@ -56,23 +57,48 @@ export class AiService {
     const stepsNumber = room.stepsNumber?.toString() || '3';
     const difficultyFilter = Difficulty[room.difficultyFilter] ?? Difficulty[2];
 
-    const categoryLabel =
-      themes.find((theme) => theme.key === room.categoryFilter.toString())
-        ?.label ?? themes[0].label;
+    let categoriesList: string[] = [];
+    let promptToUse = promptPrefix;
 
-    const themeForRoom = excludedUserQuestions?.themes?.find(
-      (t) => t.categoryFilter === room.categoryFilter
-    );
+    if (
+      room.categoryFilter &&
+      room.categoryFilter.toString() === themes[0].key
+    ) {
+      promptToUse = promptRandomPrefix;
+      categoriesList = themes
+        .filter((theme) => theme.key !== themes[0].key)
+        .map((theme) => theme.label);
+    } else {
+      const categoryLabel =
+        themes.find((theme) => theme.key === room.categoryFilter.toString())
+          ?.label ?? themes[0].label;
+      categoriesList = [categoryLabel];
+    }
+
+    const excludedDescriptions: string[] = [];
+
+    categoriesList.forEach((category) => {
+      const themeForRoom = excludedUserQuestions?.themes?.find(
+        (t) => t.categoryFilter.toString() === category
+      );
+      if (themeForRoom && themeForRoom.descriptions.length > 0) {
+        excludedDescriptions.push(...themeForRoom.descriptions);
+      }
+    });
 
     const excludedDescriptionsString =
-      themeForRoom && themeForRoom.descriptions.length > 0
-        ? '\n' + themeForRoom.descriptions.map((d) => `- ${d}`).join('\n')
+      excludedDescriptions.length > 0
+        ? '\n' + excludedDescriptions.map((d) => `- ${d}`).join('\n')
         : ' Aucune question exclue';
 
-    const finalPrompt = promptPrefix.replace(
+    const finalPrompt = promptToUse.replace(
       /(Utilise ce format pour créer un quiz basé sur les paramètres :).*/,
       (_, prefix) =>
-        `${prefix}\n[stepsNumber] = ${stepsNumber}\n[difficultyFilter] = ${difficultyFilter}\n[categoryFilter] = ${categoryLabel}\n[excludedQuestionDescriptions] =${excludedDescriptionsString}`
+        room.categoryFilter.toString() === themes[0].key
+          ? `${prefix}\n[stepsNumber] = ${stepsNumber}\n[difficultyFilter] = ${difficultyFilter}\n[categoriesList] = ${JSON.stringify(
+              categoriesList
+            )}\n[excludedQuestionDescriptions] =${excludedDescriptionsString}`
+          : `${prefix}\n[stepsNumber] = ${stepsNumber}\n[difficultyFilter] = ${difficultyFilter}\n[categoryFilter] = ${categoriesList[0]}\n[excludedQuestionDescriptions] =${excludedDescriptionsString}`
     );
 
     return finalPrompt;
