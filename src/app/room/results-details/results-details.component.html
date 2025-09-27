@@ -15,7 +15,7 @@
         >
           @for (player of otherPlayers; track $index; let i = $index) {
           <mat-option [value]="player.userId" [attr.data-track]="player.userId">
-            <span class="other">{{ player.username }}</span>
+            <span class="other">{{ player.username }} {{ player.animal }}</span>
           </mat-option>
           }
         </mat-select>

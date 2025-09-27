@@ -23,7 +23,9 @@
       class="player"
       [ngClass]="{ 'alt-color': otherPlayer.userId !== room().userId }"
     >
-      <span class="username">{{ otherPlayer.username }}</span>
+      <span class="username"
+        >{{ otherPlayer.username }} {{ otherPlayer.animal }}</span
+      >
       <div class="medals">
         <span class="victory-number">{{
           otherPlayer | totalMedalsNumber

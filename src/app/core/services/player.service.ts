@@ -92,7 +92,8 @@ export class PlayerService {
         if (players.length > 0) {
           return of(void 0).pipe(map(() => email));
         }
-        const username = this.generateRandomAnimalUsername(email);
+        const username = this.generateRandomUsername(email);
+        const animal = this.generateRandomAnimal();
         const playerDoc = doc(this.playersCollection);
 
         const statMotus: Stat = {
@@ -116,6 +117,7 @@ export class PlayerService {
           id: playerDoc.id,
           userId: userId,
           username: username,
+          animal: animal,
           stats: [statMotus, statDrapeaux, statMarques, statQuiz],
           isAdmin: false,
           currentRoomWins: [],
@@ -127,17 +129,34 @@ export class PlayerService {
     );
   }
 
-  generateRandomAnimalUsername(email?: string | null): string {
-    const animal =
-      animalsWithEmojis[Math.floor(Math.random() * animalsWithEmojis.length)];
+  generateRandomUsername(email?: string | null): string {
     const nameFromEmail = this.extractNameFromEmail(email);
 
     const formatName = (str: string) =>
       str.charAt(0).toUpperCase() + str.slice(1);
 
-    const finalName = nameFromEmail ? formatName(nameFromEmail) : animal.name;
+    const generateFallback = () => {
+      const chars =
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      let randomPart = '';
+      for (let i = 0; i < 4; i++) {
+        randomPart += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return `User#${randomPart}`;
+    };
 
-    return `${finalName} ${animal.emoji}`;
+    const finalName = nameFromEmail
+      ? formatName(nameFromEmail)
+      : generateFallback();
+
+    return finalName;
+  }
+
+  generateRandomAnimal(): string {
+    const animal =
+      animalsWithEmojis[Math.floor(Math.random() * animalsWithEmojis.length)];
+
+    return animal.emoji;
   }
 
   extractNameFromEmail(email?: string | null): string | null {

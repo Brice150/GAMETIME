@@ -1,0 +1,34 @@
+<section mat-dialog-content>
+  <h1>Modifier utilisateur</h1>
+  <form [formGroup]="userForm" class="content" (ngSubmit)="confirm()">
+    <mat-form-field>
+      <mat-label>Nom</mat-label>
+      <input matInput formControlName="username" />
+      @if (userForm.get('username')!.invalid) {
+      <mat-error>
+        @if (userForm.get('username')!.hasError('required')) {
+        <span>Ce champ est requis</span>
+        } @if (userForm.get('username')!.hasError('minlength')) {
+        <span>Ce champ est trop court</span>
+        } @if (userForm.get('username')!.hasError('maxlength')) {
+        <span>Ce champ est trop long</span>
+        }
+      </mat-error>
+      }
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Animal</mat-label>
+      <input matInput formControlName="animal" />
+    </mat-form-field>
+    <div class="button-container">
+      <button type="button" title="Annuler" (click)="cancel()" class="delete">
+        <i class="bx bx-x"></i>
+        <span class="text">Annuler</span>
+      </button>
+      <button type="submit" title="Confirmer">
+        <i class="bx bx-check"></i>
+        <span class="text">Confirmer</span>
+      </button>
+    </div>
+  </form>
+</section>

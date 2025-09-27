@@ -57,7 +57,9 @@
           otherPlayer.userId !== playerService.currentPlayerSig()?.userId
       }"
     >
-      <span class="username">{{ otherPlayer.username }}</span>
+      <span class="username"
+        >{{ otherPlayer.username }} {{ otherPlayer.animal }}</span
+      >
       <div class="podium">
         @if (i + 1 === 1) {
         <i class="bx bxs-trophy" style="color: gold"></i>

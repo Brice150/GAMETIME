@@ -110,7 +110,9 @@
       class="player"
       [ngClass]="{ 'alt-color': otherPlayer.userId !== player().userId }"
     >
-      <span class="username">{{ otherPlayer.username }}</span>
+      <span class="username"
+        >{{ otherPlayer.username }} {{ otherPlayer.animal }}</span
+      >
       @if (otherPlayer.currentRoomWins.length !== room!.responses.length) {
       <span class="step">
         {{ otherPlayer.currentRoomWins.length + 1 }}<span class="slash">/</span
