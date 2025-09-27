@@ -11,7 +11,9 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { Player } from 'src/app/core/interfaces/player';
+import { animalsWithEmojis } from 'src/assets/data/animals';
 
 @Component({
   selector: 'app-user-dialog',
@@ -22,6 +24,7 @@ import { Player } from 'src/app/core/interfaces/player';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
+    MatSelectModule,
   ],
   templateUrl: './user-dialog.component.html',
   styleUrl: './user-dialog.component.css',
@@ -30,6 +33,7 @@ export class UserDialogComponent implements OnInit {
   userForm!: FormGroup;
   fb = inject(FormBuilder);
   player?: Player;
+  animals = animalsWithEmojis;
 
   constructor(
     public dialogRef: MatDialogRef<UserDialogComponent>,

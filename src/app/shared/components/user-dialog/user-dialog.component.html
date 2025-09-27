@@ -17,8 +17,13 @@
       }
     </mat-form-field>
     <mat-form-field>
-      <mat-label>Animal</mat-label>
-      <input matInput formControlName="animal" />
+      <mat-select class="cap" formControlName="animal">
+        @for (animal of animals; track $index) {
+        <mat-option [value]="animal.emoji" class="cap-option">
+          {{ animal.name }} {{ animal.emoji }}
+        </mat-option>
+        }
+      </mat-select>
     </mat-form-field>
     <div class="button-container">
       <button type="button" title="Annuler" (click)="cancel()" class="delete">
