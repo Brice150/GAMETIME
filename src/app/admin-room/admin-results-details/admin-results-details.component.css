@@ -73,6 +73,7 @@ form.result {
 .hide {
   background-color: var(--secondary);
   user-select: none;
+  border-radius: var(--light-radius);
 }
 
 .toggle-container {
