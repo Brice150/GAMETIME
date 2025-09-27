@@ -71,7 +71,6 @@ form.result {
 }
 
 .hide {
-  filter: blur(10px);
   background-color: var(--secondary);
   user-select: none;
 }
