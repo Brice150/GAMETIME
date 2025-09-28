@@ -8,7 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { ToastrService } from 'ngx-toastr';
-import { filter, map, of, Subject, switchMap, takeUntil } from 'rxjs';
+import { filter, map, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { Player } from '../core/interfaces/player';
 import { Room } from '../core/interfaces/room';
 import { PlayerService } from '../core/services/player.service';
@@ -52,16 +52,16 @@ export class AdminComponent implements OnInit {
       .pipe(
         takeUntil(this.destroyed$),
         switchMap((rooms) =>
-          this.playerService
-            .getAllPlayers()
-            .pipe(map((players) => ({ rooms, players })))
+          this.playerService.getAllPlayers().pipe(
+            filter((players) => players.length > 1),
+            map((players) => ({ rooms, players }))
+          )
         )
       )
       .subscribe({
         next: ({ rooms, players }) => {
           this.rooms = rooms;
           this.players = this.sortPlayers(players);
-          this.selectedPlayer = this.players[0];
 
           this.playersByRoom = rooms.reduce((acc, room) => {
             const playerIds = room.playerIds || [];
@@ -197,21 +197,18 @@ export class AdminComponent implements OnInit {
       .pipe(
         filter((res) => !!res),
         switchMap((player: Player) => {
-          this.loading = true;
           return this.playerService.updatePlayer(player);
         }),
         takeUntil(this.destroyed$)
       )
       .subscribe({
         next: () => {
-          this.loading = false;
           this.toastr.info('Joueur modifié', 'Admin', {
             positionClass: 'toast-top-center',
             toastClass: 'ngx-toastr custom info',
           });
         },
         error: (error: HttpErrorResponse) => {
-          this.loading = false;
           this.toastr.info(error.message, 'Admin', {
             positionClass: 'toast-top-center',
             toastClass: 'ngx-toastr custom error',
@@ -221,6 +218,24 @@ export class AdminComponent implements OnInit {
   }
 
   sortPlayers(players: Player[]): Player[] {
-    return [...players].sort((a, b) => a.username.localeCompare(b.username));
+    const sortedPlayers = [...players].sort((a, b) =>
+      a.username.localeCompare(b.username)
+    );
+
+    this.setSelectedPlayer(sortedPlayers);
+
+    return sortedPlayers;
+  }
+
+  setSelectedPlayer(sortedPlayers: Player[]): void {
+    if (this.selectedPlayer) {
+      const matchingPlayer = sortedPlayers.find(
+        (player) => player.userId === this.selectedPlayer!.userId
+      );
+
+      this.selectedPlayer = matchingPlayer ?? sortedPlayers[0];
+    } else {
+      this.selectedPlayer = sortedPlayers[0];
+    }
   }
 }
