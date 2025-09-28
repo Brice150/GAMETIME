@@ -1,14 +1,14 @@
 <section>
-  @if (!loading) { @if (room.isStarted) {
+  @if (!loading) { @if (room && room.isStarted) {
   <span class="description-title first"
     >{{ room.gameName | uppercase }} | {{ room.roomCode | uppercase }}</span
   >
   <span class="description-title"
-    >Commencé le {{ room.startDate | customDate }}</span
+    >Commencé le {{ room && room.startDate | customDate }}</span
   >
   } @else {
   <span class="description-title">Pas encore commencé</span>
-  } @if(room.isStarted) { @if (isDetailModeActive) {
+  } @if(room && room.isStarted) { @if (isDetailModeActive) {
   <app-admin-results-details
     [room]="room"
     [players]="players"
@@ -29,7 +29,7 @@
   ></app-waiting-room>
   }
   <div class="button-container">
-    @if (room.isStarted) {@if (isDetailModeActive) {
+    @if (room && room.isStarted) {@if (isDetailModeActive) {
     <button
       type="button"
       (click)="seeDetails()"
@@ -49,7 +49,7 @@
       <i class="bx bxs-user-detail"></i>
       <span class="text">Voir détails</span>
     </button>
-    } } @if (!room.isStarted || allPlayersDone()) {
+    } } @if (room && !room.isStarted || allPlayersDone()) {
     <button
       type="button"
       (click)="multiplayer()"
@@ -68,14 +68,24 @@
       <i class="bx bxs-error-alt"></i>
       <span class="text">Arrêter</span>
     </button>
-    } @if(canJoin()) {
+    }
+    <button
+      type="button"
+      (click)="deleteRoom()"
+      title="Supprimer"
+      class="delete"
+    >
+      <i class="bx bxs-trash"></i>
+      <span class="text">Supprimer</span>
+    </button>
+    @if(canJoin()) {
     <button type="button" (click)="joinRoom()" title="Rejoindre" class="share">
       <i class="bx bxs-door-open"></i>
       <span class="text">Rejoindre</span>
     </button>
     }
   </div>
-  } @else { @if (room.isLoading && room.gameName === quizGameKey) {
+  } @else { @if (room && room.isLoading && room.gameName === quizGameKey) {
   <div class="ai-container">
     <mat-spinner class="ai"></mat-spinner>
     <span

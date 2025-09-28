@@ -17,68 +17,59 @@ section .description {
   width: 90%;
 }
 
-.games {
-  margin-top: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  width: 90%;
-  max-width: 400px;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.game-container {
+form {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  width: 150px;
-  padding: 5px;
-  background-color: var(--primary);
-  color: var(--accent);
-  border-radius: 10px;
-  transition: 0.5s ease;
-  border: none;
+  margin-top: 20px;
+  width: 300px;
 }
 
-.game-container.first {
-  margin-top: 10px;
+.cap-option {
+  text-transform: capitalize;
+}
+
+.flex i {
+  font-size: 32px;
+  color: var(--accent);
+}
+
+.game {
+  font-size: 22px;
+  font-weight: 500;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  color: var(--accent);
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
 
 .medals {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
-  margin-top: 5px;
-  color: var(--secondary);
+  gap: 3px;
+  background-color: var(--accent);
+  color: var(--primary);
+  border-radius: var(--light-radius);
+  padding: 3px 0;
+  padding-left: 10px;
+  padding-right: 5px;
+  width: 80px;
 }
 
 .victory-number {
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 600;
 }
 
 .medals i {
-  font-size: 32px;
-}
-
-.game-container i {
-  font-size: 32px;
-}
-
-.game-container .game {
-  font-size: 22px;
-  font-weight: 500;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-}
-
-.game-container .flex {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
+  font-size: 28px;
 }
 
 .button-container {
@@ -89,6 +80,7 @@ section .description {
   gap: 20px;
   flex-wrap: wrap;
   margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .button-container button {
@@ -132,118 +124,80 @@ mat-spinner {
   stroke: var(--accent) !important;
 }
 
-.slider-container {
-  margin-top: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  margin-bottom: -30px;
-  width: 100%;
+::ng-deep .mat-mdc-select-panel {
+  background-color: var(--primary) !important;
 }
 
-.slider-container.top {
-  margin-top: 40px;
+::ng-deep .mat-mdc-select {
+  color: var(--accent) !important;
 }
 
-.slider-container mat-slider {
-  width: 80%;
-  max-width: 300px;
-}
-
-.slider-container span {
-  font-size: 20px;
-  font-weight: 500;
-  color: var(--secondary);
-}
-
-.toggle-container {
-  margin-top: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  gap: 20px;
-  width: 95%;
-}
-
-mat-slide-toggle {
-  width: 100%;
-  max-width: 320px;
-}
-
-::ng-deep .mdc-slider__track--active_fill {
-  border-color: var(--accent) !important;
-}
-
-::ng-deep .mdc-slider__track--inactive {
-  background-color: white !important;
-  opacity: 1 !important;
-}
-
-::ng-deep .mdc-slider__thumb-knob {
-  background-color: var(--accent) !important;
-  border-color: var(--accent) !important;
-}
-
-::ng-deep .mdc-slider__value-indicator {
-  background-color: var(--accent) !important;
-}
-
-::ng-deep
-  .toggle-container.home
-  .mat-mdc-slide-toggle
-  .mat-internal-form-field {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-}
-
-::ng-deep
-  .toggle-container.home
-  .mat-mdc-slide-toggle
-  .mdc-switch:enabled
-  + .mdc-label {
-  font-size: 20px;
-  font-weight: 500;
-  color: var(--secondary);
-  text-align: left;
-  margin: 0;
-  width: 250px;
-}
-
-::ng-deep .mdc-switch__track::after {
-  background: var(--accent) !important;
-}
-
-::ng-deep .mdc-switch--selected:enabled .mdc-switch__handle::after {
-  background: var(--primary) !important;
-}
-
-::ng-deep .mdc-switch--selected .mdc-switch__icon {
+::ng-deep .mat-mdc-select-arrow svg {
   fill: var(--accent) !important;
 }
 
-::ng-deep .mdc-switch__track::before {
-  background: var(--primary) !important;
+::ng-deep
+  .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled):not(
+    .mat-mdc-option-multiple
+  ) {
+  background-color: var(--accent) !important;
 }
 
-::ng-deep .mdc-switch--unselected .mdc-switch__icon {
-  fill: var(--primary) !important;
+::ng-deep
+  .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled):not(
+    .mat-mdc-option-multiple
+  )
+  .mdc-list-item__primary-text {
+  color: var(--primary) !important;
 }
 
-::ng-deep .showContinent .mdc-slider__value-indicator-container {
-  transform: none !important;
-  left: -25% !important;
+::ng-deep
+  .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled):not(
+    .mat-mdc-option-multiple
+  )
+  .mdc-list-item__primary-text
+  .flex
+  i {
+  color: var(--primary) !important;
 }
 
-::ng-deep .showContinent .mdc-slider__value-indicator {
-  width: 70px !important;
+::ng-deep
+  .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled):not(
+    .mat-mdc-option-multiple
+  )
+  .mdc-list-item__primary-text
+  .flex
+  .game {
+  color: var(--primary) !important;
+}
+
+::ng-deep .mat-pseudo-checkbox-minimal.mat-pseudo-checkbox-checked::after,
+.mat-pseudo-checkbox-minimal.mat-pseudo-checkbox-indeterminate::after {
+  color: var(--primary) !important;
+}
+
+::ng-deep .mdc-text-field--filled:not(.mdc-text-field--disabled) {
+  background-color: var(--primary) !important;
+}
+
+::ng-deep
+  .mdc-text-field--filled:not(.mdc-text-field--disabled)
+  .mdc-line-ripple::before {
+  border-bottom-color: var(--accent) !important;
+}
+
+::ng-deep
+  .mdc-text-field--filled:not(.mdc-text-field--disabled)
+  .mdc-line-ripple::after {
+  border-bottom-color: var(--accent) !important;
+}
+
+::ng-deep .mdc-text-field {
   border-radius: var(--light-radius) !important;
 }
 
-::ng-deep .showContinent .mdc-slider__value-indicator-text {
-  transform: none !important;
-  width: 70px !important;
+::ng-deep .mat-mdc-select-value {
+  font-size: 22px;
+  font-weight: 500;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
 }

@@ -2,9 +2,10 @@ import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatSliderModule } from '@angular/material/slider';
+import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Subject, switchMap, take, takeUntil } from 'rxjs';
@@ -23,9 +24,10 @@ import { JoinRoomComponent } from './join-room/join-room.component';
     RouterModule,
     CommonModule,
     MatProgressSpinnerModule,
-    MatSliderModule,
     FormsModule,
-    MatSlideToggleModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
     MedalsNumberPipe,
     JoinRoomComponent,
     TotalMedalsNumberPipe,
@@ -42,6 +44,7 @@ export class HomeComponent implements OnDestroy {
   destroyed$ = new Subject<void>();
   router = inject(Router);
   games = games;
+  gameSelected: string = 'general';
 
   ngOnDestroy(): void {
     this.destroyed$.next();

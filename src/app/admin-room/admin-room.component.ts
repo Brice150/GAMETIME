@@ -86,7 +86,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: (players) => {
-          if (!this.room.isStarted) {
+          if (!this.room?.isStarted) {
             this.players = players;
           } else {
             this.players = players.sort((a, b) => {
@@ -107,7 +107,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
               return aFinish - bFinish;
             });
           }
-          this.loading = this.room.isLoading ?? false;
+          this.loading = this.room?.isLoading ?? false;
         },
         error: (error: HttpErrorResponse) => {
           this.loading = false;
@@ -315,6 +315,53 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
       });
   }
 
+  deleteRoom(): void {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: 'supprimer cette room',
+    });
+
+    dialogRef
+      .afterClosed()
+      .pipe(
+        filter((res: boolean) => res),
+        switchMap(() => {
+          this.loading = true;
+
+          if (!this.players?.length) {
+            return of(null);
+          }
+
+          this.players.forEach((player) => {
+            player.currentRoomWins = [];
+            player.finishDate = null;
+            player.isReady = false;
+          });
+
+          return this.playerService.updatePlayers(this.players);
+        }),
+        takeUntil(this.destroyed$),
+        switchMap(() => this.roomService.deleteRoom(this.room.id!))
+      )
+      .subscribe({
+        next: () => {
+          this.router.navigate(['/admin']);
+          this.toastr.info('La room a été supprimée', 'Admin', {
+            positionClass: 'toast-top-center',
+            toastClass: 'ngx-toastr custom info',
+          });
+        },
+        error: (error: HttpErrorResponse) => {
+          this.loading = false;
+          if (!error.message.includes('Missing or insufficient permissions.')) {
+            this.toastr.error(error.message, 'Game Time', {
+              positionClass: 'toast-top-center',
+              toastClass: 'ngx-toastr custom error',
+            });
+          }
+        },
+      });
+  }
+
   allPlayersDone(): boolean {
     return this.players.every((player) => !!player.finishDate);
   }
@@ -439,6 +486,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
 
   canJoin(): boolean {
     return (
+      this.room &&
       !this.room.isCreatedByAdmin &&
       !this.room.playerIds.includes(
         this.playerService.currentPlayerSig()?.userId!

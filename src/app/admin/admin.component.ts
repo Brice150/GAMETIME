@@ -122,6 +122,10 @@ export class AdminComponent implements OnInit {
         switchMap(() => {
           this.loading = true;
 
+          if (!this.playersByRoom[roomId]?.length) {
+            return of(null);
+          }
+
           this.playersByRoom[roomId].forEach((player) => {
             player.currentRoomWins = [];
             player.finishDate = null;
