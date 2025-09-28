@@ -313,9 +313,10 @@ export class RoomComponent implements OnInit, OnDestroy {
 
         const goal = goals.find((goal) => goal.target === stat.medalsNumber);
         if (goal) {
-          stat.medalsNumber += goal.reward;
           this.toastr.info(
-            'Vous avez obtenu le succès : ' + goal.label,
+            'Vous avez obtenu le succès : Obtenir ' +
+              goal.target +
+              ' médailles',
             this.room.gameName.charAt(0).toUpperCase() +
               this.room.gameName.slice(1),
             {

@@ -80,18 +80,33 @@ export class PlayerCardComponent implements OnInit {
       const statMotus: Stat = {
         gameName: this.motusGameKey,
         medalsNumber: this.playerForm.value.motusMedalsNumber,
+        lastSuccessRetrieved:
+          this.player().stats.find(
+            (stat) => stat.gameName === this.motusGameKey
+          )?.lastSuccessRetrieved || 0,
       };
       const statDrapeaux: Stat = {
         gameName: this.drapeauxGameKey,
         medalsNumber: this.playerForm.value.drapeauxMedalsNumber,
+        lastSuccessRetrieved:
+          this.player().stats.find(
+            (stat) => stat.gameName === this.drapeauxGameKey
+          )?.lastSuccessRetrieved || 0,
       };
       const statMarques: Stat = {
         gameName: this.marquesGameKey,
         medalsNumber: this.playerForm.value.marquesMedalsNumber,
+        lastSuccessRetrieved:
+          this.player().stats.find(
+            (stat) => stat.gameName === this.marquesGameKey
+          )?.lastSuccessRetrieved || 0,
       };
       const statQuiz: Stat = {
         gameName: this.quizGameKey,
         medalsNumber: this.playerForm.value.quizMedalsNumber,
+        lastSuccessRetrieved:
+          this.player().stats.find((stat) => stat.gameName === this.quizGameKey)
+            ?.lastSuccessRetrieved || 0,
       };
 
       const updatedPlayer: Player = {

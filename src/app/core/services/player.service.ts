@@ -99,18 +99,22 @@ export class PlayerService {
         const statMotus: Stat = {
           gameName: gameMap['motus'].key,
           medalsNumber: 0,
+          lastSuccessRetrieved: 0,
         };
         const statDrapeaux: Stat = {
           gameName: gameMap['drapeaux'].key,
           medalsNumber: 0,
+          lastSuccessRetrieved: 0,
         };
         const statMarques: Stat = {
           gameName: gameMap['marques'].key,
           medalsNumber: 0,
+          lastSuccessRetrieved: 0,
         };
         const statQuiz: Stat = {
           gameName: gameMap['quiz'].key,
           medalsNumber: 0,
+          lastSuccessRetrieved: 0,
         };
 
         const player: Player = {

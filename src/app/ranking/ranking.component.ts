@@ -6,7 +6,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ToastrService } from 'ngx-toastr';
 import { Subject, takeUntil } from 'rxjs';
 import { games } from 'src/assets/data/games';
@@ -23,7 +22,6 @@ import { TotalMedalsNumberPipe } from '../shared/pipes/total-medals-number.pipe'
     MatProgressSpinnerModule,
     MedalsNumberPipe,
     FormsModule,
-    MatSlideToggleModule,
     OrdinalPipe,
     MatFormFieldModule,
     MatInputModule,

@@ -29,14 +29,13 @@
     </div>
   </div>
   <div class="success-container">
-    @for (goal of goals; track $index) {
+    @for (goal of goals; track $index) { @if (canDisplayGoal(goal)) {
     <div class="success">
       <div class="title">
-        <span
-          class="username"
-          [appStrikeThrough]="getProgress(goal.target) === 100"
-          >{{ goal.label }}</span
-        >
+        <div class="username">
+          <span>Obtenir {{ goal.target }}</span>
+          <i class="bx bxs-medal"></i>
+        </div>
         <div class="space">
           <div class="medals">
             <span class="victory-number">{{ goal.reward }}</span>
@@ -44,7 +43,6 @@
           </div>
         </div>
       </div>
-
       @if (getProgress(goal.target) !== 100) {
       <div class="progress-bar">
         <div
@@ -55,9 +53,20 @@
       <span class="progress-info">
         {{ currentMedals }} / {{ goal.target }}
       </span>
+      } @else {
+      <button
+        type="button"
+        (click)="getSuccess(goal)"
+        [title]="isFirstAvailableSuccess(goal) ? 'Récupérer' : ''"
+        [disabled]="!isFirstAvailableSuccess(goal)"
+        [ngClass]="{ disabled: !isFirstAvailableSuccess(goal) }"
+      >
+        <i class="bx bxs-check-circle"></i>
+        <span class="text">Récupérer</span>
+      </button>
       }
     </div>
-    }
+    } }
   </div>
   } @else {
   <mat-spinner></mat-spinner>
