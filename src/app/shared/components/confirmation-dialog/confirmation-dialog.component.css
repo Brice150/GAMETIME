@@ -10,7 +10,7 @@ section {
   align-items: center;
   justify-content: space-between;
   flex-direction: column;
-  max-width: 700px;
+  max-width: 500px;
   width: 90%;
 }
 

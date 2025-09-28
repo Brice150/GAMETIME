@@ -10,8 +10,8 @@ section {
   align-items: center;
   justify-content: space-between;
   flex-direction: column;
-  max-width: 700px;
-  width: 80%;
+  max-width: 500px;
+  width: 90%;
 }
 
 section h1 {
@@ -27,7 +27,6 @@ section h1 {
   flex-wrap: wrap;
   gap: 10px;
   width: 100%;
-  margin-top: 20px;
 }
 
 .button-container button {
@@ -71,7 +70,7 @@ section .button-container button .text {
 }
 
 section .content {
-  padding: 30px 0;
+  padding: 10px 0;
   display: flex;
   justify-content: center;
   align-items: center;

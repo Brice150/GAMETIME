@@ -1,29 +1,24 @@
-<form [formGroup]="playerForm" (ngSubmit)="update()">
-  <mat-form-field>
-    <mat-label>Nom d'utilisateur</mat-label>
-    <input matInput formControlName="username" />
-  </mat-form-field>
-  <div class="container">
-    <mat-form-field>
-      <mat-label>Drapeaux</mat-label>
-      <input matInput type="number" formControlName="drapeauxMedalsNumber" />
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Marques</mat-label>
-      <input matInput type="number" formControlName="marquesMedalsNumber" />
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Motus</mat-label>
-      <input matInput type="number" formControlName="motusMedalsNumber" />
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Quiz</mat-label>
-      <input matInput type="number" formControlName="quizMedalsNumber" />
-    </mat-form-field>
+<div class="container">
+  <div class="medals-container">
+    @for (game of games; track $index) {
+    <div class="column">
+      <div class="flex">
+        <i class="{{ game.icon }}"></i>
+        <span class="game">{{ game.label }}</span>
+      </div>
+      <div class="medals">
+        <span class="victory-number">{{
+          game.key | medalsNumber : player()
+        }}</span>
+        <i class="bx bxs-medal"></i>
+      </div>
+    </div>
+    }
   </div>
-  <div class="buttons-container">
-    <button type="submit" title="Modifier" class="share">
+  <div class="button-container">
+    <button type="button" (click)="update()" title="Modifier">
       <i class="bx bxs-edit-alt"></i>
+      <span class="text">Modifier</span>
     </button>
   </div>
-</form>
+</div>

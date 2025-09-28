@@ -1,39 +1,93 @@
-form {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-}
-
-form .container {
+:host {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 2px;
+  flex-direction: column;
+  width: 100%;
 }
 
-form .container mat-form-field {
-  width: 100px;
-}
-
-form .username {
-  font-size: 18px;
-  font-weight: 600;
-  width: 150px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  text-align: left;
-}
-
-.buttons-container {
+.container {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
+  width: 90%;
+  max-width: 550px;
+  background-color: var(--primary);
+  border-radius: var(--light-radius);
+  padding: 10px;
+}
+
+.container .medals-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  gap: 30px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.container .medals-container .column {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
   gap: 10px;
 }
 
-button {
+.flex i {
+  font-size: 28px;
+  color: var(--secondary);
+}
+
+.game {
+  font-size: 18px;
+  font-weight: 500;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  color: var(--secondary);
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.medals {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 3px;
+  background-color: var(--accent);
+  color: var(--primary);
+  border-radius: var(--light-radius);
+  padding: 3px 0;
+  padding-left: 10px;
+  padding-right: 5px;
+  width: 80px;
+}
+
+.victory-number {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.medals i {
+  font-size: 28px;
+}
+
+.container .button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.container .button-container button {
   cursor: pointer;
   color: var(--accent);
   padding: 10px;
@@ -42,139 +96,25 @@ button {
   justify-content: center;
   gap: 10px;
   border-radius: var(--light-radius);
+  box-shadow: var(--box-shadow);
   transition: 0.5s ease;
+  width: 140px;
   border: none;
   background-color: var(--primary);
+  box-shadow: 0 2px 6px rgba(40, 40, 40, 0.126);
 }
 
-button.share {
-  width: 50px;
-}
-
-.delete {
-  color: red;
-  transition: 0.5s ease;
-}
-
-button:hover {
+.container .button-container button:hover {
   background-color: var(--accent);
   color: var(--primary);
 }
 
-.delete:hover {
-  background-color: red;
-}
-
-button i {
+.container .button-container button i {
   font-size: 30px;
 }
 
-::ng-deep .mat-mdc-form-field-subscript-wrapper {
-  display: none;
-}
-
-::ng-deep
-  .mdc-text-field--filled:not(.mdc-text-field--disabled):not(
-    .mdc-text-field--invalid
-  )
-  .mdc-floating-label {
-  color: var(--accent);
-}
-
-::ng-deep
-  .mdc-text-field--filled:not(.mdc-text-field--disabled):not(
-    .mdc-text-field--invalid
-  ).mdc-text-field--focused
-  .mdc-floating-label {
-  color: var(--accent);
-}
-
-::ng-deep .mdc-text-field {
-  border-radius: var(--light-radius) !important;
-}
-
-::ng-deep .mdc-text-field--filled {
-  background-color: var(--primary) !important;
-}
-
-::ng-deep
-  .mdc-text-field--filled:not(.mdc-text-field--disabled):not(
-    .mdc-text-field--focused
-  ):hover
-  .mdc-floating-label {
-  color: var(--accent) !important;
-}
-
-::ng-deep .mat-mdc-form-field-focus-overlay {
-  display: none;
-}
-
-::ng-deep
-  .mdc-text-field--filled:not(.mdc-text-field--disabled)
-  .mdc-text-field__input {
-  caret-color: var(--accent) !important;
-}
-
-::ng-deep
-  .mdc-text-field--filled:not(
-    .mdc-text-field--disabled
-  ).mdc-text-field--invalid:not(.mdc-text-field--disabled):hover
-  .mdc-floating-label {
-  color: red !important;
-}
-
-::ng-deep
-  .mdc-text-field--filled:not(.mdc-text-field--disabled).mdc-text-field--invalid
-  .mdc-floating-label {
-  color: red !important;
-}
-
-::ng-deep .mat-mdc-form-field-error {
-  color: red !important;
-}
-
-::ng-deep
-  .mdc-text-field--filled:not(.mdc-text-field--disabled)
-  .mdc-text-field__input {
-  color: var(--secondary) !important;
-}
-
-::ng-deep
-  .mdc-text-field--filled:not(.mdc-text-field--disabled)
-  .mdc-line-ripple::before {
-  border-bottom-color: var(--accent) !important;
-}
-
-::ng-deep
-  .mdc-text-field--filled:not(.mdc-text-field--disabled)
-  .mdc-line-ripple::after {
-  border-bottom-color: var(--accent) !important;
-}
-
-::ng-deep mat-form-field.mat-form-field-invalid {
-  --secondary: red;
-  --accent: red;
-}
-
-::ng-deep
-  .mdc-text-field--filled.mdc-text-field--disabled
-  .mdc-text-field__input {
-  color: var(--accent) !important;
-}
-
-::ng-deep .mdc-text-field--filled.mdc-text-field--disabled .mdc-floating-label {
-  color: var(--accent) !important;
-}
-
-@media screen and (max-width: 740px) {
-  form {
-    flex-direction: column;
-    gap: 2px;
-  }
-}
-
-@media screen and (max-width: 450px) {
-  form .container {
-    flex-direction: column;
-  }
+.container .button-container button .text {
+  font-size: 20px;
+  font-weight: 500;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
 }

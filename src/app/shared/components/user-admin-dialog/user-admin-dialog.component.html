@@ -1,0 +1,58 @@
+<section mat-dialog-content>
+  <h1>Modifier utilisateur</h1>
+  <form [formGroup]="userForm" class="content" (ngSubmit)="confirm()">
+    <mat-form-field>
+      <mat-label>Nom</mat-label>
+      <input matInput formControlName="username" />
+      @if (userForm.get('username')!.invalid) {
+      <mat-error>
+        @if (userForm.get('username')!.hasError('required')) {
+        <span>Ce champ est requis</span>
+        } @if (userForm.get('username')!.hasError('minlength')) {
+        <span>Ce champ est trop court</span>
+        } @if (userForm.get('username')!.hasError('maxlength')) {
+        <span>Ce champ est trop long</span>
+        }
+      </mat-error>
+      }
+    </mat-form-field>
+    <mat-form-field class="avatar">
+      <mat-label>Avatar</mat-label>
+      <mat-select class="cap" formControlName="animal">
+        @for (animal of animals; track $index) {
+        <mat-option [value]="animal.emoji" class="cap-option">
+          {{ animal.name }} {{ animal.emoji }}
+        </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <div class="container">
+      <mat-form-field>
+        <mat-label>Drapeaux</mat-label>
+        <input matInput type="number" formControlName="drapeauxMedalsNumber" />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Marques</mat-label>
+        <input matInput type="number" formControlName="marquesMedalsNumber" />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Motus</mat-label>
+        <input matInput type="number" formControlName="motusMedalsNumber" />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Quiz</mat-label>
+        <input matInput type="number" formControlName="quizMedalsNumber" />
+      </mat-form-field>
+    </div>
+    <div class="button-container">
+      <button type="button" title="Annuler" (click)="cancel()" class="delete">
+        <i class="bx bx-x"></i>
+        <span class="text">Annuler</span>
+      </button>
+      <button type="submit" title="Confirmer">
+        <i class="bx bx-check"></i>
+        <span class="text">Confirmer</span>
+      </button>
+    </div>
+  </form>
+</section>

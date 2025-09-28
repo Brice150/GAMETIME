@@ -3,8 +3,10 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSelectModule } from '@angular/material/select';
 import { ToastrService } from 'ngx-toastr';
 import { filter, map, of, Subject, switchMap, takeUntil } from 'rxjs';
 import { Player } from '../core/interfaces/player';
@@ -14,6 +16,7 @@ import { RoomService } from '../core/services/room.service';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { PlayerCardComponent } from './player-card/player-card.component';
 import { RoomCardComponent } from './room-card/room-card.component';
+import { UserAdminDialogComponent } from '../shared/components/user-admin-dialog/user-admin-dialog.component';
 
 @Component({
   selector: 'app-admin',
@@ -22,7 +25,9 @@ import { RoomCardComponent } from './room-card/room-card.component';
     RoomCardComponent,
     MatProgressSpinnerModule,
     FormsModule,
-    MatSlideToggleModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
     PlayerCardComponent,
   ],
   templateUrl: './admin.component.html',
@@ -36,34 +41,28 @@ export class AdminComponent implements OnInit {
   dialog = inject(MatDialog);
   rooms: Room[] = [];
   players: Player[] = [];
+  selectedPlayer?: Player;
   playersByRoom: Record<string, Player[]> = {};
+  creatorByRoom: Record<string, Player> = {};
   loading: boolean = true;
-  roomMode: boolean = true;
 
   ngOnInit(): void {
     this.roomService
       .getRooms()
       .pipe(
         takeUntil(this.destroyed$),
-        switchMap((rooms) => {
-          this.rooms = rooms;
-
-          const allPlayerIds = Array.from(
-            new Set(rooms.flatMap((room) => room.playerIds || []))
-          );
-
-          if (!allPlayerIds.length) {
-            return of({ rooms, players: [] });
-          }
-
-          return this.playerService.getPlayers(allPlayerIds).pipe(
-            takeUntil(this.destroyed$),
-            map((players) => ({ rooms, players }))
-          );
-        })
+        switchMap((rooms) =>
+          this.playerService
+            .getAllPlayers()
+            .pipe(map((players) => ({ rooms, players })))
+        )
       )
       .subscribe({
         next: ({ rooms, players }) => {
+          this.rooms = rooms;
+          this.players = this.sortPlayers(players);
+          this.selectedPlayer = this.players[0];
+
           this.playersByRoom = rooms.reduce((acc, room) => {
             const playerIds = room.playerIds || [];
             acc[room.id!] = playerIds
@@ -72,25 +71,14 @@ export class AdminComponent implements OnInit {
             return acc;
           }, {} as Record<string, Player[]>);
 
-          this.loading = false;
-        },
-        error: (error: HttpErrorResponse) => {
-          this.loading = false;
-          if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastr.error(error.message, 'Game Time', {
-              positionClass: 'toast-top-center',
-              toastClass: 'ngx-toastr custom error',
-            });
-          }
-        },
-      });
+          this.creatorByRoom = rooms.reduce((acc, room) => {
+            const creator = players.find((p) => p.userId === room.userId);
+            if (creator) {
+              acc[room.id!] = creator;
+            }
+            return acc;
+          }, {} as Record<string, Player>);
 
-    this.playerService
-      .getAllPlayers()
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe({
-        next: (players) => {
-          this.players = this.sortPlayers(players);
           this.loading = false;
         },
         error: (error: HttpErrorResponse) => {
@@ -199,31 +187,40 @@ export class AdminComponent implements OnInit {
       });
   }
 
-  updatePlayer(player: Player): void {
-    this.playerService
-      .updatePlayer(player)
-      .pipe(takeUntil(this.destroyed$))
+  openUserDialog(): void {
+    const dialogRef = this.dialog.open(UserAdminDialogComponent, {
+      data: this.selectedPlayer,
+    });
+
+    dialogRef
+      .afterClosed()
+      .pipe(
+        filter((res) => !!res),
+        switchMap((player: Player) => {
+          this.loading = true;
+          return this.playerService.updatePlayer(player);
+        }),
+        takeUntil(this.destroyed$)
+      )
       .subscribe({
         next: () => {
+          this.loading = false;
           this.toastr.info('Joueur modifié', 'Admin', {
             positionClass: 'toast-top-center',
             toastClass: 'ngx-toastr custom info',
           });
         },
         error: (error: HttpErrorResponse) => {
-          if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastr.error(error.message, 'Game Time', {
-              positionClass: 'toast-top-center',
-              toastClass: 'ngx-toastr custom error',
-            });
-          }
+          this.loading = false;
+          this.toastr.info(error.message, 'Admin', {
+            positionClass: 'toast-top-center',
+            toastClass: 'ngx-toastr custom error',
+          });
         },
       });
   }
 
   sortPlayers(players: Player[]): Player[] {
-    return [...players]
-      .sort((a, b) => a.username.localeCompare(b.username))
-      .filter((player) => !player.isAdmin);
+    return [...players].sort((a, b) => a.username.localeCompare(b.username));
   }
 }

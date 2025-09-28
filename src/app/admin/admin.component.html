@@ -1,17 +1,5 @@
 <section>
   @if(!loading) {
-  <div class="toggle-container">
-    <mat-slide-toggle [(ngModel)]="roomMode"
-      >Afficher les rooms</mat-slide-toggle
-    >
-  </div>
-  @if (roomMode) {
-  <div class="button-container">
-    <button type="button" (click)="addRoom()" title="Ajouter">
-      <i class="bx bx-plus"></i>
-      <span class="text">Ajouter</span>
-    </button>
-  </div>
   <div class="rooms">
     @for (room of rooms; track $index) {
     <app-room-card
@@ -21,15 +9,28 @@
     ></app-room-card>
     }
   </div>
-  } @else {
-  <div class="players">
-    @for (player of players; track $index) {
-    <app-player-card
-      [player]="player"
-      (updateEvent)="updatePlayer($event)"
-    ></app-player-card>
-    }
+  <div class="button-container">
+    <button type="button" (click)="addRoom()" title="Ajouter">
+      <i class="bx bx-plus"></i>
+      <span class="text">Ajouter</span>
+    </button>
   </div>
+  <form class="player">
+    <mat-form-field>
+      <mat-select [(ngModel)]="selectedPlayer" name="game" class="cap">
+        @for (player of players; track $index) {
+        <mat-option [value]="player" class="cap-option">
+          {{ player.username }} {{ player.animal }}
+        </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </form>
+  @if (selectedPlayer) {
+  <app-player-card
+    [player]="selectedPlayer"
+    (updateEvent)="openUserDialog()"
+  ></app-player-card>
   } } @else {
   <mat-spinner></mat-spinner>
   }
