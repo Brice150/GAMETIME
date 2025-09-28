@@ -17,6 +17,7 @@
       }
     </mat-form-field>
     <mat-form-field>
+      <mat-label>Avatar</mat-label>
       <mat-select class="cap" formControlName="animal">
         @for (animal of animals; track $index) {
         <mat-option [value]="animal.emoji" class="cap-option">
