@@ -8,6 +8,38 @@ section {
   margin-top: 20px;
 }
 
+form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 20px;
+  width: 300px;
+}
+
+.cap-option {
+  text-transform: capitalize;
+}
+
+.flex i {
+  font-size: 32px;
+  color: var(--accent);
+}
+
+.game {
+  font-size: 20px;
+  font-weight: 500;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  color: var(--accent);
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
 mat-spinner {
   position: absolute;
   top: 50%;
@@ -76,15 +108,15 @@ form {
   width: 300px;
 }
 
-::ng-deep .player .mat-mdc-select-panel {
+::ng-deep .mat-mdc-select-panel {
   background-color: var(--primary) !important;
 }
 
-::ng-deep .player .mat-mdc-select {
+::ng-deep .mat-mdc-select {
   color: var(--accent) !important;
 }
 
-::ng-deep .player .mat-mdc-select-arrow svg {
+::ng-deep .mat-mdc-select-arrow svg {
   fill: var(--accent) !important;
 }
 
@@ -148,7 +180,7 @@ form {
   border-radius: var(--light-radius) !important;
 }
 
-::ng-deep .player .mat-mdc-select-value {
+::ng-deep .mat-mdc-select-value {
   font-size: 20px;
   font-weight: 500;
   font-family: Roboto, "Helvetica Neue", sans-serif;

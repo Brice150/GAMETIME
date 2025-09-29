@@ -8,15 +8,16 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { ToastrService } from 'ngx-toastr';
-import { filter, map, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import { filter, map, of, Subject, switchMap, takeUntil } from 'rxjs';
+import { games } from 'src/assets/data/games';
 import { Player } from '../core/interfaces/player';
 import { Room } from '../core/interfaces/room';
 import { PlayerService } from '../core/services/player.service';
 import { RoomService } from '../core/services/room.service';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
+import { UserAdminDialogComponent } from '../shared/components/user-admin-dialog/user-admin-dialog.component';
 import { PlayerCardComponent } from './player-card/player-card.component';
 import { RoomCardComponent } from './room-card/room-card.component';
-import { UserAdminDialogComponent } from '../shared/components/user-admin-dialog/user-admin-dialog.component';
 
 @Component({
   selector: 'app-admin',
@@ -45,6 +46,8 @@ export class AdminComponent implements OnInit {
   playersByRoom: Record<string, Player[]> = {};
   creatorByRoom: Record<string, Player> = {};
   loading: boolean = true;
+  games = games;
+  selectedRoomType?: string = 'attente';
 
   ngOnInit(): void {
     this.roomService

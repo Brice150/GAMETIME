@@ -35,7 +35,7 @@ mat-form-field {
 }
 
 .game {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 500;
   font-family: Roboto, "Helvetica Neue", sans-serif;
   color: var(--accent);
@@ -239,7 +239,7 @@ mat-spinner {
 }
 
 ::ng-deep .mat-mdc-select-value {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 500;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }

@@ -1,5 +1,25 @@
 <section>
   @if(!loading) {
+  <form class="player">
+    <mat-form-field>
+      <mat-select [(ngModel)]="selectedRoomType" name="game" class="cap">
+        <mat-option value="attente" class="cap-option">
+          <div class="flex">
+            <i class="bx bxs-time-five"></i>
+            <span class="game">Attente</span>
+          </div>
+        </mat-option>
+        @for (game of games; track $index) {
+        <mat-option [value]="game.key" class="cap-option">
+          <div class="flex">
+            <i class="{{ game.icon }}"></i>
+            <span class="game">{{ game.label }}</span>
+          </div>
+        </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </form>
   <div class="rooms">
     @for (room of rooms; track $index) {
     <app-room-card
