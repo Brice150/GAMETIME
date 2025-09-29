@@ -21,20 +21,22 @@
     </mat-form-field>
   </form>
   <div class="rooms">
-    @for (room of rooms; track $index) {
+    @for (room of rooms; track $index) { @if (canDisplayRoom(room)) {
     <app-room-card
       [room]="room"
       [players]="playersByRoom[room.id!]"
       (deleteEvent)="deleteRoom(room.id!)"
     ></app-room-card>
-    }
+    } }
   </div>
+  @if (canAddRoom()) {
   <div class="button-container">
     <button type="button" (click)="addRoom()" title="Ajouter">
       <i class="bx bx-plus"></i>
       <span class="text">Ajouter</span>
     </button>
   </div>
+  }
   <form class="player">
     <mat-form-field>
       <mat-select [(ngModel)]="selectedPlayer" name="game" class="cap">

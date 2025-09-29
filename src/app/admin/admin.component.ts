@@ -9,7 +9,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { ToastrService } from 'ngx-toastr';
 import { filter, map, of, Subject, switchMap, takeUntil } from 'rxjs';
-import { games } from 'src/assets/data/games';
+import { gameMap, games } from 'src/assets/data/games';
 import { Player } from '../core/interfaces/player';
 import { Room } from '../core/interfaces/room';
 import { PlayerService } from '../core/services/player.service';
@@ -48,6 +48,10 @@ export class AdminComponent implements OnInit {
   loading: boolean = true;
   games = games;
   selectedRoomType?: string = 'attente';
+  motusGameKey = gameMap['motus'].key;
+  drapeauxGameKey = gameMap['drapeaux'].key;
+  marquesGameKey = gameMap['marques'].key;
+  quizGameKey = gameMap['quiz'].key;
 
   ngOnInit(): void {
     this.roomService
@@ -240,5 +244,20 @@ export class AdminComponent implements OnInit {
     } else {
       this.selectedPlayer = sortedPlayers[0];
     }
+  }
+
+  canDisplayRoom(room: Room): boolean {
+    if (this.selectedRoomType === 'attente') {
+      return !room.isStarted;
+    }
+
+    return room.gameName === this.selectedRoomType;
+  }
+
+  canAddRoom(): boolean {
+    return (
+      this.selectedRoomType === 'attente' &&
+      !this.rooms.some((room) => room.isCreatedByAdmin)
+    );
   }
 }
