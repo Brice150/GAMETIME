@@ -17,6 +17,10 @@ form {
   width: 300px;
 }
 
+form.margin {
+  margin-top: 40px;
+}
+
 .cap-option {
   text-transform: capitalize;
 }
@@ -51,12 +55,11 @@ mat-spinner {
   stroke: var(--accent) !important;
 }
 
-section .rooms {
+section .element {
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 20px;
+  width: 100%;
 }
 
 .button-container {
@@ -66,6 +69,7 @@ section .rooms {
   width: 100%;
   gap: 20px;
   flex-wrap: wrap;
+  margin-top: 20px;
 }
 
 .button-container button {

@@ -1,0 +1,36 @@
+<div class="container">
+  <div class="players">
+    @if (filteredRooms.length > 0) { @for (room of filteredRooms; track $index)
+    { @for (player of players(); track $index; let i = $index) { @if
+    (player.userId === room.userId) {
+    <div class="player">
+      <span class="username">{{ player.username }} {{ player.animal }}</span>
+      <div class="medals">
+        @if (room.isStarted) {
+        <span class="victory-number">{{
+          room.gameName | medalsNumber : player
+        }}</span>
+        } @else {
+        <span class="victory-number">{{ player | totalMedalsNumber }}</span>
+        }
+        <i class="bx bxs-medal"></i>
+      </div>
+      <div class="button-container">
+        <button
+          type="button"
+          (click)="delete(room.id!)"
+          title="Supprimer"
+          class="delete share"
+        >
+          <i class="bx bxs-trash"></i>
+        </button>
+        <button type="button" [routerLink]="room.id" title="Voir" class="share">
+          <i class="bx bxs-search"></i>
+        </button>
+      </div>
+    </div>
+    } } } } @else {
+    <span class="empty">Aucune room de ce type</span>
+    }
+  </div>
+</div>

@@ -1,6 +1,6 @@
 <section>
   @if(!loading) {
-  <form class="player">
+  <form>
     <mat-form-field>
       <mat-select [(ngModel)]="selectedRoomType" name="game" class="cap">
         <mat-option value="attente" class="cap-option">
@@ -20,14 +20,13 @@
       </mat-select>
     </mat-form-field>
   </form>
-  <div class="rooms">
-    @for (room of rooms; track $index) { @if (canDisplayRoom(room)) {
-    <app-room-card
-      [room]="room"
-      [players]="playersByRoom[room.id!]"
-      (deleteEvent)="deleteRoom(room.id!)"
-    ></app-room-card>
-    } }
+  <div class="element">
+    <app-rooms-card
+      [selectedRoomType]="selectedRoomType"
+      [rooms]="rooms"
+      [players]="players"
+      (deleteEvent)="deleteRoom($event)"
+    ></app-rooms-card>
   </div>
   @if (canAddRoom()) {
   <div class="button-container">
@@ -37,7 +36,7 @@
     </button>
   </div>
   }
-  <form class="player">
+  <form class="margin">
     <mat-form-field>
       <mat-select [(ngModel)]="selectedPlayer" name="game" class="cap">
         @for (player of players; track $index) {
@@ -48,12 +47,15 @@
       </mat-select>
     </mat-form-field>
   </form>
-  @if (selectedPlayer) {
-  <app-player-card
-    [player]="selectedPlayer"
-    (updateEvent)="openUserDialog()"
-  ></app-player-card>
-  } } @else {
+  <div class="element">
+    @if (selectedPlayer) {
+    <app-player-card
+      [player]="selectedPlayer"
+      (updateEvent)="openUserDialog()"
+    ></app-player-card>
+    }
+  </div>
+  } @else {
   <mat-spinner></mat-spinner>
   }
 </section>

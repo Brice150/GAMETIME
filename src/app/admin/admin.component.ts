@@ -17,13 +17,13 @@ import { RoomService } from '../core/services/room.service';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { UserAdminDialogComponent } from '../shared/components/user-admin-dialog/user-admin-dialog.component';
 import { PlayerCardComponent } from './player-card/player-card.component';
-import { RoomCardComponent } from './room-card/room-card.component';
+import { RoomsCardComponent } from './rooms-card/rooms-card.component';
 
 @Component({
   selector: 'app-admin',
   imports: [
     CommonModule,
-    RoomCardComponent,
+    RoomsCardComponent,
     MatProgressSpinnerModule,
     FormsModule,
     MatFormFieldModule,
@@ -44,10 +44,9 @@ export class AdminComponent implements OnInit {
   players: Player[] = [];
   selectedPlayer?: Player;
   playersByRoom: Record<string, Player[]> = {};
-  creatorByRoom: Record<string, Player> = {};
   loading: boolean = true;
   games = games;
-  selectedRoomType?: string = 'attente';
+  selectedRoomType: string = 'attente';
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
   marquesGameKey = gameMap['marques'].key;
@@ -77,14 +76,6 @@ export class AdminComponent implements OnInit {
               .filter((p): p is Player => !!p);
             return acc;
           }, {} as Record<string, Player[]>);
-
-          this.creatorByRoom = rooms.reduce((acc, room) => {
-            const creator = players.find((p) => p.userId === room.userId);
-            if (creator) {
-              acc[room.id!] = creator;
-            }
-            return acc;
-          }, {} as Record<string, Player>);
 
           this.loading = false;
         },
@@ -244,14 +235,6 @@ export class AdminComponent implements OnInit {
     } else {
       this.selectedPlayer = sortedPlayers[0];
     }
-  }
-
-  canDisplayRoom(room: Room): boolean {
-    if (this.selectedRoomType === 'attente') {
-      return !room.isStarted;
-    }
-
-    return room.gameName === this.selectedRoomType;
   }
 
   canAddRoom(): boolean {

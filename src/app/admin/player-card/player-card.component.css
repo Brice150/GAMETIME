@@ -16,6 +16,7 @@
   background-color: var(--primary);
   border-radius: var(--light-radius);
   padding: 10px;
+  margin-bottom: 20px;
 }
 
 .container .medals-container {
