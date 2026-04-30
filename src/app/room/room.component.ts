@@ -89,7 +89,7 @@ export class RoomComponent implements OnInit, OnDestroy {
         switchMap((params) =>
           this.roomService
             .getRoom(params['id'])
-            .pipe(takeUntil(this.destroyed$))
+            .pipe(takeUntil(this.destroyed$)),
         ),
         switchMap((room: Room | null) => {
           if (!room) {
@@ -109,10 +109,10 @@ export class RoomComponent implements OnInit, OnDestroy {
             room.playerIds &&
             this.playerService.currentPlayerSig()?.userId &&
             this.room.playerIds.includes(
-              this.playerService.currentPlayerSig()?.userId!
+              this.playerService.currentPlayerSig()?.userId!,
             ) &&
             !room.playerIds.includes(
-              this.playerService.currentPlayerSig()?.userId!
+              this.playerService.currentPlayerSig()?.userId!,
             )
           ) {
             this.userKickedOut = true;
@@ -152,14 +152,14 @@ export class RoomComponent implements OnInit, OnDestroy {
               {
                 positionClass: 'toast-top-center',
                 toastClass: 'ngx-toastr custom error',
-              }
+              },
             );
           }
 
           if (
             this.playerService.currentPlayerSig()?.userId &&
             this.room.playerIds.includes(
-              this.playerService.currentPlayerSig()?.userId!
+              this.playerService.currentPlayerSig()?.userId!,
             )
           ) {
             return of(this.room);
@@ -176,7 +176,7 @@ export class RoomComponent implements OnInit, OnDestroy {
           ) {
             this.localStorageService.newGame(this.room.id!);
             this.room.playerIds.push(
-              this.playerService.currentPlayerSig()?.userId!
+              this.playerService.currentPlayerSig()?.userId!,
             );
 
             this.roomService
@@ -190,7 +190,7 @@ export class RoomComponent implements OnInit, OnDestroy {
                   this.loading = false;
                   if (
                     !error.message.includes(
-                      'Missing or insufficient permissions.'
+                      'Missing or insufficient permissions.',
                     )
                   ) {
                     this.toastr.error(error.message, 'Game Time', {
@@ -217,7 +217,7 @@ export class RoomComponent implements OnInit, OnDestroy {
           return this.playerService
             .getPlayers(room.playerIds)
             .pipe(takeUntil(this.destroyed$));
-        })
+        }),
       )
       .subscribe({
         next: (players) => {
@@ -322,7 +322,7 @@ export class RoomComponent implements OnInit, OnDestroy {
             {
               positionClass: 'toast-top-center',
               toastClass: 'ngx-toastr custom info',
-            }
+            },
           );
         }
       }
@@ -358,7 +358,7 @@ export class RoomComponent implements OnInit, OnDestroy {
           {
             positionClass: 'toast-top-center',
             toastClass: 'ngx-toastr custom info',
-          }
+          },
         );
       } else {
         this.toastr.error(
@@ -368,7 +368,7 @@ export class RoomComponent implements OnInit, OnDestroy {
           {
             positionClass: 'toast-top-center',
             toastClass: 'ngx-toastr custom error',
-          }
+          },
         );
       }
     }
@@ -380,7 +380,7 @@ export class RoomComponent implements OnInit, OnDestroy {
       this.isNextButtonAvailable = true;
     }
     this.playerService.currentPlayerSig.set(
-      this.playerService.currentPlayerSig()
+      this.playerService.currentPlayerSig(),
     );
   }
 
@@ -407,7 +407,7 @@ export class RoomComponent implements OnInit, OnDestroy {
             return this.playerService.updatePlayers(this.players);
           }),
           takeUntil(this.destroyed$),
-          switchMap(() => this.roomService.deleteRoom(this.room.id!))
+          switchMap(() => this.roomService.deleteRoom(this.room.id!)),
         )
         .subscribe({
           next: () => {
@@ -447,7 +447,7 @@ export class RoomComponent implements OnInit, OnDestroy {
 
             this.room.playerIds = this.room.playerIds.filter(
               (playerId) =>
-                playerId !== this.playerService.currentPlayerSig()?.userId
+                playerId !== this.playerService.currentPlayerSig()?.userId,
             );
 
             return this.roomService.updateRoom(this.room);
@@ -463,16 +463,16 @@ export class RoomComponent implements OnInit, OnDestroy {
             this.playerService.currentPlayerSig()!.isReady = false;
 
             return this.playerService.updatePlayer(
-              this.playerService.currentPlayerSig()!
+              this.playerService.currentPlayerSig()!,
             );
-          })
+          }),
         )
         .subscribe({
           next: () => {
             this.roomService.currentRoomSig.set(undefined);
             this.playerService.currentPlayersSig.set([]);
             this.playerService.currentPlayerSig.set(
-              this.playerService.currentPlayerSig()
+              this.playerService.currentPlayerSig(),
             );
             this.localStorageService.clearLocalStorage();
             this.router.navigate(['/']);
@@ -518,12 +518,11 @@ export class RoomComponent implements OnInit, OnDestroy {
     }
 
     this.isFinishing = true;
-    const finishDate = new Date();
+    this.playerService.currentPlayerSig()!.finishDate = new Date();
+    this.playerService.currentPlayerSig()!.isReady = true;
 
     setTimeout(() => {
       this.loading = true;
-      this.playerService.currentPlayerSig()!.finishDate = finishDate;
-      this.playerService.currentPlayerSig()!.isReady = true;
 
       this.playerService
         .updatePlayer(this.playerService.currentPlayerSig()!)
@@ -532,7 +531,7 @@ export class RoomComponent implements OnInit, OnDestroy {
           next: () => {
             this.isResultPageActive = true;
             this.playerService.currentPlayerSig.set(
-              this.playerService.currentPlayerSig()
+              this.playerService.currentPlayerSig(),
             );
             this.isFinishing = false;
             this.loading = false;
@@ -583,13 +582,13 @@ export class RoomComponent implements OnInit, OnDestroy {
           this.room = room;
           this.room.isLoading = false;
           return this.roomService.updateRoom(this.room);
-        })
+        }),
       )
       .subscribe({
         next: () => {
           this.localStorageService.newGame(
             this.room.id!,
-            this.room.startAgainNumber
+            this.room.startAgainNumber,
           );
           this.isResultPageActive = false;
 
@@ -598,8 +597,8 @@ export class RoomComponent implements OnInit, OnDestroy {
           this.playerService.currentPlayerSig.set(
             this.players.find(
               (player) =>
-                player.userId === this.playerService.currentPlayerSig()?.userId
-            )!
+                player.userId === this.playerService.currentPlayerSig()?.userId,
+            )!,
           );
 
           this.loading = false;
@@ -609,7 +608,7 @@ export class RoomComponent implements OnInit, OnDestroy {
           if (!error.message.includes('Missing or insufficient permissions.')) {
             if (
               !error.message.includes(
-                'Gemini Developer API is overloaded. Please try again later.'
+                'Gemini Developer API is overloaded. Please try again later.',
               )
             ) {
               this.toastr.error(error.message, 'Game Time', {
@@ -623,7 +622,7 @@ export class RoomComponent implements OnInit, OnDestroy {
                 {
                   positionClass: 'toast-top-center',
                   toastClass: 'ngx-toastr custom error',
-                }
+                },
               );
             }
           }
@@ -639,7 +638,7 @@ export class RoomComponent implements OnInit, OnDestroy {
           switchMap((response) => {
             const aiResponse = this.aiService.getAiResponse(response);
             this.room.questions = this.aiService.mixResponsesOrder(
-              aiResponse.questions
+              aiResponse.questions,
             );
             this.room.responses = aiResponse.responses;
 
@@ -647,10 +646,10 @@ export class RoomComponent implements OnInit, OnDestroy {
             return this.excludedQuestionsService
               .addOrUpdateExcludedQuestions(
                 this.room.categoryFilter,
-                descriptions
+                descriptions,
               )
               .pipe(map(() => this.room));
-          })
+          }),
         );
     }
 
@@ -662,7 +661,7 @@ export class RoomComponent implements OnInit, OnDestroy {
       this.room.startWordLength,
       this.room.countries,
       this.room.brands,
-      this.room.responses
+      this.room.responses,
     );
 
     return of(this.room);
@@ -711,8 +710,8 @@ export class RoomComponent implements OnInit, OnDestroy {
       .updatePlayer(this.playerService.currentPlayerSig()!)
       .subscribe(() =>
         this.playerService.currentPlayerSig.set(
-          this.playerService.currentPlayerSig()
-        )
+          this.playerService.currentPlayerSig(),
+        ),
       );
   }
 
@@ -722,7 +721,7 @@ export class RoomComponent implements OnInit, OnDestroy {
       this.players.some(
         (player) =>
           player.userId !== this.playerService.currentPlayerSig()?.userId &&
-          !player.isReady
+          !player.isReady,
       );
 
     const playerNotDone =
@@ -730,7 +729,7 @@ export class RoomComponent implements OnInit, OnDestroy {
       this.players.some(
         (player) =>
           player.userId !== this.playerService.currentPlayerSig()?.userId &&
-          !player.finishDate
+          !player.finishDate,
       );
 
     if (playerNotReady || playerNotDone) {
@@ -747,7 +746,7 @@ export class RoomComponent implements OnInit, OnDestroy {
               {
                 positionClass: 'toast-top-center',
                 toastClass: 'ngx-toastr custom info',
-              }
+              },
             );
           } else if (playerNotDone) {
             this.toastr.info("Tous les joueurs n'ont pas fini", 'Game Time', {
@@ -822,10 +821,10 @@ export class RoomComponent implements OnInit, OnDestroy {
         }),
         switchMap(() => {
           this.room.playerIds = this.room.playerIds.filter(
-            (playerId) => playerId !== otherPlayer.userId
+            (playerId) => playerId !== otherPlayer.userId,
           );
           return this.roomService.updateRoom(this.room);
-        })
+        }),
       )
       .subscribe();
   }
