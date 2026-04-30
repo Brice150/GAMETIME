@@ -67,6 +67,23 @@ Backend/BDD : Firebase
 
 ---
 
+### 🏢 Marques
+
+- Deviner des marques à partir de leur logo avec un nombre limité d’essais
+- Fonctionnement similaire au mode Drapeaux
+- Indices : logo, couleurs des lettres (bleu et rouge)
+
+---
+
+### 🤖 Quiz IA
+
+- Répondre à des questions générées par une intelligence artificielle
+- 4 réponses proposées avec un seul bon choix
+- Sélection du thème des questions
+- Choix du niveau de difficulté
+
+---
+
 </details>
 
 <details>
