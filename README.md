@@ -2,73 +2,89 @@
 <img height="130px" width="130px" src="./src/assets/images/logo.webp">
 </div>
   
-# GAME TIME, a gaming web application
+# GAME TIME, une application web de quiz multijoueur
 
 Frontend : Angular
 <br>
-Backend/Database : Firebase
+Backend/BDD : Firebase
 <br>
 
 <details>
-  <summary>Pages Features</summary>
+  <summary>Features</summary>
 
-### Connect
+### 🔐 Connexion
 
-- Register by completing information with form control
-- Login with failure animation for bad credentials
-- Logout is available on menu once logged in
+- Inscription via un formulaire avec validation des champs
+- Connexion avec animation en cas d’erreur d’identifiants
+- Déconnexion accessible depuis le menu une fois connecté
 
-### Accueil
+---
 
-- Select the game you want to play
-- Choose options for the game
+### 🏠 Accueil
 
-### Profil
+- Sélection du jeu auquel vous souhaitez jouer
+- Choix des options de partie
 
-- Modify your profile
-- Delete your account (needs confirmation)
+---
 
-### Room
+### 👤 Profil
 
-- Share a link for the others to connect to your room
-- After a game finishes, you can compare your results with other players
+- Modification de votre profil utilisateur
+- Suppression du compte (avec confirmation obligatoire)
 
-### Succès
+---
 
-- Discover your upcoming achievements and the rewards you can earn
+### 🎮 Salle
 
-### Classement
+- Partage d’un lien pour permettre aux autres joueurs de rejoindre votre salle
+- Après une partie, comparaison des résultats avec les autres joueurs
 
-- Check your ranking compared to other players
+---
 
-### Motus
+### 🏆 Succès
 
-- Find series of words with limiting number of trials
-- Hints : first letter, blue and red letter colors
+- Découverte des succès à débloquer et des récompenses associées
 
-### Drapeaux
+---
 
-- Find series of countries with limiting number of trials
-- Hints : flag, blue and red letter colors
+### 📊 Classement
+
+- Consultation de votre classement par rapport aux autres joueurs
+
+---
+
+### 🔤 Motus
+
+- Trouver des mots avec un nombre limité d’essais
+- Indices : première lettre, couleurs des lettres (bleu et rouge)
+
+---
+
+### 🏳️ Drapeaux
+
+- Deviner des pays avec un nombre limité d’essais
+- Indices : drapeau, couleurs des lettres (bleu et rouge)
+
+---
 
 </details>
 
 <details>
-  <summary>Run Locally</summary>
+  <summary>Installation locale</summary>
 
-### Clone the project
+### Cloner le projet
 
 ```bash
-  git clone https://github.com/Brice150/GAMETIME.git
+  git clone https://github.com/Brice150/Life-Rise.git
 ```
 
-### Install dependencies
+### Installer les dépendances
 
 ```bash
   npm install
 ```
 
-### Start the server
+### Lancer l'application
 
 ```bash
   ng serve -o
