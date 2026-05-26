@@ -117,9 +117,14 @@ section h2 {
   background-color: var(--background);
   border: 3px solid var(--primary);
   padding: 24px;
+  padding-top: 12px;
   margin-bottom: 40px;
   opacity: 0;
   transition: opacity 1s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 .welcome-auth.visible {
@@ -169,6 +174,7 @@ form mat-form-field mat-error span {
   align-items: center;
   flex-wrap: wrap;
   gap: 12px;
+  margin-top: 20px;
 }
 
 .welcome-auth .auth-buttons button {
@@ -199,6 +205,14 @@ form mat-form-field mat-error span {
   font-size: 20px;
   font-weight: 500;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+mat-spinner {
+  margin-top: 20px;
+}
+
+::ng-deep .mdc-circular-progress__indeterminate-circle-graphic {
+  stroke: var(--accent) !important;
 }
 
 @media screen and (max-width: 1053px) {
