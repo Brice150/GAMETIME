@@ -15,7 +15,7 @@ export const noUserGuard: CanActivateFn = (route, state) => {
           if (user === null) {
             resolve(true);
           } else {
-            router.navigate(['/']);
+            router.navigate(['/accueil']);
             resolve(false);
           }
         } else {

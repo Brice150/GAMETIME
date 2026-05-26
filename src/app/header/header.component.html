@@ -1,14 +1,18 @@
 <header>
   <div class="project-title">
-    @if (!isRoomPage() && router.url !== '/' && !router.url.startsWith('/room')
-    && !router.url.startsWith('/admin')) {
-    <h1>{{ router.url.replace("/", "") }}</h1>
-    } @else if(router.url.startsWith('/admin')) {
-    <h1>Admin</h1>
-    } @else if(!isRoomPage()) {
-    <h1>Game Time</h1>
+    @if (
+      !isRoomPage() &&
+      router.url !== "/" &&
+      !router.url.startsWith("/room") &&
+      !router.url.startsWith("/admin")
+    ) {
+      <h1>{{ router.url.replace("/", "") }}</h1>
+    } @else if (router.url.startsWith("/admin")) {
+      <h1>Admin</h1>
+    } @else if (!isRoomPage()) {
+      <h1>Game Time</h1>
     } @else {
-    <h1>{{ room?.gameName }}</h1>
+      <h1>{{ room?.gameName }}</h1>
     }
   </div>
   <div class="switch-container">
@@ -18,7 +22,7 @@
     <mat-menu #menu="matMenu">
       <button
         type="button"
-        routerLink="/"
+        routerLink="/accueil"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
         title="Accueil"
@@ -61,28 +65,29 @@
         <span class="description">Classement</span>
       </button>
       @if (localStorageService.getRoomId()) {
-      <button
-        type="button"
-        [routerLink]="'/room/' + localStorageService.getRoomId()"
-        routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: true }"
-        title="Room"
-        mat-menu-item
-      >
-        <i class="bx bx-play"></i>
-        <span class="description">Room</span>
-      </button>
-      } @if (player().isAdmin) {
-      <button
-        type="button"
-        routerLink="/admin"
-        routerLinkActive="active"
-        title="Admin"
-        mat-menu-item
-      >
-        <i class="bx bxs-cog"></i>
-        <span class="description">Admin</span>
-      </button>
+        <button
+          type="button"
+          [routerLink]="'/room/' + localStorageService.getRoomId()"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          title="Room"
+          mat-menu-item
+        >
+          <i class="bx bx-play"></i>
+          <span class="description">Room</span>
+        </button>
+      }
+      @if (player().isAdmin) {
+        <button
+          type="button"
+          routerLink="/admin"
+          routerLinkActive="active"
+          title="Admin"
+          mat-menu-item
+        >
+          <i class="bx bxs-cog"></i>
+          <span class="description">Admin</span>
+        </button>
       }
       <button
         type="button"
@@ -96,33 +101,33 @@
     </mat-menu>
   </div>
   @if (isRoomPage() && room?.isStarted && !room?.isLoading) {
-  <div class="switch-container medals-container">
-    <div class="medals">
-      <span class="victory-number">{{
-        room?.gameName! | medalsNumber : player()
-      }}</span>
-      <i class="bx bxs-medal"></i>
+    <div class="switch-container medals-container">
+      <div class="medals">
+        <span class="victory-number">{{
+          room?.gameName! | medalsNumber: player()
+        }}</span>
+        <i class="bx bxs-medal"></i>
+      </div>
     </div>
-  </div>
-  <div class="players">
-    @for (otherPlayer of players; track $index) {
-    <div
-      class="player"
-      [ngClass]="{ 'alt-color': otherPlayer.userId !== player().userId }"
-    >
-      <span class="username"
-        >{{ otherPlayer.username }} {{ otherPlayer.animal }}</span
-      >
-      @if (otherPlayer.currentRoomWins.length !== room!.responses.length) {
-      <span class="step">
-        {{ otherPlayer.currentRoomWins.length + 1 }}<span class="slash">/</span
-        >{{ room!.responses.length }}
-      </span>
-      } @else {
-      <span class="step">Terminé</span>
+    <div class="players">
+      @for (otherPlayer of players; track $index) {
+        <div
+          class="player"
+          [ngClass]="{ 'alt-color': otherPlayer.userId !== player().userId }"
+        >
+          <span class="username"
+            >{{ otherPlayer.username }} {{ otherPlayer.animal }}</span
+          >
+          @if (otherPlayer.currentRoomWins.length !== room!.responses.length) {
+            <span class="step">
+              {{ otherPlayer.currentRoomWins.length + 1
+              }}<span class="slash">/</span>{{ room!.responses.length }}
+            </span>
+          } @else {
+            <span class="step">Terminé</span>
+          }
+        </div>
       }
     </div>
-    }
-  </div>
   }
 </header>

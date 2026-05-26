@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ToastrService } from 'ngx-toastr';
+import { ToastrHelperService } from '../../core/services/toastr-helper.service';
 
 @Component({
   selector: 'app-join-room',
@@ -11,7 +11,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class JoinRoomComponent {
   roomCode?: string;
-  toastr = inject(ToastrService);
+  toastrHelper = inject(ToastrHelperService);
   @Output() joinRoomEvent = new EventEmitter<string>();
 
   onKeyDown(event: KeyboardEvent) {
@@ -37,17 +37,10 @@ export class JoinRoomComponent {
         this.roomCode
           .normalize('NFD')
           .replace(/\p{Diacritic}/gu, '')
-          .toUpperCase()
+          .toUpperCase(),
       );
     } else {
-      this.toastr.error(
-        'Le code de la room doit faire 4 caractères',
-        'Game Time',
-        {
-          positionClass: 'toast-top-center',
-          toastClass: 'ngx-toastr custom error',
-        }
-      );
+      this.toastrHelper.error('Le code de la room doit faire 4 caractères');
     }
   }
 }

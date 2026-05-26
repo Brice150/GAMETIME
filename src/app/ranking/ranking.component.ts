@@ -6,7 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
-import { ToastrService } from 'ngx-toastr';
+import { ToastrHelperService } from '../core/services/toastr-helper.service';
 import { Subject, takeUntil } from 'rxjs';
 import { games } from 'src/assets/data/games';
 import { Player } from '../core/interfaces/player';
@@ -33,7 +33,7 @@ import { TotalMedalsNumberPipe } from '../shared/pipes/total-medals-number.pipe'
 })
 export class RankingComponent implements OnInit, OnDestroy {
   playerService = inject(PlayerService);
-  toastr = inject(ToastrService);
+  toastrHelper = inject(ToastrHelperService);
   destroyed$ = new Subject<void>();
   loading: boolean = true;
   players: Player[] = [];
@@ -55,10 +55,7 @@ export class RankingComponent implements OnInit, OnDestroy {
         error: (error: HttpErrorResponse) => {
           this.loading = false;
           if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastr.error(error.message, 'Game Time', {
-              positionClass: 'toast-top-center',
-              toastClass: 'ngx-toastr custom error',
-            });
+            this.toastrHelper.error(error.message);
           }
         },
       });
@@ -82,17 +79,17 @@ export class RankingComponent implements OnInit, OnDestroy {
       const currentPlayer = this.playerService.currentPlayerSig();
       if (currentPlayer) {
         const index = this.sortedPlayers.findIndex(
-          (p) => p.userId === currentPlayer.userId
+          (p) => p.userId === currentPlayer.userId,
         );
         this.currentPlayerPosition = index >= 0 ? index + 1 : undefined;
       }
     } else {
       this.sortedPlayers = [...this.players].sort((a, b) => {
         const aStat = a.stats.find(
-          (stat) => stat.gameName === this.gameSelected
+          (stat) => stat.gameName === this.gameSelected,
         );
         const bStat = b.stats.find(
-          (stat) => stat.gameName === this.gameSelected
+          (stat) => stat.gameName === this.gameSelected,
         );
 
         const aMedals = aStat ? aStat.medalsNumber : 0;
@@ -104,7 +101,7 @@ export class RankingComponent implements OnInit, OnDestroy {
       const currentPlayer = this.playerService.currentPlayerSig();
       if (currentPlayer) {
         const index = this.sortedPlayers.findIndex(
-          (p) => p.userId === currentPlayer.userId
+          (p) => p.userId === currentPlayer.userId,
         );
         this.currentPlayerPosition = index >= 0 ? index + 1 : undefined;
       }

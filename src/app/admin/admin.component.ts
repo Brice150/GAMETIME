@@ -7,7 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
-import { ToastrService } from 'ngx-toastr';
+import { ToastrHelperService } from '../core/services/toastr-helper.service';
 import { filter, map, of, Subject, switchMap, takeUntil } from 'rxjs';
 import { gameMap, games } from 'src/assets/data/games';
 import { Player } from '../core/interfaces/player';
@@ -38,7 +38,7 @@ export class AdminComponent implements OnInit {
   roomService = inject(RoomService);
   playerService = inject(PlayerService);
   destroyed$ = new Subject<void>();
-  toastr = inject(ToastrService);
+  toastrHelper = inject(ToastrHelperService);
   dialog = inject(MatDialog);
   rooms: Room[] = [];
   players: Player[] = [];
@@ -60,32 +60,32 @@ export class AdminComponent implements OnInit {
         switchMap((rooms) =>
           this.playerService.getAllPlayers().pipe(
             filter((players) => players.length > 1),
-            map((players) => ({ rooms, players }))
-          )
-        )
+            map((players) => ({ rooms, players })),
+          ),
+        ),
       )
       .subscribe({
         next: ({ rooms, players }) => {
           this.rooms = rooms;
           this.players = this.sortPlayers(players);
 
-          this.playersByRoom = rooms.reduce((acc, room) => {
-            const playerIds = room.playerIds || [];
-            acc[room.id!] = playerIds
-              .map((id) => players.find((p) => p.userId === id))
-              .filter((p): p is Player => !!p);
-            return acc;
-          }, {} as Record<string, Player[]>);
+          this.playersByRoom = rooms.reduce(
+            (acc, room) => {
+              const playerIds = room.playerIds || [];
+              acc[room.id!] = playerIds
+                .map((id) => players.find((p) => p.userId === id))
+                .filter((p): p is Player => !!p);
+              return acc;
+            },
+            {} as Record<string, Player[]>,
+          );
 
           this.loading = false;
         },
         error: (error: HttpErrorResponse) => {
           this.loading = false;
           if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastr.error(error.message, 'Game Time', {
-              positionClass: 'toast-top-center',
-              toastClass: 'ngx-toastr custom error',
-            });
+            this.toastrHelper.error(error.message);
           }
         },
       });
@@ -121,23 +121,17 @@ export class AdminComponent implements OnInit {
           return this.playerService.updatePlayers(this.playersByRoom[roomId]);
         }),
         takeUntil(this.destroyed$),
-        switchMap(() => this.roomService.deleteRoom(roomId))
+        switchMap(() => this.roomService.deleteRoom(roomId)),
       )
       .subscribe({
         next: () => {
           this.loading = false;
-          this.toastr.info('La room a été supprimée', 'Admin', {
-            positionClass: 'toast-top-center',
-            toastClass: 'ngx-toastr custom info',
-          });
+          this.toastrHelper.info('La room a été supprimée', 'Room');
         },
         error: (error: HttpErrorResponse) => {
           this.loading = false;
           if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastr.error(error.message, 'Game Time', {
-              positionClass: 'toast-top-center',
-              toastClass: 'ngx-toastr custom error',
-            });
+            this.toastrHelper.error(error.message);
           }
         },
       });
@@ -163,23 +157,17 @@ export class AdminComponent implements OnInit {
       .deleteUserRooms()
       .pipe(
         takeUntil(this.destroyed$),
-        switchMap(() => this.roomService.addRoom(newRoom as Room))
+        switchMap(() => this.roomService.addRoom(newRoom as Room)),
       )
       .subscribe({
         next: () => {
           this.loading = false;
-          this.toastr.info('Room créée', 'Admin', {
-            positionClass: 'toast-top-center',
-            toastClass: 'ngx-toastr custom info',
-          });
+          this.toastrHelper.info('Room créée', 'Room');
         },
         error: (error: HttpErrorResponse) => {
           this.loading = false;
           if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastr.error(error.message, 'Game Time', {
-              positionClass: 'toast-top-center',
-              toastClass: 'ngx-toastr custom error',
-            });
+            this.toastrHelper.error(error.message);
           }
         },
       });
@@ -197,27 +185,21 @@ export class AdminComponent implements OnInit {
         switchMap((player: Player) => {
           return this.playerService.updatePlayer(player);
         }),
-        takeUntil(this.destroyed$)
+        takeUntil(this.destroyed$),
       )
       .subscribe({
         next: () => {
-          this.toastr.info('Joueur modifié', 'Admin', {
-            positionClass: 'toast-top-center',
-            toastClass: 'ngx-toastr custom info',
-          });
+          this.toastrHelper.info('Joueur modifié', 'Joueur');
         },
         error: (error: HttpErrorResponse) => {
-          this.toastr.info(error.message, 'Admin', {
-            positionClass: 'toast-top-center',
-            toastClass: 'ngx-toastr custom error',
-          });
+          this.toastrHelper.error(error.message);
         },
       });
   }
 
   sortPlayers(players: Player[]): Player[] {
     const sortedPlayers = [...players].sort((a, b) =>
-      a.username.localeCompare(b.username)
+      a.username.localeCompare(b.username),
     );
 
     this.setSelectedPlayer(sortedPlayers);
@@ -228,7 +210,7 @@ export class AdminComponent implements OnInit {
   setSelectedPlayer(sortedPlayers: Player[]): void {
     if (this.selectedPlayer) {
       const matchingPlayer = sortedPlayers.find(
-        (player) => player.userId === this.selectedPlayer!.userId
+        (player) => player.userId === this.selectedPlayer!.userId,
       );
 
       this.selectedPlayer = matchingPlayer ?? sortedPlayers[0];

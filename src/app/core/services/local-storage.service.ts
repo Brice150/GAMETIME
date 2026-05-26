@@ -1,18 +1,28 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { WordTry } from '../interfaces/word-try';
+import { UserService } from './user.service';
 
 @Injectable({ providedIn: 'root' })
 export class LocalStorageService {
+  userService = inject(UserService);
   private readonly triesKey = 'tries';
   private readonly startAgainKey = 'startAgainNumber';
   private readonly roomIdKey = 'roomId';
 
+  private getScopedKey(baseKey: string): string {
+    const userId = this.userService.auth.currentUser?.uid ?? 'anonymous';
+    return `${baseKey}:${userId}`;
+  }
+
   saveTries(value: WordTry[]): void {
-    localStorage.setItem(this.triesKey, JSON.stringify(value));
+    localStorage.setItem(
+      this.getScopedKey(this.triesKey),
+      JSON.stringify(value),
+    );
   }
 
   getTries(): WordTry[] | null {
-    const item = localStorage.getItem(this.triesKey);
+    const item = localStorage.getItem(this.getScopedKey(this.triesKey));
     if (!item) return null;
     try {
       return JSON.parse(item) as WordTry[];
@@ -22,22 +32,25 @@ export class LocalStorageService {
   }
 
   saveStartAgainNumber(value: number): void {
-    localStorage.setItem(this.startAgainKey, value.toString());
+    localStorage.setItem(
+      this.getScopedKey(this.startAgainKey),
+      value.toString(),
+    );
   }
 
   getStartAgainNumber(): number | null {
-    const item = localStorage.getItem(this.startAgainKey);
+    const item = localStorage.getItem(this.getScopedKey(this.startAgainKey));
     if (!item) return null;
     const parsed = parseInt(item, 10);
     return isNaN(parsed) ? null : parsed;
   }
 
   saveRoomId(value: string): void {
-    localStorage.setItem(this.roomIdKey, value);
+    localStorage.setItem(this.getScopedKey(this.roomIdKey), value);
   }
 
   getRoomId(): string | null {
-    const item = localStorage.getItem(this.roomIdKey);
+    const item = localStorage.getItem(this.getScopedKey(this.roomIdKey));
     if (!item) return null;
     return item;
   }
@@ -49,6 +62,11 @@ export class LocalStorageService {
   }
 
   clearLocalStorage(): void {
+    localStorage.removeItem(this.getScopedKey(this.triesKey));
+    localStorage.removeItem(this.getScopedKey(this.startAgainKey));
+    localStorage.removeItem(this.getScopedKey(this.roomIdKey));
+
+    // Remove legacy keys from older versions without user scoping.
     localStorage.removeItem(this.triesKey);
     localStorage.removeItem(this.startAgainKey);
     localStorage.removeItem(this.roomIdKey);

@@ -6,7 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
-import { ToastrService } from 'ngx-toastr';
+import { ToastrHelperService } from '../core/services/toastr-helper.service';
 import { Subject, takeUntil } from 'rxjs';
 import { gameMap, games } from 'src/assets/data/games';
 import { goals } from 'src/assets/data/goals';
@@ -30,7 +30,7 @@ import { Goal } from '../core/interfaces/goal';
 })
 export class SuccessComponent implements OnInit, OnDestroy {
   playerService = inject(PlayerService);
-  toastr = inject(ToastrService);
+  toastrHelper = inject(ToastrHelperService);
   medalsNumberPipe = inject(MedalsNumberPipe);
   destroyed$ = new Subject<void>();
   loading: boolean = true;
@@ -66,10 +66,7 @@ export class SuccessComponent implements OnInit, OnDestroy {
       error: (error: HttpErrorResponse) => {
         this.loading = false;
         if (!error.message.includes('Missing or insufficient permissions.')) {
-          this.toastr.error(error.message, 'Game Time', {
-            positionClass: 'toast-top-center',
-            toastClass: 'ngx-toastr custom error',
-          });
+          this.toastrHelper.error(error.message);
         }
       },
     });
@@ -83,19 +80,19 @@ export class SuccessComponent implements OnInit, OnDestroy {
   getMedalsNumber(): void {
     this.motusMedalsNumber = this.medalsNumberPipe.transform(
       this.motusGameKey,
-      this.playerService.currentPlayerSig()!
+      this.playerService.currentPlayerSig()!,
     );
     this.drapeauxMedalsNumber = this.medalsNumberPipe.transform(
       this.drapeauxGameKey,
-      this.playerService.currentPlayerSig()!
+      this.playerService.currentPlayerSig()!,
     );
     this.marquesMedalsNumber = this.medalsNumberPipe.transform(
       this.marquesGameKey,
-      this.playerService.currentPlayerSig()!
+      this.playerService.currentPlayerSig()!,
     );
     this.quizMedalsNumber = this.medalsNumberPipe.transform(
       this.quizGameKey,
-      this.playerService.currentPlayerSig()!
+      this.playerService.currentPlayerSig()!,
     );
   }
 
@@ -121,7 +118,7 @@ export class SuccessComponent implements OnInit, OnDestroy {
 
   isFirstAvailableSuccess(goal: Goal): boolean {
     const firstAvailable = this.goals.find(
-      (g) => this.canGetSuccess(g.target) && this.canDisplayGoal(g)
+      (g) => this.canGetSuccess(g.target) && this.canDisplayGoal(g),
     );
 
     return firstAvailable?.target === goal.target;
@@ -149,18 +146,12 @@ export class SuccessComponent implements OnInit, OnDestroy {
       .subscribe({
         next: () => {
           this.getMedalsNumber();
-          this.toastr.info('Succès récupéré', 'Succès', {
-            positionClass: 'toast-top-center',
-            toastClass: 'ngx-toastr custom info',
-          });
+          this.toastrHelper.info('Succès récupéré', 'Succès');
         },
         error: (error: HttpErrorResponse) => {
           this.loading = false;
           if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastr.error(error.message, 'Game Time', {
-              positionClass: 'toast-top-center',
-              toastClass: 'ngx-toastr custom error',
-            });
+            this.toastrHelper.error(error.message);
           }
         },
       });

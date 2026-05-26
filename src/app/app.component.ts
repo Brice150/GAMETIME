@@ -2,11 +2,11 @@ import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
 import { of, Subject, switchMap, takeUntil } from 'rxjs';
 import { UserService } from './core/services/user.service';
 import { HeaderComponent } from './header/header.component';
 import { PlayerService } from './core/services/player.service';
+import { ToastrHelperService } from './core/services/toastr-helper.service';
 
 @Component({
   selector: 'app-root',
@@ -18,7 +18,7 @@ export class AppComponent implements OnInit, OnDestroy {
   userService = inject(UserService);
   playerService = inject(PlayerService);
   router = inject(Router);
-  toastr = inject(ToastrService);
+  toastrHelper = inject(ToastrHelperService);
   destroyed$ = new Subject<void>();
 
   ngOnInit(): void {
@@ -33,7 +33,7 @@ export class AppComponent implements OnInit, OnDestroy {
             this.userService.currentUserSig.set(null);
             return of([]);
           }
-        })
+        }),
       )
       .subscribe({
         next: (players) => {
@@ -42,10 +42,7 @@ export class AppComponent implements OnInit, OnDestroy {
         },
         error: (error: HttpErrorResponse) => {
           if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastr.error(error.message, 'Game Time', {
-              positionClass: 'toast-top-center',
-              toastClass: 'ngx-toastr custom error',
-            });
+            this.toastrHelper.error(error.message);
           }
         },
       });
@@ -62,18 +59,12 @@ export class AppComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: () => {
-          this.router.navigate(['/connect']);
-          this.toastr.info('Vous avez été déconnecté', 'Game Time', {
-            positionClass: 'toast-top-center',
-            toastClass: 'ngx-toastr custom info',
-          });
+          this.router.navigate(['/']);
+          this.toastrHelper.info('Vous avez été déconnecté', 'Déconnexion');
         },
         error: (error: HttpErrorResponse) => {
           if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastr.error(error.message, 'Game Time', {
-              positionClass: 'toast-top-center',
-              toastClass: 'ngx-toastr custom error',
-            });
+            this.toastrHelper.error(error.message);
           }
         },
       });

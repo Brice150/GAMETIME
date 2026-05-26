@@ -4,7 +4,7 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { ToastrHelperService } from '../core/services/toastr-helper.service';
 import { filter, Observable, of, Subject, switchMap, takeUntil } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { gameMap } from 'src/assets/data/games';
@@ -52,7 +52,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
   activatedRoute = inject(ActivatedRoute);
   playerService = inject(PlayerService);
   excludedQuestionsService = inject(ExcludedQuestionsService);
-  toastr = inject(ToastrService);
+  toastrHelper = inject(ToastrHelperService);
   localStorageService = inject(LocalStorageService);
   aiService = inject(AiService);
   dialog = inject(MatDialog);
@@ -72,7 +72,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
         switchMap((params) =>
           this.roomService
             .getRoom(params['id'])
-            .pipe(takeUntil(this.destroyed$))
+            .pipe(takeUntil(this.destroyed$)),
         ),
         switchMap((room) => {
           this.room = room;
@@ -82,7 +82,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
           return this.playerService
             .getPlayers(room.playerIds)
             .pipe(takeUntil(this.destroyed$));
-        })
+        }),
       )
       .subscribe({
         next: (players) => {
@@ -112,10 +112,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
         error: (error: HttpErrorResponse) => {
           this.loading = false;
           if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastr.error(error.message, 'Game Time', {
-              positionClass: 'toast-top-center',
-              toastClass: 'ngx-toastr custom error',
-            });
+            this.toastrHelper.error(error.message);
           }
         },
       });
@@ -129,10 +126,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
         },
         error: (error: HttpErrorResponse) => {
           if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastr.error(error.message, 'Game Time', {
-              positionClass: 'toast-top-center',
-              toastClass: 'ngx-toastr custom error',
-            });
+            this.toastrHelper.error(error.message);
           }
         },
       });
@@ -155,13 +149,8 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
 
   start(): void {
     if (this.players.length === 0) {
-      this.toastr.error(
+      this.toastrHelper.error(
         'Pour être lancée, une room doit avoir des joueurs',
-        'Admin',
-        {
-          positionClass: 'toast-top-center',
-          toastClass: 'ngx-toastr custom error',
-        }
       );
       return;
     }
@@ -197,7 +186,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
           this.room = room;
           this.room.isLoading = false;
           return this.roomService.updateRoom(this.room);
-        })
+        }),
       )
       .subscribe({
         next: () => {
@@ -208,21 +197,13 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
           if (!error.message.includes('Missing or insufficient permissions.')) {
             if (
               !error.message.includes(
-                'Gemini Developer API is overloaded. Please try again later.'
+                'Gemini Developer API is overloaded. Please try again later.',
               )
             ) {
-              this.toastr.error(error.message, 'Game Time', {
-                positionClass: 'toast-top-center',
-                toastClass: 'ngx-toastr custom error',
-              });
+              this.toastrHelper.error(error.message);
             } else {
-              this.toastr.error(
+              this.toastrHelper.error(
                 "L'IA est saturée veuillez réessayer plus tard",
-                'Game Time',
-                {
-                  positionClass: 'toast-top-center',
-                  toastClass: 'ngx-toastr custom error',
-                }
               );
             }
           }
@@ -238,7 +219,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
           switchMap((response) => {
             const aiResponse = this.aiService.getAiResponse(response);
             this.room.questions = this.aiService.mixResponsesOrder(
-              aiResponse.questions
+              aiResponse.questions,
             );
             this.room.responses = aiResponse.responses;
 
@@ -246,10 +227,10 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
             return this.excludedQuestionsService
               .addOrUpdateExcludedQuestions(
                 this.room.categoryFilter,
-                descriptions
+                descriptions,
               )
               .pipe(map(() => this.room));
-          })
+          }),
         );
     }
 
@@ -261,7 +242,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
       this.room.startWordLength,
       this.room.countries,
       this.room.brands,
-      this.room.responses
+      this.room.responses,
     );
 
     return of(this.room);
@@ -306,10 +287,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
         error: (error: HttpErrorResponse) => {
           this.loading = false;
           if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastr.error(error.message, 'Game Time', {
-              positionClass: 'toast-top-center',
-              toastClass: 'ngx-toastr custom error',
-            });
+            this.toastrHelper.error(error.message);
           }
         },
       });
@@ -340,23 +318,17 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
           return this.playerService.updatePlayers(this.players);
         }),
         takeUntil(this.destroyed$),
-        switchMap(() => this.roomService.deleteRoom(this.room.id!))
+        switchMap(() => this.roomService.deleteRoom(this.room.id!)),
       )
       .subscribe({
         next: () => {
           this.router.navigate(['/admin']);
-          this.toastr.info('La room a été supprimée', 'Admin', {
-            positionClass: 'toast-top-center',
-            toastClass: 'ngx-toastr custom info',
-          });
+          this.toastrHelper.info('La room a été supprimée', 'Room');
         },
         error: (error: HttpErrorResponse) => {
           this.loading = false;
           if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastr.error(error.message, 'Game Time', {
-              positionClass: 'toast-top-center',
-              toastClass: 'ngx-toastr custom error',
-            });
+            this.toastrHelper.error(error.message);
           }
         },
       });
@@ -372,7 +344,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
       this.players.some(
         (player) =>
           player.userId !== this.playerService.currentPlayerSig()?.userId &&
-          !player.isReady
+          !player.isReady,
       );
 
     const playerNotDone =
@@ -380,7 +352,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
       this.players.some(
         (player) =>
           player.userId !== this.playerService.currentPlayerSig()?.userId &&
-          !player.finishDate
+          !player.finishDate,
       );
 
     if (playerNotReady || playerNotDone) {
@@ -391,19 +363,15 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.destroyed$))
         .subscribe(() => {
           if (playerNotReady) {
-            this.toastr.info(
+            this.toastrHelper.info(
               'Tous les joueurs ne sont pas prêts',
-              'Game Time',
-              {
-                positionClass: 'toast-top-center',
-                toastClass: 'ngx-toastr custom info',
-              }
+              'Joueurs',
             );
           } else if (playerNotDone) {
-            this.toastr.info("Tous les joueurs n'ont pas fini", 'Game Time', {
-              positionClass: 'toast-top-center',
-              toastClass: 'ngx-toastr custom info',
-            });
+            this.toastrHelper.info(
+              "Tous les joueurs n'ont pas fini",
+              'Joueurs',
+            );
           }
         });
       return;
@@ -472,10 +440,10 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
         }),
         switchMap(() => {
           this.room.playerIds = this.room.playerIds.filter(
-            (playerId) => playerId !== otherPlayer.userId
+            (playerId) => playerId !== otherPlayer.userId,
           );
           return this.roomService.updateRoom(this.room);
-        })
+        }),
       )
       .subscribe();
   }
@@ -489,7 +457,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
       this.room &&
       !this.room.isCreatedByAdmin &&
       !this.room.playerIds.includes(
-        this.playerService.currentPlayerSig()?.userId!
+        this.playerService.currentPlayerSig()?.userId!,
       )
     );
   }

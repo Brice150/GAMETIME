@@ -7,7 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterModule } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { ToastrHelperService } from '../core/services/toastr-helper.service';
 import { Subject, switchMap, take, takeUntil } from 'rxjs';
 import { games } from 'src/assets/data/games';
 import { Room } from '../core/interfaces/room';
@@ -39,7 +39,7 @@ export class HomeComponent implements OnDestroy {
   loading: boolean = false;
   playerService = inject(PlayerService);
   roomService = inject(RoomService);
-  toastr = inject(ToastrService);
+  toastrHelper = inject(ToastrHelperService);
   localStorageService = inject(LocalStorageService);
   destroyed$ = new Subject<void>();
   router = inject(Router);
@@ -71,7 +71,7 @@ export class HomeComponent implements OnDestroy {
       .deleteUserRooms()
       .pipe(
         takeUntil(this.destroyed$),
-        switchMap(() => this.roomService.addRoom(newRoom as Room))
+        switchMap(() => this.roomService.addRoom(newRoom as Room)),
       )
       .subscribe({
         next: (roomId) => {
@@ -82,10 +82,7 @@ export class HomeComponent implements OnDestroy {
         error: (error: HttpErrorResponse) => {
           this.loading = false;
           if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastr.error(error.message, 'Game Time', {
-              positionClass: 'toast-top-center',
-              toastClass: 'ngx-toastr custom error',
-            });
+            this.toastrHelper.error(error.message);
           }
         },
       });
@@ -102,10 +99,7 @@ export class HomeComponent implements OnDestroy {
           this.loading = false;
           this.router.navigate([`/room/${room.id!}`]);
         } else {
-          this.toastr.error('Aucune room trouvée avec ce code', 'Game Time', {
-            positionClass: 'toast-top-center',
-            toastClass: 'ngx-toastr custom error',
-          });
+          this.toastrHelper.error('Aucune room trouvée avec ce code');
         }
       });
   }

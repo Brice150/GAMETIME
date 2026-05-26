@@ -10,7 +10,7 @@ import {
   input,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ToastrService } from 'ngx-toastr';
+import { ToastrHelperService } from '../../../core/services/toastr-helper.service';
 import { Room } from 'src/app/core/interfaces/room';
 import { WordTry } from 'src/app/core/interfaces/word-try';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
@@ -23,7 +23,7 @@ import { emojies } from 'src/assets/data/emojis';
   styleUrls: ['./word-input.component.css'],
 })
 export class WordInputComponent implements OnInit {
-  toastr = inject(ToastrService);
+  toastrHelper = inject(ToastrHelperService);
   localStorageService = inject(LocalStorageService);
   @Input() response: string = '';
   readonly room = input.required<Room>();
@@ -117,16 +117,10 @@ export class WordInputComponent implements OnInit {
           this.addTry();
         }
       } else {
-        this.toastr.error('Tentative invalide', 'Game Time', {
-          positionClass: 'toast-top-center',
-          toastClass: 'ngx-toastr custom error',
-        });
+        this.toastrHelper.error('Tentative invalide');
       }
     } else {
-      this.toastr.error('Tentative vide', 'Game Time', {
-        positionClass: 'toast-top-center',
-        toastClass: 'ngx-toastr custom error',
-      });
+      this.toastrHelper.error('Tentative vide');
     }
 
     this.inputValue = this.room().showFirstLetter
@@ -139,11 +133,11 @@ export class WordInputComponent implements OnInit {
       letter: Array.from(this.inputValue!),
       isWellPlaced: Array.from(
         { length: this.inputValue!.length },
-        () => false
+        () => false,
       ),
       isWrongPlaced: Array.from(
         { length: this.inputValue!.length },
-        () => false
+        () => false,
       ),
     };
 

@@ -5,13 +5,13 @@ import { userGuard } from './core/guards/user.guard';
 
 export const routes: Routes = [
   {
-    path: 'connect',
+    path: '',
     loadComponent: () =>
-      import('./connect/connect.component').then((m) => m.ConnectComponent),
+      import('./welcome/welcome.component').then((m) => m.WelcomeComponent),
     canActivate: [noUserGuard],
   },
   {
-    path: '',
+    path: 'accueil',
     loadComponent: () =>
       import('./home/home.component').then((m) => m.HomeComponent),
     canActivate: [userGuard],
@@ -54,5 +54,5 @@ export const routes: Routes = [
       ),
     canActivate: [adminGuard],
   },
-  { path: '**', redirectTo: '', pathMatch: 'full' },
+  { path: '**', redirectTo: 'accueil', pathMatch: 'full' },
 ];

@@ -5,7 +5,7 @@ import { Timestamp } from '@angular/fire/firestore';
 import { MatDialog } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { ToastrHelperService } from '../core/services/toastr-helper.service';
 import {
   filter,
   map,
@@ -58,7 +58,7 @@ export class RoomComponent implements OnInit, OnDestroy {
   playerService = inject(PlayerService);
   excludedQuestionsService = inject(ExcludedQuestionsService);
   router = inject(Router);
-  toastr = inject(ToastrService);
+  toastrHelper = inject(ToastrHelperService);
   activatedRoute = inject(ActivatedRoute);
   localStorageService = inject(LocalStorageService);
   aiService = inject(AiService);
@@ -94,12 +94,9 @@ export class RoomComponent implements OnInit, OnDestroy {
         switchMap((room: Room | null) => {
           if (!room) {
             this.localStorageService.clearLocalStorage();
-            this.router.navigate(['/']);
+            this.router.navigate(['/accueil']);
             if (!this.userLeft) {
-              this.toastr.error("L'hôte a supprimé la room", 'Game Time', {
-                positionClass: 'toast-top-center',
-                toastClass: 'ngx-toastr custom error',
-              });
+              this.toastrHelper.error("L'hôte a supprimé la room");
             }
             return of(null);
           }
@@ -117,11 +114,8 @@ export class RoomComponent implements OnInit, OnDestroy {
           ) {
             this.userKickedOut = true;
             this.localStorageService.clearLocalStorage();
-            this.router.navigate(['/']);
-            this.toastr.error('Vous avez été exclu de la room', 'Game Time', {
-              positionClass: 'toast-top-center',
-              toastClass: 'ngx-toastr custom error',
-            });
+            this.router.navigate(['/accueil']);
+            this.toastrHelper.error('Vous avez été exclu de la room');
           }
 
           const start1 =
@@ -146,13 +140,9 @@ export class RoomComponent implements OnInit, OnDestroy {
               this.room.userId &&
             !this.room.isStarted
           ) {
-            this.toastr.error(
+            this.toastrHelper.info(
               "L'hôte veut lancer la room, cliquez sur prêt",
-              'Game Time',
-              {
-                positionClass: 'toast-top-center',
-                toastClass: 'ngx-toastr custom error',
-              },
+              'Room',
             );
           }
 
@@ -193,10 +183,7 @@ export class RoomComponent implements OnInit, OnDestroy {
                       'Missing or insufficient permissions.',
                     )
                   ) {
-                    this.toastr.error(error.message, 'Game Time', {
-                      positionClass: 'toast-top-center',
-                      toastClass: 'ngx-toastr custom error',
-                    });
+                    this.toastrHelper.error(error.message);
                   }
                 },
               });
@@ -264,10 +251,7 @@ export class RoomComponent implements OnInit, OnDestroy {
         error: (error: HttpErrorResponse) => {
           this.loading = false;
           if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastr.error(error.message, 'Game Time', {
-              positionClass: 'toast-top-center',
-              toastClass: 'ngx-toastr custom error',
-            });
+            this.toastrHelper.error(error.message);
           }
         },
       });
@@ -281,10 +265,7 @@ export class RoomComponent implements OnInit, OnDestroy {
         },
         error: (error: HttpErrorResponse) => {
           if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastr.error(error.message, 'Game Time', {
-              positionClass: 'toast-top-center',
-              toastClass: 'ngx-toastr custom error',
-            });
+            this.toastrHelper.error(error.message);
           }
         },
       });
@@ -313,16 +294,12 @@ export class RoomComponent implements OnInit, OnDestroy {
 
         const goal = goals.find((goal) => goal.target === stat.medalsNumber);
         if (goal) {
-          this.toastr.info(
+          this.toastrHelper.info(
             'Vous avez obtenu le succès : Obtenir ' +
               goal.target +
               ' médailles',
             this.room.gameName.charAt(0).toUpperCase() +
               this.room.gameName.slice(1),
-            {
-              positionClass: 'toast-top-center',
-              toastClass: 'ngx-toastr custom info',
-            },
           );
         }
       }
@@ -339,10 +316,7 @@ export class RoomComponent implements OnInit, OnDestroy {
         },
         error: (error: HttpErrorResponse) => {
           if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastr.error(error.message, 'Game Time', {
-              positionClass: 'toast-top-center',
-              toastClass: 'ngx-toastr custom error',
-            });
+            this.toastrHelper.error(error.message);
           }
         },
       });
@@ -351,24 +325,16 @@ export class RoomComponent implements OnInit, OnDestroy {
   handlePlayerNextAction(stepWon: boolean): void {
     if (this.room.gameName !== this.quizGameKey) {
       if (stepWon) {
-        this.toastr.info(
+        this.toastrHelper.info(
           'Manche gagnée',
           this.room.gameName.charAt(0).toUpperCase() +
             this.room.gameName.slice(1),
-          {
-            positionClass: 'toast-top-center',
-            toastClass: 'ngx-toastr custom info',
-          },
         );
       } else {
-        this.toastr.error(
+        this.toastrHelper.info(
           'Manche perdue',
           this.room.gameName.charAt(0).toUpperCase() +
             this.room.gameName.slice(1),
-          {
-            positionClass: 'toast-top-center',
-            toastClass: 'ngx-toastr custom error',
-          },
         );
       }
     }
@@ -414,21 +380,15 @@ export class RoomComponent implements OnInit, OnDestroy {
             this.roomService.currentRoomSig.set(undefined);
             this.playerService.currentPlayersSig.set([]);
             this.localStorageService.clearLocalStorage();
-            this.router.navigate(['/']);
-            this.toastr.info('La room a été supprimée', 'Game Time', {
-              positionClass: 'toast-top-center',
-              toastClass: 'ngx-toastr custom info',
-            });
+            this.router.navigate(['/accueil']);
+            this.toastrHelper.info('La room a été supprimée', 'Room');
           },
           error: (error: HttpErrorResponse) => {
             this.loading = false;
             if (
               !error.message.includes('Missing or insufficient permissions.')
             ) {
-              this.toastr.error(error.message, 'Game Time', {
-                positionClass: 'toast-top-center',
-                toastClass: 'ngx-toastr custom error',
-              });
+              this.toastrHelper.error(error.message);
             }
           },
         });
@@ -475,25 +435,16 @@ export class RoomComponent implements OnInit, OnDestroy {
               this.playerService.currentPlayerSig(),
             );
             this.localStorageService.clearLocalStorage();
-            this.router.navigate(['/']);
-            this.toastr.info('Vous venez de quitter une room', 'Game Time', {
-              positionClass: 'toast-top-center',
-              toastClass: 'ngx-toastr custom info',
-            });
+            this.router.navigate(['/accueil']);
+            this.toastrHelper.info('Vous venez de quitter une room', 'Room');
           },
           error: (error: HttpErrorResponse) => {
             this.loading = false;
             if (error.message.includes('No document to update')) {
-              this.router.navigate(['/']);
-              this.toastr.info('Vous venez de quitter une room', 'Game Time', {
-                positionClass: 'toast-top-center',
-                toastClass: 'ngx-toastr custom info',
-              });
+              this.router.navigate(['/accueil']);
+              this.toastrHelper.info('Vous venez de quitter une room', 'Room');
             } else {
-              this.toastr.error(error.message, 'Game Time', {
-                positionClass: 'toast-top-center',
-                toastClass: 'ngx-toastr custom error',
-              });
+              this.toastrHelper.error(error.message);
             }
           },
         });
@@ -540,10 +491,7 @@ export class RoomComponent implements OnInit, OnDestroy {
             if (
               !error.message.includes('Missing or insufficient permissions.')
             ) {
-              this.toastr.error(error.message, 'Game Time', {
-                positionClass: 'toast-top-center',
-                toastClass: 'ngx-toastr custom error',
-              });
+              this.toastrHelper.error(error.message);
             }
           },
         });
@@ -611,18 +559,10 @@ export class RoomComponent implements OnInit, OnDestroy {
                 'Gemini Developer API is overloaded. Please try again later.',
               )
             ) {
-              this.toastr.error(error.message, 'Game Time', {
-                positionClass: 'toast-top-center',
-                toastClass: 'ngx-toastr custom error',
-              });
+              this.toastrHelper.error(error.message);
             } else {
-              this.toastr.error(
+              this.toastrHelper.error(
                 "L'IA est saturée veuillez réessayer plus tard",
-                'Game Time',
-                {
-                  positionClass: 'toast-top-center',
-                  toastClass: 'ngx-toastr custom error',
-                },
               );
             }
           }
@@ -740,19 +680,15 @@ export class RoomComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.destroyed$))
         .subscribe(() => {
           if (playerNotReady) {
-            this.toastr.info(
+            this.toastrHelper.info(
               'Tous les joueurs ne sont pas prêts',
-              'Game Time',
-              {
-                positionClass: 'toast-top-center',
-                toastClass: 'ngx-toastr custom info',
-              },
+              'Joueurs',
             );
           } else if (playerNotDone) {
-            this.toastr.info("Tous les joueurs n'ont pas fini", 'Game Time', {
-              positionClass: 'toast-top-center',
-              toastClass: 'ngx-toastr custom info',
-            });
+            this.toastrHelper.info(
+              "Tous les joueurs n'ont pas fini",
+              'Joueurs',
+            );
           }
         });
       return;

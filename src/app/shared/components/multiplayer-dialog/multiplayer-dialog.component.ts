@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { ToastrService } from 'ngx-toastr';
+import { ToastrHelperService } from '../../../core/services/toastr-helper.service';
 import { QRCodeComponent } from 'angularx-qrcode';
 
 @Component({
@@ -11,13 +11,13 @@ import { QRCodeComponent } from 'angularx-qrcode';
   styleUrl: './multiplayer-dialog.component.css',
 })
 export class MultiplayerDialogComponent implements OnInit {
-  toastr = inject(ToastrService);
+  toastrHelper = inject(ToastrHelperService);
   roomCode: string = '';
   link: string = '';
 
   constructor(
     public dialogRef: MatDialogRef<MultiplayerDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: string
+    @Inject(MAT_DIALOG_DATA) public data: string,
   ) {}
 
   ngOnInit(): void {
@@ -29,19 +29,13 @@ export class MultiplayerDialogComponent implements OnInit {
 
   copyCode(): void {
     navigator.clipboard.writeText(this.roomCode).then(() => {
-      this.toastr.info('Code de la partie copié', 'Game Time', {
-        positionClass: 'toast-top-center',
-        toastClass: 'ngx-toastr custom info',
-      });
+      this.toastrHelper.info('Code de la partie copié', 'Code');
     });
   }
 
   copyLink(): void {
     navigator.clipboard.writeText(this.link).then(() => {
-      this.toastr.info('Lien de la partie copié', 'Game Time', {
-        positionClass: 'toast-top-center',
-        toastClass: 'ngx-toastr custom info',
-      });
+      this.toastrHelper.info('Lien de la partie copié', 'Lien');
     });
   }
 

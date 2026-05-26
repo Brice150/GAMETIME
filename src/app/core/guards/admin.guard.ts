@@ -13,11 +13,11 @@ export const adminGuard: CanActivateFn = async (route, state) => {
     if (player?.isAdmin) {
       return true;
     } else {
-      router.navigate(['/connect']);
+      router.navigate(['/accueil']);
       return false;
     }
   } catch (error) {
-    router.navigate(['/connect']);
+    router.navigate(['/']);
     return false;
   }
 };
