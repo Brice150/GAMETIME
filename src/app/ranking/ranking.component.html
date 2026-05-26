@@ -1,94 +1,94 @@
 <section>
-  @if(!loading) {
-  <form>
-    <mat-form-field>
-      <mat-select
-        [(ngModel)]="gameSelected"
-        name="game"
-        class="cap"
-        (ngModelChange)="sortPlayers()"
-      >
-        <mat-option value="general" class="cap-option">
-          <div class="flex">
-            <i class="bx bxs-universal-access"></i>
-            <span class="game">Général</span>
-          </div>
-        </mat-option>
-        @for (game of games; track $index) {
-        <mat-option [value]="game.key" class="cap-option">
-          <div class="flex">
-            <i class="{{ game.icon }}"></i>
-            <span class="game">{{ game.label }}</span>
-          </div>
-        </mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-  </form>
-  @if (currentPlayerPosition) {
-  <div class="description">
-    <span>Vous êtes</span>
-    <div class="number">
-      <span
-        [ngStyle]="{
-          color:
-            currentPlayerPosition === 1
-              ? 'gold'
-              : currentPlayerPosition === 2
-              ? 'silver'
-              : currentPlayerPosition === 3
-              ? '#cd7f32'
-              : 'var(--accent)'
-        }"
-      >
-        {{ currentPlayerPosition
-        }}<sup>{{ currentPlayerPosition | ordinal }}</sup>
-      </span>
-      <span> / {{ players.length }}</span>
-    </div>
-  </div>
-  }
-  <div class="players">
-    @for (otherPlayer of sortedPlayers; track $index; let i = $index) {
-    <div
-      class="player"
-      [ngClass]="{
-        'alt-color':
-          otherPlayer.userId !== playerService.currentPlayerSig()?.userId
-      }"
-    >
-      <span class="username"
-        >{{ otherPlayer.username }} {{ otherPlayer.animal }}</span
-      >
-      <div class="podium">
-        @if (i + 1 === 1) {
-        <i class="bx bxs-trophy" style="color: gold"></i>
-        } @else if (i + 1 === 2) {
-        <i class="bx bxs-trophy" style="color: silver"></i>
-        }@else if (i + 1 === 3) {
-        <i class="bx bxs-trophy" style="color: #cd7f32"></i>
-        } @else {
-        <span class="order">{{ i + 1 }}</span>
-        }
-      </div>
-      <div class="space">
-        <div class="medals">
-          @if (gameSelected !== 'general') {
-          <span class="victory-number">{{
-            gameSelected | medalsNumber : otherPlayer
-          }}</span>
-          } @else {
-          <span class="victory-number">{{
-            otherPlayer | totalMedalsNumber
-          }}</span>
+  @if (!loading) {
+    <form>
+      <mat-form-field>
+        <mat-select
+          [(ngModel)]="gameSelected"
+          name="game"
+          class="cap"
+          (ngModelChange)="sortPlayers()"
+        >
+          <mat-option value="general" class="cap-option">
+            <div class="flex">
+              <i class="bx bxs-universal-access"></i>
+              <span class="game">Général</span>
+            </div>
+          </mat-option>
+          @for (game of games; track $index) {
+            <mat-option [value]="game.key" class="cap-option">
+              <div class="flex">
+                <i class="{{ game.icon }}"></i>
+                <span class="game">{{ game.label }}</span>
+              </div>
+            </mat-option>
           }
-          <i class="bx bxs-medal"></i>
+        </mat-select>
+      </mat-form-field>
+    </form>
+    @if (currentPlayerPosition) {
+      <div class="description">
+        <span class="text-description">Vous êtes</span>
+        <div class="number">
+          <span
+            [ngStyle]="{
+              color:
+                currentPlayerPosition === 1
+                  ? 'gold'
+                  : currentPlayerPosition === 2
+                    ? 'silver'
+                    : currentPlayerPosition === 3
+                      ? '#cd7f32'
+                      : 'var(--accent)',
+            }"
+          >
+            {{ currentPlayerPosition
+            }}<sup>{{ currentPlayerPosition | ordinal }}</sup>
+          </span>
+          <span> / {{ players.length }}</span>
         </div>
       </div>
-    </div>
     }
-  </div>
+    <div class="players">
+      @for (otherPlayer of sortedPlayers; track $index; let i = $index) {
+        <div
+          class="player"
+          [ngClass]="{
+            'alt-color':
+              otherPlayer.userId !== playerService.currentPlayerSig()?.userId,
+          }"
+        >
+          <span class="username"
+            >{{ otherPlayer.username }} {{ otherPlayer.animal }}</span
+          >
+          <div class="podium">
+            @if (i + 1 === 1) {
+              <i class="bx bxs-trophy" style="color: gold"></i>
+            } @else if (i + 1 === 2) {
+              <i class="bx bxs-trophy" style="color: silver"></i>
+            } @else if (i + 1 === 3) {
+              <i class="bx bxs-trophy" style="color: #cd7f32"></i>
+            } @else {
+              <span class="order">{{ i + 1 }}</span>
+            }
+          </div>
+          <div class="space">
+            <div class="medals">
+              @if (gameSelected !== "general") {
+                <span class="victory-number">{{
+                  gameSelected | medalsNumber: otherPlayer
+                }}</span>
+              } @else {
+                <span class="victory-number">{{
+                  otherPlayer | totalMedalsNumber
+                }}</span>
+              }
+              <i class="bx bxs-medal"></i>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
   } @else {
-  <mat-spinner></mat-spinner>
+    <mat-spinner></mat-spinner>
   }
 </section>

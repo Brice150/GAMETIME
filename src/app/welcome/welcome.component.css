@@ -76,7 +76,7 @@ section h2 {
   text-align: justify;
   line-height: 30px;
   transform: translateX(80px);
-  color: var(--secondary);
+  color: var(--primary);
 }
 
 .feature img {
@@ -135,7 +135,7 @@ section h2 {
 
 .welcome-auth p {
   margin: 0 0 20px 0;
-  color: var(--secondary);
+  color: var(--primary);
   font-size: 16px;
 }
 

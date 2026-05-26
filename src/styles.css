@@ -1,8 +1,8 @@
 :root {
-  --background: #62cbd7;
+  --background: #0f0f1a;
   --primary: white;
   --secondary: black;
-  --accent: blue;
+  --accent: #a12eff;
 
   --strong-radius: 20px;
   --light-radius: 10px;
