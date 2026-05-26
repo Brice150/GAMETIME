@@ -17,10 +17,11 @@ header {
 
 .project-title h1 {
   font-size: 30px;
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: 1px;
   text-transform: uppercase;
   margin: 0;
+  color: var(--title-accent);
 }
 
 .switch-container {
