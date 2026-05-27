@@ -2,32 +2,201 @@
 <html lang="fr">
   <head>
     <meta charset="utf-8" />
-    <title>GAME TIME</title>
+    <title>
+      GAME TIME - Jeu de Réflexion et Quiz Multijoueur | Défis Amusants
+    </title>
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Quand réfléchir devient amusant !" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0f0f1a" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+
+    <!-- SEO Meta Tags -->
+    <meta
+      name="description"
+      content="GAME TIME : Le jeu de réflexion et de quiz multijoueur ultime ! Mettez vos connaissances à l'épreuve, défaites vos amis et montez au classement. Jeux amusants, rapides et educatifs pour tous."
+    />
     <meta
       name="keywords"
-      content="jeu, réflexion, quiz, énigmes, logique, divertissement, éducation, apprentissage, challenge, compétition, jeu de société, jeu en ligne, jeu mobile, jeu de réflexion, jeu éducatif, jeu de logique, jeu de quiz, jeu d'énigmes"
+      content="jeu de réflexion, quiz, énigmes, logique, jeu multijoueur, jeu en ligne, jeu éducatif, défis, compétition, jeu mobile, jeu rapide, challenge, divertissement intelligent"
     />
+    <meta name="author" content="GAME TIME Team" />
+    <meta name="publisher" content="GAME TIME" />
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://gametime.web.app/" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://gametime.web.app/" />
+    <meta
+      property="og:title"
+      content="GAME TIME - Défis de Réflexion Multijoueur"
+    />
+    <meta
+      property="og:description"
+      content="Jouez à des quizz, énigmes et défis de réflexion en ligne. Compétez avec vos amis, remportez des batailles et dominez le classement avec GAME TIME."
+    />
+    <meta
+      property="og:image"
+      content="https://gametime.web.app/assets/images/og-image.png"
+    />
+    <meta property="og:site_name" content="GAME TIME" />
+
+    <!-- Twitter Card -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://gametime.web.app/" />
+    <meta
+      property="twitter:title"
+      content="GAME TIME - Jeu de Réflexion Multijoueur"
+    />
+    <meta
+      property="twitter:description"
+      content="Testez vos connaissances avec GAME TIME ! Quiz, énigmes et défis en ligne multijoueur. Gratuit et accessible depuis n'importe quel appareil."
+    />
+    <meta
+      property="twitter:image"
+      content="https://gametime.web.app/assets/images/og-image.png"
+    />
+
+    <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
+
+    <!-- PWA -->
     <link rel="manifest" href="manifest.webmanifest" />
-    <meta name="theme-color" content="#0f0f1a" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
     <meta name="apple-mobile-web-app-title" content="GAME TIME" />
     <link rel="apple-touch-icon" href="assets/icons/icon-152x152.png" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" />
+
+    <!-- Preconnect to Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Schema.org -->
+    <!-- WebSite -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "@id": "https://gametime.web.app/#website",
+        "url": "https://gametime.web.app/",
+        "name": "GAME TIME",
+        "publisher": {
+          "@id": "https://gametime.web.app/#organization"
+        }
+      }
+    </script>
+
+    <!-- Organization -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "@id": "https://gametime.web.app/#organization",
+        "name": "GAME TIME",
+        "url": "https://gametime.web.app"
+      }
+    </script>
+
+    <!-- SoftwareApplication -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "@id": "https://gametime.web.app/#software",
+        "name": "GAME TIME",
+        "url": "https://gametime.web.app",
+        "logo": "https://gametime.web.app/assets/icons/icon-192x192.png",
+        "image": "https://gametime.web.app/assets/images/og-image.png",
+        "description": "Plateforme de jeux de réflexion et de quiz multijoueur. Participez à des défis amusants, testez vos connaissances et compétez avec d'autres joueurs.",
+        "applicationCategory": "GameApplication",
+        "applicationSubCategory": "TriviaBoardGame",
+        "operatingSystem": "Web Browser",
+        "inLanguage": "fr",
+        "isPartOf": {
+          "@id": "https://gametime.web.app/#website"
+        },
+        "publisher": {
+          "@id": "https://gametime.web.app/#organization"
+        },
+        "mainEntityOfPage": {
+          "@id": "https://gametime.web.app/#software"
+        },
+        "featureList": [
+          "Jeux de réflexion et quiz multijoueur",
+          "Défis en temps réel",
+          "Classement global",
+          "Créateur de salons personnalisés",
+          "Accessibilité mobile"
+        ]
+      }
+    </script>
+
+    <!-- FAQ -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Qu'est-ce que GAME TIME ?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "GAME TIME est une plateforme de jeux de réflexion et de quiz multijoueur en ligne. Participez à des défis amusants, testez vos connaissances et compétez avec d'autres joueurs du monde entier."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Comment jouer à GAME TIME ?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Créez un compte, rejoignez une salle de jeu ou créez votre propre salle. Participez aux défis, répondez aux questions et gagnez des points pour vous classer au sommet du classement."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Puis-je jouer avec mes amis ?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Oui ! Créez une salle privée et invitez vos amis. Vous pouvez compétitionner ensemble dans un environnement convivial ou rejoindre des salons publics pour défier d'autres joueurs."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "GAME TIME est-il gratuit ?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Oui, GAME TIME est gratuit et accessible directement depuis votre navigateur web. Pas d'installation nécessaire, pas de frais cachés."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Sur quels appareils puis-je jouer ?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "GAME TIME est accessible sur ordinateur, tablette et smartphone via n'importe quel navigateur web moderne. Jouez où et quand vous voulez !"
+            }
+          }
+        ]
+      }
+    </script>
+
+    <!-- Styles & Icons -->
     <link
-      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
       rel="stylesheet"
     />
     <link
-      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet"
     />
   </head>

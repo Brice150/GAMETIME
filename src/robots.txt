@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+Allow: /home
+Allow: /welcome
+Allow: /ranking
+
+Disallow: /admin
+Disallow: /admin-room
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /room
+Disallow: /join-room
+
+Sitemap: https://gametime.web.app/sitemap.xml
