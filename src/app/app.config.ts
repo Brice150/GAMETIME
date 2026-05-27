@@ -3,9 +3,11 @@ import { provideHttpClient } from '@angular/common/http';
 import localeFr from '@angular/common/locales/fr';
 import {
   ApplicationConfig,
+  isDevMode,
   LOCALE_ID,
   provideZoneChangeDetection,
 } from '@angular/core';
+import { provideServiceWorker } from '@angular/service-worker';
 import { getAI, GoogleAIBackend } from '@angular/fire/ai';
 import {
   FirebaseApp,
@@ -59,5 +61,9 @@ export const appConfig: ApplicationConfig = {
       provide: GoogleAuthProvider,
       useValue: new GoogleAuthProvider(),
     },
+    provideServiceWorker('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      registrationStrategy: 'registerWhenStable:30000',
+    }),
   ],
 };
