@@ -111,8 +111,7 @@ section h2 {
 }
 
 .welcome-auth {
-  width: 90%;
-  max-width: 820px;
+  width: 450px;
   border-radius: var(--light-radius);
   background-color: var(--background);
   border: 3px solid var(--primary);
@@ -179,32 +178,31 @@ form mat-form-field mat-error span {
 
 .welcome-auth .auth-buttons button {
   cursor: pointer;
-  color: var(--accent);
+  color: var(--secondary);
   padding: 10px 14px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: 10px;
   border-radius: var(--light-radius);
   transition: 0.5s ease;
-  min-width: 230px;
+  width: 310px;
   border: none;
   background-color: var(--primary);
+}
+
+.welcome-auth .auth-buttons button.github {
+  background-color: #24292f;
+  color: var(--primary);
+}
+
+.welcome-auth .auth-buttons button.microsoft {
+  background-color: #ffffff;
 }
 
 .welcome-auth .auth-buttons button:hover {
   background-color: var(--accent);
   color: var(--primary);
-}
-
-.welcome-auth .auth-buttons button.github {
-  background-color: #24292f;
-  color: #f6f8fa;
-}
-
-.welcome-auth .auth-buttons button.github:hover {
-  background-color: #1b1f23;
-  color: #ffffff;
 }
 
 .welcome-auth .auth-buttons button i {
@@ -243,7 +241,14 @@ mat-spinner {
   }
 }
 
-@media screen and (max-width: 400px) {
+@media screen and (max-width: 550px) {
+  .welcome-auth {
+    width: 90%;
+    margin-bottom: 20px;
+  }
+}
+
+@media screen and (max-width: 425px) {
   .features .feature img {
     width: 100%;
   }
