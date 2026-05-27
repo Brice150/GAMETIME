@@ -112,6 +112,15 @@
           </svg>
           <span class="text">Connexion avec GitHub</span>
         </button>
+        <button
+          type="button"
+          title="Continuer en invité"
+          class="guest"
+          (click)="continueAsGuest()"
+        >
+          <i class="bx bxs-user-circle" aria-hidden="true"></i>
+          <span class="text">Continuer en invité</span>
+        </button>
       </div>
     } @else {
       <mat-spinner></mat-spinner>

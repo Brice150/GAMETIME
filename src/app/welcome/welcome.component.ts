@@ -151,7 +151,10 @@ export class WelcomeComponent implements OnInit, OnDestroy, AfterViewInit {
         next: (connectedEmail) => {
           this.loading = false;
           this.userService.clearStoredEmailForSignIn();
-          this.userService.currentUserSig.set({ email: connectedEmail! });
+          this.userService.currentUserSig.set({
+            email: connectedEmail ?? 'Compte invité',
+            isAnonymous: false,
+          });
           this.router.navigate(['/accueil']);
           this.toastrHelper.info('Bienvenue sur Game Time', 'Game Time');
         },
@@ -175,7 +178,10 @@ export class WelcomeComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe({
         next: (email) => {
           this.loading = false;
-          this.userService.currentUserSig.set({ email: email! });
+          this.userService.currentUserSig.set({
+            email: email ?? 'Compte invité',
+            isAnonymous: false,
+          });
           this.router.navigate(['/accueil']);
           this.toastrHelper.info('Bienvenue sur Game Time', 'Game Time');
         },
@@ -202,7 +208,10 @@ export class WelcomeComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe({
         next: (email) => {
           this.loading = false;
-          this.userService.currentUserSig.set({ email: email! });
+          this.userService.currentUserSig.set({
+            email: email ?? 'Compte invité',
+            isAnonymous: false,
+          });
           this.router.navigate(['/accueil']);
           this.toastrHelper.info('Bienvenue sur Game Time', 'Game Time');
         },
@@ -212,6 +221,40 @@ export class WelcomeComponent implements OnInit, OnDestroy, AfterViewInit {
             !error.message.includes('Missing or insufficient permissions.') &&
             !error.message.includes('auth/popup-closed-by-user')
           ) {
+            this.toastrHelper.error(error.message);
+          }
+        },
+      });
+  }
+
+  continueAsGuest(): void {
+    this.loading = true;
+    this.userService
+      .signInAsGuest()
+      .pipe(
+        switchMap((userCredential) =>
+          this.playerService
+            .addPlayer()
+            .pipe(map(() => userCredential.user.isAnonymous)),
+        ),
+        takeUntil(this.destroyed$),
+      )
+      .subscribe({
+        next: (isAnonymous) => {
+          this.loading = false;
+          this.userService.currentUserSig.set({
+            email: 'Compte invité',
+            isAnonymous,
+          });
+          this.router.navigate(['/accueil']);
+          this.toastrHelper.info(
+            'Connecté en invité. Tu pourras lier ton compte plus tard.',
+            'Mode invité',
+          );
+        },
+        error: (error: HttpErrorResponse) => {
+          this.loading = false;
+          if (!error.message.includes('Missing or insufficient permissions.')) {
             this.toastrHelper.error(error.message);
           }
         },

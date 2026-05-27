@@ -1,13 +1,16 @@
 import { inject, Injectable, signal } from '@angular/core';
 import {
   ActionCodeSettings,
+  AuthCredential,
   Auth,
   createUserWithEmailAndPassword,
   GithubAuthProvider,
   GoogleAuthProvider,
   isSignInWithEmailLink,
+  linkWithCredential,
   sendPasswordResetEmail,
   sendSignInLinkToEmail,
+  signInAnonymously,
   signInWithEmailAndPassword,
   signInWithEmailLink,
   signInWithPopup,
@@ -15,7 +18,9 @@ import {
   user,
   UserCredential,
 } from '@angular/fire/auth';
+import { deleteApp, initializeApp } from 'firebase/app';
 import { catchError, from, Observable, throwError } from 'rxjs';
+import { environment } from '../../../environments/environment';
 import { User } from '../interfaces/user';
 
 @Injectable({ providedIn: 'root' })
@@ -96,6 +101,79 @@ export class UserService {
     const provider = new GithubAuthProvider();
     const promise = signInWithPopup(this.auth, provider);
     return from(promise);
+  }
+
+  signInAsGuest(): Observable<UserCredential> {
+    return from(signInAnonymously(this.auth));
+  }
+
+  linkAnonymousAccountWithGoogle(): Observable<UserCredential> {
+    const provider = new GoogleAuthProvider();
+    return this.linkAnonymousAccountWithProviderCredential(provider, 'google');
+  }
+
+  linkAnonymousAccountWithGithub(): Observable<UserCredential> {
+    const provider = new GithubAuthProvider();
+    return this.linkAnonymousAccountWithProviderCredential(provider, 'github');
+  }
+
+  private linkAnonymousAccountWithProviderCredential(
+    provider: GoogleAuthProvider | GithubAuthProvider,
+    providerName: 'google' | 'github',
+  ): Observable<UserCredential> {
+    const currentUser = this.auth.currentUser;
+
+    if (!currentUser) {
+      return throwError(() => new Error('Aucun utilisateur connecté.'));
+    }
+
+    if (!currentUser.isAnonymous) {
+      return throwError(
+        () => new Error('Le compte courant n est pas un compte temporaire.'),
+      );
+    }
+
+    const promise = this.getProviderCredentialFromPopup(provider, providerName)
+      .then((credential) => linkWithCredential(currentUser, credential))
+      .then((userCredential) => {
+        this.currentUserSig.set({
+          email: userCredential.user.email ?? 'Compte invité',
+          isAnonymous: false,
+        });
+
+        return userCredential;
+      });
+
+    return from(promise);
+  }
+
+  private async getProviderCredentialFromPopup(
+    provider: GoogleAuthProvider | GithubAuthProvider,
+    providerName: 'google' | 'github',
+  ): Promise<AuthCredential> {
+    const appName = `gametime-link-${providerName}-${Date.now()}`;
+    const secondaryApp = initializeApp(environment.firebase, appName);
+    const { getAuth } = await import('@angular/fire/auth');
+    const secondaryAuth = getAuth(secondaryApp);
+
+    try {
+      const result = await signInWithPopup(secondaryAuth, provider);
+      const credential =
+        providerName === 'google'
+          ? GoogleAuthProvider.credentialFromResult(result)
+          : GithubAuthProvider.credentialFromResult(result);
+
+      if (!credential) {
+        throw new Error(
+          `Impossible de récupérer le credential ${providerName}.`,
+        );
+      }
+
+      return credential;
+    } finally {
+      await signOut(secondaryAuth).catch(() => undefined);
+      await deleteApp(secondaryApp).catch(() => undefined);
+    }
   }
 
   logout(): Observable<void> {

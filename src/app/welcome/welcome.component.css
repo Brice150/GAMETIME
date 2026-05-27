@@ -133,7 +133,7 @@ section h2 {
 .welcome-auth h3 {
   margin: 0;
   margin-bottom: 12px;
-  color: var(--accent);
+  color: var(--title-accent);
   font-size: 26px;
   font-weight: 500;
 }
@@ -193,6 +193,11 @@ form mat-form-field mat-error span {
 
 .welcome-auth .auth-buttons button.github {
   background-color: #24292f;
+  color: var(--primary);
+}
+
+.welcome-auth .auth-buttons button.guest {
+  background-color: #1f8f6e;
   color: var(--primary);
 }
 

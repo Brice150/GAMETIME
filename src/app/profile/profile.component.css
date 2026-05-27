@@ -9,6 +9,7 @@
 section {
   position: relative;
   margin: 20px 0;
+  margin-bottom: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -25,7 +26,7 @@ section .content {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  width: 70%;
+  width: 100%;
   gap: 20px;
 }
 
@@ -77,6 +78,93 @@ section .button-container button .text {
   font-size: 20px;
   font-weight: 500;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+section .temporary-account-container {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 530px;
+  border-radius: var(--light-radius);
+  background-color: var(--background);
+  border: 3px solid var(--primary);
+  padding: 24px;
+  padding-top: 12px;
+  margin-bottom: 10px;
+  color: var(--primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+section .temporary-account-container h3 {
+  margin: 0;
+  margin-bottom: 12px;
+  color: var(--title-accent);
+  font-size: 26px;
+  font-weight: 500;
+}
+
+section .temporary-account-container p {
+  margin: 0 0 20px 0;
+  color: var(--primary);
+  font-size: 17px;
+  text-align: justify;
+}
+
+section .temporary-account-container .link-buttons {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+section .temporary-account-container .link-buttons button {
+  cursor: pointer;
+  color: var(--secondary);
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-radius: var(--light-radius);
+  transition: 0.5s ease;
+  width: 310px;
+  border: none;
+  background-color: var(--primary);
+}
+
+section .temporary-account-container .link-buttons button.google {
+  background-color: var(--primary);
+}
+
+section .temporary-account-container .link-buttons button.github {
+  background-color: #24292f;
+  color: var(--primary);
+}
+
+section .temporary-account-container .link-buttons button:hover {
+  background-color: var(--accent);
+  color: var(--primary);
+}
+
+section .temporary-account-container .link-buttons button i {
+  font-size: 30px;
+}
+
+section .temporary-account-container .link-buttons button .text {
+  font-size: 20px;
+  font-weight: 500;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+@media screen and (max-width: 425px) {
+  section .temporary-account-container .link-buttons button {
+    width: 100%;
+    min-width: unset;
+  }
 }
 
 mat-spinner {

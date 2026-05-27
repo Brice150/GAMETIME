@@ -5,7 +5,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router, RouterModule } from '@angular/router';
 import { catchError, filter, of, Subject, switchMap, takeUntil } from 'rxjs';
-import { User } from '../core/interfaces/user';
 import { ExcludedQuestionsService } from '../core/services/excluded-questions.service';
 import { PlayerService } from '../core/services/player.service';
 import { ProfileService } from '../core/services/profile.service';
@@ -13,8 +12,6 @@ import { RoomService } from '../core/services/room.service';
 import { UserService } from '../core/services/user.service';
 import { ToastrHelperService } from '../core/services/toastr-helper.service';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
-import { SecurityDialogComponent } from '../shared/components/security-dialog/security-dialog.component';
-import { SecurityComponent } from './security/security.component';
 import { UserComponent } from './user/user.component';
 import { UserDialogComponent } from '../shared/components/user-dialog/user-dialog.component';
 import { Player } from '../core/interfaces/player';
@@ -25,7 +22,6 @@ import { Player } from '../core/interfaces/player';
     CommonModule,
     RouterModule,
     MatProgressSpinnerModule,
-    SecurityComponent,
     UserComponent,
   ],
   templateUrl: './profile.component.html',
@@ -48,36 +44,8 @@ export class ProfileComponent implements OnDestroy {
     this.destroyed$.complete();
   }
 
-  openPasswordDialog(): void {
-    const dialogRef = this.dialog.open(SecurityDialogComponent);
-
-    dialogRef
-      .afterClosed()
-      .pipe(
-        filter((res) => !!res),
-        switchMap((user: User) => {
-          this.loading = true;
-          user.email = this.userService.currentUserSig()?.email!;
-          return this.profileService.updateProfile(user);
-        }),
-        takeUntil(this.destroyed$),
-      )
-      .subscribe({
-        next: () => {
-          this.loading = false;
-          this.toastrHelper.info('Profil modifié', 'Profil');
-        },
-        error: (error: HttpErrorResponse) => {
-          this.loading = false;
-          if (error.message.includes('auth/requires-recent-login')) {
-            this.toastrHelper.error(
-              'Merci de vous déconnecter et de vous reconnecter pour effectuer cette action',
-            );
-          } else {
-            this.toastrHelper.error(error.message);
-          }
-        },
-      });
+  isTemporaryAccount(): boolean {
+    return !!this.userService.auth.currentUser?.isAnonymous;
   }
 
   openUserDialog(): void {
@@ -163,6 +131,52 @@ export class ProfileComponent implements OnDestroy {
               'Merci de vous déconnecter et de vous reconnecter pour effectuer cette action',
             );
           } else {
+            this.toastrHelper.error(error.message);
+          }
+        },
+      });
+  }
+
+  linkTemporaryWithGoogle(): void {
+    this.loading = true;
+    this.userService
+      .linkAnonymousAccountWithGoogle()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: (userCredential) => {
+          this.loading = false;
+          this.userService.currentUserSig.set({
+            email: userCredential.user.email ?? 'Compte invité',
+            isAnonymous: false,
+          });
+          this.toastrHelper.info('Compte lié avec Google.', 'Profil');
+        },
+        error: (error: HttpErrorResponse) => {
+          this.loading = false;
+          if (!error.message.includes('auth/popup-closed-by-user')) {
+            this.toastrHelper.error(error.message);
+          }
+        },
+      });
+  }
+
+  linkTemporaryWithGithub(): void {
+    this.loading = true;
+    this.userService
+      .linkAnonymousAccountWithGithub()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe({
+        next: (userCredential) => {
+          this.loading = false;
+          this.userService.currentUserSig.set({
+            email: userCredential.user.email ?? 'Compte invité',
+            isAnonymous: false,
+          });
+          this.toastrHelper.info('Compte lié avec GitHub.', 'Profil');
+        },
+        error: (error: HttpErrorResponse) => {
+          this.loading = false;
+          if (!error.message.includes('auth/popup-closed-by-user')) {
             this.toastrHelper.error(error.message);
           }
         },
