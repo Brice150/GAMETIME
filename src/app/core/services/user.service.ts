@@ -5,7 +5,6 @@ import {
   createUserWithEmailAndPassword,
   GithubAuthProvider,
   GoogleAuthProvider,
-  OAuthProvider,
   isSignInWithEmailLink,
   sendPasswordResetEmail,
   sendSignInLinkToEmail,
@@ -95,12 +94,6 @@ export class UserService {
 
   signInWithGithub(): Observable<UserCredential> {
     const provider = new GithubAuthProvider();
-    const promise = signInWithPopup(this.auth, provider);
-    return from(promise);
-  }
-
-  signInWithMicrosoft(): Observable<UserCredential> {
-    const provider = new OAuthProvider('microsoft.com');
     const promise = signInWithPopup(this.auth, provider);
     return from(promise);
   }

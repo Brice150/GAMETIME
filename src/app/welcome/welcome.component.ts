@@ -21,11 +21,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router } from '@angular/router';
-import { ToastrHelperService } from '../core/services/toastr-helper.service';
 import { map, Subject, switchMap, takeUntil } from 'rxjs';
-import { PlayerService } from '../core/services/player.service';
-import { UserService } from '../core/services/user.service';
 import { environment } from '../../environments/environment';
+import { PlayerService } from '../core/services/player.service';
+import { ToastrHelperService } from '../core/services/toastr-helper.service';
+import { UserService } from '../core/services/user.service';
 
 @Component({
   selector: 'app-welcome',
@@ -195,33 +195,6 @@ export class WelcomeComponent implements OnInit, OnDestroy, AfterViewInit {
     this.loading = true;
     this.userService
       .signInWithGithub()
-      .pipe(
-        switchMap(() => this.playerService.addPlayer()),
-        takeUntil(this.destroyed$),
-      )
-      .subscribe({
-        next: (email) => {
-          this.loading = false;
-          this.userService.currentUserSig.set({ email: email! });
-          this.router.navigate(['/accueil']);
-          this.toastrHelper.info('Bienvenue sur Game Time', 'Game Time');
-        },
-        error: (error: HttpErrorResponse) => {
-          this.loading = false;
-          if (
-            !error.message.includes('Missing or insufficient permissions.') &&
-            !error.message.includes('auth/popup-closed-by-user')
-          ) {
-            this.toastrHelper.error(error.message);
-          }
-        },
-      });
-  }
-
-  continueWithMicrosoft(): void {
-    this.loading = true;
-    this.userService
-      .signInWithMicrosoft()
       .pipe(
         switchMap(() => this.playerService.addPlayer()),
         takeUntil(this.destroyed$),
