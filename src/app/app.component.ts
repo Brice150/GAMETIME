@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, RouterOutlet } from '@angular/router';
-import { of, Subject, switchMap, takeUntil } from 'rxjs';
+import { of, switchMap } from 'rxjs';
 import { UserService } from './core/services/user.service';
 import { HeaderComponent } from './header/header.component';
 import { PlayerService } from './core/services/player.service';
@@ -14,17 +15,17 @@ import { ToastrHelperService } from './core/services/toastr-helper.service';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit {
   userService = inject(UserService);
   playerService = inject(PlayerService);
   router = inject(Router);
   toastrHelper = inject(ToastrHelperService);
-  destroyed$ = new Subject<void>();
+  destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
     this.userService.user$
       .pipe(
-        takeUntil(this.destroyed$),
+        takeUntilDestroyed(this.destroyRef),
         switchMap((user) => {
           if (user) {
             this.userService.currentUserSig.set({
@@ -51,15 +52,10 @@ export class AppComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy(): void {
-    this.destroyed$.next();
-    this.destroyed$.complete();
-  }
-
   logout(): void {
     this.userService
       .logout()
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
           this.router.navigate(['/']);

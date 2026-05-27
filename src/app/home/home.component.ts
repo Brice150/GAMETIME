@@ -1,13 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, OnDestroy } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterModule } from '@angular/router';
-import { Subject, switchMap, take, takeUntil } from 'rxjs';
+import { switchMap, take } from 'rxjs';
 import { games } from '../../assets/data/games';
 import { Room } from '../core/interfaces/room';
 import { LocalStorageService } from '../core/services/local-storage.service';
@@ -35,21 +36,16 @@ import { JoinRoomComponent } from './join-room/join-room.component';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })
-export class HomeComponent implements OnDestroy {
+export class HomeComponent {
   loading: boolean = false;
   playerService = inject(PlayerService);
   roomService = inject(RoomService);
   toastrHelper = inject(ToastrHelperService);
   localStorageService = inject(LocalStorageService);
-  destroyed$ = new Subject<void>();
+  destroyRef = inject(DestroyRef);
   router = inject(Router);
   games = games;
   gameSelected: string = 'general';
-
-  ngOnDestroy(): void {
-    this.destroyed$.next();
-    this.destroyed$.complete();
-  }
 
   play(): void {
     this.loading = true;
@@ -70,7 +66,7 @@ export class HomeComponent implements OnDestroy {
     this.roomService
       .deleteUserRooms()
       .pipe(
-        takeUntil(this.destroyed$),
+        takeUntilDestroyed(this.destroyRef),
         switchMap(() => this.roomService.addRoom(newRoom as Room)),
       )
       .subscribe({

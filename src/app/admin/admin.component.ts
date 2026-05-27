@@ -1,13 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
-import { filter, map, of, Subject, switchMap, takeUntil } from 'rxjs';
+import { filter, map, of, switchMap } from 'rxjs';
 import { gameMap, games } from '../../assets/data/games';
 import { Player } from '../core/interfaces/player';
 import { Room } from '../core/interfaces/room';
@@ -37,7 +38,7 @@ import { RoomsCardComponent } from './rooms-card/rooms-card.component';
 export class AdminComponent implements OnInit {
   roomService = inject(RoomService);
   playerService = inject(PlayerService);
-  destroyed$ = new Subject<void>();
+  destroyRef = inject(DestroyRef);
   toastrHelper = inject(ToastrHelperService);
   dialog = inject(MatDialog);
   rooms: Room[] = [];
@@ -56,7 +57,7 @@ export class AdminComponent implements OnInit {
     this.roomService
       .getRooms()
       .pipe(
-        takeUntil(this.destroyed$),
+        takeUntilDestroyed(this.destroyRef),
         switchMap((rooms) =>
           this.playerService.getAllPlayers().pipe(
             filter((players) => players.length > 1),
@@ -91,11 +92,6 @@ export class AdminComponent implements OnInit {
       });
   }
 
-  ngOnDestroy(): void {
-    this.destroyed$.next();
-    this.destroyed$.complete();
-  }
-
   deleteRoom(roomId: string): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       data: 'supprimer cette room',
@@ -120,7 +116,7 @@ export class AdminComponent implements OnInit {
 
           return this.playerService.updatePlayers(this.playersByRoom[roomId]);
         }),
-        takeUntil(this.destroyed$),
+        takeUntilDestroyed(this.destroyRef),
         switchMap(() => this.roomService.deleteRoom(roomId)),
       )
       .subscribe({
@@ -156,7 +152,7 @@ export class AdminComponent implements OnInit {
     this.roomService
       .deleteUserRooms()
       .pipe(
-        takeUntil(this.destroyed$),
+        takeUntilDestroyed(this.destroyRef),
         switchMap(() => this.roomService.addRoom(newRoom as Room)),
       )
       .subscribe({
@@ -185,7 +181,7 @@ export class AdminComponent implements OnInit {
         switchMap((player: Player) => {
           return this.playerService.updatePlayer(player);
         }),
-        takeUntil(this.destroyed$),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
         next: () => {

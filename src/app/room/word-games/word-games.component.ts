@@ -1,15 +1,15 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
+  DestroyRef,
   EventEmitter,
   inject,
   input,
-  OnDestroy,
   OnInit,
   Output,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { Subject, takeUntil } from 'rxjs';
 import { gameMap } from '../../../assets/data/games';
 import { Player } from '../../core/interfaces/player';
 import { Room } from '../../core/interfaces/room';
@@ -30,7 +30,7 @@ import { WordInputComponent } from './word-input/word-input.component';
   templateUrl: './word-games.component.html',
   styleUrl: './word-games.component.css',
 })
-export class WordGamesComponent implements OnInit, OnDestroy {
+export class WordGamesComponent implements OnInit {
   response!: string;
   imageUrl: string = '';
   motusGameKey = gameMap['motus'].key;
@@ -41,16 +41,11 @@ export class WordGamesComponent implements OnInit, OnDestroy {
   loading = false;
   readonly room = input.required<Room>();
   readonly player = input.required<Player>();
-  destroyed$ = new Subject<void>();
+  destroyRef = inject(DestroyRef);
   @Output() finishedStepEvent = new EventEmitter<boolean>();
 
   ngOnInit(): void {
     this.new();
-  }
-
-  ngOnDestroy(): void {
-    this.destroyed$.next();
-    this.destroyed$.complete();
   }
 
   handleEvent(stepWon: boolean): void {
@@ -72,7 +67,7 @@ export class WordGamesComponent implements OnInit, OnDestroy {
       this.loading = true;
       this.imageService
         .getDrapeauImage(this.room().countries[index || 0].code)
-        .pipe(takeUntil(this.destroyed$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: (blob) => {
             this.imageUrl = URL.createObjectURL(blob);
@@ -84,7 +79,7 @@ export class WordGamesComponent implements OnInit, OnDestroy {
       this.loading = true;
       this.imageService
         .getLogoMarque(this.room().brands[index || 0].website)
-        .pipe(takeUntil(this.destroyed$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: (blob) => {
             this.imageUrl = URL.createObjectURL(blob);

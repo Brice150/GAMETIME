@@ -1,10 +1,11 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
-import { filter, Observable, of, Subject, switchMap, takeUntil } from 'rxjs';
+import { filter, Observable, of, switchMap } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { gameMap } from '../../assets/data/games';
 import { ExcludedUserQuestions } from '../core/interfaces/excluded-user-questions';
@@ -44,7 +45,7 @@ import { AdminResultsDetailsComponent } from './admin-results-details/admin-resu
   styleUrl: './admin-room.component.css',
   providers: [DatePipe],
 })
-export class AdminRoomComponent implements OnInit, OnDestroy {
+export class AdminRoomComponent implements OnInit {
   loading: boolean = true;
   room: Room = {} as Room;
   players: Player[] = [];
@@ -57,7 +58,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
   aiService = inject(AiService);
   dialog = inject(MatDialog);
   router = inject(Router);
-  destroyed$ = new Subject<void>();
+  destroyRef = inject(DestroyRef);
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
   marquesGameKey = gameMap['marques'].key;
@@ -68,11 +69,11 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.activatedRoute.params
       .pipe(
-        takeUntil(this.destroyed$),
+        takeUntilDestroyed(this.destroyRef),
         switchMap((params) =>
           this.roomService
             .getRoom(params['id'])
-            .pipe(takeUntil(this.destroyed$)),
+            .pipe(takeUntilDestroyed(this.destroyRef)),
         ),
         switchMap((room) => {
           this.room = room;
@@ -81,7 +82,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
           }
           return this.playerService
             .getPlayers(room.playerIds)
-            .pipe(takeUntil(this.destroyed$));
+            .pipe(takeUntilDestroyed(this.destroyRef));
         }),
       )
       .subscribe({
@@ -119,7 +120,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
 
     this.excludedQuestionsService
       .getExcludedQuestions()
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (excludedUserQuestions) => {
           this.excludedUserQuestions = excludedUserQuestions[0];
@@ -130,11 +131,6 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
           }
         },
       });
-  }
-
-  ngOnDestroy(): void {
-    this.destroyed$.next();
-    this.destroyed$.complete();
   }
 
   toJsDate(date: any): Date {
@@ -167,7 +163,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
     this.roomService
       .updateRoom(this.room)
       .pipe(
-        takeUntil(this.destroyed$),
+        takeUntilDestroyed(this.destroyRef),
         switchMap(() => {
           this.players.forEach((player) => {
             player.finishDate = null;
@@ -256,7 +252,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
 
     this.roomService
       .updateRoom(this.room)
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.loading = false;
       });
@@ -279,7 +275,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
 
     this.playerService
       .updatePlayers(this.players)
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
           this.loading = false;
@@ -317,7 +313,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
 
           return this.playerService.updatePlayers(this.players);
         }),
-        takeUntil(this.destroyed$),
+        takeUntilDestroyed(this.destroyRef),
         switchMap(() => this.roomService.deleteRoom(this.room.id!)),
       )
       .subscribe({
@@ -360,7 +356,7 @@ export class AdminRoomComponent implements OnInit, OnDestroy {
         !this.room.isReadyNotificationActivated;
       this.roomService
         .updateRoom(this.room)
-        .pipe(takeUntil(this.destroyed$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(() => {
           if (playerNotReady) {
             this.toastrHelper.info(

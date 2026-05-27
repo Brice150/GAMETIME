@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, OnDestroy } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router, RouterModule } from '@angular/router';
-import { catchError, filter, of, Subject, switchMap, takeUntil } from 'rxjs';
+import { catchError, filter, of, switchMap } from 'rxjs';
 import { ExcludedQuestionsService } from '../core/services/excluded-questions.service';
 import { PlayerService } from '../core/services/player.service';
 import { ProfileService } from '../core/services/profile.service';
@@ -27,7 +28,7 @@ import { Player } from '../core/interfaces/player';
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
 })
-export class ProfileComponent implements OnDestroy {
+export class ProfileComponent {
   toastrHelper = inject(ToastrHelperService);
   profileService = inject(ProfileService);
   userService = inject(UserService);
@@ -36,13 +37,8 @@ export class ProfileComponent implements OnDestroy {
   excludedQuestionsService = inject(ExcludedQuestionsService);
   dialog = inject(MatDialog);
   router = inject(Router);
-  destroyed$ = new Subject<void>();
+  destroyRef = inject(DestroyRef);
   loading: boolean = false;
-
-  ngOnDestroy(): void {
-    this.destroyed$.next();
-    this.destroyed$.complete();
-  }
 
   isTemporaryAccount(): boolean {
     return !!this.userService.auth.currentUser?.isAnonymous;
@@ -65,7 +61,7 @@ export class ProfileComponent implements OnDestroy {
             this.playerService.currentPlayerSig()!,
           );
         }),
-        takeUntil(this.destroyed$),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
         next: () => {
@@ -116,7 +112,7 @@ export class ProfileComponent implements OnDestroy {
             }),
           ),
         ),
-        takeUntil(this.destroyed$),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
         next: () => {
@@ -141,7 +137,7 @@ export class ProfileComponent implements OnDestroy {
     this.loading = true;
     this.userService
       .linkAnonymousAccountWithGoogle()
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (userCredential) => {
           this.loading = false;
@@ -164,7 +160,7 @@ export class ProfileComponent implements OnDestroy {
     this.loading = true;
     this.userService
       .linkAnonymousAccountWithGithub()
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (userCredential) => {
           this.loading = false;

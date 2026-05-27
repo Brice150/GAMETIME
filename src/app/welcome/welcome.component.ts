@@ -3,15 +3,16 @@ import { HttpErrorResponse } from '@angular/common/http';
 import {
   AfterViewInit,
   Component,
+  DestroyRef,
   ElementRef,
   inject,
-  OnDestroy,
   QueryList,
   ViewChildren,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router } from '@angular/router';
-import { map, Subject, switchMap, takeUntil } from 'rxjs';
+import { map, switchMap } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { PlayerService } from '../core/services/player.service';
 import { ToastrHelperService } from '../core/services/toastr-helper.service';
@@ -23,20 +24,15 @@ import { UserService } from '../core/services/user.service';
   templateUrl: './welcome.component.html',
   styleUrl: './welcome.component.css',
 })
-export class WelcomeComponent implements OnDestroy, AfterViewInit {
+export class WelcomeComponent implements AfterViewInit {
   imagePath: string = environment.imagePath;
   userService = inject(UserService);
   playerService = inject(PlayerService);
   router = inject(Router);
   toastrHelper = inject(ToastrHelperService);
-  destroyed$ = new Subject<void>();
+  destroyRef = inject(DestroyRef);
   loading: boolean = false;
   @ViewChildren('feature') features!: QueryList<ElementRef>;
-
-  ngOnDestroy(): void {
-    this.destroyed$.next();
-    this.destroyed$.complete();
-  }
 
   ngAfterViewInit(): void {
     const observer = new IntersectionObserver(
@@ -65,7 +61,7 @@ export class WelcomeComponent implements OnDestroy, AfterViewInit {
       .signInWithGoogle()
       .pipe(
         switchMap(() => this.playerService.addPlayer()),
-        takeUntil(this.destroyed$),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
         next: (email) => {
@@ -95,7 +91,7 @@ export class WelcomeComponent implements OnDestroy, AfterViewInit {
       .signInWithGithub()
       .pipe(
         switchMap(() => this.playerService.addPlayer()),
-        takeUntil(this.destroyed$),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
         next: (email) => {
@@ -129,7 +125,7 @@ export class WelcomeComponent implements OnDestroy, AfterViewInit {
             .addPlayer()
             .pipe(map(() => userCredential.user.isAnonymous)),
         ),
-        takeUntil(this.destroyed$),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
         next: (isAnonymous) => {

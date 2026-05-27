@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
-import { Subject, takeUntil } from 'rxjs';
 import { games } from '../../assets/data/games';
 import { Player } from '../core/interfaces/player';
 import { PlayerService } from '../core/services/player.service';
@@ -31,10 +31,10 @@ import { TotalMedalsNumberPipe } from '../shared/pipes/total-medals-number.pipe'
   templateUrl: './ranking.component.html',
   styleUrl: './ranking.component.css',
 })
-export class RankingComponent implements OnInit, OnDestroy {
+export class RankingComponent implements OnInit {
   playerService = inject(PlayerService);
   toastrHelper = inject(ToastrHelperService);
-  destroyed$ = new Subject<void>();
+  destroyRef = inject(DestroyRef);
   loading: boolean = true;
   players: Player[] = [];
   sortedPlayers: Player[] = [];
@@ -45,7 +45,7 @@ export class RankingComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.playerService
       .getAllPlayers()
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (players) => {
           this.players = players;
@@ -59,11 +59,6 @@ export class RankingComponent implements OnInit, OnDestroy {
           }
         },
       });
-  }
-
-  ngOnDestroy(): void {
-    this.destroyed$.next();
-    this.destroyed$.complete();
   }
 
   sortPlayers(): void {

@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
-import { Subject, takeUntil } from 'rxjs';
 import { gameMap, games } from '../../assets/data/games';
 import { goals } from '../../assets/data/goals';
 import { Goal } from '../core/interfaces/goal';
@@ -28,11 +28,11 @@ import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
   templateUrl: './success.component.html',
   styleUrl: './success.component.css',
 })
-export class SuccessComponent implements OnInit, OnDestroy {
+export class SuccessComponent implements OnInit {
   playerService = inject(PlayerService);
   toastrHelper = inject(ToastrHelperService);
   medalsNumberPipe = inject(MedalsNumberPipe);
-  destroyed$ = new Subject<void>();
+  destroyRef = inject(DestroyRef);
   loading: boolean = true;
   games = games;
   motusGameKey = gameMap['motus'].key;
@@ -58,23 +58,20 @@ export class SuccessComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.playerService.playerReady$.pipe(takeUntil(this.destroyed$)).subscribe({
-      next: () => {
-        this.getMedalsNumber();
-        this.loading = false;
-      },
-      error: (error: HttpErrorResponse) => {
-        this.loading = false;
-        if (!error.message.includes('Missing or insufficient permissions.')) {
-          this.toastrHelper.error(error.message);
-        }
-      },
-    });
-  }
-
-  ngOnDestroy(): void {
-    this.destroyed$.next();
-    this.destroyed$.complete();
+    this.playerService.playerReady$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.getMedalsNumber();
+          this.loading = false;
+        },
+        error: (error: HttpErrorResponse) => {
+          this.loading = false;
+          if (!error.message.includes('Missing or insufficient permissions.')) {
+            this.toastrHelper.error(error.message);
+          }
+        },
+      });
   }
 
   getMedalsNumber(): void {
@@ -142,7 +139,7 @@ export class SuccessComponent implements OnInit, OnDestroy {
 
     this.playerService
       .updatePlayer(this.playerService.currentPlayerSig()!)
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
           this.getMedalsNumber();

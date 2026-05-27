@@ -1,19 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Timestamp } from '@angular/fire/firestore';
 import { MatDialog } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
-import {
-  filter,
-  map,
-  Observable,
-  of,
-  Subject,
-  switchMap,
-  takeUntil,
-} from 'rxjs';
+import { filter, map, Observable, of, switchMap } from 'rxjs';
 import { gameMap } from '../../assets/data/games';
 import { goals } from '../../assets/data/goals';
 import { ExcludedUserQuestions } from '../core/interfaces/excluded-user-questions';
@@ -53,7 +52,7 @@ import { WordGamesComponent } from './word-games/word-games.component';
   templateUrl: './room.component.html',
   styleUrl: './room.component.css',
 })
-export class RoomComponent implements OnInit, OnDestroy {
+export class RoomComponent implements OnInit {
   roomService = inject(RoomService);
   playerService = inject(PlayerService);
   excludedQuestionsService = inject(ExcludedQuestionsService);
@@ -63,7 +62,7 @@ export class RoomComponent implements OnInit, OnDestroy {
   localStorageService = inject(LocalStorageService);
   aiService = inject(AiService);
   dialog = inject(MatDialog);
-  destroyed$ = new Subject<void>();
+  destroyRef = inject(DestroyRef);
   loading: boolean = true;
   room: Room = {} as Room;
   players: Player[] = [];
@@ -85,11 +84,11 @@ export class RoomComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.activatedRoute.params
       .pipe(
-        takeUntil(this.destroyed$),
+        takeUntilDestroyed(this.destroyRef),
         switchMap((params) =>
           this.roomService
             .getRoom(params['id'])
-            .pipe(takeUntil(this.destroyed$)),
+            .pipe(takeUntilDestroyed(this.destroyRef)),
         ),
         switchMap((room: Room | null) => {
           if (!room) {
@@ -171,7 +170,7 @@ export class RoomComponent implements OnInit, OnDestroy {
 
             this.roomService
               .updateRoom(this.room)
-              .pipe(takeUntil(this.destroyed$))
+              .pipe(takeUntilDestroyed(this.destroyRef))
               .subscribe({
                 next: () => {
                   this.loading = false;
@@ -203,7 +202,7 @@ export class RoomComponent implements OnInit, OnDestroy {
           }
           return this.playerService
             .getPlayers(room.playerIds)
-            .pipe(takeUntil(this.destroyed$));
+            .pipe(takeUntilDestroyed(this.destroyRef));
         }),
       )
       .subscribe({
@@ -258,7 +257,7 @@ export class RoomComponent implements OnInit, OnDestroy {
 
     this.excludedQuestionsService
       .getExcludedQuestions()
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (excludedUserQuestions) => {
           this.excludedUserQuestions = excludedUserQuestions[0];
@@ -273,11 +272,6 @@ export class RoomComponent implements OnInit, OnDestroy {
 
   toJsDate(date: any): Date {
     return typeof date?.toDate === 'function' ? date.toDate() : new Date(date);
-  }
-
-  ngOnDestroy(): void {
-    this.destroyed$.next();
-    this.destroyed$.complete();
   }
 
   updatePlayerGame(stepWon: boolean): void {
@@ -309,7 +303,7 @@ export class RoomComponent implements OnInit, OnDestroy {
 
     this.playerService
       .updatePlayer(this.playerService.currentPlayerSig()!)
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
           this.handlePlayerNextAction(stepWon);
@@ -372,7 +366,7 @@ export class RoomComponent implements OnInit, OnDestroy {
 
             return this.playerService.updatePlayers(this.players);
           }),
-          takeUntil(this.destroyed$),
+          takeUntilDestroyed(this.destroyRef),
           switchMap(() => this.roomService.deleteRoom(this.room.id!)),
         )
         .subscribe({
@@ -412,7 +406,7 @@ export class RoomComponent implements OnInit, OnDestroy {
 
             return this.roomService.updateRoom(this.room);
           }),
-          takeUntil(this.destroyed$),
+          takeUntilDestroyed(this.destroyRef),
           switchMap(() => {
             if (!this.playerService.currentPlayerSig()) {
               return of(undefined);
@@ -477,7 +471,7 @@ export class RoomComponent implements OnInit, OnDestroy {
 
       this.playerService
         .updatePlayer(this.playerService.currentPlayerSig()!)
-        .pipe(takeUntil(this.destroyed$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: () => {
             this.isResultPageActive = true;
@@ -511,7 +505,7 @@ export class RoomComponent implements OnInit, OnDestroy {
     this.roomService
       .updateRoom(this.room)
       .pipe(
-        takeUntil(this.destroyed$),
+        takeUntilDestroyed(this.destroyRef),
         switchMap(() => {
           this.players.forEach((player) => {
             player.finishDate = null;
@@ -615,7 +609,7 @@ export class RoomComponent implements OnInit, OnDestroy {
 
     this.roomService
       .updateRoom(this.room)
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.loading = false;
       });
@@ -677,7 +671,7 @@ export class RoomComponent implements OnInit, OnDestroy {
         !this.room.isReadyNotificationActivated;
       this.roomService
         .updateRoom(this.room)
-        .pipe(takeUntil(this.destroyed$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(() => {
           if (playerNotReady) {
             this.toastrHelper.info(
