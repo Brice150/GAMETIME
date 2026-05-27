@@ -3,6 +3,7 @@ import {
   ActionCodeSettings,
   Auth,
   createUserWithEmailAndPassword,
+  GithubAuthProvider,
   GoogleAuthProvider,
   isSignInWithEmailLink,
   sendPasswordResetEmail,
@@ -87,6 +88,12 @@ export class UserService {
 
   signInWithGoogle(): Observable<UserCredential> {
     const provider = new GoogleAuthProvider();
+    const promise = signInWithPopup(this.auth, provider);
+    return from(promise);
+  }
+
+  signInWithGithub(): Observable<UserCredential> {
+    const provider = new GithubAuthProvider();
     const promise = signInWithPopup(this.auth, provider);
     return from(promise);
   }

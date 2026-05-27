@@ -191,6 +191,16 @@ form mat-form-field mat-error span {
   color: var(--primary);
 }
 
+.welcome-auth .auth-buttons button.github {
+  background-color: #24292f;
+  color: #f6f8fa;
+}
+
+.welcome-auth .auth-buttons button.github:hover {
+  background-color: #1b1f23;
+  color: #ffffff;
+}
+
 .welcome-auth .auth-buttons button i {
   font-size: 30px;
 }
