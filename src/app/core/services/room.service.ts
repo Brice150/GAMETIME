@@ -21,10 +21,10 @@ import {
   switchMap,
   take,
 } from 'rxjs';
-import { brands } from 'src/assets/data/brands';
-import { countries } from 'src/assets/data/countries';
-import { gameMap } from 'src/assets/data/games';
-import { words } from 'src/assets/data/words';
+import { brands } from '../../../assets/data/brands';
+import { countries } from '../../../assets/data/countries';
+import { gameMap } from '../../../assets/data/games';
+import { words } from '../../../assets/data/words';
 import { BrandCategory } from '../enums/brand-category.enum';
 import { Continent } from '../enums/continent.enum';
 import { Brand } from '../interfaces/brand';
@@ -60,7 +60,7 @@ export class RoomService {
   getRoomsByCode(roomCode: string): Observable<Room[]> {
     const roomsCollection = query(
       collection(this.firestore, 'rooms'),
-      where('roomCode', '==', roomCode)
+      where('roomCode', '==', roomCode),
     );
     return collectionData(roomsCollection, { idField: 'id' }) as Observable<
       Room[]
@@ -90,7 +90,7 @@ export class RoomService {
   deleteUserRooms(): Observable<void> {
     const roomsQuery = query(
       this.roomsCollection,
-      where('userId', '==', this.userService.auth.currentUser?.uid)
+      where('userId', '==', this.userService.auth.currentUser?.uid),
     );
 
     return collectionData(roomsQuery, { idField: 'id' }).pipe(
@@ -107,7 +107,7 @@ export class RoomService {
 
         return combineLatest(deleteRequests);
       }),
-      map(() => undefined)
+      map(() => undefined),
     );
   }
 
@@ -128,18 +128,18 @@ export class RoomService {
     startWordLength: number,
     countries: Country[],
     brands: Brand[],
-    responses: string[]
+    responses: string[],
   ): void {
     if (gameSelected === this.drapeauxGameKey) {
       const generatedCountries = this.generateCountries(
         stepsNumber,
-        categoryFilter
+        categoryFilter,
       );
       countries.splice(0, countries.length, ...generatedCountries);
       responses.splice(
         0,
         responses.length,
-        ...generatedCountries.map((country) => country.name)
+        ...generatedCountries.map((country) => country.name),
       );
     } else if (gameSelected === this.marquesGameKey) {
       const generatedBrands = this.generateBrands(stepsNumber, categoryFilter);
@@ -147,13 +147,13 @@ export class RoomService {
       responses.splice(
         0,
         responses.length,
-        ...generatedBrands.map((brand) => brand.name)
+        ...generatedBrands.map((brand) => brand.name),
       );
     } else if (gameSelected === this.motusGameKey) {
       const generatedWords = this.generateMotusWords(
         stepsNumber,
         isWordLengthIncreasing,
-        startWordLength
+        startWordLength,
       );
       responses.splice(0, responses.length, ...generatedWords);
     }
@@ -162,7 +162,7 @@ export class RoomService {
   generateMotusWords(
     stepsNumber: number,
     isWordLengthIncreasing: boolean,
-    startWordLength: number
+    startWordLength: number,
   ): string[] {
     const wordsToGenerate: string[] = new Array();
 
@@ -199,7 +199,7 @@ export class RoomService {
       stepsNumber,
       continentFilter === Continent.Monde ? null : continentFilter,
       (country, continent) => country.continent === continent,
-      (country) => country.name
+      (country) => country.name,
     );
   }
 
@@ -209,7 +209,7 @@ export class RoomService {
       stepsNumber,
       categoryFilter === BrandCategory.Tout ? null : categoryFilter,
       (brand, category) => brand.category === category,
-      (brand) => brand.name
+      (brand) => brand.name,
     );
   }
 
@@ -218,7 +218,7 @@ export class RoomService {
     stepsNumber: number,
     filterValue: any,
     filterFn: (item: T, filterValue: any) => boolean,
-    getNameFn: (item: T) => string
+    getNameFn: (item: T) => string,
   ): T[] {
     const generated: T[] = [];
     const usedNames = new Set<string>();

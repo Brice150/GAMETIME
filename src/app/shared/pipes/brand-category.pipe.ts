@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { BrandCategory } from 'src/app/core/enums/brand-category.enum';
+import { BrandCategory } from '../../core/enums/brand-category.enum';
 
 @Pipe({
   name: 'brandCategory',

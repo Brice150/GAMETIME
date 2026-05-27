@@ -10,10 +10,10 @@ import {
 } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Subject, takeUntil } from 'rxjs';
-import { Player } from 'src/app/core/interfaces/player';
-import { Room } from 'src/app/core/interfaces/room';
-import { ImageService } from 'src/app/core/services/image.service';
-import { gameMap } from 'src/assets/data/games';
+import { gameMap } from '../../../assets/data/games';
+import { Player } from '../../core/interfaces/player';
+import { Room } from '../../core/interfaces/room';
+import { ImageService } from '../../core/services/image.service';
 import { BrandCategoryPipe } from '../../shared/pipes/brand-category.pipe';
 import { ContinentPipe } from '../../shared/pipes/continent.pipe';
 import { WordInputComponent } from './word-input/word-input.component';

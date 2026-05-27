@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@angular/core';
 import { AI, GenerativeModel, getGenerativeModel } from 'firebase/ai';
 import { from, Observable } from 'rxjs';
-import { promptPrefix } from 'src/assets/data/prompt-prefix';
-import { promptRandomPrefix } from 'src/assets/data/prompt-random-prefix';
-import { themes } from 'src/assets/data/themes';
+import { promptPrefix } from '../../../assets/data/prompt-prefix';
+import { promptRandomPrefix } from '../../../assets/data/prompt-random-prefix';
+import { themes } from '../../../assets/data/themes';
 import { Difficulty } from '../enums/difficulty.enum';
 import { AiResponse } from '../interfaces/ai-response';
 import { ExcludedUserQuestions } from '../interfaces/excluded-user-questions';
@@ -24,7 +24,7 @@ export class AiService {
 
   generate(
     room: Room,
-    excludedUserQuestions: ExcludedUserQuestions
+    excludedUserQuestions: ExcludedUserQuestions,
   ): Observable<string> {
     const run = () =>
       this.model
@@ -35,13 +35,13 @@ export class AiService {
       run().catch((err) => {
         if (
           err.message?.includes(
-            'Gemini Developer API is overloaded. Please try again later.'
+            'Gemini Developer API is overloaded. Please try again later.',
           ) &&
           attempt < 3
         ) {
           const delay = 10_000;
           return new Promise((resolve) =>
-            setTimeout(() => resolve(withRetry(attempt + 1)), delay)
+            setTimeout(() => resolve(withRetry(attempt + 1)), delay),
           );
         }
         throw err;
@@ -52,7 +52,7 @@ export class AiService {
 
   createPrompt(
     room: Room,
-    excludedUserQuestions: ExcludedUserQuestions
+    excludedUserQuestions: ExcludedUserQuestions,
   ): string {
     const stepsNumber = room.stepsNumber?.toString() || '3';
     const difficultyFilter = Difficulty[room.difficultyFilter] ?? Difficulty[2];
@@ -67,7 +67,7 @@ export class AiService {
       promptToUse = promptRandomPrefix;
 
       let availableThemes = themes.filter(
-        (theme) => theme.key !== themes[0].key
+        (theme) => theme.key !== themes[0].key,
       );
 
       availableThemes = availableThemes.sort(() => Math.random() - 0.5);
@@ -87,7 +87,7 @@ export class AiService {
 
     categoriesList.forEach((category) => {
       const themeForRoom = excludedUserQuestions?.themes?.find(
-        (t) => t.categoryFilter.toString() === category
+        (t) => t.categoryFilter.toString() === category,
       );
       if (themeForRoom && themeForRoom.descriptions.length > 0) {
         excludedDescriptions.push(...themeForRoom.descriptions);
@@ -104,9 +104,9 @@ export class AiService {
       (_, prefix) =>
         room.categoryFilter.toString() === themes[0].key
           ? `${prefix}\n[stepsNumber] = ${stepsNumber}\n[difficultyFilter] = ${difficultyFilter}\n[categoriesList] = ${JSON.stringify(
-              categoriesList
+              categoriesList,
             )}\n[excludedQuestionDescriptions] =${excludedDescriptionsString}`
-          : `${prefix}\n[stepsNumber] = ${stepsNumber}\n[difficultyFilter] = ${difficultyFilter}\n[categoryFilter] = ${categoriesList[0]}\n[excludedQuestionDescriptions] =${excludedDescriptionsString}`
+          : `${prefix}\n[stepsNumber] = ${stepsNumber}\n[difficultyFilter] = ${difficultyFilter}\n[categoryFilter] = ${categoriesList[0]}\n[excludedQuestionDescriptions] =${excludedDescriptionsString}`,
     );
 
     return finalPrompt;

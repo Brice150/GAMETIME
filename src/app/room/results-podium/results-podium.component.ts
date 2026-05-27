@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, input, Output } from '@angular/core';
-import { Player } from 'src/app/core/interfaces/player';
-import { Room } from 'src/app/core/interfaces/room';
-import { DurationBetweenDatesPipe } from 'src/app/shared/pipes/duration.pipe';
+import { Player } from '../../core/interfaces/player';
+import { Room } from '../../core/interfaces/room';
+import { DurationBetweenDatesPipe } from '../../shared/pipes/duration.pipe';
 
 @Component({
   selector: 'app-results-podium',

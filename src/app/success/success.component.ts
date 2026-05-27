@@ -6,13 +6,13 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
-import { ToastrHelperService } from '../core/services/toastr-helper.service';
 import { Subject, takeUntil } from 'rxjs';
-import { gameMap, games } from 'src/assets/data/games';
-import { goals } from 'src/assets/data/goals';
-import { PlayerService } from '../core/services/player.service';
-import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
+import { gameMap, games } from '../../assets/data/games';
+import { goals } from '../../assets/data/goals';
 import { Goal } from '../core/interfaces/goal';
+import { PlayerService } from '../core/services/player.service';
+import { ToastrHelperService } from '../core/services/toastr-helper.service';
+import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
 
 @Component({
   selector: 'app-success',

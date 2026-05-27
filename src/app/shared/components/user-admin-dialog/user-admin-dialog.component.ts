@@ -12,10 +12,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { Player } from 'src/app/core/interfaces/player';
-import { Stat } from 'src/app/core/interfaces/stat';
-import { animalsWithEmojis } from 'src/assets/data/animals';
-import { gameMap } from 'src/assets/data/games';
+import { animalsWithEmojis } from '../../../../assets/data/animals';
+import { gameMap } from '../../../../assets/data/games';
+import { Player } from '../../../core/interfaces/player';
+import { Stat } from '../../../core/interfaces/stat';
 
 @Component({
   selector: 'app-admin-user-dialog',
@@ -43,7 +43,7 @@ export class UserAdminDialogComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<UserAdminDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: Player
+    @Inject(MAT_DIALOG_DATA) public data: Player,
   ) {}
 
   ngOnInit(): void {
@@ -63,7 +63,7 @@ export class UserAdminDialogComponent implements OnInit {
       animal: [this.player?.animal, [Validators.required]],
       drapeauxMedalsNumber: [
         this.player?.stats.find(
-          (stat) => stat.gameName === this.drapeauxGameKey
+          (stat) => stat.gameName === this.drapeauxGameKey,
         )?.medalsNumber,
         [Validators.required, Validators.min(0), Validators.max(99999)],
       ],
@@ -96,19 +96,19 @@ export class UserAdminDialogComponent implements OnInit {
 
       this.updateOrCreateStat(
         this.drapeauxGameKey,
-        this.userForm.value.drapeauxMedalsNumber
+        this.userForm.value.drapeauxMedalsNumber,
       );
       this.updateOrCreateStat(
         this.motusGameKey,
-        this.userForm.value.motusMedalsNumber
+        this.userForm.value.motusMedalsNumber,
       );
       this.updateOrCreateStat(
         this.marquesGameKey,
-        this.userForm.value.marquesMedalsNumber
+        this.userForm.value.marquesMedalsNumber,
       );
       this.updateOrCreateStat(
         this.quizGameKey,
-        this.userForm.value.quizMedalsNumber
+        this.userForm.value.quizMedalsNumber,
       );
 
       this.dialogRef.close(this.player);

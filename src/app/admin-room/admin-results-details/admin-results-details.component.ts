@@ -5,8 +5,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { Player } from 'src/app/core/interfaces/player';
-import { Room } from 'src/app/core/interfaces/room';
+import { Player } from '../../core/interfaces/player';
+import { Room } from '../../core/interfaces/room';
 
 @Component({
   selector: 'app-admin-results-details',

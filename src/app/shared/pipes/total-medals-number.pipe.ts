@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Player } from 'src/app/core/interfaces/player';
+import { Player } from '../../core/interfaces/player';
 
 @Pipe({
   name: 'totalMedalsNumber',
@@ -13,7 +13,7 @@ export class TotalMedalsNumberPipe implements PipeTransform {
 
     return player.stats.reduce(
       (sum, stat) => sum + (stat.medalsNumber ?? 0),
-      0
+      0,
     );
   }
 }

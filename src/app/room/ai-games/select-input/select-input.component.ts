@@ -9,7 +9,7 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core';
-import { Room } from 'src/app/core/interfaces/room';
+import { Room } from '../../../core/interfaces/room';
 
 @Component({
   selector: 'app-select-input',

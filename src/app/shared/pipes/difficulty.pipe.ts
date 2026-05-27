@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Difficulty } from 'src/app/core/enums/difficulty.enum';
+import { Difficulty } from '../../core/enums/difficulty.enum';
 
 @Pipe({
   name: 'difficulty',

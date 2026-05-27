@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, inject, input, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Player } from 'src/app/core/interfaces/player';
-import { games } from 'src/assets/data/games';
+import { games } from '../../../assets/data/games';
+import { Player } from '../../core/interfaces/player';
 import { MedalsNumberPipe } from '../../shared/pipes/medals-number.pipe';
 
 @Component({

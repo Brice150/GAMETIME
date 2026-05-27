@@ -7,12 +7,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSliderModule } from '@angular/material/slider';
-import { BrandCategory } from 'src/app/core/enums/brand-category.enum';
-import { Continent } from 'src/app/core/enums/continent.enum';
-import { Difficulty } from 'src/app/core/enums/difficulty.enum';
-import { RoomForm } from 'src/app/core/interfaces/room-form';
-import { gameMap, games } from 'src/assets/data/games';
-import { themes } from 'src/assets/data/themes';
+import { gameMap, games } from '../../../../assets/data/games';
+import { themes } from '../../../../assets/data/themes';
+import { BrandCategory } from '../../../core/enums/brand-category.enum';
+import { Continent } from '../../../core/enums/continent.enum';
+import { Difficulty } from '../../../core/enums/difficulty.enum';
+import { RoomForm } from '../../../core/interfaces/room-form';
 
 @Component({
   selector: 'app-add-room-dialog',
@@ -55,7 +55,7 @@ export class AddRoomDialogComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<AddRoomDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: RoomForm
+    @Inject(MAT_DIALOG_DATA) public data: RoomForm,
   ) {}
 
   ngOnInit(): void {

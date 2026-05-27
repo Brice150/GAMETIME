@@ -22,8 +22,8 @@ import {
   switchMap,
   take,
 } from 'rxjs';
-import { animalsWithEmojis } from 'src/assets/data/animals';
-import { gameMap } from 'src/assets/data/games';
+import { animalsWithEmojis } from '../../../assets/data/animals';
+import { gameMap } from '../../../assets/data/games';
 import { Player } from '../interfaces/player';
 import { Stat } from '../interfaces/stat';
 import { UserService } from './user.service';
@@ -37,21 +37,21 @@ export class PlayerService {
   currentPlayersSig = signal<Player[]>([]);
 
   readonly playerReady$ = toObservable(
-    computed(() => this.currentPlayerSig())
+    computed(() => this.currentPlayerSig()),
   ).pipe(
     filter((player): player is Player => !!player),
-    take(1)
+    take(1),
   );
 
   readonly playersReady$ = toObservable(
-    computed(() => this.currentPlayersSig())
+    computed(() => this.currentPlayersSig()),
   );
 
   getPlayer(): Observable<Player[]> {
     const userId = this.userService.auth.currentUser?.uid;
     const playersCollection = query(
       collection(this.firestore, 'players'),
-      where('userId', '==', userId)
+      where('userId', '==', userId),
     );
     return collectionData(playersCollection, { idField: 'id' }) as Observable<
       Player[]
@@ -61,7 +61,7 @@ export class PlayerService {
   getPlayers(playerIds: string[]): Observable<Player[]> {
     const playersCollection = query(
       collection(this.firestore, 'players'),
-      where('userId', 'in', playerIds)
+      where('userId', 'in', playerIds),
     );
     return collectionData(playersCollection, { idField: 'id' }) as Observable<
       Player[]
@@ -81,7 +81,7 @@ export class PlayerService {
 
     const playersQuery = query(
       this.playersCollection,
-      where('userId', '==', userId)
+      where('userId', '==', userId),
     );
 
     return (
@@ -129,7 +129,7 @@ export class PlayerService {
           isReady: false,
         };
         return from(setDoc(playerDoc, { ...player })).pipe(map(() => email));
-      })
+      }),
     );
   }
 
@@ -195,7 +195,7 @@ export class PlayerService {
   deleteUserPlayer(): Observable<void> {
     const playersQuery = query(
       this.playersCollection,
-      where('userId', '==', this.userService.auth.currentUser?.uid)
+      where('userId', '==', this.userService.auth.currentUser?.uid),
     );
 
     return collectionData(playersQuery, { idField: 'id' }).pipe(
@@ -212,7 +212,7 @@ export class PlayerService {
 
         return combineLatest(deleteRequests);
       }),
-      map(() => undefined)
+      map(() => undefined),
     );
   }
 }

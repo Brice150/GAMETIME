@@ -1,5 +1,5 @@
-import { BrandCategory } from 'src/app/core/enums/brand-category.enum';
-import { Brand } from 'src/app/core/interfaces/brand';
+import { BrandCategory } from '../../app/core/enums/brand-category.enum';
+import { Brand } from '../../app/core/interfaces/brand';
 
 export const brands: Brand[] = [
   // Marques de voiture

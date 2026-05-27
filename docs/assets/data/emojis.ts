@@ -1,4 +1,4 @@
-import { EmojiMap } from 'src/app/core/interfaces/emoji-map';
+import { EmojiMap } from '../../app/core/interfaces/emoji-map';
 
 export const emojies: EmojiMap = {
   1: {

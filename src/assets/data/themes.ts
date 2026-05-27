@@ -1,4 +1,4 @@
-import { KeyLabel } from 'src/app/core/interfaces/key-label';
+import { KeyLabel } from '../../app/core/interfaces/key-label';
 
 export const themes: KeyLabel[] = [
   { key: '1', label: 'Aléatoire', icon: 'bx bx-shuffle' },

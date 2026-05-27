@@ -1,4 +1,4 @@
-import { Goal } from 'src/app/core/interfaces/goal';
+import { Goal } from '../../app/core/interfaces/goal';
 
 export const goals: Goal[] = [
   { target: 10, reward: 1 },

@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Continent } from 'src/app/core/enums/continent.enum';
+import { Continent } from '../../core/enums/continent.enum';
 
 @Pipe({
   name: 'continent',

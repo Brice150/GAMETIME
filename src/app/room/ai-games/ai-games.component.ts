@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, input, OnInit, Output } from '@angular/core';
-import { Player } from 'src/app/core/interfaces/player';
-import { Room } from 'src/app/core/interfaces/room';
-import { DifficultyPipe } from 'src/app/shared/pipes/difficulty.pipe';
+import { Player } from '../../core/interfaces/player';
+import { Room } from '../../core/interfaces/room';
+import { DifficultyPipe } from '../../shared/pipes/difficulty.pipe';
 import { QuizCategoryPipe } from '../../shared/pipes/quiz-category.pipe';
 import { SelectInputComponent } from './select-input/select-input.component';
 

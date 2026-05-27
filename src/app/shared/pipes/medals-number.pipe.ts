@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Player } from 'src/app/core/interfaces/player';
+import { Player } from '../../core/interfaces/player';
 
 @Pipe({
   name: 'medalsNumber',

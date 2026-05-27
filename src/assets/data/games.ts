@@ -1,4 +1,4 @@
-import { KeyLabel } from 'src/app/core/interfaces/key-label';
+import { KeyLabel } from '../../app/core/interfaces/key-label';
 
 export const games: KeyLabel[] = [
   {
@@ -24,5 +24,5 @@ export const games: KeyLabel[] = [
 ];
 
 export const gameMap = Object.fromEntries(
-  games.map((game) => [game.key, game])
+  games.map((game) => [game.key, game]),
 );

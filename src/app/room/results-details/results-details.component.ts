@@ -4,8 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { Player } from 'src/app/core/interfaces/player';
-import { Room } from 'src/app/core/interfaces/room';
+import { Player } from '../../core/interfaces/player';
+import { Room } from '../../core/interfaces/room';
 
 @Component({
   selector: 'app-results-details',
@@ -29,7 +29,7 @@ export class ResultsDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.otherPlayers = this.players.filter(
-      (p) => p.userId !== this.player.userId
+      (p) => p.userId !== this.player.userId,
     );
     this.otherPlayers.sort((a, b) => a.userId!.localeCompare(b.userId!));
 
@@ -46,7 +46,7 @@ export class ResultsDetailsComponent implements OnInit {
 
     if (newPlayers.length !== this.players.length) {
       this.otherPlayers = newPlayers.filter(
-        (p) => p.userId !== this.player.userId
+        (p) => p.userId !== this.player.userId,
       );
       this.otherPlayers.sort((a, b) => a.userId!.localeCompare(b.userId!));
 

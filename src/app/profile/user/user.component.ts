@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, input, Output } from '@angular/core';
-import { Player } from 'src/app/core/interfaces/player';
+import { Player } from '../../core/interfaces/player';
 
 @Component({
   selector: 'app-user',

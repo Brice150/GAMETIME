@@ -5,7 +5,6 @@ import { Timestamp } from '@angular/fire/firestore';
 import { MatDialog } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ToastrHelperService } from '../core/services/toastr-helper.service';
 import {
   filter,
   map,
@@ -15,8 +14,8 @@ import {
   switchMap,
   takeUntil,
 } from 'rxjs';
-import { gameMap } from 'src/assets/data/games';
-import { goals } from 'src/assets/data/goals';
+import { gameMap } from '../../assets/data/games';
+import { goals } from '../../assets/data/goals';
 import { ExcludedUserQuestions } from '../core/interfaces/excluded-user-questions';
 import { Player } from '../core/interfaces/player';
 import { Room } from '../core/interfaces/room';
@@ -26,6 +25,7 @@ import { ExcludedQuestionsService } from '../core/services/excluded-questions.se
 import { LocalStorageService } from '../core/services/local-storage.service';
 import { PlayerService } from '../core/services/player.service';
 import { RoomService } from '../core/services/room.service';
+import { ToastrHelperService } from '../core/services/toastr-helper.service';
 import { AddRoomDialogComponent } from '../shared/components/add-room-dialog/add-room-dialog.component';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { MultiplayerDialogComponent } from '../shared/components/multiplayer-dialog/multiplayer-dialog.component';

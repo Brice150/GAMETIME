@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { themes } from 'src/assets/data/themes';
+import { themes } from '../../../assets/data/themes';
 
 @Pipe({
   name: 'quizCategory',

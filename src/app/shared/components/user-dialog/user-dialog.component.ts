@@ -12,8 +12,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { Player } from 'src/app/core/interfaces/player';
-import { animalsWithEmojis } from 'src/assets/data/animals';
+import { animalsWithEmojis } from '../../../../assets/data/animals';
+import { Player } from '../../../core/interfaces/player';
 
 @Component({
   selector: 'app-user-dialog',
@@ -37,7 +37,7 @@ export class UserDialogComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<UserDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: Player
+    @Inject(MAT_DIALOG_DATA) public data: Player,
   ) {}
 
   ngOnInit(): void {

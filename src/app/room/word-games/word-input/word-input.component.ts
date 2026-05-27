@@ -10,11 +10,11 @@ import {
   input,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { emojies } from '../../../../assets/data/emojis';
+import { Room } from '../../../core/interfaces/room';
+import { WordTry } from '../../../core/interfaces/word-try';
+import { LocalStorageService } from '../../../core/services/local-storage.service';
 import { ToastrHelperService } from '../../../core/services/toastr-helper.service';
-import { Room } from 'src/app/core/interfaces/room';
-import { WordTry } from 'src/app/core/interfaces/word-try';
-import { LocalStorageService } from 'src/app/core/services/local-storage.service';
-import { emojies } from 'src/assets/data/emojis';
 
 @Component({
   selector: 'app-word-input',

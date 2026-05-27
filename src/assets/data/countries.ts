@@ -1,4 +1,4 @@
-import { Continent } from 'src/app/core/enums/continent.enum';
+import { Continent } from '../../app/core/enums/continent.enum';
 import { Country } from '../../app/core/interfaces/country';
 
 export const countries: Country[] = [
