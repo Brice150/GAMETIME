@@ -149,7 +149,7 @@ export class ProfileComponent implements OnDestroy {
             email: userCredential.user.email ?? 'Compte invité',
             isAnonymous: false,
           });
-          this.toastrHelper.info('Compte lié avec Google.', 'Profil');
+          this.toastrHelper.info('Compte lié avec Google', 'Compte');
         },
         error: (error: HttpErrorResponse) => {
           this.loading = false;
@@ -172,7 +172,7 @@ export class ProfileComponent implements OnDestroy {
             email: userCredential.user.email ?? 'Compte invité',
             isAnonymous: false,
           });
-          this.toastrHelper.info('Compte lié avec GitHub.', 'Profil');
+          this.toastrHelper.info('Compte lié avec GitHub', 'Compte');
         },
         error: (error: HttpErrorResponse) => {
           this.loading = false;

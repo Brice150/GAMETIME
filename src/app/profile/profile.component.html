@@ -52,10 +52,9 @@
           </div>
         </div>
       }
-      <app-user
-        [player]="playerService.currentPlayerSig()!"
-        (updateEvent)="openUserDialog()"
-      ></app-user>
+      @if (playerService.currentPlayerSig(); as player) {
+        <app-user [player]="player" (updateEvent)="openUserDialog()"></app-user>
+      }
       <div class="button-container">
         <button
           type="button"

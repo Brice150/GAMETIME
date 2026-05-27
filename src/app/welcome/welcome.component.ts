@@ -6,19 +6,9 @@ import {
   ElementRef,
   inject,
   OnDestroy,
-  OnInit,
   QueryList,
   ViewChildren,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router } from '@angular/router';
 import { map, Subject, switchMap, takeUntil } from 'rxjs';
@@ -29,22 +19,12 @@ import { UserService } from '../core/services/user.service';
 
 @Component({
   selector: 'app-welcome',
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatProgressSpinnerModule,
-  ],
+  imports: [CommonModule, MatProgressSpinnerModule],
   templateUrl: './welcome.component.html',
   styleUrl: './welcome.component.css',
 })
-export class WelcomeComponent implements OnInit, OnDestroy, AfterViewInit {
+export class WelcomeComponent implements OnDestroy, AfterViewInit {
   imagePath: string = environment.imagePath;
-  emailForm!: FormGroup;
-  isEmailLinkPending: boolean = false;
-  fb = inject(FormBuilder);
   userService = inject(UserService);
   playerService = inject(PlayerService);
   router = inject(Router);
@@ -52,28 +32,6 @@ export class WelcomeComponent implements OnInit, OnDestroy, AfterViewInit {
   destroyed$ = new Subject<void>();
   loading: boolean = false;
   @ViewChildren('feature') features!: QueryList<ElementRef>;
-
-  ngOnInit(): void {
-    this.emailForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-    });
-
-    const currentUrl = window.location.href;
-    if (this.userService.isEmailSignInLink(currentUrl)) {
-      this.isEmailLinkPending = true;
-      const storedEmail = this.userService.getStoredEmailForSignIn();
-
-      if (storedEmail) {
-        this.emailForm.patchValue({ email: storedEmail });
-        this.completeEmailSignIn(storedEmail);
-      } else {
-        this.toastrHelper.info(
-          'Lien détecté. Renseigne ton email pour finaliser la connexion.',
-          'Lien',
-        );
-      }
-    }
-  }
 
   ngOnDestroy(): void {
     this.destroyed$.next();
@@ -99,72 +57,6 @@ export class WelcomeComponent implements OnInit, OnDestroy, AfterViewInit {
     this.features.forEach((feature) => {
       observer.observe(feature.nativeElement);
     });
-  }
-
-  continueWithEmail(): void {
-    if (!this.emailForm.valid) {
-      this.emailForm.markAllAsTouched();
-      return;
-    }
-
-    const email = this.emailForm.value.email as string;
-
-    if (this.isEmailLinkPending) {
-      this.completeEmailSignIn(email);
-      return;
-    }
-
-    this.loading = true;
-    this.userService
-      .sendEmailSignInLink(email)
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe({
-        next: () => {
-          this.loading = false;
-          this.toastrHelper.info(
-            'Un lien de connexion vient d être envoyé par email.',
-            'Lien',
-          );
-        },
-        error: (error: HttpErrorResponse) => {
-          this.loading = false;
-          if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastrHelper.error(error.message);
-          }
-        },
-      });
-  }
-
-  private completeEmailSignIn(email: string): void {
-    this.loading = true;
-    this.userService
-      .completeEmailLinkSignIn(email, window.location.href)
-      .pipe(
-        switchMap((userCredential) =>
-          this.playerService
-            .addPlayer()
-            .pipe(map(() => userCredential.user.email)),
-        ),
-        takeUntil(this.destroyed$),
-      )
-      .subscribe({
-        next: (connectedEmail) => {
-          this.loading = false;
-          this.userService.clearStoredEmailForSignIn();
-          this.userService.currentUserSig.set({
-            email: connectedEmail ?? 'Compte invité',
-            isAnonymous: false,
-          });
-          this.router.navigate(['/accueil']);
-          this.toastrHelper.info('Bienvenue sur Game Time', 'Game Time');
-        },
-        error: (error: HttpErrorResponse) => {
-          this.loading = false;
-          if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastrHelper.error(error.message);
-          }
-        },
-      });
   }
 
   continueWithGoogle(): void {
