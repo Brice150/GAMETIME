@@ -11,7 +11,7 @@ section {
 section .description-title {
   font-size: 20px;
   font-weight: 500;
-  color: var(--secondary);
+  color: var(--primary);
   text-align: center;
   width: 90%;
   margin-bottom: 20px;

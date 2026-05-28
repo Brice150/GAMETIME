@@ -102,7 +102,7 @@ mat-slide-toggle {
 ::ng-deep .mat-mdc-slide-toggle .mdc-switch:enabled + .mdc-label {
   font-size: 20px;
   font-weight: 500;
-  color: var(--secondary);
+  color: var(--primary);
   margin: 0;
 }
 
