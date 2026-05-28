@@ -16,9 +16,9 @@ export class PlayerCardComponent {
   playerForm!: FormGroup;
   fb = inject(FormBuilder);
   games = games;
-  @Output() updateEvent = new EventEmitter<void>();
+  @Output() updateEvent = new EventEmitter<Player>();
 
   update(): void {
-    this.updateEvent.emit();
+    this.updateEvent.emit(this.player());
   }
 }

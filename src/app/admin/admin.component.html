@@ -2,7 +2,7 @@
   @if (!loading) {
     <form>
       <mat-form-field>
-        <mat-select [(ngModel)]="selectedRoomType" name="game" class="cap">
+        <mat-select [formControl]="selectedRoomTypeControl" class="cap select">
           <mat-option value="attente" class="cap-option">
             <div class="flex">
               <i class="bx bxs-time-five"></i>
@@ -42,21 +42,22 @@
     }
     <form class="margin">
       <mat-form-field>
-        <mat-select [(ngModel)]="selectedPlayer" name="game" class="cap">
-          @for (player of players; track $index) {
-            <mat-option [value]="player" class="cap-option">
-              {{ player.username }} {{ player.animal }}
-            </mat-option>
-          }
-        </mat-select>
+        <mat-label>Rechercher</mat-label>
+        <input matInput [formControl]="playerSearchControl" />
+        <button mat-icon-button matSuffix type="button">
+          <mat-icon>search</mat-icon>
+        </button>
       </mat-form-field>
     </form>
-    <div class="element">
-      @if (selectedPlayer) {
+    <div class="element players-list">
+      @for (player of filteredPlayers; track player.id) {
         <app-player-card
-          [player]="selectedPlayer"
-          (updateEvent)="openUserDialog()"
+          [player]="player"
+          (updateEvent)="openUserDialog($event)"
         ></app-player-card>
+      }
+      @if (!filteredPlayers.length) {
+        <p class="no-results">Aucun joueur trouvé</p>
       }
     </div>
   } @else {

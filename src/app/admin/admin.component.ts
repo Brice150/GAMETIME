@@ -2,9 +2,11 @@ import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
@@ -26,9 +28,11 @@ import { RoomsCardComponent } from './rooms-card/rooms-card.component';
     CommonModule,
     RoomsCardComponent,
     MatProgressSpinnerModule,
-    FormsModule,
+    ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
+    MatButtonModule,
+    MatIconModule,
     MatSelectModule,
     PlayerCardComponent,
   ],
@@ -43,12 +47,13 @@ export class AdminComponent implements OnInit {
   dialog = inject(MatDialog);
   rooms: Room[] = [];
   players: Player[] = [];
-  selectedPlayer?: Player;
+  playerSearch = '';
   playersByRoom: Record<string, Player[]> = {};
   loading = true;
   games = games;
   roomCountByType: Record<string, number> = {};
-  selectedRoomType = 'attente';
+  selectedRoomTypeControl = new FormControl<string>('attente');
+  playerSearchControl = new FormControl<string>('');
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
   marquesGameKey = gameMap['marques'].key;
@@ -172,9 +177,9 @@ export class AdminComponent implements OnInit {
       });
   }
 
-  openUserDialog(): void {
+  openUserDialog(player: Player): void {
     const dialogRef = this.dialog.open(UserAdminDialogComponent, {
-      data: this.selectedPlayer,
+      data: player,
     });
 
     dialogRef
@@ -197,25 +202,32 @@ export class AdminComponent implements OnInit {
   }
 
   sortPlayers(players: Player[]): Player[] {
-    const sortedPlayers = [...players].sort((a, b) =>
-      a.username.localeCompare(b.username),
-    );
+    return [...players].sort((a, b) => {
+      const aTotal =
+        a.stats?.reduce((sum, stat) => sum + (stat.medalsNumber ?? 0), 0) ?? 0;
+      const bTotal =
+        b.stats?.reduce((sum, stat) => sum + (stat.medalsNumber ?? 0), 0) ?? 0;
 
-    this.setSelectedPlayer(sortedPlayers);
+      if (bTotal !== aTotal) {
+        return bTotal - aTotal;
+      }
 
-    return sortedPlayers;
+      return a.username.localeCompare(b.username);
+    });
   }
 
-  setSelectedPlayer(sortedPlayers: Player[]): void {
-    if (this.selectedPlayer) {
-      const matchingPlayer = sortedPlayers.find(
-        (player) => player.userId === this.selectedPlayer!.userId,
-      );
+  get filteredPlayers(): Player[] {
+    const normalizedQuery = this.normalizeText(
+      this.playerSearchControl.value || '',
+    );
 
-      this.selectedPlayer = matchingPlayer ?? sortedPlayers[0];
-    } else {
-      this.selectedPlayer = sortedPlayers[0];
+    if (!normalizedQuery) {
+      return this.players;
     }
+
+    return this.players.filter((player) =>
+      this.normalizeText(player.username).includes(normalizedQuery),
+    );
   }
 
   canAddRoom(): boolean {
@@ -223,6 +235,10 @@ export class AdminComponent implements OnInit {
       this.selectedRoomType === 'attente' &&
       !this.rooms.some((room) => room.isCreatedByAdmin)
     );
+  }
+
+  get selectedRoomType(): string {
+    return this.selectedRoomTypeControl.value || 'attente';
   }
 
   getRoomCountSuffix(type: string): string {
@@ -252,7 +268,7 @@ export class AdminComponent implements OnInit {
 
   private setDefaultSelectedRoomType(): void {
     if ((this.roomCountByType['attente'] ?? 0) > 0) {
-      this.selectedRoomType = 'attente';
+      this.selectedRoomTypeControl.setValue('attente');
       return;
     }
 
@@ -267,6 +283,14 @@ export class AdminComponent implements OnInit {
       }
     });
 
-    this.selectedRoomType = maxGameKey;
+    this.selectedRoomTypeControl.setValue(maxGameKey);
+  }
+
+  private normalizeText(value: string): string {
+    return value
+      .trim()
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
   }
 }

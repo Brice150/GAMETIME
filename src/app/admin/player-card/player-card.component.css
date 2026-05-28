@@ -19,6 +19,26 @@
   margin-bottom: 20px;
 }
 
+.player-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.avatar {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.username {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--secondary);
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
 .container .medals-container {
   display: flex;
   justify-content: center;

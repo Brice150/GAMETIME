@@ -1,18 +1,22 @@
 <div class="container">
+  <div class="player-header">
+    <span class="username">{{ player().username }}</span>
+    <span class="avatar">{{ player().animal }}</span>
+  </div>
   <div class="medals-container">
     @for (game of games; track $index) {
-    <div class="column">
-      <div class="flex">
-        <i class="{{ game.icon }}"></i>
-        <span class="game">{{ game.label }}</span>
+      <div class="column">
+        <div class="flex">
+          <i class="{{ game.icon }}"></i>
+          <span class="game">{{ game.label }}</span>
+        </div>
+        <div class="medals">
+          <span class="victory-number">{{
+            game.key | medalsNumber: player()
+          }}</span>
+          <i class="bx bxs-medal"></i>
+        </div>
       </div>
-      <div class="medals">
-        <span class="victory-number">{{
-          game.key | medalsNumber : player()
-        }}</span>
-        <i class="bx bxs-medal"></i>
-      </div>
-    </div>
     }
   </div>
   <div class="button-container">
