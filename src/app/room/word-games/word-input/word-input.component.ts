@@ -3,11 +3,12 @@ import {
   Component,
   EventEmitter,
   Input,
+  input,
+  OnChanges,
   OnInit,
   Output,
   SimpleChanges,
   inject,
-  input,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { emojies } from '../../../../assets/data/emojis';
@@ -22,18 +23,18 @@ import { ToastrHelperService } from '../../../core/services/toastr-helper.servic
   templateUrl: './word-input.component.html',
   styleUrls: ['./word-input.component.css'],
 })
-export class WordInputComponent implements OnInit {
+export class WordInputComponent implements OnInit, OnChanges {
   toastrHelper = inject(ToastrHelperService);
   localStorageService = inject(LocalStorageService);
-  @Input() response: string = '';
+  @Input() response = '';
   readonly room = input.required<Room>();
   wordToFind!: string;
   maxlength!: number;
-  inputValue: string = '';
+  inputValue = '';
   tries: WordTry[] = [];
   @Output() emitEvent = new EventEmitter<boolean>();
   emojiClass: string = emojies[1].emojiClass;
-  emojiStyle: { [klass: string]: any } = emojies[1].emojiStyle;
+  emojiStyle: Record<string, string | number> = emojies[1].emojiStyle;
   isOver = false;
 
   ngOnInit(): void {
@@ -143,7 +144,7 @@ export class WordInputComponent implements OnInit {
 
     const letterCountMap = new Map<string, number>();
 
-    for (let letter of this.response) {
+    for (const letter of this.response) {
       letterCountMap.set(letter, (letterCountMap.get(letter) ?? 0) + 1);
     }
 

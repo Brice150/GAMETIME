@@ -5,7 +5,7 @@ import { Pipe, PipeTransform } from '@angular/core';
   pure: true,
 })
 export class DurationBetweenDatesPipe implements PipeTransform {
-  transform(startDate: any, finishDate: any): string {
+  transform(startDate: unknown, finishDate: unknown): string {
     if (!startDate || !finishDate) {
       return '';
     }
@@ -38,7 +38,16 @@ export class DurationBetweenDatesPipe implements PipeTransform {
     }
   }
 
-  private toJsDate(date: any): Date {
-    return typeof date?.toDate === 'function' ? date.toDate() : new Date(date);
+  private toJsDate(date: unknown): Date {
+    if (
+      typeof date === 'object' &&
+      date !== null &&
+      'toDate' in date &&
+      typeof date.toDate === 'function'
+    ) {
+      return date.toDate();
+    }
+
+    return new Date(date as string | number | Date);
   }
 }

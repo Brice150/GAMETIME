@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -34,17 +34,14 @@ import { Stat } from '../../../core/interfaces/stat';
 export class UserAdminDialogComponent implements OnInit {
   userForm!: FormGroup;
   fb = inject(FormBuilder);
+  dialogRef = inject(MatDialogRef<UserAdminDialogComponent>);
+  data = inject<Player>(MAT_DIALOG_DATA);
   player?: Player;
   animals = animalsWithEmojis;
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
   marquesGameKey = gameMap['marques'].key;
   quizGameKey = gameMap['quiz'].key;
-
-  constructor(
-    public dialogRef: MatDialogRef<UserAdminDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: Player,
-  ) {}
 
   ngOnInit(): void {
     if (this.data) {
@@ -118,7 +115,7 @@ export class UserAdminDialogComponent implements OnInit {
   }
 
   updateOrCreateStat(gameName: string, medalsNumber: number): void {
-    let stat = this.player!.stats.find((s) => s.gameName === gameName);
+    const stat = this.player!.stats.find((s) => s.gameName === gameName);
     if (stat) {
       stat.medalsNumber = medalsNumber;
     } else {

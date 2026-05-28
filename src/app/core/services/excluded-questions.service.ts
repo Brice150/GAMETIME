@@ -30,14 +30,14 @@ export class ExcludedQuestionsService {
   userService = inject(UserService);
   excludedQuestionsCollection = collection(
     this.firestore,
-    'excluded-questions'
+    'excluded-questions',
   );
 
   getExcludedQuestions(): Observable<ExcludedUserQuestions[]> {
     const userId = this.userService.auth.currentUser?.uid;
     const excludedQuestionsCollection = query(
       collection(this.firestore, 'excluded-questions'),
-      where('userId', '==', userId)
+      where('userId', '==', userId),
     );
     return collectionData(excludedQuestionsCollection, {
       idField: 'id',
@@ -46,7 +46,7 @@ export class ExcludedQuestionsService {
 
   addOrUpdateExcludedQuestions(
     categoryFilter: number,
-    descriptions: string[]
+    descriptions: string[],
   ): Observable<void> {
     const userId = this.userService.auth.currentUser?.uid;
     if (!userId) {
@@ -55,7 +55,7 @@ export class ExcludedQuestionsService {
 
     const userQuery = query(
       this.excludedQuestionsCollection,
-      where('userId', '==', userId)
+      where('userId', '==', userId),
     );
 
     return from(getDocs(userQuery)).pipe(
@@ -73,19 +73,19 @@ export class ExcludedQuestionsService {
                   descriptions: unique,
                 },
               ],
-            })
+            }),
           );
         } else {
           const existingDoc = snapshot.docs[0];
           const existingRef = doc(
             this.firestore,
-            `excluded-questions/${existingDoc.id}`
+            `excluded-questions/${existingDoc.id}`,
           );
           const existingData = existingDoc.data() as ExcludedUserQuestions;
 
           const themes = existingData.themes ?? [];
           const idx = themes.findIndex(
-            (t) => t.categoryFilter === categoryFilter
+            (t) => t.categoryFilter === categoryFilter,
           );
 
           if (idx === -1) {
@@ -105,19 +105,23 @@ export class ExcludedQuestionsService {
 
           return from(updateDoc(existingRef, { themes }));
         }
-      })
+      }),
     );
   }
 
   deleteUserExcludedQuestions(): Observable<void> {
     const excludedQuestionsQuery = query(
       this.excludedQuestionsCollection,
-      where('userId', '==', this.userService.auth.currentUser?.uid)
+      where('userId', '==', this.userService.auth.currentUser?.uid),
     );
 
-    return collectionData(excludedQuestionsQuery, { idField: 'id' }).pipe(
+    const excludedQuestions$ = collectionData(excludedQuestionsQuery, {
+      idField: 'id',
+    }) as Observable<ExcludedUserQuestions[]>;
+
+    return excludedQuestions$.pipe(
       take(1),
-      switchMap((excludedQuestions: any[]) => {
+      switchMap((excludedQuestions: ExcludedUserQuestions[]) => {
         if (excludedQuestions.length === 0) {
           return of(undefined);
         }
@@ -126,15 +130,15 @@ export class ExcludedQuestionsService {
           (excludedQuestions: ExcludedUserQuestions) => {
             const excludedQuestionsDoc = doc(
               this.firestore,
-              `excluded-questions/${excludedQuestions.id}`
+              `excluded-questions/${excludedQuestions.id}`,
             );
             return deleteDoc(excludedQuestionsDoc);
-          }
+          },
         );
 
         return combineLatest(deleteRequests);
       }),
-      map(() => undefined)
+      map(() => undefined),
     );
   }
 }

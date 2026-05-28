@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ToastrHelperService } from '../../../core/services/toastr-helper.service';
 import { QRCodeComponent } from 'angularx-qrcode';
@@ -12,13 +12,10 @@ import { QRCodeComponent } from 'angularx-qrcode';
 })
 export class MultiplayerDialogComponent implements OnInit {
   toastrHelper = inject(ToastrHelperService);
-  roomCode: string = '';
-  link: string = '';
-
-  constructor(
-    public dialogRef: MatDialogRef<MultiplayerDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: string,
-  ) {}
+  dialogRef = inject(MatDialogRef<MultiplayerDialogComponent>);
+  data = inject<string>(MAT_DIALOG_DATA);
+  roomCode = '';
+  link = '';
 
   ngOnInit(): void {
     if (this.data) {

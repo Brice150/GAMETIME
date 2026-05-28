@@ -32,7 +32,7 @@ import { WordInputComponent } from './word-input/word-input.component';
 })
 export class WordGamesComponent implements OnInit {
   response!: string;
-  imageUrl: string = '';
+  imageUrl = '';
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
   marquesGameKey = gameMap['marques'].key;

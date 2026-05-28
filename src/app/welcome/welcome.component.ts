@@ -31,7 +31,7 @@ export class WelcomeComponent implements AfterViewInit {
   router = inject(Router);
   toastrHelper = inject(ToastrHelperService);
   destroyRef = inject(DestroyRef);
-  loading: boolean = false;
+  loading = false;
   @ViewChildren('feature') features!: QueryList<ElementRef>;
 
   ngAfterViewInit(): void {

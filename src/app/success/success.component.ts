@@ -33,7 +33,7 @@ export class SuccessComponent implements OnInit {
   toastrHelper = inject(ToastrHelperService);
   medalsNumberPipe = inject(MedalsNumberPipe);
   destroyRef = inject(DestroyRef);
-  loading: boolean = true;
+  loading = true;
   games = games;
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;

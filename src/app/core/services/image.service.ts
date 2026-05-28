@@ -7,9 +7,9 @@ import { Observable } from 'rxjs';
 })
 export class ImageService {
   http = inject(HttpClient);
-  drapeauxApi: string = 'https://flagcdn.com/w160/';
-  marquesApiStart: string = 'https://cdn.brandfetch.io/';
-  marquesApiEnd: string = '/w/160?c=1idZAj7HGQTm-vegzZa';
+  drapeauxApi = 'https://flagcdn.com/w160/';
+  marquesApiStart = 'https://cdn.brandfetch.io/';
+  marquesApiEnd = '/w/160?c=1idZAj7HGQTm-vegzZa';
 
   getDrapeauImage(countryCode: string): Observable<Blob> {
     const url = `${this.drapeauxApi}${countryCode.toLowerCase()}.webp`;

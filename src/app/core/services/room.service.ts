@@ -93,9 +93,13 @@ export class RoomService {
       where('userId', '==', this.userService.auth.currentUser?.uid),
     );
 
-    return collectionData(roomsQuery, { idField: 'id' }).pipe(
+    const rooms$ = collectionData(roomsQuery, {
+      idField: 'id',
+    }) as Observable<Room[]>;
+
+    return rooms$.pipe(
       take(1),
-      switchMap((rooms: any[]) => {
+      switchMap((rooms: Room[]) => {
         if (rooms.length === 0) {
           return of(undefined);
         }
@@ -164,7 +168,7 @@ export class RoomService {
     isWordLengthIncreasing: boolean,
     startWordLength: number,
   ): string[] {
-    const wordsToGenerate: string[] = new Array();
+    const wordsToGenerate: string[] = [];
 
     const usedWords = new Set<string>();
 
@@ -189,7 +193,7 @@ export class RoomService {
 
   newWord(wordLength: number): string {
     const wordsFixedLength = words.filter((word) => word.length === wordLength);
-    let randomIndex = Math.floor(Math.random() * wordsFixedLength.length);
+    const randomIndex = Math.floor(Math.random() * wordsFixedLength.length);
     return wordsFixedLength[randomIndex];
   }
 
@@ -213,11 +217,11 @@ export class RoomService {
     );
   }
 
-  generateRandomItems<T>(
+  generateRandomItems<T, U>(
     items: T[],
     stepsNumber: number,
-    filterValue: any,
-    filterFn: (item: T, filterValue: any) => boolean,
+    filterValue: U | null,
+    filterFn: (item: T, filterValue: U) => boolean,
     getNameFn: (item: T) => string,
   ): T[] {
     const generated: T[] = [];

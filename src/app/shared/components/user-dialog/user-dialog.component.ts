@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -32,13 +32,10 @@ import { Player } from '../../../core/interfaces/player';
 export class UserDialogComponent implements OnInit {
   userForm!: FormGroup;
   fb = inject(FormBuilder);
+  dialogRef = inject(MatDialogRef<UserDialogComponent>);
+  data = inject<Player>(MAT_DIALOG_DATA);
   player?: Player;
   animals = animalsWithEmojis;
-
-  constructor(
-    public dialogRef: MatDialogRef<UserDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: Player,
-  ) {}
 
   ngOnInit(): void {
     if (this.data) {

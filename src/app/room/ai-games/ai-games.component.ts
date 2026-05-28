@@ -18,7 +18,7 @@ import { SelectInputComponent } from './select-input/select-input.component';
   styleUrl: './ai-games.component.css',
 })
 export class AiGamesComponent implements OnInit {
-  index: number = 0;
+  index = 0;
   isOver = false;
   readonly room = input.required<Room>();
   readonly player = input.required<Player>();

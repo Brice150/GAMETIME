@@ -3,7 +3,7 @@ import { CanActivateFn, Router } from '@angular/router';
 import { PlayerService } from '../services/player.service';
 import { firstValueFrom } from 'rxjs';
 
-export const adminGuard: CanActivateFn = async (route, state) => {
+export const adminGuard: CanActivateFn = async () => {
   const playerService = inject(PlayerService);
   const router = inject(Router);
 
@@ -16,7 +16,7 @@ export const adminGuard: CanActivateFn = async (route, state) => {
       router.navigate(['/accueil']);
       return false;
     }
-  } catch (error) {
+  } catch {
     router.navigate(['/']);
     return false;
   }

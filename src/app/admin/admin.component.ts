@@ -45,9 +45,9 @@ export class AdminComponent implements OnInit {
   players: Player[] = [];
   selectedPlayer?: Player;
   playersByRoom: Record<string, Player[]> = {};
-  loading: boolean = true;
+  loading = true;
   games = games;
-  selectedRoomType: string = 'attente';
+  selectedRoomType = 'attente';
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
   marquesGameKey = gameMap['marques'].key;

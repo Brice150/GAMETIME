@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -29,12 +29,14 @@ import { RoomForm } from '../../../core/interfaces/room-form';
   styleUrl: './add-room-dialog.component.css',
 })
 export class AddRoomDialogComponent implements OnInit {
+  dialogRef = inject(MatDialogRef<AddRoomDialogComponent>);
+  data = inject<RoomForm>(MAT_DIALOG_DATA);
   games = games;
   themes = themes;
-  stepsNumber: number = 3;
-  startWordLength: number = 5;
+  stepsNumber = 3;
+  startWordLength = 5;
   categoryFilter: string = themes[0].key;
-  difficultyFilter: number = 2;
+  difficultyFilter = 2;
   isWordLengthIncreasing = true;
   showFirstLetterMotus = true;
   showFirstLetterDrapeaux = false;
@@ -52,11 +54,6 @@ export class AddRoomDialogComponent implements OnInit {
     }
     return 13;
   }
-
-  constructor(
-    public dialogRef: MatDialogRef<AddRoomDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: RoomForm,
-  ) {}
 
   ngOnInit(): void {
     if (this.data) {

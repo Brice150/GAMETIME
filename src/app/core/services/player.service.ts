@@ -198,9 +198,13 @@ export class PlayerService {
       where('userId', '==', this.userService.auth.currentUser?.uid),
     );
 
-    return collectionData(playersQuery, { idField: 'id' }).pipe(
+    const players$ = collectionData(playersQuery, {
+      idField: 'id',
+    }) as Observable<Player[]>;
+
+    return players$.pipe(
       take(1),
-      switchMap((players: any[]) => {
+      switchMap((players: Player[]) => {
         if (players.length === 0) {
           return of(undefined);
         }

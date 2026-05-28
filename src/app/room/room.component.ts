@@ -63,7 +63,7 @@ export class RoomComponent implements OnInit {
   aiService = inject(AiService);
   dialog = inject(MatDialog);
   destroyRef = inject(DestroyRef);
-  loading: boolean = true;
+  loading = true;
   room: Room = {} as Room;
   players: Player[] = [];
   isNextButtonAvailable = false;
@@ -100,16 +100,15 @@ export class RoomComponent implements OnInit {
             return of(null);
           }
 
+          const currentPlayer = this.playerService.currentPlayerSig();
+          const currentUserId = currentPlayer?.userId;
+
           if (
             this.room.playerIds &&
             room.playerIds &&
-            this.playerService.currentPlayerSig()?.userId &&
-            this.room.playerIds.includes(
-              this.playerService.currentPlayerSig()?.userId!,
-            ) &&
-            !room.playerIds.includes(
-              this.playerService.currentPlayerSig()?.userId!,
-            )
+            currentUserId &&
+            this.room.playerIds.includes(currentUserId) &&
+            !room.playerIds.includes(currentUserId)
           ) {
             this.userKickedOut = true;
             this.localStorageService.clearLocalStorage();
@@ -145,28 +144,25 @@ export class RoomComponent implements OnInit {
             );
           }
 
-          if (
-            this.playerService.currentPlayerSig()?.userId &&
-            this.room.playerIds.includes(
-              this.playerService.currentPlayerSig()?.userId!,
-            )
-          ) {
+          if (currentUserId && this.room.playerIds.includes(currentUserId)) {
             return of(this.room);
           }
 
           if (
             !(
               this.room.isCreatedByAdmin &&
-              this.playerService.currentPlayerSig() &&
-              this.playerService.currentPlayerSig()?.isAdmin
+              currentPlayer &&
+              currentPlayer.isAdmin
             ) &&
             !this.userLeft &&
             !this.userKickedOut
           ) {
+            if (!currentUserId) {
+              return of(this.room);
+            }
+
             this.localStorageService.newGame(this.room.id!);
-            this.room.playerIds.push(
-              this.playerService.currentPlayerSig()?.userId!,
-            );
+            this.room.playerIds.push(currentUserId);
 
             this.roomService
               .updateRoom(this.room)
@@ -270,8 +266,17 @@ export class RoomComponent implements OnInit {
       });
   }
 
-  toJsDate(date: any): Date {
-    return typeof date?.toDate === 'function' ? date.toDate() : new Date(date);
+  toJsDate(date: unknown): Date {
+    if (
+      typeof date === 'object' &&
+      date !== null &&
+      'toDate' in date &&
+      typeof date.toDate === 'function'
+    ) {
+      return date.toDate();
+    }
+
+    return new Date(date as string | number | Date);
   }
 
   updatePlayerGame(stepWon: boolean): void {

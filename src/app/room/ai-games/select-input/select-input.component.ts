@@ -18,7 +18,7 @@ import { Room } from '../../../core/interfaces/room';
   styleUrl: './select-input.component.css',
 })
 export class SelectInputComponent implements OnInit, OnChanges {
-  @Input() index: number = 0;
+  @Input() index = 0;
   readonly room = input.required<Room>();
   @Output() emitEvent = new EventEmitter<boolean>();
   isOver = false;

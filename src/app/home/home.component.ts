@@ -37,7 +37,7 @@ import { JoinRoomComponent } from './join-room/join-room.component';
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent {
-  loading: boolean = false;
+  loading = false;
   playerService = inject(PlayerService);
   roomService = inject(RoomService);
   toastrHelper = inject(ToastrHelperService);
@@ -45,16 +45,23 @@ export class HomeComponent {
   destroyRef = inject(DestroyRef);
   router = inject(Router);
   games = games;
-  gameSelected: string = 'general';
+  gameSelected = 'general';
 
   play(): void {
     this.loading = true;
+    const currentUserId = this.playerService.currentPlayerSig()?.userId;
+
+    if (!currentUserId) {
+      this.loading = false;
+      this.toastrHelper.error('Utilisateur introuvable');
+      return;
+    }
 
     const roomCode = this.roomService.generateRoomCode();
 
     const newRoom = {
       gameName: roomCode,
-      playerIds: [this.playerService.currentPlayerSig()?.userId!],
+      playerIds: [currentUserId],
       isStarted: false,
       startDate: null,
       startAgainNumber: 0,

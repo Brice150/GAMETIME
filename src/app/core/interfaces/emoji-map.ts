@@ -1,6 +1,7 @@
-export interface EmojiMap {
-  [key: number]: {
+export type EmojiMap = Record<
+  number,
+  {
     emojiClass: string;
-    emojiStyle: { [klass: string]: any };
-  };
-}
+    emojiStyle: Record<string, string | number>;
+  }
+>;

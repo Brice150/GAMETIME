@@ -35,11 +35,11 @@ export class RankingComponent implements OnInit {
   playerService = inject(PlayerService);
   toastrHelper = inject(ToastrHelperService);
   destroyRef = inject(DestroyRef);
-  loading: boolean = true;
+  loading = true;
   players: Player[] = [];
   sortedPlayers: Player[] = [];
   games = games;
-  gameSelected: string = 'general';
+  gameSelected = 'general';
   currentPlayerPosition?: number;
 
   ngOnInit(): void {

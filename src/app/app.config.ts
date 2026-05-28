@@ -27,6 +27,7 @@ import { provideToastr } from 'ngx-toastr';
 import { environment } from '../environments/environment';
 import { routes } from './app.routes';
 import { SmartPreloading } from './core/services/smart-preloading.service';
+import { AI_TOKEN } from './core/tokens/ai.token';
 
 const firebaseApp: FirebaseApp = initializeApp(environment.firebase);
 
@@ -54,7 +55,7 @@ export const appConfig: ApplicationConfig = {
     { provide: MAT_DATE_LOCALE, useValue: 'fr-FR' },
     { provide: LOCALE_ID, useValue: 'fr-FR' },
     {
-      provide: 'AI',
+      provide: AI_TOKEN,
       useValue: ai,
     },
     {

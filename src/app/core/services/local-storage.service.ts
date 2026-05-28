@@ -55,7 +55,7 @@ export class LocalStorageService {
     return item;
   }
 
-  newGame(roomId: string, startAgainNumber: number = 0): void {
+  newGame(roomId: string, startAgainNumber = 0): void {
     this.saveRoomId(roomId);
     this.saveTries([]);
     this.saveStartAgainNumber(startAgainNumber);

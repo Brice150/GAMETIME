@@ -46,7 +46,7 @@ import { AdminResultsDetailsComponent } from './admin-results-details/admin-resu
   providers: [DatePipe],
 })
 export class AdminRoomComponent implements OnInit {
-  loading: boolean = true;
+  loading = true;
   room: Room = {} as Room;
   players: Player[] = [];
   roomService = inject(RoomService);
@@ -133,8 +133,17 @@ export class AdminRoomComponent implements OnInit {
       });
   }
 
-  toJsDate(date: any): Date {
-    return typeof date?.toDate === 'function' ? date.toDate() : new Date(date);
+  toJsDate(date: unknown): Date {
+    if (
+      typeof date === 'object' &&
+      date !== null &&
+      'toDate' in date &&
+      typeof date.toDate === 'function'
+    ) {
+      return date.toDate();
+    }
+
+    return new Date(date as string | number | Date);
   }
 
   multiplayer(): void {
@@ -449,12 +458,13 @@ export class AdminRoomComponent implements OnInit {
   }
 
   canJoin(): boolean {
+    const currentUserId = this.playerService.currentPlayerSig()?.userId;
+
     return (
       this.room &&
       !this.room.isCreatedByAdmin &&
-      !this.room.playerIds.includes(
-        this.playerService.currentPlayerSig()?.userId!,
-      )
+      !!currentUserId &&
+      !this.room.playerIds.includes(currentUserId)
     );
   }
 

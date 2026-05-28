@@ -38,7 +38,7 @@ export class ProfileComponent {
   dialog = inject(MatDialog);
   router = inject(Router);
   destroyRef = inject(DestroyRef);
-  loading: boolean = false;
+  loading = false;
 
   isTemporaryAccount(): boolean {
     return !!this.userService.auth.currentUser?.isAnonymous;

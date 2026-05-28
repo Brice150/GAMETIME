@@ -1,5 +1,5 @@
-import { Inject, Injectable } from '@angular/core';
-import { AI, GenerativeModel, getGenerativeModel } from 'firebase/ai';
+import { inject, Injectable } from '@angular/core';
+import { GenerativeModel, getGenerativeModel } from 'firebase/ai';
 import { from, Observable } from 'rxjs';
 import { promptPrefix } from '../../../assets/data/prompt-prefix';
 import { promptRandomPrefix } from '../../../assets/data/prompt-random-prefix';
@@ -9,18 +9,16 @@ import { AiResponse } from '../interfaces/ai-response';
 import { ExcludedUserQuestions } from '../interfaces/excluded-user-questions';
 import { Question } from '../interfaces/question';
 import { Room } from '../interfaces/room';
+import { AI_TOKEN } from '../tokens/ai.token';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AiService {
-  private model: GenerativeModel;
-
-  constructor(@Inject('AI') private ai: AI) {
-    this.model = getGenerativeModel(this.ai, {
-      model: 'gemini-2.5-flash-lite',
-    });
-  }
+  private ai = inject(AI_TOKEN);
+  private model: GenerativeModel = getGenerativeModel(this.ai, {
+    model: 'gemini-2.5-flash-lite',
+  });
 
   generate(
     room: Room,

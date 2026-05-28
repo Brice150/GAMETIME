@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges, OnChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -19,7 +19,7 @@ import { Room } from '../../core/interfaces/room';
   templateUrl: './results-details.component.html',
   styleUrls: ['./results-details.component.css'],
 })
-export class ResultsDetailsComponent implements OnInit {
+export class ResultsDetailsComponent implements OnInit, OnChanges {
   @Input() room!: Room;
   @Input() player!: Player;
   @Input() players: Player[] = [];
