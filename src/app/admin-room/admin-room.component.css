@@ -19,7 +19,7 @@ section .description-title {
 
 section .description-title.first {
   font-weight: 800;
-  color: var(--accent);
+  color: var(--title-accent);
   margin-bottom: 10px;
 }
 
