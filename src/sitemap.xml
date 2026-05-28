@@ -2,33 +2,10 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
   <url>
-    <loc>https://gametime.web.app</loc>
-    <lastmod>2026-05-27</lastmod>
+    <loc>https://Brice150.github.io/GAMETIME/</loc>
+    <lastmod>2026-05-28</lastmod>
     <changefreq>weekly</changefreq>
-  </url>
-
-  <url>
-    <loc>https://gametime.web.app/home</loc>
-    <lastmod>2026-05-27</lastmod>
-    <changefreq>daily</changefreq>
-  </url>
-
-  <url>
-    <loc>https://gametime.web.app/welcome</loc>
-    <lastmod>2026-05-27</lastmod>
-    <changefreq>weekly</changefreq>
-  </url>
-
-  <url>
-    <loc>https://gametime.web.app/ranking</loc>
-    <lastmod>2026-05-27</lastmod>
-    <changefreq>daily</changefreq>
-  </url>
-
-  <url>
-    <loc>https://gametime.web.app/success</loc>
-    <lastmod>2026-05-27</lastmod>
-    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
   </url>
 
 </urlset>
