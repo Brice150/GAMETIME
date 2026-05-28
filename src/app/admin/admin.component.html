@@ -1,61 +1,65 @@
 <section>
-  @if(!loading) {
-  <form>
-    <mat-form-field>
-      <mat-select [(ngModel)]="selectedRoomType" name="game" class="cap">
-        <mat-option value="attente" class="cap-option">
-          <div class="flex">
-            <i class="bx bxs-time-five"></i>
-            <span class="game">Attente</span>
-          </div>
-        </mat-option>
-        @for (game of games; track $index) {
-        <mat-option [value]="game.key" class="cap-option">
-          <div class="flex">
-            <i class="{{ game.icon }}"></i>
-            <span class="game">{{ game.label }}</span>
-          </div>
-        </mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-  </form>
-  <div class="element">
-    <app-rooms-card
-      [selectedRoomType]="selectedRoomType"
-      [rooms]="rooms"
-      [players]="players"
-      (deleteEvent)="deleteRoom($event)"
-    ></app-rooms-card>
-  </div>
-  @if (canAddRoom()) {
-  <div class="button-container">
-    <button type="button" (click)="addRoom()" title="Ajouter">
-      <i class="bx bx-plus"></i>
-      <span class="text">Ajouter</span>
-    </button>
-  </div>
-  }
-  <form class="margin">
-    <mat-form-field>
-      <mat-select [(ngModel)]="selectedPlayer" name="game" class="cap">
-        @for (player of players; track $index) {
-        <mat-option [value]="player" class="cap-option">
-          {{ player.username }} {{ player.animal }}
-        </mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-  </form>
-  <div class="element">
-    @if (selectedPlayer) {
-    <app-player-card
-      [player]="selectedPlayer"
-      (updateEvent)="openUserDialog()"
-    ></app-player-card>
+  @if (!loading) {
+    <form>
+      <mat-form-field>
+        <mat-select [(ngModel)]="selectedRoomType" name="game" class="cap">
+          <mat-option value="attente" class="cap-option">
+            <div class="flex">
+              <i class="bx bxs-time-five"></i>
+              <span class="game"
+                >Attente{{ getRoomCountSuffix("attente") }}</span
+              >
+            </div>
+          </mat-option>
+          @for (game of games; track $index) {
+            <mat-option [value]="game.key" class="cap-option">
+              <div class="flex">
+                <i class="{{ game.icon }}"></i>
+                <span class="game"
+                  >{{ game.label }}{{ getRoomCountSuffix(game.key) }}</span
+                >
+              </div>
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </form>
+    <div class="element">
+      <app-rooms-card
+        [selectedRoomType]="selectedRoomType"
+        [rooms]="rooms"
+        [players]="players"
+        (deleteEvent)="deleteRoom($event)"
+      ></app-rooms-card>
+    </div>
+    @if (canAddRoom()) {
+      <div class="button-container">
+        <button type="button" (click)="addRoom()" title="Ajouter">
+          <i class="bx bx-plus"></i>
+          <span class="text">Ajouter</span>
+        </button>
+      </div>
     }
-  </div>
+    <form class="margin">
+      <mat-form-field>
+        <mat-select [(ngModel)]="selectedPlayer" name="game" class="cap">
+          @for (player of players; track $index) {
+            <mat-option [value]="player" class="cap-option">
+              {{ player.username }} {{ player.animal }}
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </form>
+    <div class="element">
+      @if (selectedPlayer) {
+        <app-player-card
+          [player]="selectedPlayer"
+          (updateEvent)="openUserDialog()"
+        ></app-player-card>
+      }
+    </div>
   } @else {
-  <mat-spinner></mat-spinner>
+    <mat-spinner></mat-spinner>
   }
 </section>

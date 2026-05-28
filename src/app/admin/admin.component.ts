@@ -47,6 +47,7 @@ export class AdminComponent implements OnInit {
   playersByRoom: Record<string, Player[]> = {};
   loading = true;
   games = games;
+  roomCountByType: Record<string, number> = {};
   selectedRoomType = 'attente';
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
@@ -68,6 +69,8 @@ export class AdminComponent implements OnInit {
       .subscribe({
         next: ({ rooms, players }) => {
           this.rooms = rooms;
+          this.updateRoomCounts();
+          this.setDefaultSelectedRoomType();
           this.players = this.sortPlayers(players);
 
           this.playersByRoom = rooms.reduce(
@@ -220,5 +223,50 @@ export class AdminComponent implements OnInit {
       this.selectedRoomType === 'attente' &&
       !this.rooms.some((room) => room.isCreatedByAdmin)
     );
+  }
+
+  getRoomCountSuffix(type: string): string {
+    const count = this.roomCountByType[type] ?? 0;
+    return count > 0 ? ` (${count})` : '';
+  }
+
+  private updateRoomCounts(): void {
+    const counts: Record<string, number> = { attente: 0 };
+
+    this.games.forEach((game) => {
+      counts[game.key] = 0;
+    });
+
+    this.rooms.forEach((room) => {
+      if (!room.isStarted) {
+        counts['attente'] = (counts['attente'] ?? 0) + 1;
+      }
+
+      if (counts[room.gameName] !== undefined) {
+        counts[room.gameName] += 1;
+      }
+    });
+
+    this.roomCountByType = counts;
+  }
+
+  private setDefaultSelectedRoomType(): void {
+    if ((this.roomCountByType['attente'] ?? 0) > 0) {
+      this.selectedRoomType = 'attente';
+      return;
+    }
+
+    let maxGameKey = this.games[0]?.key ?? 'attente';
+    let maxCount = this.roomCountByType[maxGameKey] ?? 0;
+
+    this.games.forEach((game) => {
+      const gameCount = this.roomCountByType[game.key] ?? 0;
+      if (gameCount > maxCount) {
+        maxCount = gameCount;
+        maxGameKey = game.key;
+      }
+    });
+
+    this.selectedRoomType = maxGameKey;
   }
 }
