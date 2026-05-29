@@ -17,17 +17,32 @@ section .description {
   width: 90%;
 }
 
-form {
-  display: flex;
+.stats-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 260px);
   justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  margin-top: 20px;
-  width: 300px;
+  gap: 12px;
+  margin-top: 12px;
+  width: min(532px, 95%);
 }
 
-.cap-option {
-  text-transform: capitalize;
+.general-card-row {
+  display: flex;
+  justify-content: center;
+  width: min(532px, 95%);
+  margin-top: 20px;
+}
+
+.stat-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  box-sizing: border-box;
+  border-radius: var(--light-radius);
+  background-color: var(--primary);
+  width: 260px;
 }
 
 .flex i {
@@ -60,7 +75,7 @@ form {
   padding: 3px 0;
   padding-left: 10px;
   padding-right: 5px;
-  width: 80px;
+  min-width: 80px;
 }
 
 .victory-number {
@@ -124,80 +139,17 @@ mat-spinner {
   stroke: var(--accent) !important;
 }
 
-::ng-deep .mat-mdc-select-panel {
-  background-color: var(--primary) !important;
-}
+@media (max-width: 500px) {
+  .stats-cards {
+    grid-template-columns: 1fr;
+  }
 
-::ng-deep .mat-mdc-select {
-  color: var(--accent) !important;
-}
+  .stat-card {
+    width: 100%;
+  }
 
-::ng-deep .mat-mdc-select-arrow svg {
-  fill: var(--accent) !important;
-}
-
-::ng-deep
-  .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled):not(
-    .mat-mdc-option-multiple
-  ) {
-  background-color: var(--accent) !important;
-}
-
-::ng-deep
-  .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled):not(
-    .mat-mdc-option-multiple
-  )
-  .mdc-list-item__primary-text {
-  color: var(--primary) !important;
-}
-
-::ng-deep
-  .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled):not(
-    .mat-mdc-option-multiple
-  )
-  .mdc-list-item__primary-text
-  .flex
-  i {
-  color: var(--primary) !important;
-}
-
-::ng-deep
-  .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled):not(
-    .mat-mdc-option-multiple
-  )
-  .mdc-list-item__primary-text
-  .flex
-  .game {
-  color: var(--primary) !important;
-}
-
-::ng-deep .mat-pseudo-checkbox-minimal.mat-pseudo-checkbox-checked::after,
-.mat-pseudo-checkbox-minimal.mat-pseudo-checkbox-indeterminate::after {
-  color: var(--primary) !important;
-}
-
-::ng-deep .mdc-text-field--filled:not(.mdc-text-field--disabled) {
-  background-color: var(--primary) !important;
-}
-
-::ng-deep
-  .mdc-text-field--filled:not(.mdc-text-field--disabled)
-  .mdc-line-ripple::before {
-  border-bottom-color: var(--accent) !important;
-}
-
-::ng-deep
-  .mdc-text-field--filled:not(.mdc-text-field--disabled)
-  .mdc-line-ripple::after {
-  border-bottom-color: var(--accent) !important;
-}
-
-::ng-deep .mdc-text-field {
-  border-radius: var(--light-radius) !important;
-}
-
-::ng-deep .mat-mdc-select-value {
-  font-size: 20px;
-  font-weight: 500;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  .general-card-row,
+  .stats-cards {
+    width: 95%;
+  }
 }

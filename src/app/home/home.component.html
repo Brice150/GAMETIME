@@ -1,55 +1,46 @@
 <section>
   @if (!loading) {
-  <span class="description">Voici vos dernières stats :</span>
-  <form>
-    <mat-form-field>
-      <mat-select [(ngModel)]="gameSelected" name="game" class="cap">
-        <mat-option value="general" class="cap-option">
-          <div class="flex">
-            <i class="bx bxs-universal-access"></i>
-            <span class="game">Général</span>
-          </div>
-        </mat-option>
-        @for (game of games; track $index) {
-        <mat-option [value]="game.key" class="cap-option">
+    <span class="description">Voici vos dernières stats :</span>
+    <div class="general-card-row">
+      <div class="stat-card">
+        <div class="flex">
+          <i class="bx bxs-universal-access"></i>
+          <span class="game">Général</span>
+        </div>
+        <div class="medals">
+          <span class="victory-number">{{
+            playerService.currentPlayerSig()! | totalMedalsNumber
+          }}</span>
+          <i class="bx bxs-medal"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-cards">
+      @for (game of games; track $index) {
+        <div class="stat-card">
           <div class="flex">
             <i class="{{ game.icon }}"></i>
             <span class="game">{{ game.label }}</span>
           </div>
-        </mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-  </form>
-  @if (gameSelected === 'general') {
-  <div class="game-container">
-    <div class="medals">
-      <span class="victory-number">{{
-        playerService.currentPlayerSig()! | totalMedalsNumber
-      }}</span>
-      <i class="bx bxs-medal"></i>
+          <div class="medals">
+            <span class="victory-number">{{
+              game.key | medalsNumber: playerService.currentPlayerSig()!
+            }}</span>
+            <i class="bx bxs-medal"></i>
+          </div>
+        </div>
+      }
     </div>
-  </div>
-  } @else { @for (game of games; track $index) { @if (gameSelected === game.key)
-  {
-  <div class="game-container">
-    <div class="medals">
-      <span class="victory-number">{{
-        game.key | medalsNumber : playerService.currentPlayerSig()!
-      }}</span>
-      <i class="bx bxs-medal"></i>
+    <div class="button-container">
+      <button type="button" (click)="play()" title="Jouer">
+        <i class="bx bx-play"></i>
+        <span class="text">Jouer</span>
+      </button>
     </div>
-  </div>
-  } } }
-  <div class="button-container">
-    <button type="button" (click)="play()" title="Jouer">
-      <i class="bx bx-play"></i>
-      <span class="text">Jouer</span>
-    </button>
-  </div>
-  <span class="description">Voulez-vous rejoindre une room existante ?</span>
-  <app-join-room (joinRoomEvent)="joinRoom($event)"></app-join-room>
+    <span class="description">Voulez-vous rejoindre une room existante ?</span>
+    <app-join-room (joinRoomEvent)="joinRoom($event)"></app-join-room>
   } @else {
-  <mat-spinner></mat-spinner>
+    <mat-spinner></mat-spinner>
   }
 </section>

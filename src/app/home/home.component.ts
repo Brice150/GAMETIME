@@ -2,11 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterModule } from '@angular/router';
 import { switchMap, take } from 'rxjs';
 import { games } from '../../assets/data/games';
@@ -25,10 +21,6 @@ import { JoinRoomComponent } from './join-room/join-room.component';
     RouterModule,
     CommonModule,
     MatProgressSpinnerModule,
-    FormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
     MedalsNumberPipe,
     JoinRoomComponent,
     TotalMedalsNumberPipe,
@@ -45,7 +37,6 @@ export class HomeComponent {
   destroyRef = inject(DestroyRef);
   router = inject(Router);
   games = games;
-  gameSelected = 'general';
 
   play(): void {
     this.loading = true;
