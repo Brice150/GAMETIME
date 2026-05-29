@@ -11,14 +11,19 @@
           <mat-option value="general" class="cap-option">
             <div class="flex">
               <i class="bx bxs-universal-access"></i>
-              <span class="game">Général</span>
+              <span class="game"
+                >Général {{ getPlayerRankingPosition("general") }}</span
+              >
             </div>
           </mat-option>
           @for (game of games; track $index) {
             <mat-option [value]="game.key" class="cap-option">
               <div class="flex">
                 <i class="{{ game.icon }}"></i>
-                <span class="game">{{ game.label }}</span>
+                <span class="game"
+                  >{{ game.label }}
+                  {{ getPlayerRankingPosition(game.key) }}</span
+                >
               </div>
             </mat-option>
           }

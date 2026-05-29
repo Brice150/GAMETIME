@@ -61,6 +61,47 @@ export class RankingComponent implements OnInit {
       });
   }
 
+  getPlayerRankingPosition(gameName: string): string {
+    let sorted: Player[];
+
+    if (gameName === 'general') {
+      sorted = [...this.players].sort((a, b) => {
+        const aTotal =
+          a.stats?.reduce((sum, s) => sum + (s.medalsNumber ?? 0), 0) ?? 0;
+        const bTotal =
+          b.stats?.reduce((sum, s) => sum + (s.medalsNumber ?? 0), 0) ?? 0;
+        return bTotal - aTotal;
+      });
+    } else {
+      sorted = [...this.players].sort((a, b) => {
+        const aStat = a.stats.find((stat) => stat.gameName === gameName);
+        const bStat = b.stats.find((stat) => stat.gameName === gameName);
+
+        const aMedals = aStat ? aStat.medalsNumber : 0;
+        const bMedals = bStat ? bStat.medalsNumber : 0;
+
+        return bMedals - aMedals;
+      });
+    }
+
+    const currentPlayer = this.playerService.currentPlayerSig();
+    if (currentPlayer) {
+      const index = sorted.findIndex((p) => p.userId === currentPlayer.userId);
+      if (index >= 0) {
+        const position = index + 1;
+        const ordinal = this.getOrdinalSuffix(position);
+        return `(${position}${ordinal} / ${sorted.length})`;
+      }
+    }
+    return '';
+  }
+
+  private getOrdinalSuffix(num: number): string {
+    if (num === 1) return 'er';
+    if (num === 2) return 'ème';
+    return 'ème';
+  }
+
   sortPlayers(): void {
     if (this.gameSelected === 'general') {
       this.sortedPlayers = [...this.players].sort((a, b) => {
