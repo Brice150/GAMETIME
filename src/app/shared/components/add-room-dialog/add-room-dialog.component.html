@@ -79,38 +79,6 @@
     }
   </div>
 
-  @if(gameSelected === quizGameKey) {
-  <div class="slider-container top2">
-    <span class="description">Difficulté</span>
-    <mat-slider
-      min="1"
-      max="5"
-      step="1"
-      discrete
-      [displayWith]="formatLabelQuizDifficulty"
-      [ngClass]="{
-        showLarger: true
-      }"
-    >
-      <input matSliderThumb [(ngModel)]="difficultyFilter" />
-    </mat-slider>
-  </div>
-  <div class="games top">
-    <span class="description">Thème</span>
-    <mat-form-field>
-      <mat-select [(ngModel)]="categoryFilter" name="category" class="cap">
-        @for (theme of themes; track $index) {
-        <mat-option [value]="theme.key" class="cap-option">
-          <div class="flex">
-            <i class="{{ theme.icon }}"></i>
-            <span class="game">{{ theme.label }}</span>
-          </div>
-        </mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-  </div>
-  } @if (gameSelected !== quizGameKey) {
   <div class="toggle-container dialog">
     @if (gameSelected === motusGameKey) {
     <mat-slide-toggle [(ngModel)]="isWordLengthIncreasing">
@@ -129,7 +97,7 @@
     </mat-slide-toggle>
     }
   </div>
-  } }
+  }
   <div class="button-container">
     <button type="button" title="Annuler" (click)="cancel()" class="delete">
       <i class="bx bx-x"></i>

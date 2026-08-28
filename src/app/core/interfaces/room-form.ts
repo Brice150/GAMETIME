@@ -7,6 +7,5 @@ export interface RoomForm {
   isWordLengthIncreasing: boolean;
   startWordLength: number;
   categoryFilter: number;
-  difficultyFilter: number;
   startAgainMode?: boolean;
 }

@@ -40,7 +40,6 @@ export class RoomService {
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
   marquesGameKey = gameMap['marques'].key;
-  quizGameKey = gameMap['quiz'].key;
   currentRoomSig = signal<Room | null | undefined>(undefined);
 
   readonly roomReady$ = toObservable(computed(() => this.currentRoomSig()));

@@ -85,17 +85,7 @@
     </button>
     }
   </div>
-  } @else { @if (room && room.isLoading && room.gameName === quizGameKey) {
-  <div class="ai-container">
-    <mat-spinner class="ai"></mat-spinner>
-    <span
-      >L'IA génère les questions du thème
-      <span class="accent">{{ room.categoryFilter | quizCategory }}</span>
-      en difficulté
-      <span class="accent">{{ room.difficultyFilter | difficulty }}</span></span
-    >
-  </div>
   } @else {
   <mat-spinner></mat-spinner>
-  } }
+  }
 </section>

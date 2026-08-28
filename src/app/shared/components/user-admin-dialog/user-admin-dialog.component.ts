@@ -41,7 +41,6 @@ export class UserAdminDialogComponent implements OnInit {
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
   marquesGameKey = gameMap['marques'].key;
-  quizGameKey = gameMap['quiz'].key;
 
   ngOnInit(): void {
     if (this.data) {
@@ -74,11 +73,6 @@ export class UserAdminDialogComponent implements OnInit {
           ?.medalsNumber,
         [Validators.required, Validators.min(0), Validators.max(99999)],
       ],
-      quizMedalsNumber: [
-        this.player?.stats.find((stat) => stat.gameName === this.quizGameKey)
-          ?.medalsNumber,
-        [Validators.required, Validators.min(0), Validators.max(99999)],
-      ],
     });
   }
 
@@ -102,10 +96,6 @@ export class UserAdminDialogComponent implements OnInit {
       this.updateOrCreateStat(
         this.marquesGameKey,
         this.userForm.value.marquesMedalsNumber,
-      );
-      this.updateOrCreateStat(
-        this.quizGameKey,
-        this.userForm.value.quizMedalsNumber,
       );
 
       this.dialogRef.close(this.player);

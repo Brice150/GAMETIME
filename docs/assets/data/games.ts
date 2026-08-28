@@ -16,11 +16,6 @@ export const games: KeyLabel[] = [
     label: 'Motus',
     icon: 'bx bxs-objects-horizontal-left',
   },
-  {
-    key: 'quiz',
-    label: 'Quiz',
-    icon: 'bx bxs-help-circle',
-  },
 ];
 
 export const gameMap = Object.fromEntries(

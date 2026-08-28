@@ -28,7 +28,6 @@ import {
   where,
 } from '@angular/fire/firestore';
 import { catchError, from, Observable, throwError } from 'rxjs';
-import { ExcludedUserQuestions } from '../interfaces/excluded-user-questions';
 import { Player } from '../interfaces/player';
 import { Room } from '../interfaces/room';
 import { Stat } from '../interfaces/stat';
@@ -201,7 +200,6 @@ export class UserService {
 
     await Promise.all([
       this.migratePlayers(guestUid, targetUid),
-      this.migrateExcludedQuestions(guestUid, targetUid),
       this.migrateRooms(guestUid, targetUid),
     ]);
   }
@@ -272,64 +270,6 @@ export class UserService {
     });
 
     return Array.from(byGame.values());
-  }
-
-  private async migrateExcludedQuestions(
-    guestUid: string,
-    targetUid: string,
-  ): Promise<void> {
-    const excludedCollection = collection(this.firestore, 'excluded-questions');
-    const [guestSnap, targetSnap] = await Promise.all([
-      getDocs(query(excludedCollection, where('userId', '==', guestUid))),
-      getDocs(query(excludedCollection, where('userId', '==', targetUid))),
-    ]);
-
-    if (guestSnap.empty) {
-      return;
-    }
-
-    const guestDoc = guestSnap.docs[0];
-    const guestData = guestDoc.data() as ExcludedUserQuestions;
-
-    if (targetSnap.empty) {
-      await updateDoc(
-        doc(this.firestore, `excluded-questions/${guestDoc.id}`),
-        {
-          userId: targetUid,
-        },
-      );
-      return;
-    }
-
-    const targetDoc = targetSnap.docs[0];
-    const targetData = targetDoc.data() as ExcludedUserQuestions;
-
-    const themesMap = new Map<number, string[]>();
-
-    (targetData.themes ?? []).forEach((theme) => {
-      themesMap.set(theme.categoryFilter, [...(theme.descriptions ?? [])]);
-    });
-
-    (guestData.themes ?? []).forEach((theme) => {
-      const existing = themesMap.get(theme.categoryFilter) ?? [];
-      const merged = Array.from(
-        new Set([...(existing ?? []), ...(theme.descriptions ?? [])]),
-      ).slice(-30);
-      themesMap.set(theme.categoryFilter, merged);
-    });
-
-    const mergedThemes = Array.from(themesMap.entries()).map(
-      ([categoryFilter, descriptions]) => ({
-        categoryFilter,
-        descriptions,
-      }),
-    );
-
-    await updateDoc(doc(this.firestore, `excluded-questions/${targetDoc.id}`), {
-      themes: mergedThemes,
-    });
-
-    await deleteDoc(doc(this.firestore, `excluded-questions/${guestDoc.id}`));
   }
 
   private async migrateRooms(

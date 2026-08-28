@@ -57,7 +57,6 @@ export class AdminComponent implements OnInit {
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
   marquesGameKey = gameMap['marques'].key;
-  quizGameKey = gameMap['quiz'].key;
 
   ngOnInit(): void {
     this.roomService

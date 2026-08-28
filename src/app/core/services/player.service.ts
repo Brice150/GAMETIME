@@ -111,18 +111,13 @@ export class PlayerService {
           medalsNumber: 0,
           lastSuccessRetrieved: 0,
         };
-        const statQuiz: Stat = {
-          gameName: gameMap['quiz'].key,
-          medalsNumber: 0,
-          lastSuccessRetrieved: 0,
-        };
 
         const player: Player = {
           id: playerDoc.id,
           userId: userId,
           username: username,
           animal: animal,
-          stats: [statMotus, statDrapeaux, statMarques, statQuiz],
+          stats: [statMotus, statDrapeaux, statMarques],
           isAdmin: false,
           currentRoomWins: [],
           finishDate: null,

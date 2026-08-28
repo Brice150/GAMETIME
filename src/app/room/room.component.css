@@ -19,31 +19,6 @@ mat-spinner:not(.ai) {
   stroke: var(--accent) !important;
 }
 
-.ai-container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  gap: 30px;
-  width: 90%;
-}
-
-.ai-container span {
-  text-align: center;
-  font-size: 20px;
-  font-weight: 500;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-  color: var(--primary);
-}
-
-.ai-container span .accent {
-  color: var(--accent);
-}
-
 .button-container {
   display: flex;
   justify-content: center;

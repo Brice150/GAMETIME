@@ -8,10 +8,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSliderModule } from '@angular/material/slider';
 import { gameMap, games } from '../../../../assets/data/games';
-import { themes } from '../../../../assets/data/themes';
 import { BrandCategory } from '../../../core/enums/brand-category.enum';
 import { Continent } from '../../../core/enums/continent.enum';
-import { Difficulty } from '../../../core/enums/difficulty.enum';
 import { RoomForm } from '../../../core/interfaces/room-form';
 
 @Component({
@@ -32,11 +30,9 @@ export class AddRoomDialogComponent implements OnInit {
   dialogRef = inject(MatDialogRef<AddRoomDialogComponent>);
   data = inject<RoomForm>(MAT_DIALOG_DATA);
   games = games;
-  themes = themes;
   stepsNumber = 3;
   startWordLength = 5;
-  categoryFilter: string = themes[0].key;
-  difficultyFilter = 2;
+  categoryFilter = '1';
   isWordLengthIncreasing = true;
   showFirstLetterMotus = true;
   showFirstLetterDrapeaux = false;
@@ -44,7 +40,6 @@ export class AddRoomDialogComponent implements OnInit {
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
   marquesGameKey = gameMap['marques'].key;
-  quizGameKey = gameMap['quiz'].key;
   gameSelected: string = this.drapeauxGameKey;
   startAgainMode = false;
 
@@ -61,9 +56,7 @@ export class AddRoomDialogComponent implements OnInit {
       if (this.startAgainMode) {
         this.stepsNumber = this.data.stepsNumber ?? 3;
         this.startWordLength = this.data.startWordLength ?? 5;
-        this.categoryFilter =
-          this.data.categoryFilter?.toString() ?? themes[0].key;
-        this.difficultyFilter = this.data.difficultyFilter ?? 2;
+        this.categoryFilter = this.data.categoryFilter?.toString() ?? '1';
         this.isWordLengthIncreasing = this.data.isWordLengthIncreasing ?? true;
         this.showFirstLetterMotus = this.data.showFirstLetterMotus ?? true;
         this.showFirstLetterDrapeaux =
@@ -82,10 +75,6 @@ export class AddRoomDialogComponent implements OnInit {
     return BrandCategory[index] ?? BrandCategory[1];
   }
 
-  formatLabelQuizDifficulty(index: number): string {
-    return Difficulty[index] ?? Difficulty[2];
-  }
-
   cancel(): void {
     this.dialogRef.close(undefined);
   }
@@ -100,7 +89,6 @@ export class AddRoomDialogComponent implements OnInit {
       isWordLengthIncreasing: this.isWordLengthIncreasing,
       startWordLength: this.startWordLength,
       categoryFilter: Number(this.categoryFilter),
-      difficultyFilter: this.difficultyFilter,
     } as RoomForm);
   }
 

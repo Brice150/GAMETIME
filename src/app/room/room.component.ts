@@ -12,15 +12,14 @@ import { Timestamp } from '@angular/fire/firestore';
 import { MatDialog } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
-import { filter, map, Observable, of, switchMap } from 'rxjs';
+import { filter, Observable, of, switchMap } from 'rxjs';
 import { gameMap } from '../../assets/data/games';
 import { goals } from '../../assets/data/goals';
-import { ExcludedUserQuestions } from '../core/interfaces/excluded-user-questions';
+
 import { Player } from '../core/interfaces/player';
 import { Room } from '../core/interfaces/room';
 import { RoomForm } from '../core/interfaces/room-form';
-import { AiService } from '../core/services/ai.service';
-import { ExcludedQuestionsService } from '../core/services/excluded-questions.service';
+
 import { LocalStorageService } from '../core/services/local-storage.service';
 import { PlayerService } from '../core/services/player.service';
 import { RoomService } from '../core/services/room.service';
@@ -28,9 +27,7 @@ import { ToastrHelperService } from '../core/services/toastr-helper.service';
 import { AddRoomDialogComponent } from '../shared/components/add-room-dialog/add-room-dialog.component';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { MultiplayerDialogComponent } from '../shared/components/multiplayer-dialog/multiplayer-dialog.component';
-import { DifficultyPipe } from '../shared/pipes/difficulty.pipe';
-import { QuizCategoryPipe } from '../shared/pipes/quiz-category.pipe';
-import { AiGamesComponent } from './ai-games/ai-games.component';
+
 import { ResultsDetailsComponent } from './results-details/results-details.component';
 import { ResultsPodiumComponent } from './results-podium/results-podium.component';
 import { WaitingRoomComponent } from './waiting-room/waiting-room.component';
@@ -41,13 +38,10 @@ import { WordGamesComponent } from './word-games/word-games.component';
   imports: [
     CommonModule,
     WordGamesComponent,
-    AiGamesComponent,
     WaitingRoomComponent,
     ResultsPodiumComponent,
     ResultsDetailsComponent,
     MatProgressSpinnerModule,
-    DifficultyPipe,
-    QuizCategoryPipe,
   ],
   templateUrl: './room.component.html',
   styleUrl: './room.component.css',
@@ -55,12 +49,10 @@ import { WordGamesComponent } from './word-games/word-games.component';
 export class RoomComponent implements OnInit {
   roomService = inject(RoomService);
   playerService = inject(PlayerService);
-  excludedQuestionsService = inject(ExcludedQuestionsService);
   router = inject(Router);
   toastrHelper = inject(ToastrHelperService);
   activatedRoute = inject(ActivatedRoute);
   localStorageService = inject(LocalStorageService);
-  aiService = inject(AiService);
   dialog = inject(MatDialog);
   destroyRef = inject(DestroyRef);
   loading = true;
@@ -75,11 +67,8 @@ export class RoomComponent implements OnInit {
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
   marquesGameKey = gameMap['marques'].key;
-  quizGameKey = gameMap['quiz'].key;
   goals = goals;
-  excludedUserQuestions: ExcludedUserQuestions = {} as ExcludedUserQuestions;
   @ViewChild(WordGamesComponent) wordGamesComponent!: WordGamesComponent;
-  @ViewChild(AiGamesComponent) aiGamesComponent!: AiGamesComponent;
 
   ngOnInit(): void {
     this.activatedRoute.params
@@ -250,20 +239,6 @@ export class RoomComponent implements OnInit {
           }
         },
       });
-
-    this.excludedQuestionsService
-      .getExcludedQuestions()
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (excludedUserQuestions) => {
-          this.excludedUserQuestions = excludedUserQuestions[0];
-        },
-        error: (error: HttpErrorResponse) => {
-          if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastrHelper.error(error.message);
-          }
-        },
-      });
   }
 
   toJsDate(date: unknown): Date {
@@ -322,20 +297,18 @@ export class RoomComponent implements OnInit {
   }
 
   handlePlayerNextAction(stepWon: boolean): void {
-    if (this.room.gameName !== this.quizGameKey) {
-      if (stepWon) {
-        this.toastrHelper.info(
-          'Manche gagnée',
-          this.room.gameName.charAt(0).toUpperCase() +
-            this.room.gameName.slice(1),
-        );
-      } else {
-        this.toastrHelper.info(
-          'Manche perdue',
-          this.room.gameName.charAt(0).toUpperCase() +
-            this.room.gameName.slice(1),
-        );
-      }
+    if (stepWon) {
+      this.toastrHelper.info(
+        'Manche gagnée',
+        this.room.gameName.charAt(0).toUpperCase() +
+          this.room.gameName.slice(1),
+      );
+    } else {
+      this.toastrHelper.info(
+        'Manche perdue',
+        this.room.gameName.charAt(0).toUpperCase() +
+          this.room.gameName.slice(1),
+      );
     }
 
     if (
@@ -451,11 +424,7 @@ export class RoomComponent implements OnInit {
   }
 
   next(): void {
-    if (this.room.gameName === this.quizGameKey) {
-      this.aiGamesComponent?.new();
-    } else {
-      this.wordGamesComponent?.new();
-    }
+    this.wordGamesComponent?.new();
     this.isNextButtonAvailable = false;
   }
 
@@ -502,7 +471,6 @@ export class RoomComponent implements OnInit {
 
     this.room.countries = [];
     this.room.brands = [];
-    this.room.questions = [];
     this.room.responses = [];
     this.room.isReadyNotificationActivated = false;
     this.room.isLoading = true;
@@ -553,45 +521,13 @@ export class RoomComponent implements OnInit {
         error: (error: HttpErrorResponse) => {
           this.resetRoom();
           if (!error.message.includes('Missing or insufficient permissions.')) {
-            if (
-              !error.message.includes(
-                'Gemini Developer API is overloaded. Please try again later.',
-              )
-            ) {
-              this.toastrHelper.error(error.message);
-            } else {
-              this.toastrHelper.error(
-                "L'IA est saturée veuillez réessayer plus tard",
-              );
-            }
+            this.toastrHelper.error(error.message);
           }
         },
       });
   }
 
   generateQuestions(): Observable<Room> {
-    if (this.room.gameName === this.quizGameKey) {
-      return this.aiService
-        .generate(this.room, this.excludedUserQuestions)
-        .pipe(
-          switchMap((response) => {
-            const aiResponse = this.aiService.getAiResponse(response);
-            this.room.questions = this.aiService.mixResponsesOrder(
-              aiResponse.questions,
-            );
-            this.room.responses = aiResponse.responses;
-
-            const descriptions = this.room.questions.map((q) => q.description);
-            return this.excludedQuestionsService
-              .addOrUpdateExcludedQuestions(
-                this.room.categoryFilter,
-                descriptions,
-              )
-              .pipe(map(() => this.room));
-          }),
-        );
-    }
-
     this.roomService.generateResponses(
       this.room.gameName,
       this.room.stepsNumber,
@@ -702,7 +638,6 @@ export class RoomComponent implements OnInit {
         stepsNumber: this.room.stepsNumber,
         startWordLength: this.room.startWordLength,
         categoryFilter: this.room.categoryFilter?.toString(),
-        difficultyFilter: this.room.difficultyFilter,
         isWordLengthIncreasing: this.room.isWordLengthIncreasing,
         showFirstLetterMotus: this.room.showFirstLetter,
         showFirstLetterDrapeaux: this.room.showFirstLetter,
@@ -727,7 +662,6 @@ export class RoomComponent implements OnInit {
               this.room.showFirstLetter = roomData.showFirstLetterMarques;
             }
             this.room.stepsNumber = roomData.stepsNumber;
-            this.room.difficultyFilter = roomData.difficultyFilter;
             this.room.categoryFilter = roomData.categoryFilter;
             this.room.isWordLengthIncreasing = roomData.isWordLengthIncreasing;
             this.room.startWordLength = roomData.startWordLength;

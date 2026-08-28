@@ -9,6 +9,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { games } from '../../assets/data/games';
 import { Player } from '../core/interfaces/player';
+import { getTotalMedalsNumber } from '../core/utils/medals.util';
 import { PlayerService } from '../core/services/player.service';
 import { ToastrHelperService } from '../core/services/toastr-helper.service';
 import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
@@ -66,11 +67,7 @@ export class RankingComponent implements OnInit {
 
     if (gameName === 'general') {
       sorted = [...this.players].sort((a, b) => {
-        const aTotal =
-          a.stats?.reduce((sum, s) => sum + (s.medalsNumber ?? 0), 0) ?? 0;
-        const bTotal =
-          b.stats?.reduce((sum, s) => sum + (s.medalsNumber ?? 0), 0) ?? 0;
-        return bTotal - aTotal;
+        return getTotalMedalsNumber(b) - getTotalMedalsNumber(a);
       });
     } else {
       sorted = [...this.players].sort((a, b) => {
@@ -105,11 +102,7 @@ export class RankingComponent implements OnInit {
   sortPlayers(): void {
     if (this.gameSelected === 'general') {
       this.sortedPlayers = [...this.players].sort((a, b) => {
-        const aTotal =
-          a.stats?.reduce((sum, s) => sum + (s.medalsNumber ?? 0), 0) ?? 0;
-        const bTotal =
-          b.stats?.reduce((sum, s) => sum + (s.medalsNumber ?? 0), 0) ?? 0;
-        return bTotal - aTotal;
+        return getTotalMedalsNumber(b) - getTotalMedalsNumber(a);
       });
 
       const currentPlayer = this.playerService.currentPlayerSig();
