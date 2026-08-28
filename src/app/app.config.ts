@@ -9,7 +9,10 @@ import {
 } from '@angular/core';
 import { provideServiceWorker } from '@angular/service-worker';
 import { provideAppCheck } from '@angular/fire/app-check';
-import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
+import {
+  initializeAppCheck,
+  ReCaptchaEnterpriseProvider,
+} from 'firebase/app-check';
 import { getAI, GoogleAIBackend } from '@angular/fire/ai';
 import {
   FirebaseApp,
@@ -43,7 +46,7 @@ if (!environment.production) {
 
 // Doit rester avant getAI : Firebase AI Logic exige App Check sur ce projet.
 const appCheck = initializeAppCheck(firebaseApp, {
-  provider: new ReCaptchaV3Provider(environment.recaptchaSiteKey),
+  provider: new ReCaptchaEnterpriseProvider(environment.recaptchaSiteKey),
   isTokenAutoRefreshEnabled: true,
 });
 

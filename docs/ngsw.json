@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1787936104016,
+  "timestamp": 1787936676041,
   "index": "https://Brice150.github.io/GAMETIME/index.html",
   "assetGroups": [
     {
@@ -28,7 +28,7 @@
         "https://Brice150.github.io/GAMETIME/common.b463ca0622c1a9f0.js",
         "https://Brice150.github.io/GAMETIME/favicon.ico",
         "https://Brice150.github.io/GAMETIME/index.html",
-        "https://Brice150.github.io/GAMETIME/main.d3967404e9cf3c76.js",
+        "https://Brice150.github.io/GAMETIME/main.4db7f3f3ac5a9928.js",
         "https://Brice150.github.io/GAMETIME/manifest.webmanifest",
         "https://Brice150.github.io/GAMETIME/polyfills.01b824e3b3eb7f64.js",
         "https://Brice150.github.io/GAMETIME/runtime.fcf3964b66fc05b4.js",
@@ -130,8 +130,8 @@
     "https://Brice150.github.io/GAMETIME/assets/images/welcome/Quiz.webp": "45a39bae2cd45c670d01f7b9655f33c5e8f14724",
     "https://Brice150.github.io/GAMETIME/common.b463ca0622c1a9f0.js": "4f9121a920258f651b03d9640570fbc1df63f1d5",
     "https://Brice150.github.io/GAMETIME/favicon.ico": "fdd548c16d32520ccf6223c417927919bcaa04d2",
-    "https://Brice150.github.io/GAMETIME/index.html": "1cae20f5795aa552b6154b9626aad3433659174a",
-    "https://Brice150.github.io/GAMETIME/main.d3967404e9cf3c76.js": "ba34ff49262b2e84724f01ef07b57ccf7e9faa0d",
+    "https://Brice150.github.io/GAMETIME/index.html": "9b99a97e9e2ba10378b72019324151540eb9c3ea",
+    "https://Brice150.github.io/GAMETIME/main.4db7f3f3ac5a9928.js": "c001276e9b2c800cf8179260a6e2f0ebec0a8a0d",
     "https://Brice150.github.io/GAMETIME/manifest.webmanifest": "2d3f75b8954de8e68de1a7a43024f6a9c5a0407d",
     "https://Brice150.github.io/GAMETIME/polyfills.01b824e3b3eb7f64.js": "b0d9a5a2895ea01848405387740c129ba82fe1d5",
     "https://Brice150.github.io/GAMETIME/runtime.fcf3964b66fc05b4.js": "16bcef55bff1204e9a36801c5a623f8a07d7eb23",
