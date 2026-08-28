@@ -1,6 +1,7 @@
 export const environment = {
   production: false,
   imagePath: './assets/images/',
+  recaptchaSiteKey: '6LcFfJ0tAAAAAKcmkvke8BpXoS8SKzCWua7riOcd',
   firebase: {
     apiKey: 'AIzaSyB54hrlHdYrQhhrgh8AqIpIZyDaD5e7Jss',
     authDomain: 'game-time-64133.firebaseapp.com',

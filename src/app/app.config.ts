@@ -8,6 +8,8 @@ import {
   provideZoneChangeDetection,
 } from '@angular/core';
 import { provideServiceWorker } from '@angular/service-worker';
+import { provideAppCheck } from '@angular/fire/app-check';
+import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
 import { getAI, GoogleAIBackend } from '@angular/fire/ai';
 import {
   FirebaseApp,
@@ -31,6 +33,20 @@ import { AI_TOKEN } from './core/tokens/ai.token';
 
 const firebaseApp: FirebaseApp = initializeApp(environment.firebase);
 
+// En dev, Firebase imprime un jeton de debug dans la console : il faut
+// l'enregistrer dans Firebase Console > App Check > Apps > Jetons de debug.
+if (!environment.production) {
+  (
+    self as unknown as { FIREBASE_APPCHECK_DEBUG_TOKEN?: boolean }
+  ).FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+}
+
+// Doit rester avant getAI : Firebase AI Logic exige App Check sur ce projet.
+const appCheck = initializeAppCheck(firebaseApp, {
+  provider: new ReCaptchaV3Provider(environment.recaptchaSiteKey),
+  isTokenAutoRefreshEnabled: true,
+});
+
 const ai = getAI(firebaseApp, { backend: new GoogleAIBackend() });
 
 registerLocaleData(localeFr);
@@ -50,6 +66,7 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     provideHttpClient(),
     provideFirebaseApp(() => firebaseApp),
+    provideAppCheck(() => appCheck),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
     { provide: MAT_DATE_LOCALE, useValue: 'fr-FR' },
