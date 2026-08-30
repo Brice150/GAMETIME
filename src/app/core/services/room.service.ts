@@ -21,10 +21,7 @@ import {
   switchMap,
   take,
 } from 'rxjs';
-import { brands } from '../../../assets/data/brands';
-import { countries } from '../../../assets/data/countries';
 import { gameMap } from '../../../assets/data/games';
-import { words } from '../../../assets/data/words';
 import { BrandCategory } from '../enums/brand-category.enum';
 import { Continent } from '../enums/continent.enum';
 import { Brand } from '../interfaces/brand';
@@ -123,7 +120,30 @@ export class RoomService {
     return code;
   }
 
-  generateResponses(
+  // Les jeux de donnees (mots, pays, marques) pesent ~310 Ko de source et ne
+  // servent qu'a la generation d'une partie : on les charge a la demande
+  // plutot que de les embarquer dans le bundle initial.
+  private wordsData?: string[];
+  private countriesData?: Country[];
+  private brandsData?: Brand[];
+
+  private async loadWords(): Promise<string[]> {
+    this.wordsData ??= (await import('../../../assets/data/words')).words;
+    return this.wordsData;
+  }
+
+  private async loadCountries(): Promise<Country[]> {
+    this.countriesData ??= (await import('../../../assets/data/countries'))
+      .countries;
+    return this.countriesData;
+  }
+
+  private async loadBrands(): Promise<Brand[]> {
+    this.brandsData ??= (await import('../../../assets/data/brands')).brands;
+    return this.brandsData;
+  }
+
+  async generateResponses(
     gameSelected: string,
     stepsNumber: number,
     categoryFilter: number,
@@ -132,9 +152,9 @@ export class RoomService {
     countries: Country[],
     brands: Brand[],
     responses: string[],
-  ): void {
+  ): Promise<void> {
     if (gameSelected === this.drapeauxGameKey) {
-      const generatedCountries = this.generateCountries(
+      const generatedCountries = await this.generateCountries(
         stepsNumber,
         categoryFilter,
       );
@@ -145,7 +165,10 @@ export class RoomService {
         ...generatedCountries.map((country) => country.name),
       );
     } else if (gameSelected === this.marquesGameKey) {
-      const generatedBrands = this.generateBrands(stepsNumber, categoryFilter);
+      const generatedBrands = await this.generateBrands(
+        stepsNumber,
+        categoryFilter,
+      );
       brands.splice(0, brands.length, ...generatedBrands);
       responses.splice(
         0,
@@ -153,7 +176,7 @@ export class RoomService {
         ...generatedBrands.map((brand) => brand.name),
       );
     } else if (gameSelected === this.motusGameKey) {
-      const generatedWords = this.generateMotusWords(
+      const generatedWords = await this.generateMotusWords(
         stepsNumber,
         isWordLengthIncreasing,
         startWordLength,
@@ -162,11 +185,12 @@ export class RoomService {
     }
   }
 
-  generateMotusWords(
+  async generateMotusWords(
     stepsNumber: number,
     isWordLengthIncreasing: boolean,
     startWordLength: number,
-  ): string[] {
+  ): Promise<string[]> {
+    const allWords = await this.loadWords();
     const wordsToGenerate: string[] = [];
 
     const usedWords = new Set<string>();
@@ -177,7 +201,7 @@ export class RoomService {
         ? startWordLength + wordsToGenerate.length
         : startWordLength;
 
-      const word = this.newWord(length);
+      const word = this.newWord(allWords, length);
 
       if (!usedWords.has(word)) {
         usedWords.add(word);
@@ -190,15 +214,20 @@ export class RoomService {
     return wordsToGenerate;
   }
 
-  newWord(wordLength: number): string {
-    const wordsFixedLength = words.filter((word) => word.length === wordLength);
+  newWord(allWords: string[], wordLength: number): string {
+    const wordsFixedLength = allWords.filter(
+      (word) => word.length === wordLength,
+    );
     const randomIndex = Math.floor(Math.random() * wordsFixedLength.length);
     return wordsFixedLength[randomIndex];
   }
 
-  generateCountries(stepsNumber: number, continentFilter: number): Country[] {
+  async generateCountries(
+    stepsNumber: number,
+    continentFilter: number,
+  ): Promise<Country[]> {
     return this.generateRandomItems(
-      countries,
+      await this.loadCountries(),
       stepsNumber,
       continentFilter === Continent.Monde ? null : continentFilter,
       (country, continent) => country.continent === continent,
@@ -206,9 +235,12 @@ export class RoomService {
     );
   }
 
-  generateBrands(stepsNumber: number, categoryFilter: number): Brand[] {
+  async generateBrands(
+    stepsNumber: number,
+    categoryFilter: number,
+  ): Promise<Brand[]> {
     return this.generateRandomItems(
-      brands,
+      await this.loadBrands(),
       stepsNumber,
       categoryFilter === BrandCategory.Tout ? null : categoryFilter,
       (brand, category) => brand.category === category,

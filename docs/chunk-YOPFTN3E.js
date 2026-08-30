@@ -1,0 +1,1 @@
+import{pb as a}from"./chunk-3X6FCJA3.js";var m=class r{transform(t,e){return e?.stats?.find(i=>i.gameName===t)?.medalsNumber??0}static \u0275fac=function(e){return new(e||r)};static \u0275pipe=a({name:"medalsNumber",type:r,pure:!0})};export{m as a};

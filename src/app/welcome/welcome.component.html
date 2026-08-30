@@ -5,7 +5,14 @@
   </div>
   <div class="features">
     <div class="feature" #feature>
-      <img [src]="imagePath + 'welcome/Motus.webp'" alt="Motus.webp" />
+      <img
+        [src]="imagePath + 'welcome/Motus.webp'"
+        alt="Grille du jeu Motus avec les lettres colorées"
+        width="1023"
+        height="731"
+        fetchpriority="high"
+        decoding="async"
+      />
       <span>
         Défiez votre esprit avec Motus, seul ou entre amis, et découvrez le
         plaisir de deviner les mots grâce à des indices colorés. Violet si la
@@ -20,11 +27,25 @@
         chaque drapeau ! Jouez en solo ou en multijoueur et profitez des indices
         couleur pour vous rapprocher de la bonne réponse.
       </span>
-      <img [src]="imagePath + 'welcome/Drapeaux.webp'" alt="Drapeaux.webp" />
+      <img
+        [src]="imagePath + 'welcome/Drapeaux.webp'"
+        alt="Partie du jeu Drapeaux : deviner le pays derrière son drapeau"
+        width="1046"
+        height="747"
+        loading="lazy"
+        decoding="async"
+      />
     </div>
 
     <div class="feature" #feature>
-      <img [src]="imagePath + 'welcome/Marques.webp'" alt="Marques.webp" />
+      <img
+        [src]="imagePath + 'welcome/Marques.webp'"
+        alt="Partie du jeu Marques : reconnaître une entreprise à son logo"
+        width="1056"
+        height="754"
+        loading="lazy"
+        decoding="async"
+      />
       <span>
         Reconnaissez-vous les plus grandes marques du monde ? Associez chaque
         logo à son entreprise et mettez vos connaissances à l’épreuve. Comme
@@ -40,7 +61,11 @@
       </span>
       <img
         [src]="imagePath + 'welcome/Multijoueur.webp'"
-        alt="Multijoueur.webp"
+        alt="Résultats d'une partie multijoueur et médailles remportées"
+        width="997"
+        height="712"
+        loading="lazy"
+        decoding="async"
       />
     </div>
   </div>

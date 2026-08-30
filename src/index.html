@@ -75,12 +75,20 @@
     <meta name="apple-mobile-web-app-title" content="GAME TIME" />
     <link rel="apple-touch-icon" href="assets/icons/icon-152x152.png" />
 
-    <!-- Preconnect to Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Polices auto-hébergées (Roboto + sous-ensemble Boxicons) -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap"
-      rel="stylesheet"
+      rel="preload"
+      href="assets/fonts/roboto-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="assets/fonts/boxicons-subset.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
     />
 
     <!-- Schema.org -->
@@ -193,17 +201,156 @@
       }
     </script>
 
-    <!-- Styles & Icons -->
-    <link
-      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet"
-    />
+    <!-- Polices + écran de chargement : inline pour un premier rendu immédiat -->
+    <style>
+      @font-face {
+        font-family: "Roboto";
+        font-style: normal;
+        font-weight: 300 500;
+        font-display: swap;
+        src: url("assets/fonts/roboto-latin.woff2") format("woff2");
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6,
+          U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122,
+          U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+      }
+
+      @font-face {
+        font-family: "Roboto";
+        font-style: normal;
+        font-weight: 300 500;
+        font-display: swap;
+        src: url("assets/fonts/roboto-latin-ext.woff2") format("woff2");
+        unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7,
+          U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F,
+          U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F,
+          U+A720-A7FF;
+      }
+
+      @font-face {
+        font-family: boxicons;
+        font-weight: 400;
+        font-style: normal;
+        font-display: block;
+        src: url("assets/fonts/boxicons-subset.woff2") format("woff2");
+      }
+
+      #app-shell-loader {
+        position: fixed;
+        inset: 0;
+        background: #0f0f1a;
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      #app-shell-loader .loader-inner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      #app-shell-loader .loader-clip {
+        overflow: hidden;
+        padding: 3px 0;
+      }
+
+      #app-shell-loader .loader-word-game {
+        display: block;
+        font-family: Roboto, "Helvetica Neue", sans-serif;
+        font-weight: 500;
+        font-size: 18px;
+        letter-spacing: 0.32em;
+        text-transform: uppercase;
+        color: white;
+        text-align: center;
+        animation: loader-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
+      }
+
+      #app-shell-loader .loader-word-time {
+        display: block;
+        font-family: Roboto, "Helvetica Neue", sans-serif;
+        font-weight: 500;
+        font-size: 40px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: #a83eff;
+        text-align: center;
+        animation: loader-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both;
+      }
+
+      #app-shell-loader .loader-line-wrap {
+        margin-top: 10px;
+        height: 4px;
+        width: 100px;
+        background: rgba(144, 52, 219, 0.25);
+        border-radius: 2px;
+        overflow: hidden;
+        animation: loader-fadein 0.4s ease 0.8s both;
+      }
+
+      #app-shell-loader .loader-line-fill {
+        height: 100%;
+        width: 40%;
+        background: #9034db;
+        border-radius: 2px;
+        animation: loader-ping 1.4s ease-in-out 0.9s infinite;
+      }
+
+      @keyframes loader-rise {
+        from {
+          opacity: 0;
+          transform: translateY(24px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes loader-fadein {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes loader-ping {
+        0% {
+          transform: translateX(-100%);
+        }
+        50%,
+        100% {
+          transform: translateX(250%);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        #app-shell-loader *,
+        #app-shell-loader *::before {
+          animation: none !important;
+        }
+      }
+    </style>
   </head>
   <body class="mat-typography">
+    <div id="app-shell-loader">
+      <div class="loader-inner">
+        <div class="loader-name">
+          <div class="loader-clip">
+            <span class="loader-word-game">Game</span>
+          </div>
+          <div class="loader-clip">
+            <span class="loader-word-time">Time</span>
+          </div>
+        </div>
+        <div class="loader-line-wrap">
+          <div class="loader-line-fill"></div>
+        </div>
+      </div>
+    </div>
     <app-root></app-root>
   </body>
 </html>

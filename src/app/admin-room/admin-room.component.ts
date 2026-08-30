@@ -5,7 +5,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
-import { filter, Observable, of, switchMap } from 'rxjs';
+import { filter, from, map, Observable, of, switchMap } from 'rxjs';
 import { gameMap } from '../../assets/data/games';
 
 import { Player } from '../core/interfaces/player';
@@ -183,18 +183,18 @@ export class AdminRoomComponent implements OnInit {
   }
 
   generateQuestions(): Observable<Room> {
-    this.roomService.generateResponses(
-      this.room.gameName,
-      this.room.stepsNumber,
-      this.room.categoryFilter,
-      this.room.isWordLengthIncreasing,
-      this.room.startWordLength,
-      this.room.countries,
-      this.room.brands,
-      this.room.responses,
-    );
-
-    return of(this.room);
+    return from(
+      this.roomService.generateResponses(
+        this.room.gameName,
+        this.room.stepsNumber,
+        this.room.categoryFilter,
+        this.room.isWordLengthIncreasing,
+        this.room.startWordLength,
+        this.room.countries,
+        this.room.brands,
+        this.room.responses,
+      ),
+    ).pipe(map(() => this.room));
   }
 
   resetRoom(): void {

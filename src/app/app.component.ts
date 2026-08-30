@@ -27,6 +27,8 @@ export class AppComponent implements OnInit {
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         switchMap((user) => {
+          this.removeShellLoader();
+
           if (user) {
             this.userService.currentUserSig.set({
               email: user.email ?? 'Compte invité',
@@ -45,11 +47,19 @@ export class AppComponent implements OnInit {
           this.playerService.currentPlayerSig.set(player ?? null);
         },
         error: (error: HttpErrorResponse) => {
+          this.removeShellLoader();
           if (!error.message.includes('Missing or insufficient permissions.')) {
             this.toastrHelper.error(error.message);
           }
         },
       });
+  }
+
+  // L'écran de chargement inline (index.html) reste affiché tant que Firebase
+  // n'a pas résolu la session : cela évite un écran vide, puis un saut de mise
+  // en page au moment où le header apparaît.
+  removeShellLoader(): void {
+    document.getElementById('app-shell-loader')?.remove();
   }
 
   logout(): void {
