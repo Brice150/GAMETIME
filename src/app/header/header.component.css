@@ -1,223 +1,155 @@
 header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
   display: flex;
   align-items: center;
-  flex-direction: column;
-  margin: 0;
+  flex-wrap: wrap;
+  gap: 12px;
   width: 100%;
-  color: var(--accent);
-  position: relative;
-  min-height: 50px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border-1);
+  background: var(--bg-veil);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+/* Ordre visuel : menu | titre | medailles, puis la liste des joueurs. */
+.switch-container {
+  order: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .project-title {
-  top: 20px;
-  position: absolute;
-  z-index: 2;
-}
-
-.project-title h1 {
-  font-size: 30px;
-  font-weight: 500;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  margin: 0;
-  color: var(--title-accent);
-}
-
-.switch-container {
-  position: absolute;
-  top: 8px;
-  left: 20px;
-  z-index: 1;
+  order: 2;
+  flex: 1;
+  min-width: 0;
+  text-align: center;
 }
 
 .switch-container.medals-container {
-  left: unset;
-  right: 20px;
+  order: 3;
 }
 
-button {
+/* La liste des joueurs occupe sa propre ligne sous la barre. */
+.players-row {
+  order: 4;
   display: flex;
   justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  border-radius: var(--light-radius);
-  transition: 0.5s ease;
-  background-color: var(--primary);
-  color: var(--accent) !important;
-  border: none;
-  margin: 5px 0;
+  flex-basis: 100%;
+  margin-top: 4px;
 }
 
-button.active {
-  color: var(--primary) !important;
-  background-color: var(--accent) !important;
-}
-
-.back {
-  width: 50px;
-  height: 50px;
+.project-title h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-bright);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .menu {
-  width: 50px;
-  height: 50px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  padding: 0;
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+  color: var(--text-1) !important;
+  cursor: pointer;
+  transition:
+    background var(--speed) var(--ease),
+    border-color var(--speed) var(--ease),
+    transform var(--speed) var(--ease);
 }
 
-button i {
-  font-size: 30px;
+.menu:hover {
+  background: var(--accent-soft);
+  border-color: var(--border-2);
+  transform: translateY(-1px);
 }
 
-button:hover {
-  color: var(--primary) !important;
-  background-color: var(--accent) !important;
-}
-
-.switch-container button i {
-  font-size: 35px;
-}
-
-.switch-container button:hover {
-  color: var(--primary);
-  background-color: var(--accent);
-}
-
-.switch-container button .bx-arrow-back {
-  font-size: 35px;
+.menu i {
+  font-size: 26px;
 }
 
 .description {
-  margin-left: 10px;
-  font-size: 18px;
+  margin-left: 12px;
+  font-size: 15px;
+  font-weight: 500;
 }
 
-.medals {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 5px;
-  border-radius: var(--light-radius);
-  background-color: var(--primary);
-  color: var(--accent);
-  margin: 5px 0;
-  padding-top: 9px;
-  padding-bottom: 9px;
-  padding-left: 7px;
-  padding-right: 3px;
-}
-
-.victory-number {
-  font-size: 22px;
-  font-weight: 600;
-}
-
-.medals i {
-  font-size: 32px;
-}
-
+/* Liste des joueurs pendant une partie */
 .players {
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
-  gap: 5px;
-  border-radius: var(--light-radius);
-  background-color: var(--primary);
-  color: var(--accent);
-  padding: 7px 0;
-  padding-left: 8px;
-  padding-right: 5px;
-  min-height: 36px;
-  margin-top: 70px;
-  width: 200px;
+  gap: 6px;
+  width: min(320px, 100%);
+  padding: 8px 12px;
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-md);
+  background: var(--surface-1);
 }
 
 .players .player {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 10px;
   width: 100%;
-  font-size: 15px;
-  font-weight: bold;
-  color: var(--accent);
-  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent-bright);
 }
 
 .players .player.alt-color {
-  color: var(--secondary);
+  color: var(--text-2);
 }
 
 .players .player .step {
-  background-color: var(--accent);
-  color: var(--primary);
-  border-radius: var(--light-radius);
-  padding: 3px 7px;
-  padding-left: 5px;
-  margin-left: 7px;
+  flex-shrink: 0;
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
+  background: var(--accent-gradient);
+  color: var(--on-accent);
+  font-size: 13px;
 }
 
 .players .player.alt-color .step {
-  background-color: var(--secondary);
+  background: var(--surface-3);
+  color: var(--text-1);
 }
 
 .slash {
   margin: 0 2px;
+  opacity: 0.7;
 }
 
 .username {
-  width: 150px;
+  min-width: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   text-align: left;
 }
 
-::ng-deep .mat-mdc-menu-content {
-  padding: 10px !important;
-  background-color: var(--primary);
-}
-
-::ng-deep .mat-mdc-menu-item-text {
-  display: flex;
-  align-items: center;
-}
-
-::ng-deep .mdc-button {
-  min-width: 0 !important;
-}
-
-::ng-deep .mat-mdc-button:not(:disabled) {
-  color: var(--accent) !important;
-}
-
-::ng-deep .mat-mdc-button:not(:disabled):hover {
-  color: var(--primary) !important;
-}
-
-::ng-deep .mdc-button__label {
-  height: 35px !important;
-}
-
-::ng-deep .mat-mdc-button .mat-mdc-button-touch-target {
-  height: 50px !important;
-}
-
 @media screen and (max-width: 550px) {
-  .project-title {
-    top: 20px;
+  header {
+    padding: 8px 12px;
   }
 
   .project-title h1 {
-    font-size: 25px;
-  }
-}
-
-@media screen and (max-width: 450px) {
-  .project-title {
-    top: 24px;
-  }
-
-  .project-title h1 {
-    font-size: 22px;
+    font-size: 18px;
+    letter-spacing: 0.1em;
   }
 }

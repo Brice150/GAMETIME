@@ -1,19 +1,127 @@
-:root {
-  --background: #0f0f1a;
-  --primary: white;
-  --secondary: black;
-  --accent: #9034db;
-  --title-accent: #a83eff;
+/* ==========================================================================
+   GAME TIME - Design system
+   Palette ambre/or, themes clair et sombre, primitives partagees et
+   personnalisation des composants Angular Material.
 
-  --strong-radius: 20px;
-  --light-radius: 10px;
+   Chaque couleur est declaree une seule fois via `light-dark()`. Le theme
+   effectif depend de `color-scheme`, pilote par l'attribut `data-theme` pose
+   sur <html> (voir ThemeService) ; sans attribut, on suit le systeme.
+   ========================================================================== */
+
+:root {
+  color-scheme: light dark;
+
+  /* Fonds */
+  --bg-base: light-dark(#fbf7ef, #12100b);
+  --bg-deep: light-dark(#f2ebdd, #0a0906);
+  --bg-veil: light-dark(rgba(251, 247, 239, 0.8), rgba(18, 16, 11, 0.75));
+  --backdrop: light-dark(rgba(60, 45, 20, 0.38), rgba(8, 7, 4, 0.72));
+  --background: var(--bg-base);
+
+  /* Halos d'ambiance */
+  --glow-1: light-dark(rgba(245, 158, 11, 0.18), rgba(217, 119, 6, 0.22));
+  --glow-2: light-dark(rgba(251, 191, 36, 0.16), rgba(251, 191, 36, 0.1));
+  --glow-3: light-dark(rgba(234, 88, 12, 0.1), rgba(146, 64, 14, 0.24));
+
+  /* Surfaces */
+  --surface-1: light-dark(rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.04));
+  --surface-2: light-dark(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.08));
+  --surface-3: light-dark(rgba(38, 29, 12, 0.08), rgba(255, 255, 255, 0.13));
+  --surface-solid: light-dark(#ffffff, #1a160e);
+  --border-1: light-dark(rgba(38, 29, 12, 0.11), rgba(255, 255, 255, 0.09));
+  --border-2: light-dark(rgba(38, 29, 12, 0.22), rgba(255, 255, 255, 0.18));
+
+  /* Texte */
+  --text-1: light-dark(#1c1710, #f7f1e6);
+  --text-2: light-dark(rgba(28, 23, 16, 0.68), rgba(247, 241, 230, 0.68));
+  --text-3: light-dark(rgba(28, 23, 16, 0.46), rgba(247, 241, 230, 0.44));
+
+  /* Accent ambre : `-bright` est la teinte lisible sur le fond de page,
+     `-deep`/`-lite` composent les aplats, `--on-accent` le texte dessus. */
+  --accent: light-dark(#d97706, #f59e0b);
+  --accent-deep: light-dark(#b45309, #d97706);
+  --accent-lite: light-dark(#d97706, #fbbf24);
+  --accent-bright: light-dark(#b45309, #fcd34d);
+  --accent-soft: light-dark(rgba(245, 158, 11, 0.16), rgba(251, 191, 36, 0.14));
+  --accent-border: light-dark(rgba(180, 83, 9, 0.3), rgba(251, 191, 36, 0.32));
+  --accent-tint: light-dark(rgba(245, 158, 11, 0.16), rgba(217, 119, 6, 0.24));
+  --accent-tint-2: light-dark(
+    rgba(255, 255, 255, 0.6),
+    rgba(255, 255, 255, 0.04)
+  );
+  --on-accent: light-dark(#ffffff, #2a1c05);
+  --accent-gradient: linear-gradient(
+    135deg,
+    var(--accent-deep) 0%,
+    var(--accent-lite) 100%
+  );
+
+  /* Semantique */
+  --danger: light-dark(#dc2626, #ff6b81);
+  --danger-soft: light-dark(rgba(220, 38, 38, 0.1), rgba(255, 107, 129, 0.14));
+  --danger-border: light-dark(
+    rgba(220, 38, 38, 0.3),
+    rgba(255, 107, 129, 0.35)
+  );
+  --danger-glow: light-dark(rgba(220, 38, 38, 0.28), rgba(255, 107, 129, 0.35));
+  --success: light-dark(#15803d, #34d399);
+  --success-soft: light-dark(rgba(21, 128, 61, 0.12), rgba(52, 211, 153, 0.14));
+  --success-border: light-dark(
+    rgba(21, 128, 61, 0.32),
+    rgba(52, 211, 153, 0.4)
+  );
+  --success-glow: light-dark(rgba(21, 128, 61, 0.25), rgba(52, 211, 153, 0.3));
+  --on-success: light-dark(#ffffff, #05291b);
+  --gold: light-dark(#c98a00, #ffc93c);
+  --silver: light-dark(#8b93a7, #cfd6e4);
+  --bronze: light-dark(#a2652f, #e08a4a);
+
+  /* Rayons */
+  --r-xs: 8px;
+  --r-sm: 12px;
+  --r-md: 16px;
+  --r-lg: 22px;
+  --r-xl: 30px;
+  --r-pill: 999px;
+  --light-radius: var(--r-md);
+  --strong-radius: var(--r-lg);
+
+  /* Ombres */
+  --shadow-color: light-dark(rgba(72, 51, 12, 0.12), rgba(0, 0, 0, 0.4));
+  --shadow-color-2: light-dark(rgba(72, 51, 12, 0.16), rgba(0, 0, 0, 0.5));
+  --accent-glow: light-dark(rgba(180, 83, 9, 0.3), rgba(217, 119, 6, 0.45));
+  --shadow-1: 0 4px 16px var(--shadow-color);
+  --shadow-2: 0 14px 44px var(--shadow-color-2);
+  --shadow-glow: 0 8px 26px var(--accent-glow);
+
+  /* Mouvement */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --speed: 0.28s;
+
+  /* Alias historiques (conserves pour compatibilite) */
+  --primary: var(--text-1);
+  --secondary: var(--text-2);
+  --title-accent: var(--accent-bright);
 }
+
+/* Choix explicite de l'utilisateur : `light-dark()` suit `color-scheme`. */
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+/* --------------------------------------------------------------------------
+   Base
+   -------------------------------------------------------------------------- */
 
 html,
 body {
   min-height: 100vh;
   min-height: 100dvh;
-  background-color: var(--background);
+  background-color: var(--bg-base);
 }
 
 body {
@@ -21,26 +129,504 @@ body {
   padding: 0;
   box-sizing: border-box;
   font-family: Roboto, "Helvetica Neue", sans-serif;
-  background: var(--background);
+  color: var(--text-1);
+  background-color: var(--bg-base);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Halos d'ambiance : calque fixe compose a part pour eviter les repeints
+   couteux d'un `background-attachment: fixed` pendant le defilement. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(60rem 40rem at 12% -10%, var(--glow-1), transparent 60%),
+    radial-gradient(45rem 32rem at 105% 8%, var(--glow-2), transparent 60%),
+    radial-gradient(55rem 45rem at 50% 110%, var(--glow-3), transparent 65%);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 ::-webkit-scrollbar {
   display: none;
 }
 
-.toast-container .ngx-toastr.custom {
+::selection {
+  background: var(--accent-soft);
+  color: var(--text-1);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-bright);
+  outline-offset: 3px;
+  border-radius: var(--r-xs);
+}
+
+/* --------------------------------------------------------------------------
+   Primitives partagees
+   -------------------------------------------------------------------------- */
+
+/* Boutons : plein degrade par defaut, `.share` fantome, `.delete` danger. */
+.button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.button-container button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 0 20px;
+  border: 1px solid transparent;
+  border-radius: var(--r-pill);
+  background: var(--accent-gradient);
+  color: var(--on-accent);
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  box-shadow: var(--shadow-1);
+  transition:
+    transform var(--speed) var(--ease),
+    box-shadow var(--speed) var(--ease),
+    background var(--speed) var(--ease),
+    border-color var(--speed) var(--ease),
+    color var(--speed) var(--ease);
+}
+
+.button-container button i {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.button-container button .text {
+  font-size: 16px;
+  font-weight: 500;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  white-space: nowrap;
+}
+
+.button-container button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
+}
+
+.button-container button:active {
+  transform: translateY(0);
+}
+
+/* Variante fantome */
+.button-container button.share {
+  background: var(--surface-2);
+  border-color: var(--border-1);
+  color: var(--text-1);
   box-shadow: none;
-  border-radius: var(--light-radius);
-  margin-top: 5px;
+}
+
+.button-container button.share:hover {
+  background: var(--surface-3);
+  border-color: var(--border-2);
+  box-shadow: var(--shadow-1);
+}
+
+/* Variante danger */
+.button-container button.delete {
+  background: var(--danger-soft);
+  border-color: var(--danger-border);
+  color: var(--danger);
+  box-shadow: none;
+}
+
+.button-container button.delete:hover {
+  background: var(--danger);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 8px 24px var(--danger-glow);
+}
+
+.button-container-delete {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.button-container-delete .delete {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--danger-border);
+  background: var(--danger-soft);
+  color: var(--danger);
+  cursor: pointer;
+  transition:
+    transform var(--speed) var(--ease),
+    background var(--speed) var(--ease),
+    color var(--speed) var(--ease),
+    box-shadow var(--speed) var(--ease);
+}
+
+.button-container-delete .delete i {
+  font-size: 22px;
+}
+
+.button-container-delete .delete:hover {
+  transform: translateY(-2px);
+  background: var(--danger);
+  color: #fff;
+  box-shadow: 0 8px 24px var(--danger-glow);
+}
+
+/* Pastille de medailles / score */
+.medals {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: var(--r-pill);
+  background: var(--accent-gradient);
+  color: var(--on-accent);
+  box-shadow: 0 4px 14px var(--accent-glow);
+  white-space: nowrap;
+}
+
+.medals .victory-number {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.medals i {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.alt-color .medals {
+  background: var(--surface-3);
+  color: var(--text-1);
+  box-shadow: none;
+}
+
+/* Animation d'entree */
+@keyframes gt-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.gt-rise {
+  animation: gt-rise 0.5s var(--ease) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Notifications (ngx-toastr)
+   -------------------------------------------------------------------------- */
+
+.toast-container .ngx-toastr.custom {
+  box-shadow: var(--shadow-2);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border-1);
+  margin-top: 8px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
 .toast-container .ngx-toastr.custom.info {
-  background-color: var(--accent);
-  color: var(--primary);
+  background: var(--accent-gradient);
+  color: var(--on-accent);
 }
 
 .toast-container .ngx-toastr.custom.error {
-  background-color: red;
+  background-color: var(--danger);
+  color: #fff;
+}
+
+/* --------------------------------------------------------------------------
+   Angular Material - theme ambre, clair et sombre
+   Les tokens `--mat-sys-*` pilotent l'ensemble des composants Material,
+   ce qui evite les surcharges `::ng-deep` dans chaque composant.
+   -------------------------------------------------------------------------- */
+
+html {
+  --mat-sys-primary: light-dark(#b45309, #fbbf24);
+  --mat-sys-on-primary: light-dark(#ffffff, #2a1c05);
+  --mat-sys-primary-container: light-dark(#ffe4b8, #7c4a06);
+  --mat-sys-on-primary-container: light-dark(#4a2600, #ffe4b8);
+  --mat-sys-primary-fixed: light-dark(#ffe4b8, #7c4a06);
+  --mat-sys-primary-fixed-dim: light-dark(#ffcd80, #9a5c07);
+  --mat-sys-on-primary-fixed: light-dark(#2f1800, #ffefd6);
+  --mat-sys-on-primary-fixed-variant: light-dark(#7c4a06, #ffe4b8);
+  --mat-sys-inverse-primary: light-dark(#fbbf24, #b45309);
+
+  --mat-sys-secondary: light-dark(#6f5b3e, #ddc7a6);
+  --mat-sys-on-secondary: light-dark(#ffffff, #3d2e15);
+  --mat-sys-secondary-container: light-dark(#f6e2c4, #55442a);
+  --mat-sys-on-secondary-container: light-dark(#392a12, #f6e2c4);
+  --mat-sys-secondary-fixed: light-dark(#f6e2c4, #55442a);
+  --mat-sys-secondary-fixed-dim: light-dark(#ddc7a6, #6b5738);
+  --mat-sys-on-secondary-fixed: light-dark(#251a06, #f6e2c4);
+  --mat-sys-on-secondary-fixed-variant: light-dark(#55442a, #eddcc0);
+
+  --mat-sys-tertiary: light-dark(#4d6544, #b3ccaa);
+  --mat-sys-on-tertiary: light-dark(#ffffff, #1f351a);
+  --mat-sys-tertiary-container: light-dark(#cfebc4, #354c2e);
+  --mat-sys-on-tertiary-container: light-dark(#0d2007, #cfebc4);
+  --mat-sys-tertiary-fixed: light-dark(#cfebc4, #354c2e);
+  --mat-sys-tertiary-fixed-dim: light-dark(#b3ccaa, #46603d);
+  --mat-sys-on-tertiary-fixed: light-dark(#0d2007, #cfebc4);
+  --mat-sys-on-tertiary-fixed-variant: light-dark(#354c2e, #c5e0bb);
+
+  --mat-sys-error: light-dark(#ba1a1a, #ffb4ab);
+  --mat-sys-on-error: light-dark(#ffffff, #690005);
+  --mat-sys-error-container: light-dark(#ffdad6, #93000a);
+  --mat-sys-on-error-container: light-dark(#93000a, #ffdad6);
+
+  --mat-sys-background: light-dark(#fbf7ef, #12100b);
+  --mat-sys-on-background: light-dark(#1c1710, #f7f1e6);
+  --mat-sys-surface: light-dark(#fffbf4, #16130d);
+  --mat-sys-on-surface: light-dark(#1c1710, #f7f1e6);
+  --mat-sys-surface-variant: light-dark(#efe0cb, #4d4335);
+  --mat-sys-on-surface-variant: light-dark(#4d4335, #d2c3ad);
+  --mat-sys-surface-dim: light-dark(#e4dcce, #0e0c08);
+  --mat-sys-surface-bright: light-dark(#fffbf4, #3c352a);
+  --mat-sys-surface-container-lowest: light-dark(#ffffff, #090804);
+  --mat-sys-surface-container-low: light-dark(#fdf5e9, #16130d);
+  --mat-sys-surface-container: light-dark(#f8efe1, #1c180f);
+  --mat-sys-surface-container-high: light-dark(#f2e9db, #262115);
+  --mat-sys-surface-container-highest: light-dark(#ece3d5, #322b1c);
+  --mat-sys-surface-tint: light-dark(#b45309, #fbbf24);
+  --mat-sys-inverse-surface: light-dark(#312b23, #f7f1e6);
+  --mat-sys-inverse-on-surface: light-dark(#f8efe1, #1c180f);
+
+  --mat-sys-outline: light-dark(#7f7461, #9a8e79);
+  --mat-sys-outline-variant: light-dark(#d1c4b0, #4d4335);
+  --mat-sys-scrim: #000000;
+  --mat-sys-shadow: #000000;
+
+  --mat-sys-corner-extra-small: 10px;
+  --mat-sys-corner-extra-small-top: 10px 10px 0 0;
+  --mat-sys-corner-small: 12px;
+  --mat-sys-corner-medium: 16px;
+  --mat-sys-corner-large: 22px;
+  --mat-sys-corner-large-start: 22px 0 0 22px;
+  --mat-sys-corner-large-end: 0 22px 22px 0;
+  --mat-sys-corner-large-top: 22px 22px 0 0;
+  --mat-sys-corner-extra-large: 30px;
+  --mat-sys-corner-extra-large-top: 30px 30px 0 0;
+}
+
+/* Champs de formulaire */
+.mdc-text-field--filled:not(.mdc-text-field--disabled) {
+  background-color: var(--surface-2) !important;
+}
+
+.mdc-text-field {
+  border-radius: var(--r-md) !important;
+}
+
+.mat-mdc-form-field-focus-overlay {
+  display: none;
+}
+
+.mdc-text-field--filled:not(.mdc-text-field--disabled)
+  .mdc-line-ripple::before {
+  border-bottom-color: var(--border-2) !important;
+}
+
+.mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-line-ripple::after {
+  border-bottom-color: var(--accent-bright) !important;
+}
+
+.mat-mdc-form-field-subscript-wrapper {
+  display: none;
+}
+
+.mat-mdc-select-value,
+.mat-mdc-select {
+  color: var(--text-1) !important;
+}
+
+.mat-mdc-select-arrow svg {
+  fill: var(--accent-bright) !important;
+}
+
+.mat-mdc-select-panel,
+.mat-mdc-autocomplete-panel {
+  background-color: var(--surface-solid) !important;
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-md) !important;
+  box-shadow: var(--shadow-2) !important;
+}
+
+.mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled):not(
+    .mat-mdc-option-multiple
+  ) {
+  background: var(--accent-soft) !important;
+}
+
+.mat-mdc-option .mat-pseudo-checkbox-minimal {
+  display: none;
+}
+
+/* Menu */
+.mat-mdc-menu-panel {
+  background-color: var(--surface-solid) !important;
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-lg) !important;
+  box-shadow: var(--shadow-2) !important;
+}
+
+.mat-mdc-menu-content {
+  padding: 8px !important;
+}
+
+.mat-mdc-menu-item {
+  border-radius: var(--r-sm) !important;
+  color: var(--text-1) !important;
+  transition: background var(--speed) var(--ease);
+}
+
+.mat-mdc-menu-item:hover:not([disabled]) {
+  background: var(--surface-2) !important;
+}
+
+.mat-mdc-menu-item.active {
+  background: var(--accent-soft) !important;
+  color: var(--accent-bright) !important;
+}
+
+.mat-mdc-menu-item i {
+  font-size: 22px;
+  color: inherit;
+}
+
+.mat-mdc-menu-item-text {
+  display: flex;
+  align-items: center;
+}
+
+/* Dialogues : la surface Material sert de conteneur transparent, la carte
+   visible est le `section[mat-dialog-content]` du composant. */
+.mat-mdc-dialog-container .mat-mdc-dialog-surface {
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible;
+}
+
+section[mat-dialog-content] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(560px, 92vw);
+  max-height: 84vh;
+  margin: 0;
+  padding: 26px 24px;
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-xl);
+  background: var(--surface-solid);
+  box-shadow: var(--shadow-2);
+  color: var(--text-1);
+  overflow-y: auto;
+}
+
+section[mat-dialog-content] > h1 {
+  margin: 0 0 20px;
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.4;
+  text-align: center;
+  color: var(--text-1);
+}
+
+.cdk-overlay-dark-backdrop {
+  background: var(--backdrop);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+/* Curseurs */
+.mdc-slider__track--active_fill {
+  border-color: var(--accent-bright) !important;
+}
+
+.mdc-slider__track--inactive {
+  background-color: var(--surface-3) !important;
+  opacity: 1 !important;
+}
+
+.mdc-slider__thumb-knob {
+  background-color: var(--accent-bright) !important;
+  border-color: var(--accent-bright) !important;
+}
+
+.mdc-slider__value-indicator {
+  background-color: var(--accent-deep) !important;
+  color: #fff !important;
+  border-radius: var(--r-sm) !important;
+}
+
+.mdc-slider__value-indicator-text {
+  color: #fff !important;
+}
+
+/* Interrupteurs */
+.mdc-switch__track::after {
+  background: var(--accent-gradient) !important;
+}
+
+.mdc-switch__track::before {
+  background: var(--surface-3) !important;
+}
+
+.mdc-switch--selected:enabled .mdc-switch__handle::after {
+  background: #fff !important;
+}
+
+.mdc-switch--selected .mdc-switch__icon {
+  fill: var(--accent-deep) !important;
+}
+
+.mdc-switch--unselected .mdc-switch__icon {
+  fill: var(--text-3) !important;
+}
+
+/* Indicateur de chargement */
+.mdc-circular-progress__indeterminate-circle-graphic {
+  stroke: var(--accent-bright) !important;
 }
 
 .cdk-global-scrollblock {

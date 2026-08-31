@@ -18,6 +18,7 @@ import { Room } from '../core/interfaces/room';
 import { LocalStorageService } from '../core/services/local-storage.service';
 import { PlayerService } from '../core/services/player.service';
 import { RoomService } from '../core/services/room.service';
+import { ThemeToggleComponent } from '../shared/components/theme-toggle/theme-toggle.component';
 import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
 
 @Component({
@@ -27,6 +28,7 @@ import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
     RouterModule,
     MatButtonModule,
     MatMenuModule,
+    ThemeToggleComponent,
     MedalsNumberPipe,
   ],
   templateUrl: './header.component.html',

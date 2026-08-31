@@ -13,7 +13,7 @@
           @if (otherPlayer.isReady && room().userId !== otherPlayer.userId) {
           <i class="bx bxs-check-circle" title="Prêt"></i>
           } @else if (room().userId !== otherPlayer.userId) {
-          <i class="bx bxs-x-circle" title="Pas prêt" style="color: red"></i>
+          <i class="bx bxs-x-circle" title="Pas prêt" style="color: var(--danger)"></i>
           }
           <div class="medals">
             <span class="victory-number">{{

@@ -1,0 +1,12 @@
+@let isDark = themeService.theme() === "dark";
+<button
+  type="button"
+  class="theme-toggle"
+  [title]="isDark ? 'Passer en thème clair' : 'Passer en thème sombre'"
+  [attr.aria-label]="
+    isDark ? 'Passer en thème clair' : 'Passer en thème sombre'
+  "
+  (click)="toggle()"
+>
+  <i class="bx" [class.bxs-sun]="isDark" [class.bxs-moon]="!isDark"></i>
+</button>

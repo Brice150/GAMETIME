@@ -7,10 +7,12 @@
 }
 
 .title {
-  font-size: 20px;
-  font-weight: 800;
-  color: var(--title-accent);
-  margin-bottom: 10px;
+  margin-bottom: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-3);
 }
 
 .responses {
@@ -18,28 +20,47 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  gap: 10px;
-  background-color: var(--primary);
-  border-radius: var(--light-radius);
-  padding: 10px;
-  width: 340px;
+  gap: 6px;
+  width: min(380px, 92vw);
+  padding: 14px;
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-lg);
+  background: var(--surface-1);
 }
 
 .responses .response {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 20px;
-  color: var(--secondary);
+  gap: 16px;
+  width: 100%;
+  padding: 8px 6px;
+  border-radius: var(--r-sm);
+  color: var(--text-1);
+}
+
+.responses .response:not(.title):nth-child(odd) {
+  background: var(--surface-1);
 }
 
 .responses .response.title {
-  color: var(--accent);
+  margin-bottom: 4px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-1);
+  border-radius: 0;
+  color: var(--text-3);
 }
 
 .responses .response span {
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 600;
+}
+
+.responses .response.title span {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .responses .response .result {
@@ -49,15 +70,16 @@
 }
 
 .responses .response .result i {
-  font-size: 28px;
+  font-size: 24px;
 }
 
 .me {
-  width: 32px;
+  width: 40px;
+  text-align: center;
 }
 
 .other {
-  width: 130px;
+  width: 120px;
   text-align: center;
   white-space: nowrap;
   overflow: hidden;
@@ -69,6 +91,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   text-align: left;
+  text-transform: uppercase;
 }
 
 form.result {
@@ -76,149 +99,67 @@ form.result {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  width: 130px;
+  width: 120px;
 }
 
 mat-form-field {
   width: 100%;
 }
 
-mat-select {
-  margin-top: 3px;
-}
-
-::ng-deep .result .mat-mdc-select-value {
+/* Le selecteur de joueur est compacte pour tenir dans l'en-tete du tableau. */
+:host ::ng-deep .result .mat-mdc-select-value {
   text-align: center;
-}
-
-::ng-deep .result .mat-mdc-form-field-subscript-wrapper {
-  display: none;
-}
-
-::ng-deep .result .mat-mdc-select-panel {
-  background-color: var(--primary) !important;
-}
-
-::ng-deep .result .mat-mdc-select {
-  color: var(--secondary) !important;
-}
-
-::ng-deep .result .mat-mdc-select-arrow svg {
-  fill: var(--secondary) !important;
-}
-
-::ng-deep
-  .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled):not(
-    .mat-mdc-option-multiple
-  ) {
-  background-color: var(--accent) !important;
-}
-
-::ng-deep
-  .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled):not(
-    .mat-mdc-option-multiple
-  )
-  .mdc-list-item__primary-text {
-  color: var(--primary) !important;
-}
-
-::ng-deep
-  .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled):not(
-    .mat-mdc-option-multiple
-  )
-  .mdc-list-item__primary-text
-  .flex
-  i {
-  color: var(--primary) !important;
-}
-
-::ng-deep
-  .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled):not(
-    .mat-mdc-option-multiple
-  )
-  .mdc-list-item__primary-text
-  .flex
-  .game {
-  color: var(--primary) !important;
-}
-
-::ng-deep .mat-pseudo-checkbox-minimal.mat-pseudo-checkbox-checked::after,
-.mat-pseudo-checkbox-minimal.mat-pseudo-checkbox-indeterminate::after {
-  color: var(--primary) !important;
-}
-
-::ng-deep .mat-mdc-option .mat-pseudo-checkbox-minimal {
-  display: none;
-}
-
-::ng-deep .mdc-text-field--filled:not(.mdc-text-field--disabled) {
-  background-color: var(--primary) !important;
-}
-
-::ng-deep
-  .mdc-text-field--filled:not(.mdc-text-field--disabled)
-  .mdc-line-ripple::before {
-  display: none;
-}
-
-::ng-deep
-  .mdc-text-field--filled:not(.mdc-text-field--disabled)
-  .mdc-line-ripple::after {
-  display: none;
-}
-
-::ng-deep .mdc-text-field {
-  border-radius: var(--light-radius) !important;
-}
-
-::ng-deep .result .mat-mdc-select-value {
-  font-size: 18px;
+  font-size: 12px;
   font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
-::ng-deep .result .mat-mdc-form-field-infix {
+:host ::ng-deep .result .mat-mdc-form-field-infix {
   padding: 0 !important;
+  min-height: 0 !important;
 }
 
-::ng-deep .result .mat-mdc-form-field-flex {
-  height: 30px;
+:host ::ng-deep .result .mat-mdc-form-field-flex {
+  height: 32px;
 }
 
-::ng-deep
+:host
+  ::ng-deep
   .result
   .mat-mdc-form-field-type-mat-select:not(.mat-form-field-disabled)
   .mat-mdc-text-field-wrapper {
-  padding: 0;
+  padding: 0 8px;
 }
 
-@media screen and (max-width: 370px) {
+:host ::ng-deep .result .mdc-text-field--filled:not(.mdc-text-field--disabled) {
+  background-color: var(--surface-2) !important;
+  border-radius: var(--r-sm) !important;
+}
+
+:host ::ng-deep .result .mdc-line-ripple::before,
+:host ::ng-deep .result .mdc-line-ripple::after {
+  display: none;
+}
+
+@media screen and (max-width: 400px) {
   .responses {
-    width: 270px;
-    background-color: unset;
-    padding: 0;
-    border-radius: unset;
+    padding: 10px;
   }
 
   .responses .response {
     flex-direction: column;
-    gap: 10px;
-    padding: 10px;
-    background-color: var(--primary);
-    border-radius: var(--light-radius);
-    width: 100%;
+    gap: 8px;
+    background: var(--surface-2);
   }
 
-  .me {
-    width: 100%;
-    text-align: center;
+  .responses .response:not(.title):nth-child(odd) {
+    background: var(--surface-2);
   }
 
-  .other {
-    width: 100%;
-    text-align: center;
-  }
-
+  .me,
+  .other,
   .value {
     width: 100%;
     text-align: center;

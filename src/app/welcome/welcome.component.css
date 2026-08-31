@@ -11,54 +11,132 @@ section {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  width: 90%;
+  width: min(1120px, 92%);
 }
 
-section .title {
+.top-bar {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  padding-top: 16px;
+}
+
+/* --------------------------------------------------------------- Hero --- */
+
+.hero {
+  display: flex;
   flex-direction: column;
-}
-
-section h1 {
-  font-size: 30px;
-  font-weight: 500;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--title-accent);
-}
-
-section h2 {
-  margin-top: 4px;
-  margin-left: 10px;
-  margin-right: 10px;
-  color: var(--primary);
-  font-size: 20px;
-  font-weight: 550;
+  align-items: center;
   text-align: center;
+  padding: 40px 0;
+  animation: gt-rise 0.7s var(--ease) both;
 }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 16px;
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-pill);
+  background: var(--surface-1);
+  color: var(--text-2);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+.badge i {
+  font-size: 18px;
+  color: var(--accent-bright);
+}
+
+/* Angular retire les espaces entre elements : l'ecart entre les deux mots
+   vient donc du `gap` et non d'une espace dans le gabarit. */
+.hero h1 {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.22em;
+  margin: 20px 0 0;
+  font-size: clamp(44px, 11vw, 84px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--text-1);
+}
+
+.hero h1 .accent {
+  color: var(--accent-bright);
+}
+
+.hero h2 {
+  margin: 14px 0 0;
+  max-width: 520px;
+  font-size: clamp(17px, 3.4vw, 21px);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--text-2);
+}
+
+.hero-tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 26px;
+}
+
+.hero-tags .tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-pill);
+  background: var(--surface-1);
+  color: var(--text-1);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.hero-tags .tag i {
+  font-size: 18px;
+  color: var(--accent-bright);
+}
+
+/* ----------------------------------------------------------- Features --- */
 
 .features {
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
-  gap: 40px;
-  margin-bottom: 40px;
-  margin-top: 10px;
+  gap: 22px;
   width: 100%;
+  margin-bottom: 48px;
 }
 
 .feature {
-  width: 90%;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 28px;
+  padding: 24px;
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-xl);
+  background: var(--surface-1);
+  box-shadow: var(--shadow-1);
   opacity: 0;
-  transition: opacity 1s ease;
+  transition:
+    opacity 0.8s var(--ease),
+    border-color var(--speed) var(--ease),
+    box-shadow var(--speed) var(--ease);
+}
+
+.feature:hover {
+  border-color: var(--border-2);
+  box-shadow: var(--shadow-2);
 }
 
 .feature.visible {
@@ -69,61 +147,89 @@ section h2 {
   flex-wrap: wrap-reverse;
 }
 
-.feature span {
+.feature-text {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex: 1 1 340px;
+  max-width: 540px;
+  transform: translateX(60px);
+  transition: transform 0.9s var(--ease);
+}
+
+.feature-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-start;
+  padding: 6px 14px;
+  border-radius: var(--r-pill);
+  background: var(--accent-soft);
+  color: var(--accent-bright);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.feature-label i {
+  font-size: 17px;
+}
+
+.feature-text span:not(.feature-label) {
   font-size: 16px;
-  max-width: 500px;
-  width: 100%;
-  text-align: justify;
-  line-height: 30px;
-  transform: translateX(80px);
-  color: var(--primary);
+  line-height: 1.75;
+  color: var(--text-2);
+}
+
+.feature-visual {
+  flex: 0 1 360px;
+  padding: 8px;
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-lg);
+  background: var(--surface-1);
+  transform: translateX(-60px);
+  transition: transform 0.9s var(--ease);
 }
 
 .feature img {
-  width: 300px;
-  height: 250px;
-  border-radius: var(--light-radius);
+  display: block;
+  width: 100%;
+  height: 230px;
+  border-radius: var(--r-md);
   object-fit: cover;
-  transform: translateX(-80px);
 }
 
-.feature img,
-.feature span {
-  transition:
-    transform 1s ease-in-out,
-    opacity 1s ease-in-out;
+.feature.reverse .feature-text {
+  transform: translateX(-60px);
 }
 
-.feature.reverse span {
-  transform: translateX(-80px);
+.feature.reverse .feature-visual {
+  transform: translateX(60px);
 }
 
-.feature.reverse img {
-  transform: translateX(80px);
-}
-
-.feature.visible img {
+.feature.visible .feature-text,
+.feature.visible .feature-visual {
   transform: translateX(0);
 }
 
-.feature.visible span {
-  transform: translateX(0);
-}
+/* --------------------------------------------------------------- Auth --- */
 
 .welcome-auth {
-  width: 450px;
-  border-radius: var(--light-radius);
-  background-color: var(--background);
-  border: 3px solid var(--primary);
-  padding: 24px;
-  padding-top: 12px;
-  margin-bottom: 40px;
-  opacity: 0;
-  transition: opacity 1s ease;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  width: 100%;
+  max-width: 460px;
+  padding: 32px 28px;
+  margin-bottom: 56px;
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-xl);
+  background: var(--surface-1);
+  box-shadow: var(--shadow-2);
+  opacity: 0;
+  transition: opacity 0.8s var(--ease);
 }
 
 .welcome-auth.visible {
@@ -132,134 +238,110 @@ section h2 {
 
 .welcome-auth h3 {
   margin: 0;
-  margin-bottom: 12px;
-  color: var(--title-accent);
   font-size: 26px;
-  font-weight: 500;
+  font-weight: 600;
+  color: var(--text-1);
 }
 
 .welcome-auth p {
-  margin: 0 0 20px 0;
-  color: var(--primary);
-  font-size: 16px;
+  margin: 8px 0 0;
+  font-size: 15px;
+  color: var(--text-2);
+  text-align: center;
 }
 
-form {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  width: 100%;
-  gap: 20px;
-}
-
-form mat-form-field {
-  width: 100%;
-  max-width: 420px;
-}
-
-form mat-form-field mat-error {
-  margin-top: 2px;
-}
-
-form mat-form-field mat-error span {
-  font-size: 16px;
-}
-
-.welcome-auth .auth-buttons {
+.auth-buttons {
   width: 100%;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: stretch;
   flex-direction: column;
   gap: 12px;
-  margin-top: 20px;
+  margin-top: 24px;
 }
 
-.welcome-auth .auth-buttons button {
-  cursor: pointer;
-  color: var(--secondary);
-  padding: 10px 14px;
+.auth-buttons button {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  border-radius: var(--light-radius);
-  transition: 0.5s ease;
-  width: 310px;
-  border: none;
-  background-color: var(--primary);
+  gap: 14px;
+  width: 100%;
+  min-height: 50px;
+  padding: 0 18px;
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  color: var(--text-1);
+  cursor: pointer;
+  transition:
+    transform var(--speed) var(--ease),
+    background var(--speed) var(--ease),
+    border-color var(--speed) var(--ease),
+    box-shadow var(--speed) var(--ease);
 }
 
-.welcome-auth .auth-buttons button.github {
-  background-color: #24292f;
-  color: var(--primary);
+.auth-buttons button:hover {
+  transform: translateY(-2px);
+  background: var(--surface-3);
+  border-color: var(--border-2);
+  box-shadow: var(--shadow-1);
 }
 
-.welcome-auth .auth-buttons button.guest {
-  background-color: #1f8f6e;
-  color: var(--primary);
+.auth-buttons button.guest {
+  background: var(--accent-gradient);
+  border-color: transparent;
+  color: var(--on-accent);
 }
 
-.welcome-auth .auth-buttons button.microsoft {
-  background-color: #ffffff;
+.auth-buttons button.guest:hover {
+  box-shadow: var(--shadow-glow);
 }
 
-.welcome-auth .auth-buttons button:hover {
-  background-color: var(--accent);
-  color: var(--primary);
+.auth-buttons button i {
+  font-size: 24px;
 }
 
-.welcome-auth .auth-buttons button i {
-  font-size: 30px;
+.auth-buttons button svg {
+  flex-shrink: 0;
 }
 
-.welcome-auth .auth-buttons button .text {
-  font-size: 20px;
+.auth-buttons button .text {
+  font-size: 16px;
   font-weight: 500;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
 mat-spinner {
-  margin-top: 20px;
+  margin-top: 24px;
 }
 
-::ng-deep .mdc-circular-progress__indeterminate-circle-graphic {
-  stroke: var(--accent) !important;
-}
+@media screen and (max-width: 900px) {
+  .feature {
+    justify-content: center;
+    padding: 20px;
+  }
 
-@media screen and (max-width: 1053px) {
-  .features .feature img {
+  .feature-text,
+  .feature-visual,
+  .feature.reverse .feature-text,
+  .feature.reverse .feature-visual {
     transform: translateX(0);
   }
 
-  .features .feature span {
-    transform: translateX(0);
+  .feature-visual {
+    flex-basis: 100%;
   }
 
-  .feature.reverse span {
-    transform: translateX(0);
-  }
-
-  .feature.reverse img {
-    transform: translateX(0);
+  .feature-text {
+    max-width: none;
   }
 }
 
 @media screen and (max-width: 550px) {
+  .hero {
+    padding: 28px 0 32px;
+  }
+
   .welcome-auth {
-    width: 90%;
-    margin-bottom: 20px;
-  }
-}
-
-@media screen and (max-width: 425px) {
-  .features .feature img {
-    width: 100%;
-  }
-
-  .welcome-auth .auth-buttons button {
-    width: 100%;
-    min-width: unset;
+    padding: 26px 20px;
   }
 }

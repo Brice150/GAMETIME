@@ -17,10 +17,11 @@ import { environment } from '../../environments/environment';
 import { PlayerService } from '../core/services/player.service';
 import { ToastrHelperService } from '../core/services/toastr-helper.service';
 import { UserService } from '../core/services/user.service';
+import { ThemeToggleComponent } from '../shared/components/theme-toggle/theme-toggle.component';
 
 @Component({
   selector: 'app-welcome',
-  imports: [CommonModule, MatProgressSpinnerModule],
+  imports: [CommonModule, MatProgressSpinnerModule, ThemeToggleComponent],
   templateUrl: './welcome.component.html',
   styleUrl: './welcome.component.css',
 })

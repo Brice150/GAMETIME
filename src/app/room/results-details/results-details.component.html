@@ -28,21 +28,21 @@
     <span class="value">{{ response }}</span>
     <div class="result me">
       @if (player.currentRoomWins[i] === true) {
-      <i class="bx bx-check" style="color: rgb(0, 211, 0)"></i>
+      <i class="bx bx-check" style="color: var(--success)"></i>
       } @else if (player.currentRoomWins[i] === false) {
-      <i class="bx bx-x" style="color: red"></i>
+      <i class="bx bx-x" style="color: var(--danger)"></i>
       } @else {
-      <i class="bx bx-loader-alt bx-spin" style="color: var(--accent)"></i>
+      <i class="bx bx-loader-alt bx-spin" style="color: var(--accent-bright)"></i>
       }
     </div>
     @if (selectedOther) {
     <div class="result other">
       @if (selectedOther.currentRoomWins[i] === true) {
-      <i class="bx bx-check" style="color: rgb(0, 211, 0)"></i>
+      <i class="bx bx-check" style="color: var(--success)"></i>
       } @else if (selectedOther.currentRoomWins[i] === false) {
-      <i class="bx bx-x" style="color: red"></i>
+      <i class="bx bx-x" style="color: var(--danger)"></i>
       } @else {
-      <i class="bx bx-loader-alt bx-spin" style="color: var(--accent)"></i>
+      <i class="bx bx-loader-alt bx-spin" style="color: var(--accent-bright)"></i>
       }
     </div>
     }

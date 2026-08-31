@@ -1,45 +1,53 @@
 <section>
   @if (!loading) {
-    <span class="description">Voici vos dernières stats :</span>
-    <div class="general-card-row">
-      <div class="stat-card">
-        <div class="flex">
-          <i class="bx bxs-universal-access"></i>
-          <span class="game">Général</span>
-        </div>
-        <div class="medals">
-          <span class="victory-number">{{
-            playerService.currentPlayerSig()! | totalMedalsNumber
-          }}</span>
-          <i class="bx bxs-medal"></i>
-        </div>
-      </div>
-    </div>
-
-    <div class="stats-cards">
-      @for (game of games; track $index) {
-        <div class="stat-card">
+    <div class="panel gt-rise">
+      <span class="panel-title">Vos dernières stats</span>
+      <div class="general-card-row">
+        <div class="stat-card featured">
           <div class="flex">
-            <i class="{{ game.icon }}"></i>
-            <span class="game">{{ game.label }}</span>
+            <i class="bx bxs-universal-access"></i>
+            <span class="game">Général</span>
           </div>
           <div class="medals">
             <span class="victory-number">{{
-              game.key | medalsNumber: playerService.currentPlayerSig()!
+              playerService.currentPlayerSig()! | totalMedalsNumber
             }}</span>
             <i class="bx bxs-medal"></i>
           </div>
         </div>
-      }
+      </div>
+
+      <div class="stats-cards">
+        @for (game of games; track $index) {
+          <div class="stat-card">
+            <div class="flex">
+              <i class="{{ game.icon }}"></i>
+              <span class="game">{{ game.label }}</span>
+            </div>
+            <div class="medals">
+              <span class="victory-number">{{
+                game.key | medalsNumber: playerService.currentPlayerSig()!
+              }}</span>
+              <i class="bx bxs-medal"></i>
+            </div>
+          </div>
+        }
+      </div>
+      <div class="button-container">
+        <button type="button" (click)="play()" title="Jouer">
+          <i class="bx bx-play"></i>
+          <span class="text">Jouer</span>
+        </button>
+      </div>
     </div>
-    <div class="button-container">
-      <button type="button" (click)="play()" title="Jouer">
-        <i class="bx bx-play"></i>
-        <span class="text">Jouer</span>
-      </button>
+
+    <div class="panel gt-rise">
+      <span class="panel-title">Rejoindre une room</span>
+      <span class="panel-hint"
+        >Saisissez le code à 4 caractères de la room.</span
+      >
+      <app-join-room (joinRoomEvent)="joinRoom($event)"></app-join-room>
     </div>
-    <span class="description">Voulez-vous rejoindre une room existante ?</span>
-    <app-join-room (joinRoomEvent)="joinRoom($event)"></app-join-room>
   } @else {
     <mat-spinner></mat-spinner>
   }

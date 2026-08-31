@@ -1,33 +1,36 @@
 <div class="main-container">
   <div class="container">
     @for (try of tries; track $index) {
-    <div class="previous-container">
-      <div class="previous">
-        @for (letter of try.letter; track $index; let i = $index) {
-        <span
-          class="letter"
-          [ngClass]="{
-            wellPlaced: try.isWellPlaced[i],
-            wrongPlaced: try.isWrongPlaced[i]
-          }"
-        >
-          {{ letter }}
-        </span>
-        }
+      <div class="previous-container">
+        <div class="previous">
+          @for (letter of try.letter; track $index; let i = $index) {
+            <span
+              class="letter"
+              [ngClass]="{
+                wellPlaced: try.isWellPlaced[i],
+                wrongPlaced: try.isWrongPlaced[i],
+              }"
+            >
+              {{ letter }}
+            </span>
+          }
+        </div>
       </div>
-    </div>
     }
     <form (ngSubmit)="submitAnswer()">
-      <input
-        [attr.maxlength]="maxlength"
-        (keydown)="onKeyDown($event)"
-        [(ngModel)]="inputValue"
-        [ngModelOptions]="{ standalone: true }"
-        [disabled]="isOver"
-      />
-      @if (!isOver) {
-      <span class="placeholder">{{ wordToFind }}</span>
-      }
+      <div class="input-wrap">
+        <input
+          [attr.maxlength]="maxlength"
+          aria-label="Votre réponse"
+          (keydown)="onKeyDown($event)"
+          [(ngModel)]="inputValue"
+          [ngModelOptions]="{ standalone: true }"
+          [disabled]="isOver"
+        />
+        @if (!isOver) {
+          <span class="placeholder" aria-hidden="true">{{ wordToFind }}</span>
+        }
+      </div>
       <button class="submit" type="submit">Submit</button>
     </form>
     <i [ngClass]="emojiClass" [ngStyle]="emojiStyle"></i>

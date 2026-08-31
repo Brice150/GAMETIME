@@ -56,14 +56,14 @@ Backend/BDD : Firebase
 ### 🔤 Motus
 
 - Trouver des mots avec un nombre limité d’essais
-- Indices : première lettre, couleurs des lettres (bleu et rouge)
+- Indices : première lettre, couleurs des lettres (vert et rouge)
 
 ---
 
 ### 🏳️ Drapeaux
 
 - Deviner des pays avec un nombre limité d’essais
-- Indices : drapeau, couleurs des lettres (bleu et rouge)
+- Indices : drapeau, couleurs des lettres (vert et rouge)
 
 ---
 
@@ -71,7 +71,7 @@ Backend/BDD : Firebase
 
 - Deviner des marques à partir de leur logo avec un nombre limité d’essais
 - Fonctionnement similaire au mode Drapeaux
-- Indices : logo, couleurs des lettres (bleu et rouge)
+- Indices : logo, couleurs des lettres (vert et rouge)
 
 ---
 

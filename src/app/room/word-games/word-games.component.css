@@ -3,6 +3,7 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  width: 100%;
 }
 
 .container {
@@ -10,26 +11,36 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  gap: 10px;
-  margin-top: -5px;
+  gap: 14px;
 }
 
 .container .continent {
-  font-size: 24px;
-  font-weight: bold;
-  text-transform: capitalize;
-  color: var(--title-accent);
+  padding: 6px 16px;
+  border-radius: var(--r-pill);
+  background: var(--accent-soft);
+  color: var(--accent-bright);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
+/* Plaque claire : les drapeaux et logos sont concus pour un fond blanc. */
 .container .flag {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 160px;
-  min-height: 80px;
-  background-color: var(--primary);
+  width: 180px;
+  min-height: 104px;
+  padding: 10px;
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-md);
+  background: #fff;
+  box-shadow: var(--shadow-2);
 }
 
-::ng-deep .container mat-spinner {
-  width: 50px !important;
+.container .flag img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--r-xs);
 }

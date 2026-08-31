@@ -38,12 +38,12 @@
             [ngStyle]="{
               color:
                 currentPlayerPosition === 1
-                  ? 'gold'
+                  ? 'var(--gold)'
                   : currentPlayerPosition === 2
-                    ? 'silver'
+                    ? 'var(--silver)'
                     : currentPlayerPosition === 3
-                      ? '#cd7f32'
-                      : 'var(--accent)',
+                      ? 'var(--bronze)'
+                      : 'var(--accent-bright)',
             }"
           >
             {{ currentPlayerPosition
@@ -67,11 +67,11 @@
           >
           <div class="podium">
             @if (i + 1 === 1) {
-              <i class="bx bxs-trophy" style="color: gold"></i>
+              <i class="bx bxs-trophy" style="color: var(--gold)"></i>
             } @else if (i + 1 === 2) {
-              <i class="bx bxs-trophy" style="color: silver"></i>
+              <i class="bx bxs-trophy" style="color: var(--silver)"></i>
             } @else if (i + 1 === 3) {
-              <i class="bx bxs-trophy" style="color: #cd7f32"></i>
+              <i class="bx bxs-trophy" style="color: var(--bronze)"></i>
             } @else {
               <span class="order">{{ i + 1 }}</span>
             }

@@ -1,77 +1,131 @@
 <section>
-  <div class="title">
-    <h1>Game Time</h1>
-    <h2>Quand réfléchir devient amusant !</h2>
+  <div class="top-bar">
+    <app-theme-toggle></app-theme-toggle>
   </div>
+  <div class="hero">
+    <span class="badge">
+      <i class="bx bxs-medal" aria-hidden="true"></i>
+      Jeux de réflexion multijoueur
+    </span>
+    <h1>
+      <span class="word">Game</span> <span class="word accent">Time</span>
+    </h1>
+    <h2>Quand réfléchir devient amusant !</h2>
+    <div class="hero-tags">
+      <span class="tag">
+        <i class="bx bxs-objects-horizontal-left" aria-hidden="true"></i> Motus
+      </span>
+      <span class="tag">
+        <i class="bx bxs-flag" aria-hidden="true"></i> Drapeaux
+      </span>
+      <span class="tag">
+        <i class="bx bxs-package" aria-hidden="true"></i> Marques
+      </span>
+    </div>
+  </div>
+
   <div class="features">
     <div class="feature" #feature>
-      <img
-        [src]="imagePath + 'welcome/Motus.webp'"
-        alt="Grille du jeu Motus avec les lettres colorées"
-        width="1023"
-        height="731"
-        fetchpriority="high"
-        decoding="async"
-      />
-      <span>
-        Défiez votre esprit avec Motus, seul ou entre amis, et découvrez le
-        plaisir de deviner les mots grâce à des indices colorés. Violet si la
-        lettre est bien placée, rouge si elle est présente mais mal placée. Prêt
-        à relever le challenge et à progresser à chaque partie ?
-      </span>
+      <div class="feature-visual">
+        <img
+          [src]="imagePath + 'welcome/Motus.webp'"
+          alt="Grille du jeu Motus avec les lettres colorées"
+          width="1023"
+          height="731"
+          fetchpriority="high"
+          decoding="async"
+        />
+      </div>
+      <div class="feature-text">
+        <span class="feature-label">
+          <i class="bx bxs-objects-horizontal-left" aria-hidden="true"></i>
+          Motus
+        </span>
+        <span>
+          Défiez votre esprit avec Motus, seul ou entre amis, et découvrez le
+          plaisir de deviner les mots grâce à des indices colorés. Vert si la
+          lettre est bien placée, rouge si elle est présente mais mal placée.
+          Prêt à relever le challenge et à progresser à chaque partie ?
+        </span>
+      </div>
     </div>
 
     <div class="feature reverse" #feature>
-      <span>
-        Testez vos connaissances en géographie en devinant le pays derrière
-        chaque drapeau ! Jouez en solo ou en multijoueur et profitez des indices
-        couleur pour vous rapprocher de la bonne réponse.
-      </span>
-      <img
-        [src]="imagePath + 'welcome/Drapeaux.webp'"
-        alt="Partie du jeu Drapeaux : deviner le pays derrière son drapeau"
-        width="1046"
-        height="747"
-        loading="lazy"
-        decoding="async"
-      />
+      <div class="feature-text">
+        <span class="feature-label">
+          <i class="bx bxs-flag" aria-hidden="true"></i>
+          Drapeaux
+        </span>
+        <span>
+          Testez vos connaissances en géographie en devinant le pays derrière
+          chaque drapeau ! Jouez en solo ou en multijoueur et profitez des
+          indices couleur pour vous rapprocher de la bonne réponse.
+        </span>
+      </div>
+      <div class="feature-visual">
+        <img
+          [src]="imagePath + 'welcome/Drapeaux.webp'"
+          alt="Partie du jeu Drapeaux : deviner le pays derrière son drapeau"
+          width="1046"
+          height="747"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
     </div>
 
     <div class="feature" #feature>
-      <img
-        [src]="imagePath + 'welcome/Marques.webp'"
-        alt="Partie du jeu Marques : reconnaître une entreprise à son logo"
-        width="1056"
-        height="754"
-        loading="lazy"
-        decoding="async"
-      />
-      <span>
-        Reconnaissez-vous les plus grandes marques du monde ? Associez chaque
-        logo à son entreprise et mettez vos connaissances à l’épreuve. Comme
-        pour les drapeaux et Motus, laissez-vous guider par les indices couleur
-        pour trouver la bonne réponse !
-      </span>
+      <div class="feature-visual">
+        <img
+          [src]="imagePath + 'welcome/Marques.webp'"
+          alt="Partie du jeu Marques : reconnaître une entreprise à son logo"
+          width="1056"
+          height="754"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+      <div class="feature-text">
+        <span class="feature-label">
+          <i class="bx bxs-package" aria-hidden="true"></i>
+          Marques
+        </span>
+        <span>
+          Reconnaissez-vous les plus grandes marques du monde ? Associez chaque
+          logo à son entreprise et mettez vos connaissances à l’épreuve. Comme
+          pour les drapeaux et Motus, laissez-vous guider par les indices
+          couleur pour trouver la bonne réponse !
+        </span>
+      </div>
     </div>
 
     <div class="feature reverse" #feature>
-      <span>
-        Collectionnez des médailles à chaque victoire et affrontez vos amis dans
-        ces 3 jeux ludiques !
-      </span>
-      <img
-        [src]="imagePath + 'welcome/Multijoueur.webp'"
-        alt="Résultats d'une partie multijoueur et médailles remportées"
-        width="997"
-        height="712"
-        loading="lazy"
-        decoding="async"
-      />
+      <div class="feature-text">
+        <span class="feature-label">
+          <i class="bx bxs-user-plus" aria-hidden="true"></i>
+          Multijoueur
+        </span>
+        <span>
+          Collectionnez des médailles à chaque victoire et affrontez vos amis
+          dans ces 3 jeux ludiques !
+        </span>
+      </div>
+      <div class="feature-visual">
+        <img
+          [src]="imagePath + 'welcome/Multijoueur.webp'"
+          alt="Résultats d'une partie multijoueur et médailles remportées"
+          width="997"
+          height="712"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
     </div>
   </div>
 
   <div class="welcome-auth" #feature>
     <h3>Commencez maintenant</h3>
+    <p>Aucune installation, votre progression est sauvegardée.</p>
     @if (!loading) {
       <div class="auth-buttons">
         <button
@@ -83,8 +137,8 @@
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 48 48"
-            width="30px"
-            height="30px"
+            width="24px"
+            height="24px"
             aria-hidden="true"
           >
             <path
@@ -116,8 +170,8 @@
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
-            width="30px"
-            height="30px"
+            width="24px"
+            height="24px"
             aria-hidden="true"
           >
             <path

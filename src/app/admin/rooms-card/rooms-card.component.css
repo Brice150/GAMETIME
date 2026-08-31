@@ -13,54 +13,10 @@
   flex-direction: column;
   width: 90%;
   max-width: 550px;
-  background-color: var(--primary);
-  border-radius: var(--light-radius);
-  padding: 10px;
-}
-
-.container .button-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1px;
-}
-
-.container .button-container button {
-  cursor: pointer;
-  color: var(--accent);
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--light-radius);
-  transition: 0.5s ease;
-  border: none;
-  width: 50px;
-  background-color: var(--primary);
-}
-
-.container .button-container button:hover {
-  background-color: var(--accent);
-  color: var(--primary);
-}
-
-.container .button-container button i {
-  font-size: 30px;
-}
-
-.container .button-container button .text {
-  font-size: 20px;
-  font-weight: 500;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-}
-
-.container .button-container button.delete {
-  color: red;
-}
-
-.container .button-container button.delete:hover {
-  background-color: red;
-  color: var(--primary);
+  padding: 16px;
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-lg);
+  background: var(--surface-1);
 }
 
 .players {
@@ -68,26 +24,28 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  gap: 10px;
   width: 100%;
-  gap: 17px;
 }
 
 .players .player {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 10px;
-  border-radius: var(--light-radius);
-  background-color: var(--primary);
-  color: var(--secondary);
+  gap: 12px;
   width: 100%;
-  height: 34px;
+  padding: 10px 14px;
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  color: var(--text-1);
 }
 
 .players .player .username {
-  font-size: 18px;
+  flex: 1;
+  min-width: 0;
+  font-size: 16px;
   font-weight: 600;
-  width: 150px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -95,29 +53,48 @@
 }
 
 .players .player .medals {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 5px;
-  background-color: var(--secondary);
-  color: var(--primary);
-  border-radius: var(--light-radius);
-  padding: 3px 0;
-  padding-left: 10px;
-  padding-right: 5px;
+  flex-shrink: 0;
 }
 
-.victory-number {
-  font-size: 18px;
-  font-weight: 600;
+.container .button-container {
+  gap: 6px;
+  flex-shrink: 0;
 }
 
-.medals i {
-  font-size: 28px;
+.container .button-container button {
+  width: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  padding: 0;
+  border: 1px solid var(--border-1);
+  background: var(--surface-2);
+  color: var(--text-1);
+  box-shadow: none;
+}
+
+.container .button-container button:hover {
+  background: var(--surface-3);
+  border-color: var(--border-2);
+  box-shadow: none;
+}
+
+.container .button-container button.delete {
+  background: var(--danger-soft);
+  border-color: var(--danger-border);
+  color: var(--danger);
+}
+
+.container .button-container button.delete:hover {
+  background: var(--danger);
+  color: #fff;
+}
+
+.container .button-container button i {
+  font-size: 20px;
 }
 
 .empty {
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 500;
-  color: var(--secondary);
+  color: var(--text-3);
 }

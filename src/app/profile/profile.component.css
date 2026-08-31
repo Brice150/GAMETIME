@@ -8,163 +8,106 @@
 
 section {
   position: relative;
-  margin: 20px 0;
-  margin-bottom: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
   width: 95%;
   max-width: 1200px;
-  background-color: var(--background);
-  color: var(--accent);
 }
 
 section .content {
-  padding: 20px 0;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  width: 100%;
   gap: 20px;
+  width: 100%;
+  padding: 28px 0 40px;
 }
 
 section .button-container {
+  margin-top: 4px;
+}
+
+/* Bandeau compte invite */
+.temporary-account-container {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  width: 100%;
-  gap: 20px;
-  flex-wrap: wrap;
-  margin-top: 10px;
-}
-
-section .button-container button {
-  cursor: pointer;
-  color: var(--accent);
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  border-radius: var(--light-radius);
-  transition: 0.5s ease;
-  width: 150px;
-  border: none;
-  background-color: var(--primary);
-}
-
-section .button-container .delete {
-  color: red;
-  transition: 0.5s ease;
-  width: 210px;
-}
-
-section .button-container button:hover {
-  background-color: var(--accent);
-  color: var(--primary);
-}
-
-section .button-container .delete:hover {
-  background-color: red;
-}
-
-section .button-container button i {
-  font-size: 30px;
-}
-
-section .button-container button .text {
-  font-size: 20px;
-  font-weight: 500;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-}
-
-section .temporary-account-container {
-  box-sizing: border-box;
   width: 100%;
   max-width: 530px;
-  border-radius: var(--light-radius);
-  background-color: var(--background);
-  border: 3px solid var(--primary);
-  padding: 24px;
-  padding-top: 12px;
-  margin-bottom: 10px;
-  color: var(--primary);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  padding: 26px 24px;
+  border: 1px solid var(--accent-border);
+  border-radius: var(--r-xl);
+  background: linear-gradient(150deg, var(--accent-tint), var(--accent-tint-2));
+  box-shadow: var(--shadow-1);
+  animation: gt-rise 0.5s var(--ease) both;
 }
 
-section .temporary-account-container h3 {
+.temporary-account-container h3 {
+  margin: 0 0 10px;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text-1);
+}
+
+.temporary-account-container p {
   margin: 0;
-  margin-bottom: 12px;
-  color: var(--title-accent);
-  font-size: 26px;
-  font-weight: 500;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--text-2);
+  text-align: center;
 }
 
-section .temporary-account-container p {
-  margin: 0 0 20px 0;
-  color: var(--primary);
-  font-size: 17px;
-  text-align: justify;
-}
-
-section .temporary-account-container .link-buttons {
-  width: 100%;
+.link-buttons {
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
+  align-items: stretch;
   gap: 12px;
-  margin-top: 20px;
+  width: 100%;
+  max-width: 340px;
+  margin-top: 22px;
 }
 
-section .temporary-account-container .link-buttons button {
-  cursor: pointer;
-  color: var(--secondary);
-  padding: 10px 14px;
+.link-buttons button {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  border-radius: var(--light-radius);
-  transition: 0.5s ease;
-  width: 310px;
-  border: none;
-  background-color: var(--primary);
+  gap: 14px;
+  width: 100%;
+  min-height: 50px;
+  padding: 0 18px;
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  color: var(--text-1);
+  cursor: pointer;
+  transition:
+    transform var(--speed) var(--ease),
+    background var(--speed) var(--ease),
+    border-color var(--speed) var(--ease),
+    box-shadow var(--speed) var(--ease);
 }
 
-section .temporary-account-container .link-buttons button.google {
-  background-color: var(--primary);
+.link-buttons button:hover {
+  transform: translateY(-2px);
+  background: var(--surface-3);
+  border-color: var(--border-2);
+  box-shadow: var(--shadow-1);
 }
 
-section .temporary-account-container .link-buttons button.github {
-  background-color: #24292f;
-  color: var(--primary);
+.link-buttons button i {
+  font-size: 24px;
 }
 
-section .temporary-account-container .link-buttons button:hover {
-  background-color: var(--accent);
-  color: var(--primary);
+.link-buttons button svg {
+  flex-shrink: 0;
 }
 
-section .temporary-account-container .link-buttons button i {
-  font-size: 30px;
-}
-
-section .temporary-account-container .link-buttons button .text {
-  font-size: 20px;
+.link-buttons button .text {
+  font-size: 16px;
   font-weight: 500;
   font-family: Roboto, "Helvetica Neue", sans-serif;
-}
-
-@media screen and (max-width: 425px) {
-  section .temporary-account-container .link-buttons button {
-    width: 100%;
-    min-width: unset;
-  }
 }
 
 mat-spinner {
@@ -172,8 +115,4 @@ mat-spinner {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-}
-
-::ng-deep .mdc-circular-progress__indeterminate-circle-graphic {
-  stroke: var(--accent) !important;
 }

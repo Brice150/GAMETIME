@@ -3,9 +3,14 @@ section {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  color: var(--primary);
   width: 100%;
-  margin-top: 20px;
+  padding: 24px 0 40px;
+  color: var(--text-1);
+}
+
+.button-container {
+  width: 95%;
+  margin-top: 28px;
 }
 
 mat-spinner:not(.ai) {
@@ -13,61 +18,4 @@ mat-spinner:not(.ai) {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-}
-
-::ng-deep .mdc-circular-progress__indeterminate-circle-graphic {
-  stroke: var(--accent) !important;
-}
-
-.button-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 95%;
-  gap: 20px;
-  flex-wrap: wrap;
-  margin: 20px 0;
-}
-
-.button-container button {
-  cursor: pointer;
-  color: var(--accent);
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  border-radius: var(--light-radius);
-  transition: 0.5s ease;
-  width: 150px;
-  border: none;
-  background-color: var(--primary);
-}
-
-.button-container button.share {
-  width: 170px;
-}
-
-.button-container .delete {
-  color: red;
-  transition: 0.5s ease;
-}
-
-.button-container button:hover {
-  background-color: var(--accent);
-  color: var(--primary);
-}
-
-.button-container .delete:hover {
-  background-color: red;
-}
-
-.button-container button i {
-  font-size: 30px;
-}
-
-.button-container button .text {
-  font-size: 20px;
-  font-weight: 500;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
 }
