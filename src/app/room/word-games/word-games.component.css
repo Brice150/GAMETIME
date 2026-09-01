@@ -44,3 +44,13 @@
   height: auto;
   border-radius: var(--r-xs);
 }
+
+.container .flag img.pending {
+  display: none;
+}
+
+/* Plaque blanche dans les deux themes : couleur figee. */
+.container .flag i {
+  font-size: 34px;
+  color: rgba(28, 23, 16, 0.35);
+}

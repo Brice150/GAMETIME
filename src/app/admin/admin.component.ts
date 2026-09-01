@@ -116,6 +116,7 @@ export class AdminComponent implements OnInit {
           this.playersByRoom[roomId].forEach((player) => {
             player.currentRoomWins = [];
             player.finishDate = null;
+            player.durationMs = null;
             player.isReady = false;
           });
 

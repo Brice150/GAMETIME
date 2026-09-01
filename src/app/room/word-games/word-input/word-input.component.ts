@@ -71,12 +71,12 @@ export class WordInputComponent implements OnInit, OnChanges {
     }
   }
 
+  // Seul un changement de mot relance la manche : reagir a `room` remettait a
+  // zero la saisie en cours.
   ngOnChanges(changes: SimpleChanges) {
-    if (
-      changes['response']?.firstChange ||
-      changes['room']?.previousValue.isReadyNotificationActivated !==
-        changes['room']?.currentValue.isReadyNotificationActivated
-    ) {
+    const responseChange = changes['response'];
+
+    if (!responseChange || responseChange.firstChange) {
       return;
     }
 

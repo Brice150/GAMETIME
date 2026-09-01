@@ -13,7 +13,7 @@ section {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: min(860px, 92%);
+  width: min(960px, 92%);
   padding: 26px 24px;
   border: 1px solid var(--border-1);
   border-radius: var(--r-xl);
@@ -36,18 +36,11 @@ section {
   text-align: center;
 }
 
-.general-card-row {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  margin-top: 16px;
-}
-
 .stats-cards {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 12px;
-  margin-top: 12px;
+  margin-top: 16px;
   width: 100%;
 }
 
@@ -113,11 +106,39 @@ mat-spinner {
   transform: translate(-50%, -50%);
 }
 
-@media (max-width: 780px) {
+@media (min-width: 781px) {
   .stats-cards {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
   }
 
+  .stat-card {
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 14px;
+    padding: 22px 16px;
+    text-align: center;
+  }
+
+  .flex {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .flex i {
+    font-size: 34px;
+  }
+
+  .game {
+    font-size: 16px;
+  }
+
+  .stat-card .medals {
+    margin-top: auto;
+  }
+}
+
+@media (max-width: 780px) {
   .panel {
     padding: 22px 16px;
   }

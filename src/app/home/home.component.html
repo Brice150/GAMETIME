@@ -2,7 +2,7 @@
   @if (!loading) {
     <div class="panel gt-rise">
       <span class="panel-title">Vos dernières stats</span>
-      <div class="general-card-row">
+      <div class="stats-cards">
         <div class="stat-card featured">
           <div class="flex">
             <i class="bx bxs-universal-access"></i>
@@ -15,10 +15,7 @@
             <i class="bx bxs-medal"></i>
           </div>
         </div>
-      </div>
-
-      <div class="stats-cards">
-        @for (game of games; track $index) {
+        @for (game of games; track game.key) {
           <div class="stat-card">
             <div class="flex">
               <i class="{{ game.icon }}"></i>

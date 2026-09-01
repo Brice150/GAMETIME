@@ -1,4 +1,4 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import {
   collection,
@@ -10,11 +10,11 @@ import {
   setDoc,
   updateDoc,
   where,
+  writeBatch,
 } from '@angular/fire/firestore';
 import {
   combineLatest,
   filter,
-  forkJoin,
   from,
   map,
   Observable,
@@ -36,15 +36,9 @@ export class PlayerService {
   currentPlayerSig = signal<Player | null | undefined>(undefined);
   currentPlayersSig = signal<Player[]>([]);
 
-  readonly playerReady$ = toObservable(
-    computed(() => this.currentPlayerSig()),
-  ).pipe(
+  readonly playerReady$ = toObservable(this.currentPlayerSig).pipe(
     filter((player): player is Player => !!player),
     take(1),
-  );
-
-  readonly playersReady$ = toObservable(
-    computed(() => this.currentPlayersSig()),
   );
 
   getPlayer(): Observable<Player[]> {
@@ -121,6 +115,7 @@ export class PlayerService {
           isAdmin: false,
           currentRoomWins: [],
           finishDate: null,
+          durationMs: null,
           isReady: false,
         };
         return from(setDoc(playerDoc, { ...player })).pipe(map(() => email));
@@ -173,13 +168,38 @@ export class PlayerService {
     if (!player.id) {
       return from(Promise.reject('ID de joueur manquant.'));
     }
-    const playerDoc = doc(this.firestore, `players/${player.id}`);
-    return from(updateDoc(playerDoc, { ...player }));
+    const { id, ...data } = player;
+    const playerDoc = doc(this.firestore, `players/${id}`);
+    return from(updateDoc(playerDoc, data));
   }
 
+  updatePlayerFields(
+    playerId: string | undefined,
+    fields: Partial<Player>,
+  ): Observable<void> {
+    if (!playerId) {
+      return from(Promise.reject('ID de joueur manquant.'));
+    }
+    const playerDoc = doc(this.firestore, `players/${playerId}`);
+    return from(updateDoc(playerDoc, fields));
+  }
+
+  // Batch : la remise a zero de tous les joueurs doit etre atomique.
   updatePlayers(players: Player[]): Observable<void> {
-    const updates$ = players.map((player) => this.updatePlayer(player));
-    return forkJoin(updates$).pipe(map(() => undefined));
+    if (!players.length) {
+      return of(undefined);
+    }
+    if (players.some((player) => !player.id)) {
+      return from(Promise.reject('ID de joueur manquant.'));
+    }
+
+    const batch = writeBatch(this.firestore);
+    players.forEach((player) => {
+      const { id, ...data } = player;
+      batch.update(doc(this.firestore, `players/${id}`), data);
+    });
+
+    return from(batch.commit());
   }
 
   deletePlayer(playerId: string): Observable<void> {

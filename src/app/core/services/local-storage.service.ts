@@ -1,4 +1,5 @@
 import { inject, Injectable } from '@angular/core';
+import { RoundTimer } from '../interfaces/round-timer';
 import { WordTry } from '../interfaces/word-try';
 import { UserService } from './user.service';
 
@@ -8,6 +9,7 @@ export class LocalStorageService {
   private readonly triesKey = 'tries';
   private readonly startAgainKey = 'startAgainNumber';
   private readonly roomIdKey = 'roomId';
+  private readonly timerKey = 'roundTimer';
 
   private getScopedKey(baseKey: string): string {
     const userId = this.userService.auth.currentUser?.uid ?? 'anonymous';
@@ -55,6 +57,49 @@ export class LocalStorageService {
     return item;
   }
 
+  // Depart et arrivee sont lus sur la meme horloge, celle de cet appareil :
+  // le decalage d'horloge entre joueurs ne peut plus fausser un temps.
+  startTimer(roomId: string, startAgainNumber: number): void {
+    const timer = this.getTimer();
+
+    if (
+      timer &&
+      timer.roomId === roomId &&
+      timer.startAgainNumber === startAgainNumber
+    ) {
+      return;
+    }
+
+    localStorage.setItem(
+      this.getScopedKey(this.timerKey),
+      JSON.stringify({ roomId, startAgainNumber, startedAt: Date.now() }),
+    );
+  }
+
+  getElapsedMs(roomId: string, startAgainNumber: number): number | null {
+    const timer = this.getTimer();
+
+    if (
+      !timer ||
+      timer.roomId !== roomId ||
+      timer.startAgainNumber !== startAgainNumber
+    ) {
+      return null;
+    }
+
+    return Math.max(0, Date.now() - timer.startedAt);
+  }
+
+  private getTimer(): RoundTimer | null {
+    const item = localStorage.getItem(this.getScopedKey(this.timerKey));
+    if (!item) return null;
+    try {
+      return JSON.parse(item) as RoundTimer;
+    } catch {
+      return null;
+    }
+  }
+
   newGame(roomId: string, startAgainNumber = 0): void {
     this.saveRoomId(roomId);
     this.saveTries([]);
@@ -65,6 +110,7 @@ export class LocalStorageService {
     localStorage.removeItem(this.getScopedKey(this.triesKey));
     localStorage.removeItem(this.getScopedKey(this.startAgainKey));
     localStorage.removeItem(this.getScopedKey(this.roomIdKey));
+    localStorage.removeItem(this.getScopedKey(this.timerKey));
 
     // Remove legacy keys from older versions without user scoping.
     localStorage.removeItem(this.triesKey);

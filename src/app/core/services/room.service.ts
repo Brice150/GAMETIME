@@ -1,5 +1,4 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
-import { toObservable } from '@angular/core/rxjs-interop';
+import { inject, Injectable, signal } from '@angular/core';
 import {
   collection,
   collectionData,
@@ -27,19 +26,19 @@ import { Continent } from '../enums/continent.enum';
 import { Brand } from '../interfaces/brand';
 import { Country } from '../interfaces/country';
 import { Room } from '../interfaces/room';
+import { ConnectionService } from './connection.service';
 import { UserService } from './user.service';
 
 @Injectable({ providedIn: 'root' })
 export class RoomService {
   firestore = inject(Firestore);
   userService = inject(UserService);
+  connection = inject(ConnectionService);
   roomsCollection = collection(this.firestore, 'rooms');
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
   marquesGameKey = gameMap['marques'].key;
   currentRoomSig = signal<Room | null | undefined>(undefined);
-
-  readonly roomReady$ = toObservable(computed(() => this.currentRoomSig()));
 
   getRooms(): Observable<Room[]> {
     const roomsCollection = collection(this.firestore, 'rooms');
@@ -74,8 +73,22 @@ export class RoomService {
     if (!room.id) {
       return from(Promise.reject('ID de salle manquant.'));
     }
-    const roomDoc = doc(this.firestore, `rooms/${room.id}`);
-    return from(updateDoc(roomDoc, { ...room }));
+    const { id, ...data } = room;
+    const roomDoc = doc(this.firestore, `rooms/${id}`);
+    return from(updateDoc(roomDoc, data));
+  }
+
+  // Le document room embarque `responses`, `countries` et `brands` : eviter
+  // de tout reecrire pour un seul champ.
+  updateRoomFields(
+    roomId: string | undefined,
+    fields: Partial<Room>,
+  ): Observable<void> {
+    if (!roomId) {
+      return from(Promise.reject('ID de salle manquant.'));
+    }
+    const roomDoc = doc(this.firestore, `rooms/${roomId}`);
+    return from(updateDoc(roomDoc, fields));
   }
 
   deleteRoom(roomId: string): Observable<void> {
@@ -123,13 +136,51 @@ export class RoomService {
   // Les jeux de donnees (mots, pays, marques) pesent ~310 Ko de source et ne
   // servent qu'a la generation d'une partie : on les charge a la demande
   // plutot que de les embarquer dans le bundle initial.
-  private wordsData?: string[];
+  private wordsByLength?: Map<number, string[]>;
   private countriesData?: Country[];
   private brandsData?: Brand[];
 
-  private async loadWords(): Promise<string[]> {
-    this.wordsData ??= (await import('../../../assets/data/words')).words;
-    return this.wordsData;
+  // Amorce le chargement pendant l'attente, pour qu'il ne pese plus sur le
+  // temps mort entre le lancement et la premiere manche.
+  preloadGameData(gameName: string): void {
+    if (!this.connection.shouldPreload()) {
+      return;
+    }
+
+    if (gameName === this.motusGameKey) {
+      void this.loadWordsByLength().catch(() => undefined);
+    } else if (gameName === this.drapeauxGameKey) {
+      void this.loadCountries().catch(() => undefined);
+    } else if (gameName === this.marquesGameKey) {
+      void this.loadBrands().catch(() => undefined);
+    } else {
+      // Room neuve : le jeu n'est pas encore choisi.
+      void this.loadWordsByLength().catch(() => undefined);
+      void this.loadCountries().catch(() => undefined);
+      void this.loadBrands().catch(() => undefined);
+    }
+  }
+
+  // Indexe une fois par longueur : `newWord` refiltrait les 19 000 mots a
+  // chaque tirage.
+  private async loadWordsByLength(): Promise<Map<number, string[]>> {
+    if (!this.wordsByLength) {
+      const { words } = await import('../../../assets/data/words');
+      const byLength = new Map<number, string[]>();
+
+      for (const word of words) {
+        const pool = byLength.get(word.length);
+        if (pool) {
+          pool.push(word);
+        } else {
+          byLength.set(word.length, [word]);
+        }
+      }
+
+      this.wordsByLength = byLength;
+    }
+
+    return this.wordsByLength;
   }
 
   private async loadCountries(): Promise<Country[]> {
@@ -190,7 +241,7 @@ export class RoomService {
     isWordLengthIncreasing: boolean,
     startWordLength: number,
   ): Promise<string[]> {
-    const allWords = await this.loadWords();
+    const wordsByLength = await this.loadWordsByLength();
     const wordsToGenerate: string[] = [];
 
     const usedWords = new Set<string>();
@@ -201,7 +252,15 @@ export class RoomService {
         ? startWordLength + wordsToGenerate.length
         : startWordLength;
 
-      const word = this.newWord(allWords, length);
+      const pool = wordsByLength.get(length);
+
+      // Aucun mot de cette longueur : insister pousserait un `undefined` dans
+      // les reponses et ferait tourner la boucle a vide.
+      if (!pool?.length) {
+        break;
+      }
+
+      const word = pool[Math.floor(Math.random() * pool.length)];
 
       if (!usedWords.has(word)) {
         usedWords.add(word);
@@ -212,14 +271,6 @@ export class RoomService {
     }
 
     return wordsToGenerate;
-  }
-
-  newWord(allWords: string[], wordLength: number): string {
-    const wordsFixedLength = allWords.filter(
-      (word) => word.length === wordLength,
-    );
-    const randomIndex = Math.floor(Math.random() * wordsFixedLength.length);
-    return wordsFixedLength[randomIndex];
   }
 
   async generateCountries(
@@ -262,6 +313,10 @@ export class RoomService {
       filterValue === null
         ? items
         : items.filter((item) => filterFn(item, filterValue));
+
+    if (!pool.length) {
+      return generated;
+    }
 
     let attempts = 0;
     while (generated.length < stepsNumber && attempts < 1000) {

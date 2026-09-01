@@ -1,20 +1,22 @@
-import { CommonModule, Location } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import {
   Component,
+  computed,
   DestroyRef,
   EventEmitter,
   inject,
   input,
   OnInit,
   Output,
+  signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
-import { Router, RouterModule } from '@angular/router';
-import { of, switchMap } from 'rxjs';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { filter } from 'rxjs';
+import { NavLink } from '../core/interfaces/nav-link';
 import { Player } from '../core/interfaces/player';
-import { Room } from '../core/interfaces/room';
 import { LocalStorageService } from '../core/services/local-storage.service';
 import { PlayerService } from '../core/services/player.service';
 import { RoomService } from '../core/services/room.service';
@@ -36,44 +38,93 @@ import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
 })
 export class HeaderComponent implements OnInit {
   router = inject(Router);
-  location = inject(Location);
   roomService = inject(RoomService);
   playerService = inject(PlayerService);
   localStorageService = inject(LocalStorageService);
-  currentUrl = '';
-  player = input.required<Player>();
-  room?: Room;
-  players: Player[] = [];
   destroyRef = inject(DestroyRef);
-  pageTitle = '';
+  player = input.required<Player>();
   @Output() logoutEvent = new EventEmitter<void>();
 
+  // Ni l'URL ni localStorage ne sont reactifs : relus a chaque navigation.
+  private readonly currentUrl = signal(this.router.url);
+  private readonly storedRoomId = signal(this.localStorageService.getRoomId());
+
+  readonly room = computed(() => this.roomService.currentRoomSig());
+
+  readonly isRoomPage = computed(
+    () => !!this.room() && this.currentUrl().startsWith('/room'),
+  );
+
+  readonly pageTitle = computed(() => {
+    const url = this.currentUrl();
+
+    if (this.isRoomPage()) {
+      return this.room()!.gameName;
+    }
+    if (url.startsWith('/admin')) {
+      return 'Admin';
+    }
+    if (url === '/' || url.startsWith('/room')) {
+      return 'Game Time';
+    }
+    return url.replace('/', '');
+  });
+
+  readonly navLinks = computed<NavLink[]>(() => {
+    const links: NavLink[] = [
+      { path: '/accueil', label: 'Accueil', icon: 'bxs-home', exact: true },
+      { path: '/profil', label: 'Profil', icon: 'bxs-user', exact: true },
+      { path: '/succes', label: 'Succès', icon: 'bxs-medal', exact: true },
+      {
+        path: '/classement',
+        label: 'Classement',
+        icon: 'bxs-trophy',
+        exact: true,
+      },
+    ];
+
+    const roomId = this.storedRoomId();
+    if (roomId) {
+      links.push({
+        path: `/room/${roomId}`,
+        label: 'Room',
+        icon: 'bx-play',
+        exact: true,
+      });
+    }
+
+    if (this.player().isAdmin) {
+      links.push({
+        path: '/admin',
+        label: 'Admin',
+        icon: 'bxs-cog',
+        exact: false,
+      });
+    }
+
+    return links;
+  });
+
+  // Copie avant tri : le tableau est partage avec la page room.
+  readonly players = computed(() =>
+    [...this.playerService.currentPlayersSig()].sort(
+      (a, b) => b.currentRoomWins.length - a.currentRoomWins.length,
+    ),
+  );
+
   ngOnInit(): void {
-    this.roomService.roomReady$
+    this.router.events
       .pipe(
+        filter((event) => event instanceof NavigationEnd),
         takeUntilDestroyed(this.destroyRef),
-        switchMap((room) => {
-          if (!room || !room.playerIds?.length) {
-            return of([]);
-          }
-
-          this.room = room;
-
-          return this.playerService.playersReady$;
-        }),
       )
-      .subscribe((players) => {
-        this.players = players.sort(
-          (a, b) => b.currentRoomWins.length - a.currentRoomWins.length,
-        );
+      .subscribe(() => {
+        this.currentUrl.set(this.router.url);
+        this.storedRoomId.set(this.localStorageService.getRoomId());
       });
   }
 
   logout(): void {
     this.logoutEvent.emit();
-  }
-
-  isRoomPage(): boolean {
-    return !!this.room && this.location.path().startsWith('/room');
   }
 }

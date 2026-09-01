@@ -1,5 +1,5 @@
 <div class="players">
-  @for (otherPlayer of players(); track $index; let i = $index) {
+  @for (otherPlayer of players(); track otherPlayer.userId) {
   <div class="container">
     <div
       class="player"

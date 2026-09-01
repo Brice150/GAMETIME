@@ -5,7 +5,17 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
-import { filter, from, map, Observable, of, switchMap } from 'rxjs';
+import {
+  combineLatest,
+  distinctUntilChanged,
+  filter,
+  from,
+  map,
+  Observable,
+  of,
+  shareReplay,
+  switchMap,
+} from 'rxjs';
 import { gameMap } from '../../assets/data/games';
 
 import { Player } from '../core/interfaces/player';
@@ -16,14 +26,12 @@ import { LocalStorageService } from '../core/services/local-storage.service';
 import { PlayerService } from '../core/services/player.service';
 import { RoomService } from '../core/services/room.service';
 import { ToastrHelperService } from '../core/services/toastr-helper.service';
-import { ResultsPodiumComponent } from '../room/results-podium/results-podium.component';
+import { ResultsBoardComponent } from '../room/results-board/results-board.component';
 import { WaitingRoomComponent } from '../room/waiting-room/waiting-room.component';
 import { AddRoomDialogComponent } from '../shared/components/add-room-dialog/add-room-dialog.component';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { MultiplayerDialogComponent } from '../shared/components/multiplayer-dialog/multiplayer-dialog.component';
 import { CustomDatePipe } from '../shared/pipes/custom-date.pipe';
-
-import { AdminResultsDetailsComponent } from './admin-results-details/admin-results-details.component';
 
 @Component({
   selector: 'app-admin-room',
@@ -31,10 +39,8 @@ import { AdminResultsDetailsComponent } from './admin-results-details/admin-resu
     CommonModule,
     MatProgressSpinnerModule,
     CustomDatePipe,
-    AdminResultsDetailsComponent,
-    ResultsPodiumComponent,
+    ResultsBoardComponent,
     WaitingRoomComponent,
-    AdminResultsDetailsComponent,
   ],
   templateUrl: './admin-room.component.html',
   styleUrl: './admin-room.component.css',
@@ -55,29 +61,34 @@ export class AdminRoomComponent implements OnInit {
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
   marquesGameKey = gameMap['marques'].key;
-  isDetailModeActive = false;
 
   ngOnInit(): void {
-    this.activatedRoute.params
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        switchMap((params) =>
-          this.roomService
-            .getRoom(params['id'])
-            .pipe(takeUntilDestroyed(this.destroyRef)),
-        ),
-        switchMap((room) => {
-          this.room = room;
-          if (!room || !room.playerIds?.length) {
-            return of([]);
-          }
-          return this.playerService
-            .getPlayers(room.playerIds)
-            .pipe(takeUntilDestroyed(this.destroyRef));
-        }),
-      )
+    const room$ = this.activatedRoute.params.pipe(
+      switchMap((params) => this.roomService.getRoom(params['id'])),
+      map((room) => {
+        this.room = room;
+        return room;
+      }),
+      shareReplay({ bufferSize: 1, refCount: true }),
+    );
+
+    // On ne re-ecoute les joueurs que si la liste des participants change.
+    const players$ = room$.pipe(
+      map((room) => room?.playerIds ?? []),
+      distinctUntilChanged(
+        (previous, current) =>
+          previous.length === current.length &&
+          previous.every((playerId, index) => playerId === current[index]),
+      ),
+      switchMap((playerIds) =>
+        playerIds.length ? this.playerService.getPlayers(playerIds) : of([]),
+      ),
+    );
+
+    combineLatest([room$, players$])
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (players) => {
+        next: ([, players]) => {
           if (!this.room?.isStarted) {
             this.players = players;
           } else {
@@ -89,14 +100,7 @@ export class AdminRoomComponent implements OnInit {
                 return bTrueCount - aTrueCount;
               }
 
-              const aFinish = a.finishDate
-                ? this.toJsDate(a.finishDate).getTime()
-                : Infinity;
-              const bFinish = b.finishDate
-                ? this.toJsDate(b.finishDate).getTime()
-                : Infinity;
-
-              return aFinish - bFinish;
+              return (a.durationMs ?? Infinity) - (b.durationMs ?? Infinity);
             });
           }
           this.loading = this.room?.isLoading ?? false;
@@ -108,19 +112,6 @@ export class AdminRoomComponent implements OnInit {
           }
         },
       });
-  }
-
-  toJsDate(date: unknown): Date {
-    if (
-      typeof date === 'object' &&
-      date !== null &&
-      'toDate' in date &&
-      typeof date.toDate === 'function'
-    ) {
-      return date.toDate();
-    }
-
-    return new Date(date as string | number | Date);
   }
 
   multiplayer(): void {
@@ -152,19 +143,22 @@ export class AdminRoomComponent implements OnInit {
         switchMap(() => {
           this.players.forEach((player) => {
             player.finishDate = null;
+            player.durationMs = null;
             player.isReady = false;
             player.currentRoomWins = [];
           });
           return this.playerService.updatePlayers(this.players);
         }),
         switchMap(() => {
-          this.room.startDate = new Date();
           this.room.startAgainNumber += 1;
           this.room.isStarted = true;
           return this.generateQuestions();
         }),
         switchMap((room) => {
           this.room = room;
+          // Apres la generation : le chrono ne compte pas le temps mort du
+          // chargement des donnees.
+          this.room.startDate = new Date();
           this.room.isLoading = false;
           return this.roomService.updateRoom(this.room);
         }),
@@ -261,6 +255,7 @@ export class AdminRoomComponent implements OnInit {
           this.players.forEach((player) => {
             player.currentRoomWins = [];
             player.finishDate = null;
+            player.durationMs = null;
             player.isReady = false;
           });
 
@@ -308,7 +303,9 @@ export class AdminRoomComponent implements OnInit {
       this.room.isReadyNotificationActivated =
         !this.room.isReadyNotificationActivated;
       this.roomService
-        .updateRoom(this.room)
+        .updateRoomFields(this.room.id, {
+          isReadyNotificationActivated: this.room.isReadyNotificationActivated,
+        })
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(() => {
           if (playerNotReady) {
@@ -381,16 +378,25 @@ export class AdminRoomComponent implements OnInit {
         switchMap(() => {
           otherPlayer.currentRoomWins = [];
           otherPlayer.finishDate = null;
+          otherPlayer.durationMs = null;
           otherPlayer.isReady = false;
 
-          return this.playerService.updatePlayer(otherPlayer);
+          return this.playerService.updatePlayerFields(otherPlayer.id, {
+            currentRoomWins: [],
+            finishDate: null,
+            durationMs: null,
+            isReady: false,
+          });
         }),
         switchMap(() => {
           this.room.playerIds = this.room.playerIds.filter(
             (playerId) => playerId !== otherPlayer.userId,
           );
-          return this.roomService.updateRoom(this.room);
+          return this.roomService.updateRoomFields(this.room.id, {
+            playerIds: this.room.playerIds,
+          });
         }),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe();
   }
@@ -410,7 +416,4 @@ export class AdminRoomComponent implements OnInit {
     );
   }
 
-  seeDetails(): void {
-    this.isDetailModeActive = !this.isDetailModeActive;
-  }
 }

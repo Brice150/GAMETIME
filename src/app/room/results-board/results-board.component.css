@@ -1,0 +1,237 @@
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+}
+
+.title {
+  margin-bottom: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.toggle-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 250px;
+  margin-bottom: 16px;
+}
+
+mat-slide-toggle {
+  width: 100%;
+}
+
+.board-scroll {
+  width: min(880px, 94%);
+  overflow-x: auto;
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-lg);
+  background: var(--surface-solid);
+  box-shadow: var(--shadow-1);
+}
+
+.board {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.board th,
+.board td {
+  padding: 10px 12px;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-1);
+}
+
+thead tr {
+  background: var(--surface-solid);
+}
+
+thead th {
+  border-bottom: 1px solid var(--border-1);
+}
+
+tbody tr {
+  background: var(--surface-solid);
+}
+
+/* --surface-2 est quasi blanc en theme clair : le zebrage ne se verrait pas. */
+tbody tr:nth-child(even) {
+  background: var(--surface-3);
+}
+
+/* Fond opaque obligatoire : sinon les colonnes defilent visiblement derriere. */
+.corner,
+.response {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  min-width: 128px;
+  max-width: 180px;
+  text-align: left;
+  background-color: var(--surface-solid);
+  border-right: 1px solid var(--border-1);
+}
+
+tbody tr:nth-child(even) .response {
+  background-image: linear-gradient(var(--surface-3), var(--surface-3));
+}
+
+.corner {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.response span {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+}
+
+.player-col {
+  min-width: 136px;
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.podium {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 26px;
+  line-height: 1;
+}
+
+.podium .order {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--r-pill);
+  background: var(--surface-3);
+  color: var(--text-2);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.head .username {
+  max-width: 130px;
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.player-col:not(.me) .medals {
+  background: var(--surface-3);
+  color: var(--text-1);
+  box-shadow: none;
+}
+
+.head .time {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-2);
+}
+
+.head .pending {
+  font-size: 18px;
+  color: var(--text-3);
+}
+
+.remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid var(--danger-border);
+  border-radius: var(--r-pill);
+  background: var(--danger-soft);
+  color: var(--danger);
+  cursor: pointer;
+  transition:
+    background var(--speed) var(--ease),
+    color var(--speed) var(--ease);
+}
+
+.remove i {
+  font-size: 17px;
+}
+
+.remove:hover {
+  background: var(--danger);
+  color: #fff;
+}
+
+th.player-col.me,
+td.me {
+  background: var(--accent-tint);
+}
+
+th.player-col.me .username {
+  color: var(--accent-bright);
+}
+
+tbody td i {
+  font-size: 24px;
+}
+
+/* Reponses masquees (vue admin) : le texte reste selectionnable mais illisible. */
+.hide {
+  border-radius: var(--r-xs);
+  background: var(--text-1);
+  color: transparent;
+  user-select: none;
+}
+
+:host ::ng-deep .mat-mdc-slide-toggle .mat-internal-form-field {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+:host ::ng-deep .mat-mdc-slide-toggle .mdc-switch:enabled + .mdc-label {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-2);
+}
+
+@media screen and (max-width: 550px) {
+  .board th,
+  .board td {
+    padding: 8px 10px;
+  }
+
+  .corner,
+  .response {
+    min-width: 108px;
+  }
+
+  .player-col {
+    min-width: 120px;
+  }
+}

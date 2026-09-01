@@ -1,0 +1,90 @@
+<span class="title">Résultats</span>
+
+@if (canHideResponses()) {
+  <div class="toggle-container">
+    <mat-slide-toggle [(ngModel)]="hideResponses">
+      Cacher réponses
+    </mat-slide-toggle>
+  </div>
+}
+
+<div class="board-scroll">
+  <table class="board">
+    <thead>
+      <tr>
+        <th class="corner" scope="col">Réponses</th>
+        @for (entry of standings(); track entry.player.userId) {
+          <th
+            class="player-col"
+            scope="col"
+            [ngClass]="{ me: entry.player.userId === currentPlayerId() }"
+          >
+            <div class="head">
+              @if (standings().length > 1) {
+                <div class="podium">
+                  @if (entry.rank === 1) {
+                    <i class="bx bxs-trophy" style="color: var(--gold)"></i>
+                  } @else if (entry.rank === 2) {
+                    <i class="bx bxs-trophy" style="color: var(--silver)"></i>
+                  } @else if (entry.rank === 3) {
+                    <i class="bx bxs-trophy" style="color: var(--bronze)"></i>
+                  } @else {
+                    <span class="order">{{ entry.rank }}</span>
+                  }
+                </div>
+              }
+              <span class="username"
+                >{{ entry.player.username }} {{ entry.player.animal }}</span
+              >
+              <div class="medals">
+                <span class="victory-number"
+                  >{{ entry.wins }} / {{ room().responses.length }}</span
+                >
+              </div>
+              @if (entry.player.finishDate) {
+                <span class="time">{{ entry.player.durationMs | duration }}</span>
+              } @else {
+                <i class="bx bx-loader-alt bx-spin pending"></i>
+              }
+              @if (isHost() && entry.player.userId !== currentPlayerId()) {
+                <button
+                  type="button"
+                  class="remove"
+                  (click)="delete(entry.player)"
+                  title="Supprimer"
+                >
+                  <i class="bx bxs-trash"></i>
+                </button>
+              }
+            </div>
+          </th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (response of room().responses; track $index; let i = $index) {
+        <tr>
+          <th class="response" scope="row">
+            <span [ngClass]="{ hide: hideResponses && canHideResponses() }">{{
+              response
+            }}</span>
+          </th>
+          @for (entry of standings(); track entry.player.userId) {
+            <td [ngClass]="{ me: entry.player.userId === currentPlayerId() }">
+              @if (entry.player.currentRoomWins[i] === true) {
+                <i class="bx bx-check" style="color: var(--success)"></i>
+              } @else if (entry.player.currentRoomWins[i] === false) {
+                <i class="bx bx-x" style="color: var(--danger)"></i>
+              } @else {
+                <i
+                  class="bx bx-loader-alt bx-spin"
+                  style="color: var(--accent-bright)"
+                ></i>
+              }
+            </td>
+          }
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

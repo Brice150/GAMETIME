@@ -12,7 +12,18 @@ import { Timestamp } from '@angular/fire/firestore';
 import { MatDialog } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
-import { filter, from, map, Observable, of, switchMap } from 'rxjs';
+import {
+  combineLatest,
+  distinctUntilChanged,
+  filter,
+  from,
+  map,
+  Observable,
+  of,
+  shareReplay,
+  switchMap,
+  timer,
+} from 'rxjs';
 import { gameMap } from '../../assets/data/games';
 import { goals } from '../../assets/data/goals';
 
@@ -28,8 +39,7 @@ import { AddRoomDialogComponent } from '../shared/components/add-room-dialog/add
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { MultiplayerDialogComponent } from '../shared/components/multiplayer-dialog/multiplayer-dialog.component';
 
-import { ResultsDetailsComponent } from './results-details/results-details.component';
-import { ResultsPodiumComponent } from './results-podium/results-podium.component';
+import { ResultsBoardComponent } from './results-board/results-board.component';
 import { WaitingRoomComponent } from './waiting-room/waiting-room.component';
 import { WordGamesComponent } from './word-games/word-games.component';
 
@@ -39,8 +49,7 @@ import { WordGamesComponent } from './word-games/word-games.component';
     CommonModule,
     WordGamesComponent,
     WaitingRoomComponent,
-    ResultsPodiumComponent,
-    ResultsDetailsComponent,
+    ResultsBoardComponent,
     MatProgressSpinnerModule,
   ],
   templateUrl: './room.component.html',
@@ -60,7 +69,6 @@ export class RoomComponent implements OnInit {
   players: Player[] = [];
   isNextButtonAvailable = false;
   isResultPageActive = false;
-  isDetailModeActive = false;
   userLeft = false;
   userKickedOut = false;
   isFinishing = false;
@@ -71,167 +79,29 @@ export class RoomComponent implements OnInit {
   @ViewChild(WordGamesComponent) wordGamesComponent!: WordGamesComponent;
 
   ngOnInit(): void {
-    this.activatedRoute.params
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        switchMap((params) =>
-          this.roomService
-            .getRoom(params['id'])
-            .pipe(takeUntilDestroyed(this.destroyRef)),
-        ),
-        switchMap((room: Room | null) => {
-          if (!room) {
-            this.localStorageService.clearLocalStorage();
-            this.router.navigate(['/accueil']);
-            if (!this.userLeft) {
-              this.toastrHelper.error("L'hôte a supprimé la room");
-            }
-            return of(null);
-          }
+    const room$ = this.activatedRoute.params.pipe(
+      switchMap((params) => this.roomService.getRoom(params['id'])),
+      map((room: Room | null) => this.handleRoom(room)),
+      shareReplay({ bufferSize: 1, refCount: true }),
+    );
 
-          const currentPlayer = this.playerService.currentPlayerSig();
-          const currentUserId = currentPlayer?.userId;
+    // Sans ce filtre, chaque ecriture sur la room recree l'ecoute des joueurs.
+    const players$ = room$.pipe(
+      map((room) => room?.playerIds ?? []),
+      distinctUntilChanged(
+        (previous, current) =>
+          previous.length === current.length &&
+          previous.every((playerId, index) => playerId === current[index]),
+      ),
+      switchMap((playerIds) =>
+        playerIds.length ? this.playerService.getPlayers(playerIds) : of([]),
+      ),
+    );
 
-          if (
-            this.room.playerIds &&
-            room.playerIds &&
-            currentUserId &&
-            this.room.playerIds.includes(currentUserId) &&
-            !room.playerIds.includes(currentUserId)
-          ) {
-            this.userKickedOut = true;
-            this.localStorageService.clearLocalStorage();
-            this.router.navigate(['/accueil']);
-            this.toastrHelper.error('Vous avez été exclu de la room');
-          }
-
-          const start1 =
-            this.room.startDate instanceof Timestamp
-              ? this.room.startDate.toDate()
-              : this.room.startDate;
-          const start2 =
-            room.startDate instanceof Timestamp
-              ? room.startDate.toDate()
-              : room.startDate;
-
-          if (start1?.getTime() !== start2?.getTime()) {
-            this.isResultPageActive = false;
-          }
-
-          this.room = room;
-
-          if (
-            this.room.isReadyNotificationActivated &&
-            !this.playerService.currentPlayerSig()?.isReady &&
-            this.playerService.currentPlayerSig()?.userId !==
-              this.room.userId &&
-            !this.room.isStarted
-          ) {
-            this.toastrHelper.info(
-              "L'hôte veut lancer la room, cliquez sur prêt",
-              'Room',
-            );
-          }
-
-          if (currentUserId && this.room.playerIds.includes(currentUserId)) {
-            return of(this.room);
-          }
-
-          if (
-            !(
-              this.room.isCreatedByAdmin &&
-              currentPlayer &&
-              currentPlayer.isAdmin
-            ) &&
-            !this.userLeft &&
-            !this.userKickedOut
-          ) {
-            if (!currentUserId) {
-              return of(this.room);
-            }
-
-            this.localStorageService.newGame(this.room.id!);
-            this.room.playerIds.push(currentUserId);
-
-            this.roomService
-              .updateRoom(this.room)
-              .pipe(takeUntilDestroyed(this.destroyRef))
-              .subscribe({
-                next: () => {
-                  this.loading = false;
-                },
-                error: (error: HttpErrorResponse) => {
-                  this.loading = false;
-                  if (
-                    !error.message.includes(
-                      'Missing or insufficient permissions.',
-                    )
-                  ) {
-                    this.toastrHelper.error(error.message);
-                  }
-                },
-              });
-            return of(this.room);
-          } else if (
-            this.room.isCreatedByAdmin &&
-            this.playerService.currentPlayerSig()?.isAdmin
-          ) {
-            this.router.navigate(['/admin', this.room.id]);
-          }
-
-          return of(this.room);
-        }),
-        switchMap((room) => {
-          if (!room || !room.playerIds?.length) {
-            return of([]);
-          }
-          return this.playerService
-            .getPlayers(room.playerIds)
-            .pipe(takeUntilDestroyed(this.destroyRef));
-        }),
-      )
+    combineLatest([room$, players$])
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (players) => {
-          if (!this.room.isStarted) {
-            this.players = players;
-          } else {
-            this.players = players.sort((a, b) => {
-              const aTrueCount = a.currentRoomWins.filter(Boolean).length;
-              const bTrueCount = b.currentRoomWins.filter(Boolean).length;
-
-              if (bTrueCount !== aTrueCount) {
-                return bTrueCount - aTrueCount;
-              }
-
-              const aFinish = a.finishDate
-                ? this.toJsDate(a.finishDate).getTime()
-                : Infinity;
-              const bFinish = b.finishDate
-                ? this.toJsDate(b.finishDate).getTime()
-                : Infinity;
-
-              return aFinish - bFinish;
-            });
-          }
-          if (
-            this.playerService.currentPlayerSig()?.currentRoomWins?.length ===
-              this.room.responses?.length &&
-            this.playerService.currentPlayerSig()?.finishDate &&
-            !this.room.isLoading
-          ) {
-            this.isResultPageActive = true;
-          } else if (
-            this.playerService.currentPlayerSig()?.currentRoomWins?.length ===
-              this.room.responses?.length &&
-            !this.playerService.currentPlayerSig()?.finishDate &&
-            !this.room.isLoading
-          ) {
-            this.seeResults();
-          }
-          this.roomService.currentRoomSig.set(this.room);
-          this.playerService.currentPlayersSig.set(this.players);
-          this.loading = this.room.isLoading ?? false;
-        },
+        next: ([, players]) => this.handlePlayers(players),
         error: (error: HttpErrorResponse) => {
           this.loading = false;
           if (!error.message.includes('Missing or insufficient permissions.')) {
@@ -241,28 +111,150 @@ export class RoomComponent implements OnInit {
       });
   }
 
-  toJsDate(date: unknown): Date {
-    if (
-      typeof date === 'object' &&
-      date !== null &&
-      'toDate' in date &&
-      typeof date.toDate === 'function'
-    ) {
-      return date.toDate();
+  handleRoom(room: Room | null): Room | null {
+    if (!room) {
+      this.localStorageService.clearLocalStorage();
+      this.router.navigate(['/accueil']);
+      if (!this.userLeft) {
+        this.toastrHelper.error("L'hôte a supprimé la room");
+      }
+      return null;
     }
 
-    return new Date(date as string | number | Date);
+    const currentPlayer = this.playerService.currentPlayerSig();
+    const currentUserId = currentPlayer?.userId;
+
+    if (
+      this.room.playerIds &&
+      room.playerIds &&
+      currentUserId &&
+      this.room.playerIds.includes(currentUserId) &&
+      !room.playerIds.includes(currentUserId)
+    ) {
+      this.userKickedOut = true;
+      this.localStorageService.clearLocalStorage();
+      this.router.navigate(['/accueil']);
+      this.toastrHelper.error('Vous avez été exclu de la room');
+    }
+
+    const start1 =
+      this.room.startDate instanceof Timestamp
+        ? this.room.startDate.toDate()
+        : this.room.startDate;
+    const start2 =
+      room.startDate instanceof Timestamp
+        ? room.startDate.toDate()
+        : room.startDate;
+
+    if (start1?.getTime() !== start2?.getTime()) {
+      this.isResultPageActive = false;
+    }
+
+    this.room = room;
+
+    if (!this.room.isStarted) {
+      this.roomService.preloadGameData(this.room.gameName);
+    }
+
+    if (
+      this.room.isReadyNotificationActivated &&
+      !currentPlayer?.isReady &&
+      currentUserId !== this.room.userId &&
+      !this.room.isStarted
+    ) {
+      this.toastrHelper.info(
+        "L'hôte veut lancer la room, cliquez sur prêt",
+        'Room',
+      );
+    }
+
+    if (currentUserId && this.room.playerIds.includes(currentUserId)) {
+      return this.room;
+    }
+
+    if (
+      !(this.room.isCreatedByAdmin && currentPlayer && currentPlayer.isAdmin) &&
+      !this.userLeft &&
+      !this.userKickedOut
+    ) {
+      if (!currentUserId) {
+        return this.room;
+      }
+
+      this.localStorageService.newGame(this.room.id!);
+      this.room.playerIds.push(currentUserId);
+
+      this.roomService
+        .updateRoomFields(this.room.id, { playerIds: this.room.playerIds })
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: () => {
+            this.loading = false;
+          },
+          error: (error: HttpErrorResponse) => {
+            this.loading = false;
+            if (
+              !error.message.includes('Missing or insufficient permissions.')
+            ) {
+              this.toastrHelper.error(error.message);
+            }
+          },
+        });
+      return this.room;
+    } else if (this.room.isCreatedByAdmin && currentPlayer?.isAdmin) {
+      this.router.navigate(['/admin', this.room.id]);
+    }
+
+    return this.room;
+  }
+
+  handlePlayers(players: Player[]): void {
+    if (!this.room.isStarted) {
+      this.players = players;
+    } else {
+      this.players = players.sort((a, b) => {
+        const aTrueCount = a.currentRoomWins.filter(Boolean).length;
+        const bTrueCount = b.currentRoomWins.filter(Boolean).length;
+
+        if (bTrueCount !== aTrueCount) {
+          return bTrueCount - aTrueCount;
+        }
+
+        return (a.durationMs ?? Infinity) - (b.durationMs ?? Infinity);
+      });
+    }
+
+    const currentPlayer = this.playerService.currentPlayerSig();
+    const stepsCount = this.room.responses?.length;
+    const allStepsDone =
+      !!currentPlayer &&
+      !!stepsCount &&
+      currentPlayer.currentRoomWins.length === stepsCount;
+
+    if (allStepsDone && !this.room.isLoading) {
+      if (!currentPlayer.finishDate) {
+        this.seeResults();
+      } else if (!this.isFinishing) {
+        this.isResultPageActive = true;
+      }
+    }
+
+    this.roomService.currentRoomSig.set(this.room);
+    this.playerService.currentPlayersSig.set(this.players);
+    this.loading = this.room.isLoading ?? false;
   }
 
   updatePlayerGame(stepWon: boolean): void {
-    if (!this.playerService.currentPlayerSig()) {
+    const currentPlayer = this.playerService.currentPlayerSig();
+
+    if (!currentPlayer) {
       return;
     }
 
     if (stepWon) {
-      const stat = this.playerService
-        .currentPlayerSig()!
-        .stats.find((stat) => stat.gameName === this.room.gameName);
+      const stat = currentPlayer.stats.find(
+        (stat) => stat.gameName === this.room.gameName,
+      );
       if (stat) {
         stat.medalsNumber += 1;
 
@@ -279,10 +271,28 @@ export class RoomComponent implements OnInit {
       }
     }
 
-    this.playerService.currentPlayerSig()!.currentRoomWins.push(stepWon);
+    currentPlayer.currentRoomWins.push(stepWon);
+
+    const fields: Partial<Player> = {
+      currentRoomWins: currentPlayer.currentRoomWins,
+      stats: currentPlayer.stats,
+    };
+
+    // Derniere manche : l'arrivee est relevee ici, avant la moindre
+    // entree-sortie, et part dans la meme ecriture que la manche.
+    const justFinished =
+      currentPlayer.currentRoomWins.length === this.room.responses?.length &&
+      !currentPlayer.finishDate;
+
+    if (justFinished) {
+      this.stampFinish(currentPlayer);
+      fields.finishDate = currentPlayer.finishDate;
+      fields.durationMs = currentPlayer.durationMs;
+      fields.isReady = true;
+    }
 
     this.playerService
-      .updatePlayer(this.playerService.currentPlayerSig()!)
+      .updatePlayerFields(currentPlayer.id, fields)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
@@ -293,6 +303,34 @@ export class RoomComponent implements OnInit {
             this.toastrHelper.error(error.message);
           }
         },
+      });
+
+    if (justFinished) {
+      this.showResultsAfterPause();
+    }
+  }
+
+  stampFinish(player: Player): void {
+    player.finishDate = new Date();
+    player.durationMs = this.localStorageService.getElapsedMs(
+      this.room.id!,
+      this.room.startAgainNumber,
+    );
+    player.isReady = true;
+    this.isFinishing = true;
+  }
+
+  // Le temps est deja enregistre et publie : ces 3 secondes ne servent qu'a
+  // laisser le joueur lire sa derniere manche.
+  showResultsAfterPause(): void {
+    timer(3000)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.isResultPageActive = true;
+        this.playerService.currentPlayerSig.set(
+          this.playerService.currentPlayerSig(),
+        );
+        this.isFinishing = false;
       });
   }
 
@@ -339,6 +377,7 @@ export class RoomComponent implements OnInit {
             this.players.forEach((player) => {
               player.currentRoomWins = [];
               player.finishDate = null;
+              player.durationMs = null;
               player.isReady = false;
             });
 
@@ -382,21 +421,29 @@ export class RoomComponent implements OnInit {
                 playerId !== this.playerService.currentPlayerSig()?.userId,
             );
 
-            return this.roomService.updateRoom(this.room);
+            return this.roomService.updateRoomFields(this.room.id, {
+              playerIds: this.room.playerIds,
+            });
           }),
           takeUntilDestroyed(this.destroyRef),
           switchMap(() => {
-            if (!this.playerService.currentPlayerSig()) {
+            const currentPlayer = this.playerService.currentPlayerSig();
+
+            if (!currentPlayer) {
               return of(undefined);
             }
 
-            this.playerService.currentPlayerSig()!.currentRoomWins = [];
-            this.playerService.currentPlayerSig()!.finishDate = null;
-            this.playerService.currentPlayerSig()!.isReady = false;
+            currentPlayer.currentRoomWins = [];
+            currentPlayer.finishDate = null;
+            currentPlayer.durationMs = null;
+            currentPlayer.isReady = false;
 
-            return this.playerService.updatePlayer(
-              this.playerService.currentPlayerSig()!,
-            );
+            return this.playerService.updatePlayerFields(currentPlayer.id, {
+              currentRoomWins: [],
+              finishDate: null,
+              durationMs: null,
+              isReady: false,
+            });
           }),
         )
         .subscribe({
@@ -429,41 +476,30 @@ export class RoomComponent implements OnInit {
   }
 
   seeResults(): void {
-    if (
-      !this.playerService.currentPlayerSig() ||
-      this.playerService.currentPlayerSig()?.finishDate
-    ) {
+    const currentPlayer = this.playerService.currentPlayerSig();
+
+    if (!currentPlayer || currentPlayer.finishDate) {
       return;
     }
 
-    this.isFinishing = true;
-    this.playerService.currentPlayerSig()!.finishDate = new Date();
-    this.playerService.currentPlayerSig()!.isReady = true;
+    this.stampFinish(currentPlayer);
 
-    setTimeout(() => {
-      this.loading = true;
+    this.playerService
+      .updatePlayerFields(currentPlayer.id, {
+        finishDate: currentPlayer.finishDate,
+        durationMs: currentPlayer.durationMs,
+        isReady: true,
+      })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        error: (error: HttpErrorResponse) => {
+          if (!error.message.includes('Missing or insufficient permissions.')) {
+            this.toastrHelper.error(error.message);
+          }
+        },
+      });
 
-      this.playerService
-        .updatePlayer(this.playerService.currentPlayerSig()!)
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe({
-          next: () => {
-            this.isResultPageActive = true;
-            this.playerService.currentPlayerSig.set(
-              this.playerService.currentPlayerSig(),
-            );
-            this.isFinishing = false;
-            this.loading = false;
-          },
-          error: (error: HttpErrorResponse) => {
-            if (
-              !error.message.includes('Missing or insufficient permissions.')
-            ) {
-              this.toastrHelper.error(error.message);
-            }
-          },
-        });
-    }, 3000);
+    this.showResultsAfterPause();
   }
 
   start(): void {
@@ -482,19 +518,22 @@ export class RoomComponent implements OnInit {
         switchMap(() => {
           this.players.forEach((player) => {
             player.finishDate = null;
+            player.durationMs = null;
             player.isReady = false;
             player.currentRoomWins = [];
           });
           return this.playerService.updatePlayers(this.players);
         }),
         switchMap(() => {
-          this.room.startDate = new Date();
           this.room.startAgainNumber += 1;
           this.room.isStarted = true;
           return this.generateQuestions();
         }),
         switchMap((room) => {
           this.room = room;
+          // Apres la generation : le chrono ne compte pas le temps mort du
+          // chargement des donnees.
+          this.room.startDate = new Date();
           this.room.isLoading = false;
           return this.roomService.updateRoom(this.room);
         }),
@@ -578,11 +617,12 @@ export class RoomComponent implements OnInit {
   }
 
   ready(): void {
-    this.playerService.currentPlayerSig()!.isReady =
-      !this.playerService.currentPlayerSig()!.isReady;
+    const currentPlayer = this.playerService.currentPlayerSig()!;
+    currentPlayer.isReady = !currentPlayer.isReady;
 
     this.playerService
-      .updatePlayer(this.playerService.currentPlayerSig()!)
+      .updatePlayerFields(currentPlayer.id, { isReady: currentPlayer.isReady })
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() =>
         this.playerService.currentPlayerSig.set(
           this.playerService.currentPlayerSig(),
@@ -611,7 +651,9 @@ export class RoomComponent implements OnInit {
       this.room.isReadyNotificationActivated =
         !this.room.isReadyNotificationActivated;
       this.roomService
-        .updateRoom(this.room)
+        .updateRoomFields(this.room.id, {
+          isReadyNotificationActivated: this.room.isReadyNotificationActivated,
+        })
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(() => {
           if (playerNotReady) {
@@ -684,21 +726,26 @@ export class RoomComponent implements OnInit {
         switchMap(() => {
           otherPlayer.currentRoomWins = [];
           otherPlayer.finishDate = null;
+          otherPlayer.durationMs = null;
           otherPlayer.isReady = false;
 
-          return this.playerService.updatePlayer(otherPlayer);
+          return this.playerService.updatePlayerFields(otherPlayer.id, {
+            currentRoomWins: [],
+            finishDate: null,
+            durationMs: null,
+            isReady: false,
+          });
         }),
         switchMap(() => {
           this.room.playerIds = this.room.playerIds.filter(
             (playerId) => playerId !== otherPlayer.userId,
           );
-          return this.roomService.updateRoom(this.room);
+          return this.roomService.updateRoomFields(this.room.id, {
+            playerIds: this.room.playerIds,
+          });
         }),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe();
-  }
-
-  seeDetails(): void {
-    this.isDetailModeActive = !this.isDetailModeActive;
   }
 }

@@ -239,6 +239,7 @@ export class UserService {
       isAdmin: !!targetPlayer.isAdmin || !!guestPlayer.isAdmin,
       stats: mergedStats,
       finishDate: targetPlayer.finishDate ?? guestPlayer.finishDate ?? null,
+      durationMs: targetPlayer.durationMs ?? guestPlayer.durationMs ?? null,
     });
 
     await deleteDoc(doc(this.firestore, `players/${guestDoc.id}`));

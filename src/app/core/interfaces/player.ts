@@ -9,5 +9,6 @@ export interface Player {
   stats: Stat[];
   currentRoomWins: boolean[];
   finishDate: Date | null;
+  durationMs: number | null;
   isReady: boolean;
 }

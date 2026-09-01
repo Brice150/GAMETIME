@@ -1,118 +1,77 @@
 <header>
-  <div class="project-title">
-    @if (
-      !isRoomPage() &&
-      router.url !== "/" &&
-      !router.url.startsWith("/room") &&
-      !router.url.startsWith("/admin")
-    ) {
-      <h1>{{ router.url.replace("/", "") }}</h1>
-    } @else if (router.url.startsWith("/admin")) {
-      <h1>Admin</h1>
-    } @else if (!isRoomPage()) {
-      <h1>Game Time</h1>
-    } @else {
-      <h1>{{ room?.gameName }}</h1>
-    }
-  </div>
-  <div class="switch-container">
-    <button mat-button [matMenuTriggerFor]="menu" class="menu" title="Menu">
-      <i class="bx bx-menu"></i>
-    </button>
-    <app-theme-toggle></app-theme-toggle>
-    <mat-menu #menu="matMenu">
-      <button
-        type="button"
-        routerLink="/accueil"
-        routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: true }"
-        title="Accueil"
-        mat-menu-item
-      >
-        <i class="bx bxs-home"></i>
-        <span class="description">Accueil</span>
-      </button>
-      <button
-        type="button"
-        routerLink="/profil"
-        routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: true }"
-        title="Profil"
-        mat-menu-item
-      >
-        <i class="bx bxs-user"></i>
-        <span class="description">Profil</span>
-      </button>
-      <button
-        type="button"
-        routerLink="/succes"
-        routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: true }"
-        title="Succes"
-        mat-menu-item
-      >
-        <i class="bx bxs-medal"></i>
-        <span class="description">Succès</span>
-      </button>
-      <button
-        type="button"
-        routerLink="/classement"
-        routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: true }"
-        title="Classement"
-        mat-menu-item
-      >
-        <i class="bx bxs-trophy"></i>
-        <span class="description">Classement</span>
-      </button>
-      @if (localStorageService.getRoomId()) {
-        <button
-          type="button"
-          [routerLink]="'/room/' + localStorageService.getRoomId()"
+  <div class="bar">
+    <div class="project-title">
+      <h1>{{ pageTitle() }}</h1>
+    </div>
+
+    <nav class="nav-desktop">
+      @for (link of navLinks(); track link.path) {
+        <a
+          class="nav-link"
+          [routerLink]="link.path"
           routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }"
-          title="Room"
-          mat-menu-item
+          [routerLinkActiveOptions]="{ exact: link.exact }"
+          [title]="link.label"
         >
-          <i class="bx bx-play"></i>
-          <span class="description">Room</span>
-        </button>
-      }
-      @if (player().isAdmin) {
-        <button
-          type="button"
-          routerLink="/admin"
-          routerLinkActive="active"
-          title="Admin"
-          mat-menu-item
-        >
-          <i class="bx bxs-cog"></i>
-          <span class="description">Admin</span>
-        </button>
+          <i class="bx {{ link.icon }}"></i>
+          <span class="label">{{ link.label }}</span>
+        </a>
       }
       <button
         type="button"
+        class="nav-link logout"
         (click)="logout()"
         title="Déconnexion"
-        mat-menu-item
       >
         <i class="bx bxs-log-out"></i>
-        <span class="description">Déconnexion</span>
+        <span class="label">Déconnexion</span>
       </button>
-    </mat-menu>
-  </div>
-  @if (isRoomPage() && room?.isStarted && !room?.isLoading) {
-    <div class="switch-container medals-container">
-      <div class="medals">
-        <span class="victory-number">{{
-          room?.gameName! | medalsNumber: player()
-        }}</span>
-        <i class="bx bxs-medal"></i>
-      </div>
+    </nav>
+
+    <div class="switch-container">
+      @if (isRoomPage() && room()?.isStarted && !room()?.isLoading) {
+        <div class="medals">
+          <span class="victory-number">{{
+            room()!.gameName | medalsNumber: player()
+          }}</span>
+          <i class="bx bxs-medal"></i>
+        </div>
+      }
+      <app-theme-toggle></app-theme-toggle>
+      <button mat-button [matMenuTriggerFor]="menu" class="menu" title="Menu">
+        <i class="bx bx-menu"></i>
+      </button>
+      <mat-menu #menu="matMenu">
+        @for (link of navLinks(); track link.path) {
+          <button
+            type="button"
+            [routerLink]="link.path"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: link.exact }"
+            [title]="link.label"
+            mat-menu-item
+          >
+            <i class="bx {{ link.icon }}"></i>
+            <span class="description">{{ link.label }}</span>
+          </button>
+        }
+        <button
+          type="button"
+          (click)="logout()"
+          title="Déconnexion"
+          mat-menu-item
+        >
+          <i class="bx bxs-log-out"></i>
+          <span class="description">Déconnexion</span>
+        </button>
+      </mat-menu>
     </div>
+  </div>
+
+  @if (isRoomPage() && room()?.isStarted && !room()?.isLoading) {
     <div class="players-row">
       <div class="players">
-        @for (otherPlayer of players; track $index) {
+        @for (otherPlayer of players(); track otherPlayer.userId) {
           <div
             class="player"
             [ngClass]="{ 'alt-color': otherPlayer.userId !== player().userId }"
@@ -121,11 +80,11 @@
               >{{ otherPlayer.username }} {{ otherPlayer.animal }}</span
             >
             @if (
-              otherPlayer.currentRoomWins.length !== room!.responses.length
+              otherPlayer.currentRoomWins.length !== room()!.responses.length
             ) {
               <span class="step">
                 {{ otherPlayer.currentRoomWins.length + 1
-                }}<span class="slash">/</span>{{ room!.responses.length }}
+                }}<span class="slash">/</span>{{ room()!.responses.length }}
               </span>
             } @else {
               <span class="step">Terminé</span>

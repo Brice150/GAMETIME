@@ -1,23 +1,20 @@
-import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Injectable } from '@angular/core';
 
+// URL seulement : la balise `<img>` profite du cache HTTP et n'envoie pas
+// l'en-tete `Origin` que Brandfetch refuse (protection anti-hotlinking).
 @Injectable({
   providedIn: 'root',
 })
 export class ImageService {
-  http = inject(HttpClient);
   drapeauxApi = 'https://flagcdn.com/w160/';
   marquesApiStart = 'https://cdn.brandfetch.io/';
   marquesApiEnd = '/w/160?c=1idZAj7HGQTm-vegzZa';
 
-  getDrapeauImage(countryCode: string): Observable<Blob> {
-    const url = `${this.drapeauxApi}${countryCode.toLowerCase()}.webp`;
-    return this.http.get(url, { responseType: 'blob' });
+  getDrapeauImageUrl(countryCode: string): string {
+    return `${this.drapeauxApi}${countryCode.toLowerCase()}.webp`;
   }
 
-  getLogoMarque(website: string): Observable<Blob> {
-    const url = `${this.marquesApiStart}${website}${this.marquesApiEnd}`;
-    return this.http.get(url, { responseType: 'blob' });
+  getLogoMarqueUrl(website: string): string {
+    return `${this.marquesApiStart}${website}${this.marquesApiEnd}`;
   }
 }

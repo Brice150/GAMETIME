@@ -1,5 +1,4 @@
 import { registerLocaleData } from '@angular/common';
-import { provideHttpClient } from '@angular/common/http';
 import localeFr from '@angular/common/locales/fr';
 import {
   ApplicationConfig,
@@ -51,7 +50,6 @@ export const appConfig: ApplicationConfig = {
     ),
     provideToastr(),
     provideAnimationsAsync(),
-    provideHttpClient(),
     provideFirebaseApp(() => firebaseApp),
     provideAuth(() => getAuth()),
     provideFirestore(() =>
