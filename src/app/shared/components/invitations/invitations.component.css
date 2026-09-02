@@ -1,0 +1,116 @@
+.invitations {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 900;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(360px, calc(100% - 32px));
+}
+
+.invitation {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--accent-border);
+  border-radius: var(--r-md);
+  background: var(--surface-solid);
+  box-shadow: var(--shadow-2);
+  animation: gt-rise 0.4s var(--ease) both;
+}
+
+.invitation > i {
+  font-size: 26px;
+  color: var(--accent-bright);
+  flex-shrink: 0;
+}
+
+.invitation .text {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+}
+
+.invitation .from {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.invitation .detail {
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+.invitation .actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.invitation .join {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 14px;
+  border: none;
+  border-radius: var(--r-pill);
+  background: var(--accent-gradient);
+  color: var(--on-accent);
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform var(--speed) var(--ease);
+}
+
+.invitation .join:hover {
+  transform: translateY(-2px);
+}
+
+.invitation .join i {
+  font-size: 18px;
+}
+
+.invitation .ignore {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-pill);
+  background: var(--surface-2);
+  color: var(--text-2);
+  cursor: pointer;
+  transition:
+    background var(--speed) var(--ease),
+    color var(--speed) var(--ease);
+}
+
+.invitation .ignore:hover {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.invitation .ignore i {
+  font-size: 20px;
+}
+
+@media screen and (max-width: 500px) {
+  .invitations {
+    left: 16px;
+    right: 16px;
+    width: auto;
+  }
+}

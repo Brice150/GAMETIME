@@ -1,78 +1,140 @@
 section {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   flex-direction: column;
-  width: 100%;
+  gap: 32px;
+  width: min(1200px, 95%);
+  margin: 0 auto;
   padding: 28px 0 40px;
   color: var(--text-1);
 }
 
-form {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  width: min(320px, 90%);
+/* Compteurs de tete : l'etat du jeu en un coup d'oeil. */
+.overview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px;
+  width: 100%;
 }
 
-form.margin {
-  margin-top: 40px;
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 16px 12px;
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-lg);
+  background: var(--surface-1);
+}
+
+.stat.accent {
+  border-color: var(--accent-border);
+  background: linear-gradient(150deg, var(--accent-tint), var(--accent-tint-2));
+}
+
+.stat i {
+  font-size: 24px;
+  color: var(--accent-bright);
+}
+
+.stat .value {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--text-1);
+}
+
+.stat .label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-2);
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.block-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-1);
+}
+
+.block-head h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-1);
+}
+
+.block-head form {
+  display: flex;
+  width: min(300px, 100%);
+}
+
+.block-head .purge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 0 16px;
+  border: 1px solid var(--danger-border);
+  border-radius: var(--r-pill);
+  background: var(--danger-soft);
+  color: var(--danger);
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background var(--speed) var(--ease),
+    color var(--speed) var(--ease);
+}
+
+.block-head .purge:hover {
+  background: var(--danger);
+  color: #fff;
+}
+
+.block-head .purge i {
+  font-size: 18px;
+  color: inherit;
 }
 
 mat-form-field {
   width: 100%;
 }
 
-.cap-option {
-  text-transform: capitalize;
-}
-
-.flex {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 10px;
-}
-
-.flex i {
-  font-size: 24px;
+.block-head i {
+  font-size: 20px;
   color: var(--accent-bright);
 }
 
-.game {
-  font-size: 16px;
-  font-weight: 500;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-  color: var(--text-1);
-}
-
-section .element {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  margin-top: 20px;
-}
-
-section .element.players-list {
-  flex-direction: column;
+.players-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 16px;
+  width: 100%;
 }
 
 .no-results {
-  margin-top: 10px;
+  margin: 0;
+  padding: 18px;
+  border: 1px dashed var(--border-2);
+  border-radius: var(--r-md);
   font-size: 16px;
   font-weight: 500;
   color: var(--text-3);
-}
-
-.button-container {
-  margin-top: 22px;
-}
-
-.button-container button {
-  min-width: 160px;
+  text-align: center;
 }
 
 mat-spinner {
@@ -82,7 +144,8 @@ mat-spinner {
   transform: translate(-50%, -50%);
 }
 
-:host ::ng-deep .mat-mdc-icon-button i {
-  font-size: 20px;
-  color: var(--accent-bright);
+/* Le champ de recherche vit dans un bandeau : il ne doit pas pousser le
+   titre vers le haut avec sa zone de message d'erreur. */
+:host ::ng-deep .block-head .mat-mdc-form-field-subscript-wrapper {
+  display: none;
 }

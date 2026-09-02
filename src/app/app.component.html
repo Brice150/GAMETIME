@@ -1,7 +1,10 @@
 @if (userService.currentUserSig() && playerService.currentPlayerSig()) {
-<app-header
-  (logoutEvent)="logout()"
-  [player]="playerService.currentPlayerSig()!"
-></app-header>
+  <app-header
+    (logoutEvent)="logout()"
+    [player]="playerService.currentPlayerSig()!"
+  ></app-header>
 }
 <router-outlet></router-outlet>
+@if (userService.currentUserSig() && playerService.currentPlayerSig()) {
+  <app-invitations></app-invitations>
+}

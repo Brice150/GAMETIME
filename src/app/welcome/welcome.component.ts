@@ -56,6 +56,14 @@ export class WelcomeComponent implements AfterViewInit {
     });
   }
 
+  // Retour sur le lien demande avant la connexion (une room partagee, par
+  // exemple), sinon accueil.
+  navigateAfterLogin(): void {
+    const redirectUrl = this.userService.redirectUrl;
+    this.userService.redirectUrl = null;
+    this.router.navigateByUrl(redirectUrl ?? '/accueil');
+  }
+
   continueWithGoogle(): void {
     this.loading = true;
     this.userService
@@ -71,7 +79,7 @@ export class WelcomeComponent implements AfterViewInit {
             email: email ?? 'Compte invité',
             isAnonymous: false,
           });
-          this.router.navigate(['/accueil']);
+          this.navigateAfterLogin();
           this.toastrHelper.info('Bienvenue sur Game Time', 'Game Time');
         },
         error: (error: HttpErrorResponse) => {
@@ -101,7 +109,7 @@ export class WelcomeComponent implements AfterViewInit {
             email: email ?? 'Compte invité',
             isAnonymous: false,
           });
-          this.router.navigate(['/accueil']);
+          this.navigateAfterLogin();
           this.toastrHelper.info('Bienvenue sur Game Time', 'Game Time');
         },
         error: (error: HttpErrorResponse) => {
@@ -135,7 +143,7 @@ export class WelcomeComponent implements AfterViewInit {
             email: 'Compte invité',
             isAnonymous,
           });
-          this.router.navigate(['/accueil']);
+          this.navigateAfterLogin();
           this.toastrHelper.info(
             'Connecté en invité. Tu pourras lier ton compte plus tard.',
             'Mode invité',

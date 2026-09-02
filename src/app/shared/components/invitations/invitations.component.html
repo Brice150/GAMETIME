@@ -1,0 +1,36 @@
+@if (invitations().length) {
+  <div class="invitations">
+    @for (invitation of invitations(); track invitation.id) {
+      <div class="invitation">
+        <i class="bx bxs-envelope"></i>
+        <div class="text">
+          <span class="from"
+            >{{ invitation.fromUsername }} {{ invitation.fromAnimal }}</span
+          >
+          <span class="detail"
+            >vous invite dans la room {{ invitation.roomCode }}</span
+          >
+        </div>
+        <div class="actions">
+          <button
+            type="button"
+            class="join"
+            title="Rejoindre"
+            (click)="join(invitation)"
+          >
+            <i class="bx bx-play"></i>
+            <span>Rejoindre</span>
+          </button>
+          <button
+            type="button"
+            class="ignore"
+            title="Ignorer"
+            (click)="dismiss(invitation)"
+          >
+            <i class="bx bx-x"></i>
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+}

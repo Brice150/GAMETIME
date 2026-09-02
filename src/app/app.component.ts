@@ -6,12 +6,13 @@ import { Router, RouterOutlet } from '@angular/router';
 import { of, switchMap } from 'rxjs';
 import { UserService } from './core/services/user.service';
 import { HeaderComponent } from './header/header.component';
+import { InvitationsComponent } from './shared/components/invitations/invitations.component';
 import { PlayerService } from './core/services/player.service';
 import { ToastrHelperService } from './core/services/toastr-helper.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, CommonModule, HeaderComponent],
+  imports: [RouterOutlet, CommonModule, HeaderComponent, InvitationsComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })

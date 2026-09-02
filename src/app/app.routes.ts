@@ -17,15 +17,9 @@ export const routes: Routes = [
     canActivate: [userGuard],
   },
   {
-    path: 'profil',
+    path: 'parametres',
     loadComponent: () =>
       import('./profile/profile.component').then((m) => m.ProfileComponent),
-    canActivate: [userGuard],
-  },
-  {
-    path: 'succes',
-    loadComponent: () =>
-      import('./success/success.component').then((m) => m.SuccessComponent),
     canActivate: [userGuard],
   },
   {
@@ -44,14 +38,6 @@ export const routes: Routes = [
     path: 'admin',
     loadComponent: () =>
       import('./admin/admin.component').then((m) => m.AdminComponent),
-    canActivate: [adminGuard],
-  },
-  {
-    path: 'admin/:id',
-    loadComponent: () =>
-      import('./admin-room/admin-room.component').then(
-        (m) => m.AdminRoomComponent,
-      ),
     canActivate: [adminGuard],
   },
   { path: '**', redirectTo: 'accueil', pathMatch: 'full' },

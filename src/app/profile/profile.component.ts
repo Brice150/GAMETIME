@@ -4,14 +4,18 @@ import { Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { Router, RouterModule } from '@angular/router';
-import { catchError, filter, of, switchMap } from 'rxjs';
+import { catchError, filter, map, of, switchMap, take } from 'rxjs';
+import { FriendService } from '../core/services/friend.service';
+import { NotificationService } from '../core/services/notification.service';
 import { PlayerService } from '../core/services/player.service';
 import { ProfileService } from '../core/services/profile.service';
 import { RoomService } from '../core/services/room.service';
 import { UserService } from '../core/services/user.service';
 import { ToastrHelperService } from '../core/services/toastr-helper.service';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
+import { FriendsComponent } from './friends/friends.component';
 import { UserComponent } from './user/user.component';
 import { UserDialogComponent } from '../shared/components/user-dialog/user-dialog.component';
 import { Player } from '../core/interfaces/player';
@@ -22,7 +26,9 @@ import { Player } from '../core/interfaces/player';
     CommonModule,
     RouterModule,
     MatProgressSpinnerModule,
+    MatSlideToggleModule,
     UserComponent,
+    FriendsComponent,
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
@@ -33,13 +39,52 @@ export class ProfileComponent {
   userService = inject(UserService);
   playerService = inject(PlayerService);
   roomService = inject(RoomService);
+  friendService = inject(FriendService);
+  notificationService = inject(NotificationService);
   dialog = inject(MatDialog);
   router = inject(Router);
   destroyRef = inject(DestroyRef);
   loading = false;
+  tab: 'compte' | 'amis' = 'compte';
+  notificationsEnabled = this.notificationService.isEnabled;
+
+  get pendingRequestsNumber(): number {
+    return this.playerService.currentPlayerSig()?.friendRequestIds?.length ?? 0;
+  }
 
   isTemporaryAccount(): boolean {
     return !!this.userService.auth.currentUser?.isAnonymous;
+  }
+
+  isUsernameTaken(players: Player[], username: string): boolean {
+    const currentUserId = this.playerService.currentPlayerSig()?.userId;
+    const normalized = this.friendService.normalizeText(username);
+
+    return players.some(
+      (player) =>
+        player.userId !== currentUserId &&
+        this.friendService.normalizeText(player.username) === normalized,
+    );
+  }
+
+  toggleNotifications(enabled: boolean): void {
+    if (!enabled) {
+      void this.notificationService.disable();
+      this.notificationsEnabled = false;
+      return;
+    }
+
+    void this.notificationService.enable().then((granted) => {
+      this.notificationsEnabled = granted;
+
+      if (granted) {
+        this.toastrHelper.info('Notifications activées', 'Notifications');
+      } else {
+        this.toastrHelper.error(
+          'Votre navigateur a refusé les notifications pour ce site',
+        );
+      }
+    });
   }
 
   openUserDialog(): void {
@@ -51,19 +96,40 @@ export class ProfileComponent {
       .afterClosed()
       .pipe(
         filter((res) => !!res),
-        switchMap((player: Player) => {
+        switchMap((formValue: Player) => {
           this.loading = true;
-          this.playerService.currentPlayerSig()!.username = player.username;
-          this.playerService.currentPlayerSig()!.animal = player.animal;
-          return this.playerService.updatePlayer(
-            this.playerService.currentPlayerSig()!,
+          // Le pseudo est la clé de recherche des amis : deux homonymes le
+          // rendraient inutilisable.
+          return this.playerService.getAllPlayers().pipe(
+            take(1),
+            map((players) => ({
+              formValue,
+              isTaken: this.isUsernameTaken(players, formValue.username),
+            })),
           );
+        }),
+        switchMap(({ formValue, isTaken }) => {
+          if (isTaken) {
+            return of(true);
+          }
+
+          const player = this.playerService.currentPlayerSig()!;
+          player.username = formValue.username;
+          player.animal = formValue.animal;
+
+          return this.playerService.updatePlayer(player).pipe(map(() => false));
         }),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
-        next: () => {
+        next: (isTaken) => {
           this.loading = false;
+
+          if (isTaken) {
+            this.toastrHelper.error('Ce nom est déjà pris par un autre joueur');
+            return;
+          }
+
           this.toastrHelper.info('Profil modifié', 'Profil');
         },
         error: (error: HttpErrorResponse) => {

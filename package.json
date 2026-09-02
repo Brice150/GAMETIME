@@ -1,13 +1,12 @@
 {
   "name": "game-time",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "generate:icons": "node scripts/generate-icons.mjs",
     "prebuild": "npm run generate:icons",
     "build": "ng build",
-    "postbuild": "node scripts/spa-fallback.mjs",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint"

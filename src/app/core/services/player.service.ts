@@ -6,6 +6,8 @@ import {
   deleteDoc,
   doc,
   Firestore,
+  getDocs,
+  limit,
   query,
   setDoc,
   updateDoc,
@@ -19,6 +21,7 @@ import {
   map,
   Observable,
   of,
+  shareReplay,
   switchMap,
   take,
 } from 'rxjs';
@@ -35,6 +38,7 @@ export class PlayerService {
   playersCollection = collection(this.firestore, 'players');
   currentPlayerSig = signal<Player | null | undefined>(undefined);
   currentPlayersSig = signal<Player[]>([]);
+  private allPlayers$?: Observable<Player[]>;
 
   readonly playerReady$ = toObservable(this.currentPlayerSig).pipe(
     filter((player): player is Player => !!player),
@@ -62,11 +66,16 @@ export class PlayerService {
     >;
   }
 
+  // Le classement, les amis, l'admin et la boite d'invitation lisent tous la
+  // collection : une seule ecoute partagee au lieu de quatre.
   getAllPlayers(): Observable<Player[]> {
-    const playersCollection = query(collection(this.firestore, 'players'));
-    return collectionData(playersCollection, { idField: 'id' }) as Observable<
-      Player[]
-    >;
+    this.allPlayers$ ??= (
+      collectionData(query(this.playersCollection), {
+        idField: 'id',
+      }) as Observable<Player[]>
+    ).pipe(shareReplay({ bufferSize: 1, refCount: true }));
+
+    return this.allPlayers$;
   }
 
   addPlayer(): Observable<string | null | undefined> {
@@ -86,41 +95,89 @@ export class PlayerService {
         if (players.length > 0) {
           return of(void 0).pipe(map(() => email));
         }
-        const username = this.generateRandomUsername(email);
-        const animal = this.generateRandomAnimal();
-        const playerDoc = doc(this.playersCollection);
-
-        const statMotus: Stat = {
-          gameName: gameMap['motus'].key,
-          medalsNumber: 0,
-          lastSuccessRetrieved: 0,
-        };
-        const statDrapeaux: Stat = {
-          gameName: gameMap['drapeaux'].key,
-          medalsNumber: 0,
-          lastSuccessRetrieved: 0,
-        };
-        const statMarques: Stat = {
-          gameName: gameMap['marques'].key,
-          medalsNumber: 0,
-          lastSuccessRetrieved: 0,
-        };
-
-        const player: Player = {
-          id: playerDoc.id,
-          userId: userId,
-          username: username,
-          animal: animal,
-          stats: [statMotus, statDrapeaux, statMarques],
-          isAdmin: false,
-          currentRoomWins: [],
-          finishDate: null,
-          durationMs: null,
-          isReady: false,
-        };
-        return from(setDoc(playerDoc, { ...player })).pipe(map(() => email));
+        return from(this.buildUniqueUsername(email)).pipe(
+          switchMap((username) => this.createPlayer(userId, email, username)),
+        );
       }),
     );
+  }
+
+  // Le pseudo sert a se retrouver entre amis : deux comptes homonymes le
+  // rendraient inexploitable.
+  private async buildUniqueUsername(email?: string | null): Promise<string> {
+    const base = this.generateRandomUsername(email);
+    let candidate = base;
+
+    for (let attempt = 0; attempt < 5; attempt++) {
+      const existing = await getDocs(
+        query(
+          this.playersCollection,
+          where('username', '==', candidate),
+          limit(1),
+        ),
+      );
+
+      if (existing.empty) {
+        return candidate;
+      }
+
+      candidate = `${base}#${this.generateSuffix()}`;
+    }
+
+    return candidate;
+  }
+
+  private generateSuffix(): string {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let suffix = '';
+
+    for (let i = 0; i < 4; i++) {
+      suffix += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+
+    return suffix;
+  }
+
+  private createPlayer(
+    userId: string | undefined,
+    email: string | null | undefined,
+    username: string,
+  ): Observable<string | null | undefined> {
+    const animal = this.generateRandomAnimal();
+    const playerDoc = doc(this.playersCollection);
+
+    const statMotus: Stat = {
+      gameName: gameMap['motus'].key,
+      medalsNumber: 0,
+      lastSuccessRetrieved: 0,
+    };
+    const statDrapeaux: Stat = {
+      gameName: gameMap['drapeaux'].key,
+      medalsNumber: 0,
+      lastSuccessRetrieved: 0,
+    };
+    const statMarques: Stat = {
+      gameName: gameMap['marques'].key,
+      medalsNumber: 0,
+      lastSuccessRetrieved: 0,
+    };
+
+    const player: Player = {
+      id: playerDoc.id,
+      userId: userId,
+      username: username,
+      animal: animal,
+      stats: [statMotus, statDrapeaux, statMarques],
+      isAdmin: false,
+      currentRoomWins: [],
+      finishDate: null,
+      durationMs: null,
+      isReady: false,
+      friendIds: [],
+      friendRequestIds: [],
+    };
+
+    return from(setDoc(playerDoc, { ...player })).pipe(map(() => email));
   }
 
   generateRandomUsername(email?: string | null): string {

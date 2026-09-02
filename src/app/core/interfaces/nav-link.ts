@@ -3,4 +3,5 @@ export interface NavLink {
   label: string;
   icon: string;
   exact: boolean;
+  badge?: number;
 }

@@ -21,7 +21,7 @@ export class MultiplayerDialogComponent implements OnInit {
     if (this.data) {
       this.roomCode = this.data;
     }
-    this.link = window.location.href.replace('/admin/', '/room/');
+    this.link = window.location.href;
   }
 
   copyCode(): void {

@@ -2,10 +2,9 @@ User-agent: *
 Allow: /
 
 Disallow: /accueil
-Disallow: /profil
+Disallow: /parametres
 Disallow: /classement
-Disallow: /succes
 Disallow: /room
 Disallow: /admin
 
-Sitemap: https://Brice150.github.io/GAMETIME/sitemap.xml
+Sitemap: https://game-time-64133.web.app/sitemap.xml

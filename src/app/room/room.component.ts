@@ -35,8 +35,11 @@ import { LocalStorageService } from '../core/services/local-storage.service';
 import { PlayerService } from '../core/services/player.service';
 import { RoomService } from '../core/services/room.service';
 import { ToastrHelperService } from '../core/services/toastr-helper.service';
+import { GameApiService } from '../core/services/game-api.service';
+import { InvitationService } from '../core/services/invitation.service';
 import { AddRoomDialogComponent } from '../shared/components/add-room-dialog/add-room-dialog.component';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
+import { InviteFriendDialogComponent } from '../shared/components/invite-friend-dialog/invite-friend-dialog.component';
 import { MultiplayerDialogComponent } from '../shared/components/multiplayer-dialog/multiplayer-dialog.component';
 
 import { ResultsBoardComponent } from './results-board/results-board.component';
@@ -58,6 +61,8 @@ import { WordGamesComponent } from './word-games/word-games.component';
 export class RoomComponent implements OnInit {
   roomService = inject(RoomService);
   playerService = inject(PlayerService);
+  invitationService = inject(InvitationService);
+  gameApi = inject(GameApiService);
   router = inject(Router);
   toastrHelper = inject(ToastrHelperService);
   activatedRoute = inject(ActivatedRoute);
@@ -172,17 +177,19 @@ export class RoomComponent implements OnInit {
       return this.room;
     }
 
-    if (
-      !(this.room.isCreatedByAdmin && currentPlayer && currentPlayer.isAdmin) &&
-      !this.userLeft &&
-      !this.userKickedOut
-    ) {
+    if (!this.userLeft && !this.userKickedOut) {
       if (!currentUserId) {
         return this.room;
       }
 
       this.localStorageService.newGame(this.room.id!);
       this.room.playerIds.push(currentUserId);
+
+      // Entrer ici vaut sortie des rooms precedentes, meme sans « Quitter ».
+      this.roomService
+        .leaveOtherRooms(this.room.id)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe();
 
       this.roomService
         .updateRoomFields(this.room.id, { playerIds: this.room.playerIds })
@@ -201,8 +208,6 @@ export class RoomComponent implements OnInit {
           },
         });
       return this.room;
-    } else if (this.room.isCreatedByAdmin && currentPlayer?.isAdmin) {
-      this.router.navigate(['/admin', this.room.id]);
     }
 
     return this.room;
@@ -237,6 +242,17 @@ export class RoomComponent implements OnInit {
       } else if (!this.isFinishing) {
         this.isResultPageActive = true;
       }
+    } else if (this.isLateJoinerAfterEnd(currentPlayer)) {
+      this.skipFinishedRound(currentPlayer!);
+    } else if (
+      currentPlayer?.finishDate &&
+      this.room.isStarted &&
+      !this.room.isLoading &&
+      !this.isFinishing
+    ) {
+      // Arrive apres la fin : la page resultats reste affichee tant que
+      // l'hote n'a pas relance.
+      this.isResultPageActive = true;
     }
 
     this.roomService.currentRoomSig.set(this.room);
@@ -244,6 +260,67 @@ export class RoomComponent implements OnInit {
     this.loading = this.room.isLoading ?? false;
   }
 
+  // Rejoindre une partie que tout le monde a deja terminee ferait rejouer la
+  // manche entiere en solo : le joueur est simplement classe dernier, sans
+  // resultat, et bascule directement sur les resultats.
+  isLateJoinerAfterEnd(currentPlayer: Player | null | undefined): boolean {
+    const startedPlayerIds = this.room.startedPlayerIds;
+
+    if (
+      !currentPlayer?.userId ||
+      !this.room.isStarted ||
+      this.room.isLoading ||
+      !startedPlayerIds?.length ||
+      startedPlayerIds.includes(currentPlayer.userId) ||
+      !!currentPlayer.finishDate ||
+      currentPlayer.currentRoomWins.length > 0
+    ) {
+      return false;
+    }
+
+    const participants = this.players.filter(
+      (player) => player.userId && startedPlayerIds.includes(player.userId),
+    );
+
+    return (
+      participants.length > 0 &&
+      participants.every((player) => !!player.finishDate)
+    );
+  }
+
+  skipFinishedRound(currentPlayer: Player): void {
+    currentPlayer.currentRoomWins = [];
+    currentPlayer.finishDate = new Date();
+    currentPlayer.durationMs = null;
+    currentPlayer.isReady = true;
+    this.isResultPageActive = true;
+
+    this.playerService
+      .updatePlayerFields(currentPlayer.id, {
+        currentRoomWins: [],
+        finishDate: currentPlayer.finishDate,
+        durationMs: null,
+        isReady: true,
+      })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.toastrHelper.info(
+            'La partie était déjà terminée, vous verrez les résultats',
+            'Room',
+          );
+        },
+        error: (error: HttpErrorResponse) => {
+          if (!error.message.includes('Missing or insufficient permissions.')) {
+            this.toastrHelper.error(error.message);
+          }
+        },
+      });
+  }
+
+  // La manche part au serveur : lui seul attribue la medaille, le client ne
+  // peut plus ecrire `stats`. L'affichage avance sans attendre la reponse,
+  // et revient en arriere si l'enregistrement echoue.
   updatePlayerGame(stepWon: boolean): void {
     const currentPlayer = this.playerService.currentPlayerSig();
 
@@ -251,57 +328,35 @@ export class RoomComponent implements OnInit {
       return;
     }
 
-    if (stepWon) {
-      const stat = currentPlayer.stats.find(
-        (stat) => stat.gameName === this.room.gameName,
-      );
-      if (stat) {
-        stat.medalsNumber += 1;
-
-        const goal = goals.find((goal) => goal.target === stat.medalsNumber);
-        if (goal) {
-          this.toastrHelper.info(
-            'Vous avez obtenu le succès : Obtenir ' +
-              goal.target +
-              ' médailles',
-            this.room.gameName.charAt(0).toUpperCase() +
-              this.room.gameName.slice(1),
-          );
-        }
-      }
-    }
+    const stepIndex = currentPlayer.currentRoomWins.length;
+    const justFinished =
+      stepIndex + 1 === this.room.responses?.length && !currentPlayer.finishDate;
 
     currentPlayer.currentRoomWins.push(stepWon);
 
-    const fields: Partial<Player> = {
-      currentRoomWins: currentPlayer.currentRoomWins,
-      stats: currentPlayer.stats,
-    };
-
-    // Derniere manche : l'arrivee est relevee ici, avant la moindre
-    // entree-sortie, et part dans la meme ecriture que la manche.
-    const justFinished =
-      currentPlayer.currentRoomWins.length === this.room.responses?.length &&
-      !currentPlayer.finishDate;
-
     if (justFinished) {
       this.stampFinish(currentPlayer);
-      fields.finishDate = currentPlayer.finishDate;
-      fields.durationMs = currentPlayer.durationMs;
-      fields.isReady = true;
     }
 
-    this.playerService
-      .updatePlayerFields(currentPlayer.id, fields)
+    this.gameApi
+      .submitRound(
+        this.room.id!,
+        stepIndex,
+        stepWon,
+        justFinished ? currentPlayer.durationMs : null,
+      )
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: () => {
+        next: (result) => {
+          this.announceGoal(result.medalsNumber, stepWon);
           this.handlePlayerNextAction(stepWon);
         },
         error: (error: HttpErrorResponse) => {
-          if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastrHelper.error(error.message);
-          }
+          currentPlayer.currentRoomWins.splice(stepIndex);
+          this.playerService.currentPlayerSig.set({ ...currentPlayer });
+          this.toastrHelper.error(
+            "La manche n'a pas pu être enregistrée : " + error.message,
+          );
         },
       });
 
@@ -310,14 +365,48 @@ export class RoomComponent implements OnInit {
     }
   }
 
+  announceGoal(medalsNumber: number, stepWon: boolean): void {
+    if (!stepWon) {
+      return;
+    }
+
+    const goal = goals.find((goal) => goal.target === medalsNumber);
+
+    if (!goal) {
+      return;
+    }
+
+    this.toastrHelper.info(
+      'Vous avez obtenu le succès : Obtenir ' + goal.target + ' médailles',
+      this.room.gameName.charAt(0).toUpperCase() + this.room.gameName.slice(1),
+    );
+  }
+
   stampFinish(player: Player): void {
     player.finishDate = new Date();
-    player.durationMs = this.localStorageService.getElapsedMs(
-      this.room.id!,
-      this.room.startAgainNumber,
-    );
+    player.durationMs =
+      this.localStorageService.getElapsedMs(
+        this.room.id!,
+        this.room.startAgainNumber,
+      ) ?? this.elapsedSinceRoomStart();
     player.isReady = true;
     this.isFinishing = true;
+  }
+
+  // Le chrono local peut manquer (stockage vide, autre appareil) : sans ce
+  // repli le joueur finissait sans temps, donc classe dernier alors qu'il a
+  // joue la partie.
+  elapsedSinceRoomStart(): number | null {
+    const startDate =
+      this.room.startDate instanceof Timestamp
+        ? this.room.startDate.toDate()
+        : this.room.startDate;
+
+    if (!startDate) {
+      return null;
+    }
+
+    return Math.max(0, Date.now() - startDate.getTime());
   }
 
   // Le temps est deja enregistre et publie : ces 3 secondes ne servent qu'a
@@ -384,6 +473,9 @@ export class RoomComponent implements OnInit {
             return this.playerService.updatePlayers(this.players);
           }),
           takeUntilDestroyed(this.destroyRef),
+          switchMap(() =>
+            this.invitationService.deleteInvitationsForRoom(this.room.id),
+          ),
           switchMap(() => this.roomService.deleteRoom(this.room.id!)),
         )
         .subscribe({
@@ -510,6 +602,10 @@ export class RoomComponent implements OnInit {
     this.room.responses = [];
     this.room.isReadyNotificationActivated = false;
     this.room.isLoading = true;
+    this.room.lastActivityAt = new Date();
+    this.room.startedPlayerIds = this.players
+      .map((player) => player.userId)
+      .filter((userId): userId is string => !!userId);
 
     this.roomService
       .updateRoom(this.room)
@@ -599,6 +695,10 @@ export class RoomComponent implements OnInit {
     this.dialog.open(MultiplayerDialogComponent, {
       data: this.room.roomCode,
     });
+  }
+
+  inviteFriend(): void {
+    this.dialog.open(InviteFriendDialogComponent, { data: this.room });
   }
 
   shouldShowPlayButton(): boolean {

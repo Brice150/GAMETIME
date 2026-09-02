@@ -55,6 +55,13 @@ export class HeaderComponent implements OnInit {
     () => !!this.room() && this.currentUrl().startsWith('/room'),
   );
 
+  // Les titres sont ecrits en dur : l'URL est sans accent.
+  private readonly titlesByPath: Record<string, string> = {
+    '/accueil': 'Accueil',
+    '/parametres': 'Paramètres',
+    '/classement': 'Classement',
+  };
+
   readonly pageTitle = computed(() => {
     const url = this.currentUrl();
 
@@ -67,14 +74,21 @@ export class HeaderComponent implements OnInit {
     if (url === '/' || url.startsWith('/room')) {
       return 'Game Time';
     }
-    return url.replace('/', '');
+    return this.titlesByPath[url] ?? url.replace('/', '');
   });
 
   readonly navLinks = computed<NavLink[]>(() => {
+    const pendingRequests = this.player().friendRequestIds?.length ?? 0;
+
     const links: NavLink[] = [
       { path: '/accueil', label: 'Accueil', icon: 'bxs-home', exact: true },
-      { path: '/profil', label: 'Profil', icon: 'bxs-user', exact: true },
-      { path: '/succes', label: 'Succès', icon: 'bxs-medal', exact: true },
+      {
+        path: '/parametres',
+        label: 'Paramètres',
+        icon: 'bxs-cog',
+        exact: true,
+        badge: pendingRequests,
+      },
       {
         path: '/classement',
         label: 'Classement',
@@ -97,7 +111,7 @@ export class HeaderComponent implements OnInit {
       links.push({
         path: '/admin',
         label: 'Admin',
-        icon: 'bxs-cog',
+        icon: 'bxs-shield',
         exact: false,
       });
     }

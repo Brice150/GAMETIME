@@ -56,7 +56,6 @@ export class HomeComponent {
       isStarted: false,
       startDate: null,
       startAgainNumber: 0,
-      isCreatedByAdmin: false,
       isReadyNotificationActivated: false,
       roomCode: roomCode,
     };

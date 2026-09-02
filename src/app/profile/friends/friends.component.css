@@ -1,0 +1,149 @@
+.friends {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+}
+
+.search {
+  display: flex;
+  justify-content: center;
+  width: min(440px, 100%);
+}
+
+.search mat-form-field {
+  width: 100%;
+}
+
+.search i {
+  font-size: 20px;
+  color: var(--accent-bright);
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(440px, 100%);
+}
+
+.block-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-2);
+  text-align: left;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-md);
+  background: var(--surface-1);
+  transition:
+    transform var(--speed) var(--ease),
+    border-color var(--speed) var(--ease);
+}
+
+.row:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-2);
+}
+
+.row .username {
+  flex: 1;
+  min-width: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.actions .icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-pill);
+  background: var(--surface-2);
+  color: var(--text-1);
+  cursor: pointer;
+  transition:
+    transform var(--speed) var(--ease),
+    background var(--speed) var(--ease),
+    color var(--speed) var(--ease),
+    border-color var(--speed) var(--ease);
+}
+
+.actions .icon i {
+  font-size: 20px;
+}
+
+.actions .icon:hover {
+  transform: translateY(-2px);
+  background: var(--surface-3);
+  border-color: var(--border-2);
+}
+
+.actions .icon.accept {
+  border-color: var(--success-border);
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.actions .icon.accept:hover {
+  background: var(--success);
+  color: var(--on-success);
+}
+
+.actions .icon.refuse {
+  border-color: var(--danger-border);
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.actions .icon.refuse:hover {
+  background: var(--danger);
+  color: #fff;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--success-border);
+  border-radius: var(--r-pill);
+  background: var(--success-soft);
+  color: var(--success);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.empty {
+  padding: 14px 16px;
+  border: 1px dashed var(--border-2);
+  border-radius: var(--r-md);
+  color: var(--text-3);
+  font-size: 15px;
+}
+
+mat-spinner {
+  margin: 20px auto;
+}

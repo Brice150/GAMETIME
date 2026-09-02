@@ -17,8 +17,14 @@ export interface Room {
   brands: Brand[];
   startDate: Date | null;
   startAgainNumber: number;
-  isCreatedByAdmin: boolean;
   isReadyNotificationActivated: boolean;
   roomCode: string;
+  // Participants au moment du lancement : sert a reconnaitre un joueur
+  // arrive en cours de partie.
+  startedPlayerIds?: string[];
+  // Horodatages de service : reperer les rooms abandonnees, qu'aucun
+  // « Quitter » n'a supprimees.
+  createdAt?: Date;
+  lastActivityAt?: Date;
   isLoading?: boolean;
 }

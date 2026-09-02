@@ -1,5 +1,48 @@
-<section>
-  @if (!loading) {
+<section [class.succes-tab]="tab === 'succes'">
+  <div class="gt-tabs">
+    <button
+      type="button"
+      [class.active]="tab === 'classement'"
+      (click)="tab = 'classement'"
+      title="Classement"
+    >
+      <i class="bx bxs-trophy"></i>
+      <span>Classement</span>
+    </button>
+    <button
+      type="button"
+      [class.active]="tab === 'succes'"
+      (click)="tab = 'succes'"
+      title="Succès"
+    >
+      <i class="bx bxs-medal"></i>
+      <span>Succès</span>
+    </button>
+  </div>
+
+  @if (tab === "succes") {
+    <app-success></app-success>
+  } @else if (!loading) {
+    <div class="gt-tabs scope">
+      <button
+        type="button"
+        [class.active]="scope === 'amis'"
+        (click)="changeScope('amis')"
+        title="Mes amis"
+      >
+        <i class="bx bxs-group"></i>
+        <span>Mes amis</span>
+      </button>
+      <button
+        type="button"
+        [class.active]="scope === 'tous'"
+        (click)="changeScope('tous')"
+        title="Tous les joueurs"
+      >
+        <i class="bx bxs-user-detail"></i>
+        <span>Tous</span>
+      </button>
+    </div>
     <form>
       <mat-form-field>
         <mat-select
@@ -49,12 +92,16 @@
             {{ currentPlayerPosition
             }}<sup>{{ currentPlayerPosition | ordinal }}</sup>
           </span>
-          <span> / {{ players.length }}</span>
+          <span> / {{ sortedPlayers.length }}</span>
         </div>
       </div>
     }
     <div class="players">
-      @for (otherPlayer of sortedPlayers; track otherPlayer.userId; let i = $index) {
+      @for (
+        otherPlayer of sortedPlayers;
+        track otherPlayer.userId;
+        let i = $index
+      ) {
         <div
           class="player"
           [ngClass]="{
@@ -91,6 +138,12 @@
             </div>
           </div>
         </div>
+      }
+      @if (scope === "amis" && sortedPlayers.length <= 1) {
+        <span class="empty"
+          >Ajoutez des amis depuis vos paramètres pour vous comparer à
+          eux.</span
+        >
       }
     </div>
   } @else {
