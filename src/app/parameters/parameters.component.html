@@ -83,31 +83,7 @@
             (updateEvent)="openUserDialog()"
           ></app-user>
         }
-        <div class="notifications">
-          <h2>Notifications</h2>
-          @if (notificationService.isSupported) {
-            <mat-slide-toggle
-              [checked]="notificationsEnabled"
-              [disabled]="notificationService.isBlocked"
-              (change)="toggleNotifications($event.checked)"
-            >
-              M'avertir des invitations
-            </mat-slide-toggle>
-            <p class="hint">
-              @if (notificationService.isBlocked) {
-                Les notifications sont bloquées pour ce site dans les réglages
-                de votre navigateur.
-              } @else {
-                Une notification s'affiche quand un ami vous invite et que
-                l'onglet Game Time est en arrière-plan.
-              }
-            </p>
-          } @else {
-            <p class="hint">
-              Votre navigateur ne gère pas les notifications système.
-            </p>
-          }
-        </div>
+        <app-notifications-card></app-notifications-card>
         <div class="button-container">
           <button
             type="button"

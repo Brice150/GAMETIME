@@ -77,8 +77,12 @@ export class HeaderComponent implements OnInit {
     return this.titlesByPath[url] ?? url.replace('/', '');
   });
 
+  readonly pendingRequestsNumber = computed(
+    () => this.player().friendRequestIds?.length ?? 0,
+  );
+
   readonly navLinks = computed<NavLink[]>(() => {
-    const pendingRequests = this.player().friendRequestIds?.length ?? 0;
+    const pendingRequests = this.pendingRequestsNumber();
 
     const links: NavLink[] = [
       { path: '/accueil', label: 'Accueil', icon: 'bxs-home', exact: true },

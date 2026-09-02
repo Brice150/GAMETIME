@@ -43,6 +43,11 @@
       <app-theme-toggle></app-theme-toggle>
       <button mat-button [matMenuTriggerFor]="menu" class="menu" title="Menu">
         <i class="bx bx-menu"></i>
+        @if (pendingRequestsNumber()) {
+          <!-- Sur mobile le menu est ferme : sans cette pastille, rien ne
+               signale une demande d'ami en attente. -->
+          <span class="badge floating">{{ pendingRequestsNumber() }}</span>
+        }
       </button>
       <mat-menu #menu="matMenu">
         @for (link of navLinks(); track link.path) {

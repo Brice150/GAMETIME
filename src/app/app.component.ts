@@ -7,6 +7,7 @@ import { of, switchMap } from 'rxjs';
 import { UserService } from './core/services/user.service';
 import { HeaderComponent } from './header/header.component';
 import { InvitationsComponent } from './shared/components/invitations/invitations.component';
+import { NotificationService } from './core/services/notification.service';
 import { PlayerService } from './core/services/player.service';
 import { ToastrHelperService } from './core/services/toastr-helper.service';
 
@@ -19,6 +20,7 @@ import { ToastrHelperService } from './core/services/toastr-helper.service';
 export class AppComponent implements OnInit {
   userService = inject(UserService);
   playerService = inject(PlayerService);
+  notificationService = inject(NotificationService);
   router = inject(Router);
   toastrHelper = inject(ToastrHelperService);
   destroyRef = inject(DestroyRef);
@@ -46,6 +48,13 @@ export class AppComponent implements OnInit {
         next: (players) => {
           const player = players[0];
           this.playerService.currentPlayerSig.set(player ?? null);
+
+          // Les jetons FCM expirent : on les rafraichit a chaque ouverture,
+          // sinon le push s'arrete silencieusement au bout de quelques
+          // semaines.
+          if (player) {
+            void this.notificationService.initOnStartup();
+          }
         },
         error: (error: HttpErrorResponse) => {
           this.removeShellLoader();

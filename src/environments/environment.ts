@@ -5,7 +5,8 @@ export const environment = {
   // Cle publique Web Push, a copier depuis Firebase > Paramètres du projet >
   // Cloud Messaging > Certificats push Web. Vide : les notifications push
   // sont simplement desactivees.
-  vapidKey: '',
+  vapidKey:
+    'BFlCGxelH1YTLOOUEeEAM-V2WDrBD0VyTBgqzhJwIYH0DL7LccEh_uffaoNG2hd7Jo4HWjmJONT4GKmgt2JYY68',
   firebase: {
     apiKey: 'AIzaSyB54hrlHdYrQhhrgh8AqIpIZyDaD5e7Jss',
     authDomain: 'game-time-64133.firebaseapp.com',

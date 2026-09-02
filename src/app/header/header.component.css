@@ -115,7 +115,16 @@ header {
   color: var(--danger);
 }
 
+.badge.floating {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  border: 2px solid var(--bg-base);
+}
+
 .menu {
+  position: relative;
+  overflow: visible;
   display: inline-flex;
   align-items: center;
   justify-content: center;

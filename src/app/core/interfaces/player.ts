@@ -15,7 +15,4 @@ export interface Player {
   // mutuellement), `friendRequestIds` ne contient que les demandes recues.
   friendIds?: string[];
   friendRequestIds?: string[];
-  // Jetons Web Push, un par appareil : la fonction `notifyInvitation` s'en
-  // sert pour joindre le joueur onglet ferme.
-  fcmTokens?: string[];
 }

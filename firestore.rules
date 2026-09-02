@@ -78,6 +78,16 @@ service cloud.firestore {
       allow delete: if isSignedIn();
     }
 
+    // Un document par jeton Web Push, l'identifiant du document etant le
+    // jeton lui-meme. La fonction `notifyInvitation` les lit avec le SDK
+    // Admin, donc hors regles.
+    match /fcmTokens/{token} {
+      allow read: if isSignedIn() && request.auth.uid == resource.data.userId;
+      allow create, update: if isSignedIn()
+        && request.resource.data.userId == request.auth.uid;
+      allow delete: if isSignedIn() && request.auth.uid == resource.data.userId;
+    }
+
     match /excluded-questions/{excludedQuestionsId} {
       allow read: if isSignedIn();
       allow create: if isSignedIn();

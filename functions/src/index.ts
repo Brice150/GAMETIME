@@ -423,8 +423,11 @@ export const notifyInvitation = onDocumentCreated(
       return;
     }
 
-    const playerDoc = await findPlayerByUserId(toUserId);
-    const tokens = (playerDoc?.data()['fcmTokens'] as string[]) ?? [];
+    const tokensSnapshot = await db
+      .collection('fcmTokens')
+      .where('userId', '==', toUserId)
+      .get();
+    const tokens = tokensSnapshot.docs.map((tokenDoc) => tokenDoc.id);
 
     if (!tokens.length) {
       return;
@@ -446,17 +449,24 @@ export const notifyInvitation = onDocumentCreated(
       },
     });
 
-    // Un jeton invalide le reste : on purge pour ne pas reessayer a chaque
-    // invitation.
-    const staleTokens = response.responses
-      .map((result, index) => (result.success ? null : tokens[index]))
-      .filter((token): token is string => !!token);
+    // On ne supprime que les jetons definitivement morts : un echec reseau
+    // ne doit pas desabonner un appareil valide.
+    const deadTokenCodes = [
+      'messaging/registration-token-not-registered',
+      'messaging/invalid-argument',
+      'messaging/invalid-registration-token',
+    ];
 
-    if (staleTokens.length && playerDoc) {
-      await playerDoc.ref.update({
-        fcmTokens: FieldValue.arrayRemove(...staleTokens),
-      });
-    }
+    const deadTokenDocs = response.responses
+      .map((result, index) =>
+        !result.success &&
+        deadTokenCodes.includes(result.error?.code ?? '')
+          ? tokensSnapshot.docs[index]
+          : null,
+      )
+      .filter((tokenDoc) => tokenDoc !== null);
+
+    await Promise.all(deadTokenDocs.map((tokenDoc) => tokenDoc.ref.delete()));
   },
 );
 

@@ -4,11 +4,9 @@ import { Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { Router, RouterModule } from '@angular/router';
 import { catchError, filter, map, of, switchMap, take } from 'rxjs';
 import { FriendService } from '../core/services/friend.service';
-import { NotificationService } from '../core/services/notification.service';
 import { PlayerService } from '../core/services/player.service';
 import { ProfileService } from '../core/services/profile.service';
 import { RoomService } from '../core/services/room.service';
@@ -16,37 +14,36 @@ import { UserService } from '../core/services/user.service';
 import { ToastrHelperService } from '../core/services/toastr-helper.service';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { FriendsComponent } from './friends/friends.component';
+import { NotificationsCardComponent } from './notifications-card/notifications-card.component';
 import { UserComponent } from './user/user.component';
 import { UserDialogComponent } from '../shared/components/user-dialog/user-dialog.component';
 import { Player } from '../core/interfaces/player';
 
 @Component({
-  selector: 'app-profile',
+  selector: 'app-parameters',
   imports: [
     CommonModule,
     RouterModule,
     MatProgressSpinnerModule,
-    MatSlideToggleModule,
     UserComponent,
     FriendsComponent,
+    NotificationsCardComponent,
   ],
-  templateUrl: './profile.component.html',
-  styleUrl: './profile.component.css',
+  templateUrl: './parameters.component.html',
+  styleUrl: './parameters.component.css',
 })
-export class ProfileComponent {
+export class ParametersComponent {
   toastrHelper = inject(ToastrHelperService);
   profileService = inject(ProfileService);
   userService = inject(UserService);
   playerService = inject(PlayerService);
   roomService = inject(RoomService);
   friendService = inject(FriendService);
-  notificationService = inject(NotificationService);
   dialog = inject(MatDialog);
   router = inject(Router);
   destroyRef = inject(DestroyRef);
   loading = false;
   tab: 'compte' | 'amis' = 'compte';
-  notificationsEnabled = this.notificationService.isEnabled;
 
   get pendingRequestsNumber(): number {
     return this.playerService.currentPlayerSig()?.friendRequestIds?.length ?? 0;
@@ -65,26 +62,6 @@ export class ProfileComponent {
         player.userId !== currentUserId &&
         this.friendService.normalizeText(player.username) === normalized,
     );
-  }
-
-  toggleNotifications(enabled: boolean): void {
-    if (!enabled) {
-      void this.notificationService.disable();
-      this.notificationsEnabled = false;
-      return;
-    }
-
-    void this.notificationService.enable().then((granted) => {
-      this.notificationsEnabled = granted;
-
-      if (granted) {
-        this.toastrHelper.info('Notifications activées', 'Notifications');
-      } else {
-        this.toastrHelper.error(
-          'Votre navigateur a refusé les notifications pour ce site',
-        );
-      }
-    });
   }
 
   openUserDialog(): void {

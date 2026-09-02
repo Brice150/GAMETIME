@@ -19,7 +19,9 @@ export const routes: Routes = [
   {
     path: 'parametres',
     loadComponent: () =>
-      import('./profile/profile.component').then((m) => m.ProfileComponent),
+      import('./parameters/parameters.component').then(
+        (m) => m.ParametersComponent,
+      ),
     canActivate: [userGuard],
   },
   {
