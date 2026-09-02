@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>GAME TIME a déménagé</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, follow" />
+    <link rel="canonical" href="https://game-time-64133.web.app/" />
+    <!-- Repli si le JavaScript est desactive : redirection vers l'accueil. -->
+    <meta
+      http-equiv="refresh"
+      content="3; url=https://game-time-64133.web.app/"
+    />
+    <style>
+      :root {
+        color-scheme: light dark;
+      }
+
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: light-dark(#fbf7ef, #12100b);
+        color: light-dark(#1c1710, #f7f1e6);
+        font-family: Roboto, "Helvetica Neue", Arial, sans-serif;
+        text-align: center;
+        padding: 24px;
+      }
+
+      .word-game {
+        display: block;
+        font-weight: 500;
+        font-size: 18px;
+        letter-spacing: 0.32em;
+        text-transform: uppercase;
+      }
+
+      .word-time {
+        display: block;
+        font-weight: 500;
+        font-size: 40px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: light-dark(#b45309, #fcd34d);
+      }
+
+      p {
+        margin: 24px 0 0;
+        font-size: 15px;
+        line-height: 1.5;
+      }
+
+      a {
+        color: light-dark(#b45309, #fcd34d);
+        font-weight: 500;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <span class="word-game">Game</span>
+      <span class="word-time">Time</span>
+      <p>
+        GAME TIME a déménagé.<br />
+        Redirection en cours vers la nouvelle adresse…
+      </p>
+      <p>
+        <a id="target" href="https://game-time-64133.web.app/"
+          >game-time-64133.web.app</a
+        >
+      </p>
+    </main>
+
+    <script>
+      (function () {
+        var newOrigin = "https://game-time-64133.web.app";
+
+        // /GAMETIME/room/xyz -> https://game-time-64133.web.app/room/xyz
+        var path = location.pathname.replace(/^\/GAMETIME/i, "");
+        if (path.charAt(0) !== "/") {
+          path = "/" + path;
+        }
+        var target = newOrigin + path + location.search + location.hash;
+
+        var link = document.getElementById("target");
+        if (link) {
+          link.href = target;
+        }
+
+        // L'ancienne PWA (service worker + caches) est desinstallee avant de
+        // partir, sinon elle continue de servir l'ancienne version hors ligne.
+        function cleanup() {
+          var jobs = [];
+          try {
+            if ("serviceWorker" in navigator) {
+              jobs.push(
+                navigator.serviceWorker.getRegistrations().then(function (regs) {
+                  return Promise.all(
+                    regs.map(function (reg) {
+                      return reg.unregister();
+                    })
+                  );
+                })
+              );
+            }
+            if (window.caches && caches.keys) {
+              jobs.push(
+                caches.keys().then(function (keys) {
+                  return Promise.all(
+                    keys.map(function (key) {
+                      return caches.delete(key);
+                    })
+                  );
+                })
+              );
+            }
+          } catch (error) {
+            /* Navigateur sans service worker : rien a nettoyer. */
+          }
+          return Promise.all(jobs);
+        }
+
+        var redirected = false;
+        function go() {
+          if (redirected) {
+            return;
+          }
+          redirected = true;
+          location.replace(target);
+        }
+
+        // On part des que le nettoyage est fini, sans jamais attendre plus
+        // d'une seconde et demie.
+        setTimeout(go, 1500);
+        cleanup().then(go, go);
+      })();
+    </script>
+  </body>
+</html>
