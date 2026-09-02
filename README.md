@@ -90,7 +90,7 @@ Backend/BDD : Firebase
 ### Cloner le projet
 
 ```bash
-  git clone https://github.com/Brice150/Life-Rise.git
+  git clone https://github.com/Brice150/GAMETIME.git
 ```
 
 ### Installer les dépendances
