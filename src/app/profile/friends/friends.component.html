@@ -1,0 +1,136 @@
+@if (!loading) {
+  <div class="friends">
+    <form class="search">
+      <mat-form-field>
+        <mat-label>Rechercher un joueur</mat-label>
+        <input matInput [formControl]="searchControl" autocomplete="off" />
+        <i class="bx bxs-search" matSuffix aria-hidden="true"></i>
+      </mat-form-field>
+    </form>
+
+    @if (searchControl.value) {
+      <div class="block">
+        <span class="block-title">Résultats</span>
+        @for (player of results(); track player.id) {
+          <div class="row">
+            <span class="username"
+              >{{ player.username }} {{ player.animal }}</span
+            >
+            <div class="medals">
+              <span class="victory-number">{{
+                player | totalMedalsNumber
+              }}</span>
+              <i class="bx bxs-medal"></i>
+            </div>
+            <div class="actions">
+              @if (isFriend(player)) {
+                <span class="tag"><i class="bx bxs-user-check"></i> Ami</span>
+              } @else if (hasRequestFrom(player)) {
+                <button
+                  type="button"
+                  class="icon accept"
+                  title="Accepter"
+                  (click)="acceptRequest(player)"
+                >
+                  <i class="bx bx-check"></i>
+                </button>
+              } @else if (hasSentRequestTo(player)) {
+                <button
+                  type="button"
+                  class="icon"
+                  title="Annuler la demande"
+                  (click)="cancelRequest(player)"
+                >
+                  <i class="bx bx-time-five"></i>
+                </button>
+              } @else {
+                <button
+                  type="button"
+                  class="icon"
+                  title="Ajouter en ami"
+                  (click)="sendRequest(player)"
+                >
+                  <i class="bx bxs-user-plus"></i>
+                </button>
+              }
+            </div>
+          </div>
+        }
+        @if (!results().length) {
+          <span class="empty">Aucun joueur trouvé</span>
+        }
+      </div>
+    }
+
+    @if (requests().length) {
+      <div class="block">
+        <span class="block-title"
+          >Demandes reçues ({{ requests().length }})</span
+        >
+        @for (player of requests(); track player.id) {
+          <div class="row">
+            <span class="username"
+              >{{ player.username }} {{ player.animal }}</span
+            >
+            <div class="medals">
+              <span class="victory-number">{{
+                player | totalMedalsNumber
+              }}</span>
+              <i class="bx bxs-medal"></i>
+            </div>
+            <div class="actions">
+              <button
+                type="button"
+                class="icon accept"
+                title="Accepter"
+                (click)="acceptRequest(player)"
+              >
+                <i class="bx bx-check"></i>
+              </button>
+              <button
+                type="button"
+                class="icon refuse"
+                title="Refuser"
+                (click)="declineRequest(player)"
+              >
+                <i class="bx bx-x"></i>
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <div class="block">
+      <span class="block-title">Mes amis ({{ friends().length }})</span>
+      @for (player of friends(); track player.id) {
+        <div class="row">
+          <span class="username"
+            >{{ player.username }} {{ player.animal }}</span
+          >
+          <div class="medals">
+            <span class="victory-number">{{ player | totalMedalsNumber }}</span>
+            <i class="bx bxs-medal"></i>
+          </div>
+          <div class="actions">
+            <button
+              type="button"
+              class="icon refuse"
+              title="Retirer des amis"
+              (click)="removeFriend(player)"
+            >
+              <i class="bx bxs-user-minus"></i>
+            </button>
+          </div>
+        </div>
+      }
+      @if (!friends().length) {
+        <span class="empty"
+          >Aucun ami pour le moment, cherchez un joueur par son nom.</span
+        >
+      }
+    </div>
+  </div>
+} @else {
+  <mat-spinner></mat-spinner>
+}

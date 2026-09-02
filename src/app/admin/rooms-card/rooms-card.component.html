@@ -1,36 +1,119 @@
-<div class="container">
-  <div class="players">
-    @if (filteredRooms.length > 0) { @for (room of filteredRooms; track $index)
-    { @for (player of players(); track $index; let i = $index) { @if
-    (player.userId === room.userId) {
-    <div class="player">
-      <span class="username">{{ player.username }} {{ player.animal }}</span>
-      <div class="medals">
-        @if (room.isStarted) {
-        <span class="victory-number">{{
-          room.gameName | medalsNumber : player
-        }}</span>
-        } @else {
-        <span class="victory-number">{{ player | totalMedalsNumber }}</span>
-        }
-        <i class="bx bxs-medal"></i>
+@if (rooms().length) {
+  <div class="rooms">
+    @for (room of rooms(); track room.id) {
+      <div class="room" [ngClass]="{ live: room.isStarted }">
+        <div class="room-head">
+          <span class="code">{{ room.roomCode }}</span>
+          <span class="state">
+            <i class="{{ stateIcon(room) }}"></i>
+            <span>{{ stateLabel(room) }}</span>
+          </span>
+          <div class="room-actions">
+            <button
+              type="button"
+              class="join"
+              title="Rejoindre la room"
+              (click)="join(room.id!)"
+            >
+              <i class="bx bxs-log-in-circle"></i>
+              <span>Rejoindre</span>
+            </button>
+            <button
+              type="button"
+              class="remove"
+              title="Supprimer la room"
+              (click)="delete(room.id!)"
+            >
+              <i class="bx bxs-trash"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="room-meta">
+          <span class="chip">
+            <i class="bx bxs-group"></i>
+            {{ roomPlayers(room).length }}
+            {{ roomPlayers(room).length > 1 ? "joueurs" : "joueur" }}
+          </span>
+          @if (room.isStarted) {
+            <span class="chip">
+              <i class="bx bxs-flag-checkered"></i>
+              {{ stepsNumber(room) }} manches
+            </span>
+          }
+        </div>
+
+        <div class="participants">
+          @for (player of roomPlayers(room); track player.id) {
+            <div class="participant">
+              <span class="username">
+                @if (isHost(room, player)) {
+                  <i class="bx bxs-crown" title="Hôte"></i>
+                }
+                {{ player.username }} {{ player.animal }}
+              </span>
+
+              @if (room.isStarted) {
+                <div class="progress">
+                  <div class="bar">
+                    <div
+                      class="fill"
+                      [style.width.%]="progress(room, player)"
+                    ></div>
+                  </div>
+                  <span class="value">
+                    @if (isFinished(room, player)) {
+                      {{ winsNumber(player) }}/{{ stepsNumber(room) }}
+                    } @else {
+                      {{ player.currentRoomWins.length }}/{{
+                        stepsNumber(room)
+                      }}
+                    }
+                  </span>
+                </div>
+                @if (isFinished(room, player)) {
+                  <i
+                    class="bx bxs-check-circle done"
+                    title="Terminé"
+                    aria-hidden="true"
+                  ></i>
+                } @else {
+                  <i
+                    class="bx bx-loader-alt bx-spin pending"
+                    title="En cours"
+                    aria-hidden="true"
+                  ></i>
+                }
+              } @else {
+                <div class="medals">
+                  <span class="victory-number">{{
+                    player | totalMedalsNumber
+                  }}</span>
+                  <i class="bx bxs-medal"></i>
+                </div>
+                @if (isHost(room, player) || player.isReady) {
+                  <i
+                    class="bx bxs-check-circle done"
+                    title="Prêt"
+                    aria-hidden="true"
+                  ></i>
+                } @else {
+                  <i
+                    class="bx bxs-x-circle not-ready"
+                    title="Pas prêt"
+                    aria-hidden="true"
+                  ></i>
+                }
+              }
+            </div>
+          }
+          @if (!roomPlayers(room).length) {
+            <span class="empty-participants">Room vide</span>
+          }
+        </div>
       </div>
-      <div class="button-container">
-        <button
-          type="button"
-          (click)="delete(room.id!)"
-          title="Supprimer"
-          class="delete share"
-        >
-          <i class="bx bxs-trash"></i>
-        </button>
-        <button type="button" [routerLink]="room.id" title="Voir" class="share">
-          <i class="bx bxs-search"></i>
-        </button>
-      </div>
-    </div>
-    } } } } @else {
-    <span class="empty">Aucune room de ce type</span>
     }
   </div>
-</div>
+} @else {
+  <span class="empty">Aucune room en cours</span>
+}

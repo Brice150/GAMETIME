@@ -3,16 +3,25 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSelectModule } from '@angular/material/select';
-import { filter, map, of, switchMap } from 'rxjs';
-import { gameMap, games } from '../../assets/data/games';
+import { Router } from '@angular/router';
+import {
+  concatMap,
+  filter,
+  from,
+  map,
+  Observable,
+  of,
+  switchMap,
+  toArray,
+} from 'rxjs';
 import { Player } from '../core/interfaces/player';
 import { Room } from '../core/interfaces/room';
+import { InvitationService } from '../core/services/invitation.service';
+import { LocalStorageService } from '../core/services/local-storage.service';
 import { PlayerService } from '../core/services/player.service';
 import { RoomService } from '../core/services/room.service';
 import { ToastrHelperService } from '../core/services/toastr-helper.service';
@@ -30,8 +39,6 @@ import { RoomsCardComponent } from './rooms-card/rooms-card.component';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule,
-    MatSelectModule,
     PlayerCardComponent,
   ],
   templateUrl: './admin.component.html',
@@ -40,21 +47,26 @@ import { RoomsCardComponent } from './rooms-card/rooms-card.component';
 export class AdminComponent implements OnInit {
   roomService = inject(RoomService);
   playerService = inject(PlayerService);
+  invitationService = inject(InvitationService);
+  localStorageService = inject(LocalStorageService);
   destroyRef = inject(DestroyRef);
   toastrHelper = inject(ToastrHelperService);
   dialog = inject(MatDialog);
+  router = inject(Router);
   rooms: Room[] = [];
   players: Player[] = [];
-  playerSearch = '';
   playersByRoom: Record<string, Player[]> = {};
   loading = true;
-  games = games;
-  roomCountByType: Record<string, number> = {};
-  selectedRoomTypeControl = new FormControl<string>('attente');
   playerSearchControl = new FormControl<string>('');
-  motusGameKey = gameMap['motus'].key;
-  drapeauxGameKey = gameMap['drapeaux'].key;
-  marquesGameKey = gameMap['marques'].key;
+  readonly staleRoomMaxAgeMs = 24 * 60 * 60 * 1000;
+
+  get startedRoomsNumber(): number {
+    return this.rooms.filter((room) => room.isStarted).length;
+  }
+
+  get waitingRoomsNumber(): number {
+    return this.rooms.length - this.startedRoomsNumber;
+  }
 
   ngOnInit(): void {
     this.roomService
@@ -70,9 +82,7 @@ export class AdminComponent implements OnInit {
       )
       .subscribe({
         next: ({ rooms, players }) => {
-          this.rooms = rooms;
-          this.updateRoomCounts();
-          this.setDefaultSelectedRoomType();
+          this.rooms = this.sortRooms(rooms);
           this.players = this.sortPlayers(players);
 
           this.playersByRoom = rooms.reduce(
@@ -108,22 +118,9 @@ export class AdminComponent implements OnInit {
         filter((res: boolean) => res),
         switchMap(() => {
           this.loading = true;
-
-          if (!this.playersByRoom[roomId]?.length) {
-            return of(null);
-          }
-
-          this.playersByRoom[roomId].forEach((player) => {
-            player.currentRoomWins = [];
-            player.finishDate = null;
-            player.durationMs = null;
-            player.isReady = false;
-          });
-
-          return this.playerService.updatePlayers(this.playersByRoom[roomId]);
+          return this.cleanupRoom(roomId);
         }),
         takeUntilDestroyed(this.destroyRef),
-        switchMap(() => this.roomService.deleteRoom(roomId)),
       )
       .subscribe({
         next: () => {
@@ -139,32 +136,45 @@ export class AdminComponent implements OnInit {
       });
   }
 
-  addRoom(): void {
-    this.loading = true;
+  // Une room dont l'hote a ferme l'onglet n'est supprimee par personne :
+  // faute de tache planifiee, le menage est declenche depuis cette page.
+  get staleRooms(): Room[] {
+    return this.rooms.filter((room) =>
+      this.roomService.isStale(room, this.staleRoomMaxAgeMs),
+    );
+  }
 
-    const roomCode = this.roomService.generateRoomCode();
+  purgeStaleRooms(): void {
+    const staleRooms = this.staleRooms;
 
-    const newRoom = {
-      gameName: roomCode,
-      playerIds: [] as string[],
-      isStarted: false,
-      startDate: null,
-      startAgainNumber: 0,
-      isCreatedByAdmin: true,
-      isReadyNotificationActivated: false,
-      roomCode: roomCode,
-    };
+    if (!staleRooms.length) {
+      return;
+    }
 
-    this.roomService
-      .deleteUserRooms()
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: `supprimer les ${staleRooms.length} rooms inactives`,
+    });
+
+    dialogRef
+      .afterClosed()
       .pipe(
+        filter((res: boolean) => res),
+        switchMap(() => {
+          this.loading = true;
+          return from(staleRooms).pipe(
+            concatMap((room) => this.cleanupRoom(room.id!)),
+            toArray(),
+          );
+        }),
         takeUntilDestroyed(this.destroyRef),
-        switchMap(() => this.roomService.addRoom(newRoom as Room)),
       )
       .subscribe({
         next: () => {
           this.loading = false;
-          this.toastrHelper.info('Room créée', 'Room');
+          this.toastrHelper.info(
+            `${staleRooms.length} rooms supprimées`,
+            'Rooms',
+          );
         },
         error: (error: HttpErrorResponse) => {
           this.loading = false;
@@ -173,6 +183,29 @@ export class AdminComponent implements OnInit {
           }
         },
       });
+  }
+
+  // Une room supprimee laisse derriere elle des joueurs bloques sur un
+  // resultat et des invitations mortes.
+  private cleanupRoom(roomId: string): Observable<void> {
+    const players = this.playersByRoom[roomId] ?? [];
+
+    const reset$ = players.length
+      ? this.playerService.updatePlayers(
+          players.map((player) => ({
+            ...player,
+            currentRoomWins: [],
+            finishDate: null,
+            durationMs: null,
+            isReady: false,
+          })),
+        )
+      : of(undefined);
+
+    return reset$.pipe(
+      switchMap(() => this.invitationService.deleteInvitationsForRoom(roomId)),
+      switchMap(() => this.roomService.deleteRoom(roomId)),
+    );
   }
 
   openUserDialog(player: Player): void {
@@ -197,6 +230,24 @@ export class AdminComponent implements OnInit {
           this.toastrHelper.error(error.message);
         },
       });
+  }
+
+  // L'admin rejoint la room comme n'importe quel joueur : la page room
+  // l'ajoute aux participants a l'ouverture.
+  joinRoom(roomId: string): void {
+    this.localStorageService.newGame(roomId);
+    this.router.navigate(['/room', roomId]);
+  }
+
+  // Les parties en cours passent devant : c'est ce qu'un admin surveille.
+  sortRooms(rooms: Room[]): Room[] {
+    return [...rooms].sort((a, b) => {
+      if (a.isStarted !== b.isStarted) {
+        return a.isStarted ? -1 : 1;
+      }
+
+      return (b.playerIds?.length ?? 0) - (a.playerIds?.length ?? 0);
+    });
   }
 
   sortPlayers(players: Player[]): Player[] {
@@ -226,62 +277,6 @@ export class AdminComponent implements OnInit {
     return this.players.filter((player) =>
       this.normalizeText(player.username).includes(normalizedQuery),
     );
-  }
-
-  canAddRoom(): boolean {
-    return (
-      this.selectedRoomType === 'attente' &&
-      !this.rooms.some((room) => room.isCreatedByAdmin)
-    );
-  }
-
-  get selectedRoomType(): string {
-    return this.selectedRoomTypeControl.value || 'attente';
-  }
-
-  getRoomCountSuffix(type: string): string {
-    const count = this.roomCountByType[type] ?? 0;
-    return count > 0 ? ` (${count})` : '';
-  }
-
-  private updateRoomCounts(): void {
-    const counts: Record<string, number> = { attente: 0 };
-
-    this.games.forEach((game) => {
-      counts[game.key] = 0;
-    });
-
-    this.rooms.forEach((room) => {
-      if (!room.isStarted) {
-        counts['attente'] = (counts['attente'] ?? 0) + 1;
-      }
-
-      if (counts[room.gameName] !== undefined) {
-        counts[room.gameName] += 1;
-      }
-    });
-
-    this.roomCountByType = counts;
-  }
-
-  private setDefaultSelectedRoomType(): void {
-    if ((this.roomCountByType['attente'] ?? 0) > 0) {
-      this.selectedRoomTypeControl.setValue('attente');
-      return;
-    }
-
-    let maxGameKey = this.games[0]?.key ?? 'attente';
-    let maxCount = this.roomCountByType[maxGameKey] ?? 0;
-
-    this.games.forEach((game) => {
-      const gameCount = this.roomCountByType[game.key] ?? 0;
-      if (gameCount > maxCount) {
-        maxCount = gameCount;
-        maxGameKey = game.key;
-      }
-    });
-
-    this.selectedRoomTypeControl.setValue(maxGameKey);
   }
 
   private normalizeText(value: string): string {

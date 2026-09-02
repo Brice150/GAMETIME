@@ -10,6 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { gameMap, games } from '../../assets/data/games';
 import { goals } from '../../assets/data/goals';
 import { Goal } from '../core/interfaces/goal';
+import { GameApiService } from '../core/services/game-api.service';
 import { PlayerService } from '../core/services/player.service';
 import { ToastrHelperService } from '../core/services/toastr-helper.service';
 import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
@@ -30,6 +31,7 @@ import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
 })
 export class SuccessComponent implements OnInit {
   playerService = inject(PlayerService);
+  gameApi = inject(GameApiService);
   toastrHelper = inject(ToastrHelperService);
   medalsNumberPipe = inject(MedalsNumberPipe);
   destroyRef = inject(DestroyRef);
@@ -118,31 +120,33 @@ export class SuccessComponent implements OnInit {
     return this.getProgress(target) === 100;
   }
 
+  // La recompense est attribuee par le serveur : le palier et son gain sont
+  // verifies la-bas, le client ne fait que demander.
   getSuccess(goal: Goal): void {
     if (!this.canGetSuccess(goal.target)) return;
 
-    const stat = this.playerService
-      .currentPlayerSig()
-      ?.stats.find((stat) => stat.gameName === this.gameSelected);
+    const player = this.playerService.currentPlayerSig();
+    const stat = player?.stats.find(
+      (stat) => stat.gameName === this.gameSelected,
+    );
 
-    if (!stat) return;
+    if (!player || !stat) return;
 
-    stat.lastSuccessRetrieved = goal.target;
-    stat.medalsNumber += goal.reward;
-
-    this.playerService
-      .updatePlayer(this.playerService.currentPlayerSig()!)
+    this.gameApi
+      .claimGoal(this.gameSelected, goal.target)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: () => {
+        next: (result) => {
+          stat.lastSuccessRetrieved = goal.target;
+          stat.medalsNumber = result.medalsNumber;
+          this.playerService.currentPlayerSig.set({ ...player });
           this.getMedalsNumber();
           this.toastrHelper.info('Succès récupéré', 'Succès');
         },
         error: (error: HttpErrorResponse) => {
-          this.loading = false;
-          if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastrHelper.error(error.message);
-          }
+          this.toastrHelper.error(
+            "Le succès n'a pas pu être récupéré : " + error.message,
+          );
         },
       });
   }

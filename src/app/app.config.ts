@@ -17,6 +17,7 @@ import {
   initializeFirestore,
   provideFirestore,
 } from '@angular/fire/firestore';
+import { getFunctions, provideFunctions } from '@angular/fire/functions';
 import {
   persistentLocalCache,
   persistentMultipleTabManager,
@@ -59,6 +60,9 @@ export const appConfig: ApplicationConfig = {
           tabManager: persistentMultipleTabManager(),
         }),
       }),
+    ),
+    provideFunctions(() =>
+      getFunctions(firebaseApp, environment.functionsRegion),
     ),
     { provide: MAT_DATE_LOCALE, useValue: 'fr-FR' },
     { provide: LOCALE_ID, useValue: 'fr-FR' },

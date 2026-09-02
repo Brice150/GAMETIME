@@ -1,15 +1,19 @@
 import { inject, Injectable, signal } from '@angular/core';
 import {
+  arrayRemove,
   collection,
   collectionData,
   deleteDoc,
   doc,
   docData,
   Firestore,
+  getDocs,
   query,
   setDoc,
+  Timestamp,
   updateDoc,
   where,
+  writeBatch,
 } from '@angular/fire/firestore';
 import {
   combineLatest,
@@ -66,6 +70,8 @@ export class RoomService {
     const roomDoc = doc(this.roomsCollection);
     room.id = roomDoc.id;
     room.userId = this.userService.auth.currentUser?.uid;
+    room.createdAt = new Date();
+    room.lastActivityAt = room.createdAt;
     return from(setDoc(roomDoc, { ...room })).pipe(map(() => room.id!));
   }
 
@@ -94,6 +100,63 @@ export class RoomService {
   deleteRoom(roomId: string): Observable<void> {
     const roomDoc = doc(this.firestore, `rooms/${roomId}`);
     return from(deleteDoc(roomDoc));
+  }
+
+  // Sans « Quitter » explicite, un joueur restait listé dans toutes les rooms
+  // qu'il avait traversées : il y apparaissait comme participant fantôme.
+  leaveOtherRooms(keptRoomId: string | undefined): Observable<void> {
+    const userId = this.userService.auth.currentUser?.uid;
+
+    if (!userId) {
+      return of(undefined);
+    }
+
+    const roomsQuery = query(
+      this.roomsCollection,
+      where('playerIds', 'array-contains', userId),
+    );
+
+    return from(getDocs(roomsQuery)).pipe(
+      switchMap((snapshot) => {
+        const staleRooms = snapshot.docs.filter(
+          (roomDoc) => roomDoc.id !== keptRoomId,
+        );
+
+        if (!staleRooms.length) {
+          return of(undefined);
+        }
+
+        const batch = writeBatch(this.firestore);
+        staleRooms.forEach((roomDoc) =>
+          batch.update(roomDoc.ref, { playerIds: arrayRemove(userId) }),
+        );
+
+        return from(batch.commit());
+      }),
+      map(() => undefined),
+    );
+  }
+
+  // Une room abandonnee (onglet ferme) n'est supprimee par personne : on la
+  // reconnait a sa derniere activite.
+  isStale(room: Room, maxAgeMs: number): boolean {
+    const reference = this.toDate(room.lastActivityAt ?? room.createdAt);
+
+    if (!reference) {
+      return false;
+    }
+
+    return Date.now() - reference.getTime() > maxAgeMs;
+  }
+
+  private toDate(value: Date | Timestamp | null | undefined): Date | null {
+    if (!value) {
+      return null;
+    }
+    if (value instanceof Timestamp) {
+      return value.toDate();
+    }
+    return value instanceof Date ? value : null;
   }
 
   deleteUserRooms(): Observable<void> {

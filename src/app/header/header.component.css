@@ -93,6 +93,22 @@ header {
   color: var(--accent-bright);
 }
 
+/* Pastille de demandes d'amis en attente. */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: var(--r-pill);
+  background: var(--danger);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+}
+
 .nav-link.logout:hover {
   background: var(--danger-soft);
   border-color: var(--danger-border);

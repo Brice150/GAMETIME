@@ -111,10 +111,5 @@ export class LocalStorageService {
     localStorage.removeItem(this.getScopedKey(this.startAgainKey));
     localStorage.removeItem(this.getScopedKey(this.roomIdKey));
     localStorage.removeItem(this.getScopedKey(this.timerKey));
-
-    // Remove legacy keys from older versions without user scoping.
-    localStorage.removeItem(this.triesKey);
-    localStorage.removeItem(this.startAgainKey);
-    localStorage.removeItem(this.roomIdKey);
   }
 }

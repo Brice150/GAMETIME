@@ -15,6 +15,7 @@ import { ToastrHelperService } from '../core/services/toastr-helper.service';
 import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
 import { OrdinalPipe } from '../shared/pipes/ordinal.pipe';
 import { TotalMedalsNumberPipe } from '../shared/pipes/total-medals-number.pipe';
+import { SuccessComponent } from '../success/success.component';
 
 @Component({
   selector: 'app-ranking',
@@ -28,6 +29,7 @@ import { TotalMedalsNumberPipe } from '../shared/pipes/total-medals-number.pipe'
     MatInputModule,
     MatSelectModule,
     TotalMedalsNumberPipe,
+    SuccessComponent,
   ],
   templateUrl: './ranking.component.html',
   styleUrl: './ranking.component.css',
@@ -42,6 +44,36 @@ export class RankingComponent implements OnInit {
   games = games;
   gameSelected = 'general';
   currentPlayerPosition?: number;
+  tab: 'classement' | 'succes' = 'classement';
+  // Le classement entre amis est plus parlant que le classement global : il
+  // est propose par defaut des que le joueur a au moins un ami.
+  scope: 'amis' | 'tous' = 'amis';
+
+  // Le joueur courant fait toujours partie de son propre classement.
+  private get scopedPlayers(): Player[] {
+    const currentPlayer = this.playerService.currentPlayerSig();
+
+    if (this.scope === 'tous') {
+      return this.players;
+    }
+
+    const friendIds = currentPlayer?.friendIds ?? [];
+
+    return this.players.filter(
+      (player) =>
+        player.userId === currentPlayer?.userId ||
+        (!!player.userId && friendIds.includes(player.userId)),
+    );
+  }
+
+  get hasFriends(): boolean {
+    return !!this.playerService.currentPlayerSig()?.friendIds?.length;
+  }
+
+  changeScope(scope: 'amis' | 'tous'): void {
+    this.scope = scope;
+    this.sortPlayers();
+  }
 
   ngOnInit(): void {
     this.playerService
@@ -50,6 +82,11 @@ export class RankingComponent implements OnInit {
       .subscribe({
         next: (players) => {
           this.players = players;
+
+          if (!this.hasFriends) {
+            this.scope = 'tous';
+          }
+
           this.sortPlayers();
           this.loading = false;
         },
@@ -66,11 +103,11 @@ export class RankingComponent implements OnInit {
     let sorted: Player[];
 
     if (gameName === 'general') {
-      sorted = [...this.players].sort((a, b) => {
+      sorted = [...this.scopedPlayers].sort((a, b) => {
         return getTotalMedalsNumber(b) - getTotalMedalsNumber(a);
       });
     } else {
-      sorted = [...this.players].sort((a, b) => {
+      sorted = [...this.scopedPlayers].sort((a, b) => {
         const aStat = a.stats.find((stat) => stat.gameName === gameName);
         const bStat = b.stats.find((stat) => stat.gameName === gameName);
 
@@ -101,7 +138,7 @@ export class RankingComponent implements OnInit {
 
   sortPlayers(): void {
     if (this.gameSelected === 'general') {
-      this.sortedPlayers = [...this.players].sort((a, b) => {
+      this.sortedPlayers = [...this.scopedPlayers].sort((a, b) => {
         return getTotalMedalsNumber(b) - getTotalMedalsNumber(a);
       });
 
@@ -113,7 +150,7 @@ export class RankingComponent implements OnInit {
         this.currentPlayerPosition = index >= 0 ? index + 1 : undefined;
       }
     } else {
-      this.sortedPlayers = [...this.players].sort((a, b) => {
+      this.sortedPlayers = [...this.scopedPlayers].sort((a, b) => {
         const aStat = a.stats.find(
           (stat) => stat.gameName === this.gameSelected,
         );

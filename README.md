@@ -27,29 +27,27 @@ Backend/BDD : Firebase
 
 ---
 
-### 👤 Profil
+### ⚙️ Paramètres
 
-- Modification de votre profil utilisateur
-- Suppression du compte (avec confirmation obligatoire)
+- Onglet Compte : modification du profil, liaison d'un compte invité, suppression du compte (avec confirmation obligatoire)
+- Onglet Amis : recherche d'un joueur par son nom, demandes d'ami à accepter ou refuser, retrait d'un ami
 
 ---
 
 ### 🎮 Salle
 
 - Partage d’un lien pour permettre aux autres joueurs de rejoindre votre salle
+- Invitation directe d’un ami depuis la salle d’attente ou l’écran de résultats
+- Notification d’invitation en temps réel dans l’application
 - Après une partie, comparaison des résultats avec les autres joueurs
-
----
-
-### 🏆 Succès
-
-- Découverte des succès à débloquer et des récompenses associées
+- Un joueur qui arrive alors que la partie est déjà terminée est classé dernier, sans résultat, plutôt que de rejouer seul
 
 ---
 
 ### 📊 Classement
 
-- Consultation de votre classement par rapport aux autres joueurs
+- Onglet Classement : votre position parmi vos amis (par défaut) ou parmi tous les joueurs
+- Onglet Succès : découverte des succès à débloquer et des récompenses associées
 
 ---
 

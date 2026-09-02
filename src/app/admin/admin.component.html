@@ -1,61 +1,70 @@
 <section>
   @if (!loading) {
-    <form>
-      <mat-form-field>
-        <mat-select [formControl]="selectedRoomTypeControl" class="cap select">
-          <mat-option value="attente" class="cap-option">
-            <div class="flex">
-              <i class="bx bxs-time-five"></i>
-              <span class="game"
-                >Attente{{ getRoomCountSuffix("attente") }}</span
-              >
-            </div>
-          </mat-option>
-          @for (game of games; track $index) {
-            <mat-option [value]="game.key" class="cap-option">
-              <div class="flex">
-                <i class="{{ game.icon }}"></i>
-                <span class="game"
-                  >{{ game.label }}{{ getRoomCountSuffix(game.key) }}</span
-                >
-              </div>
-            </mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-    </form>
-    <div class="element">
+    <div class="overview">
+      <div class="stat">
+        <i class="bx bxs-user-detail"></i>
+        <span class="value">{{ players.length }}</span>
+        <span class="label">Joueurs</span>
+      </div>
+      <div class="stat">
+        <i class="bx bxs-door-open"></i>
+        <span class="value">{{ rooms.length }}</span>
+        <span class="label">Rooms</span>
+      </div>
+      <div class="stat accent">
+        <i class="bx bx-play"></i>
+        <span class="value">{{ startedRoomsNumber }}</span>
+        <span class="label">En cours</span>
+      </div>
+      <div class="stat">
+        <i class="bx bxs-time-five"></i>
+        <span class="value">{{ waitingRoomsNumber }}</span>
+        <span class="label">En attente</span>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="block-head">
+        <h2>Rooms</h2>
+        @if (staleRooms.length) {
+          <button
+            type="button"
+            class="purge"
+            title="Supprimer les rooms inactives"
+            (click)="purgeStaleRooms()"
+          >
+            <i class="bx bxs-trash"></i>
+            <span>Nettoyer {{ staleRooms.length }} room(s) inactive(s)</span>
+          </button>
+        }
+      </div>
       <app-rooms-card
-        [selectedRoomType]="selectedRoomType"
         [rooms]="rooms"
-        [players]="players"
+        [playersByRoom]="playersByRoom"
+        (joinEvent)="joinRoom($event)"
         (deleteEvent)="deleteRoom($event)"
       ></app-rooms-card>
     </div>
-    @if (canAddRoom()) {
-      <div class="button-container">
-        <button type="button" (click)="addRoom()" title="Ajouter">
-          <i class="bx bx-plus"></i>
-          <span class="text">Ajouter</span>
-        </button>
+
+    <div class="block">
+      <div class="block-head">
+        <h2>Joueurs</h2>
+        <form>
+          <mat-form-field>
+            <mat-label>Rechercher un joueur</mat-label>
+            <input matInput [formControl]="playerSearchControl" autocomplete="off" />
+            <i class="bx bxs-search" matSuffix aria-hidden="true"></i>
+          </mat-form-field>
+        </form>
       </div>
-    }
-    <form class="margin">
-      <mat-form-field>
-        <mat-label>Rechercher</mat-label>
-        <input matInput [formControl]="playerSearchControl" />
-        <button mat-icon-button matSuffix type="button">
-          <i class="bx bxs-search" aria-hidden="true"></i>
-        </button>
-      </mat-form-field>
-    </form>
-    <div class="element players-list">
-      @for (player of filteredPlayers; track player.id) {
-        <app-player-card
-          [player]="player"
-          (updateEvent)="openUserDialog($event)"
-        ></app-player-card>
-      }
+      <div class="players-grid">
+        @for (player of filteredPlayers; track player.id) {
+          <app-player-card
+            [player]="player"
+            (updateEvent)="openUserDialog($event)"
+          ></app-player-card>
+        }
+      </div>
       @if (!filteredPlayers.length) {
         <p class="no-results">Aucun joueur trouvé</p>
       }

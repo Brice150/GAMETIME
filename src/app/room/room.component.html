@@ -1,69 +1,90 @@
 <section>
-  @if(!loading) { @if (room.isStarted) { @if(!isResultPageActive) {
-  <app-word-games
-    [room]="room"
-    [player]="playerService.currentPlayerSig()!"
-    (finishedStepEvent)="updatePlayerGame($event)"
-  ></app-word-games>
-  } @else {
-  <app-results-board
-    [room]="room"
-    [players]="players"
-    [currentPlayerId]="playerService.currentPlayerSig()!.userId"
-    (deleteEvent)="removePlayer($event)"
-  ></app-results-board>
-  } } @else {
-  <app-waiting-room
-    [room]="room"
-    [player]="playerService.currentPlayerSig()!"
-    [players]="players"
-    (deleteEvent)="removePlayer($event)"
-  ></app-waiting-room>
-  }
-  <div class="button-container">
-    @if (!isFinishing) {
-    <button type="button" title="Quitter" (click)="openDialog()" class="delete">
-      <i class="bx bxs-log-out"></i>
-      <span class="text">Quitter</span>
-    </button>
-    } @if (isNextButtonAvailable) {
-    <button type="button" (click)="next()" title="Suivant">
-      <i class="bx bxs-skip-next-circle"></i>
-      <span class="text">Suivant</span>
-    </button>
-    } @else if (!room.isStarted || isResultPageActive) {
-    <button
-      type="button"
-      (click)="multiplayer()"
-      title="Multijoueur"
-      class="share"
-    >
-      <i class="bx bxs-user-plus"></i>
-      <span class="text">Multijoueur</span>
-    </button>
-    } @if (shouldShowPlayButton()) {
-    <button type="button" (click)="openDialogs()" title="Jouer">
-      <i class="bx bx-play"></i>
-      <span class="text">Jouer</span>
-    </button>
-    } @else if (shouldShowReadyButton()) {
-    <button
-      type="button"
-      (click)="ready()"
-      [title]="playerService.currentPlayerSig()!.isReady ? 'Pas prêt' : 'Prêt'"
-      [ngClass]="{ delete: playerService.currentPlayerSig()!.isReady }"
-    >
-      @if (playerService.currentPlayerSig()!.isReady) {
-      <i class="bx bxs-x-circle"></i>
-      <span class="text">Pas prêt</span>
+  @if (!loading) {
+    @if (room.isStarted) {
+      @if (!isResultPageActive) {
+        <app-word-games
+          [room]="room"
+          [player]="playerService.currentPlayerSig()!"
+          (finishedStepEvent)="updatePlayerGame($event)"
+        ></app-word-games>
       } @else {
-      <i class="bx bxs-check-circle"></i>
-      <span class="text">Prêt</span>
+        <app-results-board
+          [room]="room"
+          [players]="players"
+          [currentPlayerId]="playerService.currentPlayerSig()!.userId"
+          (deleteEvent)="removePlayer($event)"
+        ></app-results-board>
       }
-    </button>
+    } @else {
+      <app-waiting-room
+        [room]="room"
+        [player]="playerService.currentPlayerSig()!"
+        [players]="players"
+        (deleteEvent)="removePlayer($event)"
+      ></app-waiting-room>
     }
-  </div>
+    <div class="button-container">
+      @if (!isFinishing) {
+        <button
+          type="button"
+          title="Quitter"
+          (click)="openDialog()"
+          class="delete"
+        >
+          <i class="bx bxs-log-out"></i>
+          <span class="text">Quitter</span>
+        </button>
+      }
+      @if (isNextButtonAvailable) {
+        <button type="button" (click)="next()" title="Suivant">
+          <i class="bx bxs-skip-next-circle"></i>
+          <span class="text">Suivant</span>
+        </button>
+      } @else if (!room.isStarted || isResultPageActive) {
+        <button
+          type="button"
+          (click)="multiplayer()"
+          title="Multijoueur"
+          class="share"
+        >
+          <i class="bx bxs-user-plus"></i>
+          <span class="text">Multijoueur</span>
+        </button>
+        <button
+          type="button"
+          (click)="inviteFriend()"
+          title="Inviter un ami"
+          class="share"
+        >
+          <i class="bx bxs-group"></i>
+          <span class="text">Inviter un ami</span>
+        </button>
+      }
+      @if (shouldShowPlayButton()) {
+        <button type="button" (click)="openDialogs()" title="Jouer">
+          <i class="bx bx-play"></i>
+          <span class="text">Jouer</span>
+        </button>
+      } @else if (shouldShowReadyButton()) {
+        <button
+          type="button"
+          (click)="ready()"
+          [title]="
+            playerService.currentPlayerSig()!.isReady ? 'Pas prêt' : 'Prêt'
+          "
+          [ngClass]="{ delete: playerService.currentPlayerSig()!.isReady }"
+        >
+          @if (playerService.currentPlayerSig()!.isReady) {
+            <i class="bx bxs-x-circle"></i>
+            <span class="text">Pas prêt</span>
+          } @else {
+            <i class="bx bxs-check-circle"></i>
+            <span class="text">Prêt</span>
+          }
+        </button>
+      }
+    </div>
   } @else {
-  <mat-spinner></mat-spinner>
+    <mat-spinner></mat-spinner>
   }
 </section>

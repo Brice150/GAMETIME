@@ -1,0 +1,47 @@
+<section mat-dialog-content>
+  <h1>Inviter un ami</h1>
+  @if (!loading) {
+    <div class="content">
+      @for (friend of friends; track friend.id) {
+        <div class="row">
+          <span class="username"
+            >{{ friend.username }} {{ friend.animal }}</span
+          >
+          @if (isInRoom(friend)) {
+            <span class="tag"
+              ><i class="bx bxs-check-circle"></i> Dans la room</span
+            >
+          } @else if (isInvited(friend)) {
+            <span class="tag pending"
+              ><i class="bx bx-time-five"></i> Invité</span
+            >
+          } @else {
+            <button
+              type="button"
+              class="invite"
+              title="Inviter"
+              (click)="invite(friend)"
+            >
+              <i class="bx bxs-user-plus"></i>
+              <span class="text">Inviter</span>
+            </button>
+          }
+        </div>
+      }
+      @if (!friends.length) {
+        <span class="empty"
+          >Vous n'avez pas encore d'amis. Ajoutez-en depuis vos
+          paramètres.</span
+        >
+      }
+    </div>
+  } @else {
+    <mat-spinner diameter="34"></mat-spinner>
+  }
+  <div class="button-container">
+    <button type="button" title="Fermer" (click)="close()" class="delete">
+      <i class="bx bx-x"></i>
+      <span class="text">Fermer</span>
+    </button>
+  </div>
+</section>

@@ -15,6 +15,9 @@
         >
           <i class="bx {{ link.icon }}"></i>
           <span class="label">{{ link.label }}</span>
+          @if (link.badge) {
+            <span class="badge">{{ link.badge }}</span>
+          }
         </a>
       }
       <button
@@ -53,6 +56,9 @@
           >
             <i class="bx {{ link.icon }}"></i>
             <span class="description">{{ link.label }}</span>
+            @if (link.badge) {
+              <span class="badge">{{ link.badge }}</span>
+            }
           </button>
         }
         <button

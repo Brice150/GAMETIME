@@ -8,6 +8,30 @@ section {
   color: var(--text-1);
 }
 
+/* La page succes apporte deja son propre espacement vertical. */
+section app-success {
+  display: contents;
+}
+
+section.succes-tab {
+  padding-bottom: 0;
+}
+
+.gt-tabs.scope {
+  margin-top: 20px;
+  margin-bottom: 4px;
+}
+
+.empty {
+  margin-top: 6px;
+  padding: 14px 16px;
+  border: 1px dashed var(--border-2);
+  border-radius: var(--r-md);
+  color: var(--text-3);
+  font-size: 15px;
+  text-align: center;
+}
+
 form {
   display: flex;
   justify-content: center;

@@ -97,11 +97,6 @@
   /* Mouvement */
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --speed: 0.28s;
-
-  /* Alias historiques (conserves pour compatibilite) */
-  --primary: var(--text-1);
-  --secondary: var(--text-2);
-  --title-accent: var(--accent-bright);
 }
 
 /* Choix explicite de l'utilisateur : `light-dark()` suit `color-scheme`. */
@@ -293,6 +288,66 @@ body::before {
   background: var(--danger);
   color: #fff;
   box-shadow: 0 8px 24px var(--danger-glow);
+}
+
+/* Onglets internes : evite une page dediee pour chaque sous-section. */
+.gt-tabs {
+  display: inline-flex;
+  gap: 6px;
+  padding: 6px;
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-pill);
+  background: var(--surface-1);
+}
+
+.gt-tabs button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 0 18px;
+  border: none;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--text-2);
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background var(--speed) var(--ease),
+    color var(--speed) var(--ease);
+}
+
+.gt-tabs button i {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.gt-tabs button:hover {
+  color: var(--text-1);
+}
+
+.gt-tabs button.active {
+  background: var(--accent-gradient);
+  color: var(--on-accent);
+  box-shadow: var(--shadow-1);
+}
+
+.gt-tabs .tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: var(--r-pill);
+  background: var(--danger);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
 }
 
 /* Pastille de medailles / score */
