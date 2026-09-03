@@ -30,21 +30,25 @@ service cloud.firestore {
         && request.resource.data.isAdmin == false;
 
       allow update: if isAdmin()
-        // Le proprietaire modifie sa fiche, sauf `stats` (reserve aux
-        // fonctions), `isAdmin` et `userId`.
+        // Le proprietaire modifie sa fiche, sauf les champs reserves aux
+        // fonctions : medailles, role et listes d'amis.
         || (isOwner(resource.data)
-            && request.resource.data.userId == resource.data.userId
-            && request.resource.data.isAdmin == resource.data.isAdmin
-            && request.resource.data.stats == resource.data.stats)
-        // Un tiers ne touche que l'etat de partie (remise a zero par l'hote,
-        // exclusion d'un joueur) et les listes d'amis.
+            && !changedKeys().hasAny([
+                 'userId',
+                 'isAdmin',
+                 'stats',
+                 'friendIds',
+                 'friendRequestIds'
+               ]))
+        // Un tiers ne touche qu'a l'etat de partie : remise a zero par l'hote,
+        // exclusion d'un joueur, vote de fin de partie.
         || changedKeys().hasOnly([
              'currentRoomWins',
              'finishDate',
              'durationMs',
              'isReady',
-             'friendIds',
-             'friendRequestIds'
+             'currentRoundProgress',
+             'vote'
            ]);
 
       allow delete: if isAdmin() || isOwner(resource.data);
@@ -56,26 +60,31 @@ service cloud.firestore {
       allow create: if isSignedIn()
         && request.resource.data.userId == request.auth.uid;
 
-      // L'hote pilote sa room ; les autres n'en modifient que la liste des
-      // participants, pour entrer et sortir.
+      // L'hote pilote sa room ; les autres n'y ajoutent et n'en retirent que
+      // leur propre identifiant, pour entrer et sortir.
       allow update: if isAdmin()
         || isOwner(resource.data)
-        || changedKeys().hasOnly(['playerIds']);
+        || (changedKeys().hasOnly(['playerIds'])
+            && request.resource.data.playerIds.toSet()
+                 .difference(resource.data.playerIds.toSet())
+                 .hasOnly([request.auth.uid])
+            && resource.data.playerIds.toSet()
+                 .difference(request.resource.data.playerIds.toSet())
+                 .hasOnly([request.auth.uid]));
 
       allow delete: if isAdmin() || isOwner(resource.data);
     }
 
     match /invitations/{invitationId} {
-      // Lecture large : le destinataire filtre sur `toUserId`, et celui qui
-      // supprime une room interroge par `roomId` pour faire le menage.
-      allow read: if isSignedIn();
+      // Une invitation ne regarde que ses deux extremites. Le menage apres
+      // suppression d'une room est fait par la fonction `onRoomDeleted`, avec
+      // le SDK Admin : le client n'a pas besoin d'un acces plus large.
+      allow read, delete: if isSignedIn()
+        && (resource.data.toUserId == request.auth.uid
+            || resource.data.fromUserId == request.auth.uid);
 
       allow create, update: if isSignedIn()
         && request.resource.data.fromUserId == request.auth.uid;
-
-      // Volontairement large pour la meme raison : supprimer une room efface
-      // aussi les invitations envoyees par les autres participants.
-      allow delete: if isSignedIn();
     }
 
     // Un document par jeton Web Push, l'identifiant du document etant le
@@ -86,14 +95,6 @@ service cloud.firestore {
       allow create, update: if isSignedIn()
         && request.resource.data.userId == request.auth.uid;
       allow delete: if isSignedIn() && request.auth.uid == resource.data.userId;
-    }
-
-    match /excluded-questions/{excludedQuestionsId} {
-      allow read: if isSignedIn();
-      allow create: if isSignedIn();
-      allow update: if isSignedIn();
-      allow delete: if isSignedIn()
-        && request.auth.uid == resource.data.userId;
     }
   }
 }

@@ -11,6 +11,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { gameMap } from '../../../assets/data/games';
 import { Player } from '../../core/interfaces/player';
 import { Room } from '../../core/interfaces/room';
+import { RoundResult } from '../../core/interfaces/round-result';
 import { ImageService } from '../../core/services/image.service';
 import { LocalStorageService } from '../../core/services/local-storage.service';
 import { BrandCategoryPipe } from '../../shared/pipes/brand-category.pipe';
@@ -40,10 +41,16 @@ export class WordGamesComponent implements OnInit {
   localStorageService = inject(LocalStorageService);
   isOver = false;
   loading = false;
+  currentIndex = 0;
   preloaders: HTMLImageElement[] = [];
   readonly room = input.required<Room>();
   readonly player = input.required<Player>();
+  readonly lastRound = input<RoundResult | null>(null);
   @Output() finishedStepEvent = new EventEmitter<boolean>();
+  @Output() progressEvent = new EventEmitter<{
+    lettersFound: number;
+    lettersTotal: number;
+  }>();
 
   ngOnInit(): void {
     this.new();
@@ -51,6 +58,13 @@ export class WordGamesComponent implements OnInit {
 
   handleEvent(stepWon: boolean): void {
     this.finishedStepEvent.emit(stepWon);
+  }
+
+  handleProgress(lettersFound: number): void {
+    this.progressEvent.emit({
+      lettersFound,
+      lettersTotal: this.response?.length ?? 0,
+    });
   }
 
   new(): void {
@@ -61,6 +75,7 @@ export class WordGamesComponent implements OnInit {
       return;
     }
 
+    this.currentIndex = index;
     this.imageUrl = this.buildImageUrl(index);
     this.imageError = false;
     this.loading = !!this.imageUrl;

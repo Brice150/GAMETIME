@@ -1,6 +1,48 @@
 <section mat-dialog-content>
-  <h1>Vous pouvez jouer en multijoueur en partageant</h1>
+  <h1>Inviter des joueurs</h1>
+
   <div class="content">
+    <span class="section-title">Vos amis</span>
+    @if (!loadingFriends) {
+      <div class="friends">
+        @for (friend of friends; track friend.id) {
+          <div class="row">
+            <span class="username"
+              >{{ friend.username }} {{ friend.animal }}</span
+            >
+            @if (isInRoom(friend)) {
+              <span class="tag"
+                ><i class="bx bxs-check-circle"></i> Dans la room</span
+              >
+            } @else if (isInvited(friend)) {
+              <span class="tag pending"
+                ><i class="bx bx-time-five"></i> Invité</span
+              >
+            } @else {
+              <button
+                type="button"
+                class="invite"
+                title="Inviter"
+                (click)="invite(friend)"
+              >
+                <i class="bx bxs-user-plus"></i>
+                <span class="text">Inviter</span>
+              </button>
+            }
+          </div>
+        }
+        @if (!friends.length) {
+          <span class="empty"
+            >Vous n'avez pas encore d'amis. Ajoutez-en depuis vos
+            paramètres.</span
+          >
+        }
+      </div>
+    } @else {
+      <mat-spinner diameter="34"></mat-spinner>
+    }
+
+    <span class="section-title">Ou partagez la partie</span>
     <div class="element">
       <span class="title"
         >Ce code : <span class="code">{{ roomCode }}</span></span
@@ -36,6 +78,7 @@
       ></qrcode>
     </div>
   </div>
+
   <div class="button-container">
     <button type="button" title="Fermer" (click)="cancel()" class="delete">
       <i class="bx bx-x"></i>

@@ -24,27 +24,36 @@ import {
   switchMap,
   timer,
 } from 'rxjs';
-import { gameMap } from '../../assets/data/games';
+import {
+  gameMap,
+  randomGameKey,
+  resolveGameKey,
+  restartVoteKey,
+  voteMap,
+} from '../../assets/data/games';
 import { goals } from '../../assets/data/goals';
 
 import { Player } from '../core/interfaces/player';
 import { Room } from '../core/interfaces/room';
 import { RoomForm } from '../core/interfaces/room-form';
+import { RoundProgress } from '../core/interfaces/round-progress';
+import { RoundResult } from '../core/interfaces/round-result';
 
 import { LocalStorageService } from '../core/services/local-storage.service';
 import { PlayerService } from '../core/services/player.service';
 import { RoomService } from '../core/services/room.service';
 import { ToastrHelperService } from '../core/services/toastr-helper.service';
 import { GameApiService } from '../core/services/game-api.service';
-import { InvitationService } from '../core/services/invitation.service';
 import { AddRoomDialogComponent } from '../shared/components/add-room-dialog/add-room-dialog.component';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
-import { InviteFriendDialogComponent } from '../shared/components/invite-friend-dialog/invite-friend-dialog.component';
 import { MultiplayerDialogComponent } from '../shared/components/multiplayer-dialog/multiplayer-dialog.component';
 
+import { LiveStandingsComponent } from './live-standings/live-standings.component';
 import { ResultsBoardComponent } from './results-board/results-board.component';
 import { WaitingRoomComponent } from './waiting-room/waiting-room.component';
 import { WordGamesComponent } from './word-games/word-games.component';
+
+const NEXT_ROUND_DELAY_MS = 1400;
 
 @Component({
   selector: 'app-room',
@@ -53,6 +62,7 @@ import { WordGamesComponent } from './word-games/word-games.component';
     WordGamesComponent,
     WaitingRoomComponent,
     ResultsBoardComponent,
+    LiveStandingsComponent,
     MatProgressSpinnerModule,
   ],
   templateUrl: './room.component.html',
@@ -61,7 +71,6 @@ import { WordGamesComponent } from './word-games/word-games.component';
 export class RoomComponent implements OnInit {
   roomService = inject(RoomService);
   playerService = inject(PlayerService);
-  invitationService = inject(InvitationService);
   gameApi = inject(GameApiService);
   router = inject(Router);
   toastrHelper = inject(ToastrHelperService);
@@ -72,7 +81,7 @@ export class RoomComponent implements OnInit {
   loading = true;
   room: Room = {} as Room;
   players: Player[] = [];
-  isNextButtonAvailable = false;
+  lastRound: RoundResult | null = null;
   isResultPageActive = false;
   userLeft = false;
   userKickedOut = false;
@@ -153,6 +162,7 @@ export class RoomComponent implements OnInit {
 
     if (start1?.getTime() !== start2?.getTime()) {
       this.isResultPageActive = false;
+      this.lastRound = null;
     }
 
     this.room = room;
@@ -192,7 +202,7 @@ export class RoomComponent implements OnInit {
         .subscribe();
 
       this.roomService
-        .updateRoomFields(this.room.id, { playerIds: this.room.playerIds })
+        .addPlayerToRoom(this.room.id, currentUserId)
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: () => {
@@ -225,7 +235,15 @@ export class RoomComponent implements OnInit {
           return bTrueCount - aTrueCount;
         }
 
-        return (a.durationMs ?? Infinity) - (b.durationMs ?? Infinity);
+        // Sans ce garde, deux joueurs non termines donnaient `NaN`.
+        const aDuration = a.durationMs ?? Infinity;
+        const bDuration = b.durationMs ?? Infinity;
+
+        if (aDuration !== bDuration) {
+          return aDuration - bDuration;
+        }
+
+        return this.lettersFound(b) - this.lettersFound(a);
       });
     }
 
@@ -258,6 +276,14 @@ export class RoomComponent implements OnInit {
     this.roomService.currentRoomSig.set(this.room);
     this.playerService.currentPlayersSig.set(this.players);
     this.loading = this.room.isLoading ?? false;
+  }
+
+  lettersFound(player: Player): number {
+    const progress = player.currentRoundProgress;
+
+    return progress && progress.stepIndex === player.currentRoomWins.length
+      ? progress.lettersFound
+      : 0;
   }
 
   // Rejoindre une partie que tout le monde a deja terminee ferait rejouer la
@@ -293,6 +319,7 @@ export class RoomComponent implements OnInit {
     currentPlayer.finishDate = new Date();
     currentPlayer.durationMs = null;
     currentPlayer.isReady = true;
+    currentPlayer.currentRoundProgress = null;
     this.isResultPageActive = true;
 
     this.playerService
@@ -301,6 +328,7 @@ export class RoomComponent implements OnInit {
         finishDate: currentPlayer.finishDate,
         durationMs: null,
         isReady: true,
+        currentRoundProgress: null,
       })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
@@ -330,7 +358,8 @@ export class RoomComponent implements OnInit {
 
     const stepIndex = currentPlayer.currentRoomWins.length;
     const justFinished =
-      stepIndex + 1 === this.room.responses?.length && !currentPlayer.finishDate;
+      stepIndex + 1 === this.room.responses?.length &&
+      !currentPlayer.finishDate;
 
     currentPlayer.currentRoomWins.push(stepWon);
 
@@ -349,7 +378,7 @@ export class RoomComponent implements OnInit {
       .subscribe({
         next: (result) => {
           this.announceGoal(result.medalsNumber, stepWon);
-          this.handlePlayerNextAction(stepWon);
+          this.handlePlayerNextAction(stepWon, stepIndex);
         },
         error: (error: HttpErrorResponse) => {
           currentPlayer.currentRoomWins.splice(stepIndex);
@@ -423,30 +452,48 @@ export class RoomComponent implements OnInit {
       });
   }
 
-  handlePlayerNextAction(stepWon: boolean): void {
-    if (stepWon) {
-      this.toastrHelper.info(
-        'Manche gagnée',
-        this.room.gameName.charAt(0).toUpperCase() +
-          this.room.gameName.slice(1),
-      );
-    } else {
-      this.toastrHelper.info(
-        'Manche perdue',
-        this.room.gameName.charAt(0).toUpperCase() +
-          this.room.gameName.slice(1),
-      );
-    }
+  handlePlayerNextAction(stepWon: boolean, stepIndex: number): void {
+    this.lastRound = {
+      stepIndex,
+      response: this.room.responses[stepIndex],
+      won: stepWon,
+    };
 
-    if (
-      this.room.responses.length !==
-      this.playerService.currentPlayerSig()?.currentRoomWins.length
-    ) {
-      this.isNextButtonAvailable = true;
-    }
     this.playerService.currentPlayerSig.set(
       this.playerService.currentPlayerSig(),
     );
+
+    if (stepIndex + 1 === this.room.responses.length) {
+      return;
+    }
+
+    timer(NEXT_ROUND_DELAY_MS)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.wordGamesComponent?.new());
+  }
+
+  publishProgress(progress: {
+    lettersFound: number;
+    lettersTotal: number;
+  }): void {
+    const currentPlayer = this.playerService.currentPlayerSig();
+
+    if (!currentPlayer || currentPlayer.finishDate || !progress.lettersTotal) {
+      return;
+    }
+
+    const currentRoundProgress: RoundProgress = {
+      stepIndex: currentPlayer.currentRoomWins.length,
+      lettersFound: progress.lettersFound,
+      lettersTotal: progress.lettersTotal,
+    };
+
+    currentPlayer.currentRoundProgress = currentRoundProgress;
+
+    this.playerService
+      .updatePlayerFields(currentPlayer.id, { currentRoundProgress })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({ error: () => undefined });
   }
 
   openDialog(): void {
@@ -468,14 +515,13 @@ export class RoomComponent implements OnInit {
               player.finishDate = null;
               player.durationMs = null;
               player.isReady = false;
+              player.currentRoundProgress = null;
+              player.vote = null;
             });
 
             return this.playerService.updatePlayers(this.players);
           }),
           takeUntilDestroyed(this.destroyRef),
-          switchMap(() =>
-            this.invitationService.deleteInvitationsForRoom(this.room.id),
-          ),
           switchMap(() => this.roomService.deleteRoom(this.room.id!)),
         )
         .subscribe({
@@ -508,14 +554,14 @@ export class RoomComponent implements OnInit {
             this.loading = true;
             this.userLeft = true;
 
+            const userId = this.playerService.currentPlayerSig()?.userId;
             this.room.playerIds = this.room.playerIds.filter(
-              (playerId) =>
-                playerId !== this.playerService.currentPlayerSig()?.userId,
+              (playerId) => playerId !== userId,
             );
 
-            return this.roomService.updateRoomFields(this.room.id, {
-              playerIds: this.room.playerIds,
-            });
+            return userId
+              ? this.roomService.removePlayerFromRoom(this.room.id, userId)
+              : of(undefined);
           }),
           takeUntilDestroyed(this.destroyRef),
           switchMap(() => {
@@ -529,12 +575,16 @@ export class RoomComponent implements OnInit {
             currentPlayer.finishDate = null;
             currentPlayer.durationMs = null;
             currentPlayer.isReady = false;
+            currentPlayer.currentRoundProgress = null;
+            currentPlayer.vote = null;
 
             return this.playerService.updatePlayerFields(currentPlayer.id, {
               currentRoomWins: [],
               finishDate: null,
               durationMs: null,
               isReady: false,
+              currentRoundProgress: null,
+              vote: null,
             });
           }),
         )
@@ -562,9 +612,63 @@ export class RoomComponent implements OnInit {
     }
   }
 
-  next(): void {
-    this.wordGamesComponent?.new();
-    this.isNextButtonAvailable = false;
+  vote(choice: string): void {
+    const currentPlayer = this.playerService.currentPlayerSig();
+
+    if (!currentPlayer) {
+      return;
+    }
+
+    const vote = currentPlayer.vote === choice ? null : choice;
+    currentPlayer.vote = vote;
+
+    this.playerService
+      .updatePlayerFields(currentPlayer.id, { vote })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        error: (error: HttpErrorResponse) => {
+          if (!error.message.includes('Missing or insufficient permissions.')) {
+            this.toastrHelper.error(error.message);
+          }
+        },
+      });
+  }
+
+  winningVote(): string | null {
+    const counts = new Map<string, number>();
+
+    for (const player of this.players) {
+      if (player.vote) {
+        counts.set(player.vote, (counts.get(player.vote) ?? 0) + 1);
+      }
+    }
+
+    let winner: string | null = null;
+    let best = 0;
+
+    // Ordre des options : une egalite donne toujours le meme gagnant, et
+    // « Peu importe », en dernier, ne l'emporte qu'a defaut.
+    for (const key of Object.keys(voteMap)) {
+      const count = counts.get(key) ?? 0;
+
+      if (count > best) {
+        best = count;
+        winner = key;
+      }
+    }
+
+    return winner;
+  }
+
+  voteHint(): string {
+    const votedCount = this.players.filter((player) => !!player.vote).length;
+    const winner = this.winningVote();
+
+    if (!winner) {
+      return `Personne n'a voté (0 / ${this.players.length})`;
+    }
+
+    return `Vote des joueurs : ${voteMap[winner]?.label ?? winner} — ${votedCount} / ${this.players.length} ont voté`;
   }
 
   seeResults(): void {
@@ -596,6 +700,7 @@ export class RoomComponent implements OnInit {
 
   start(): void {
     this.loading = true;
+    this.lastRound = null;
 
     this.room.countries = [];
     this.room.brands = [];
@@ -617,6 +722,8 @@ export class RoomComponent implements OnInit {
             player.durationMs = null;
             player.isReady = false;
             player.currentRoomWins = [];
+            player.currentRoundProgress = null;
+            player.vote = null;
           });
           return this.playerService.updatePlayers(this.players);
         }),
@@ -692,13 +799,7 @@ export class RoomComponent implements OnInit {
   }
 
   multiplayer(): void {
-    this.dialog.open(MultiplayerDialogComponent, {
-      data: this.room.roomCode,
-    });
-  }
-
-  inviteFriend(): void {
-    this.dialog.open(InviteFriendDialogComponent, { data: this.room });
+    this.dialog.open(MultiplayerDialogComponent, { data: this.room });
   }
 
   shouldShowPlayButton(): boolean {
@@ -775,6 +876,10 @@ export class RoomComponent implements OnInit {
   }
 
   openAddRoomDialog(): void {
+    const winner = this.winningVote();
+    const votedGame = winner && winner !== restartVoteKey ? winner : null;
+    const keepsSameGame = !votedGame || votedGame === this.room.gameName;
+
     const dialogRef = this.dialog.open(AddRoomDialogComponent, {
       data: {
         stepsNumber: this.room.stepsNumber,
@@ -784,8 +889,9 @@ export class RoomComponent implements OnInit {
         showFirstLetterMotus: this.room.showFirstLetter,
         showFirstLetterDrapeaux: this.room.showFirstLetter,
         showFirstLetterMarques: this.room.showFirstLetter,
-        gameSelected: this.room.gameName,
-        startAgainMode: !!this.room.startDate,
+        gameSelected: votedGame ?? this.room.gameName,
+        startAgainMode: !!this.room.startDate && keepsSameGame,
+        voteHint: this.room.startDate ? this.voteHint() : '',
       },
     });
 
@@ -795,18 +901,26 @@ export class RoomComponent implements OnInit {
       .subscribe({
         next: (roomData: RoomForm) => {
           if (roomData && roomData.gameSelected) {
-            this.room.gameName = roomData.gameSelected;
-            if (roomData.gameSelected === this.motusGameKey) {
+            const gameName = resolveGameKey(roomData.gameSelected);
+            this.room.gameName = gameName;
+            if (gameName === this.motusGameKey) {
               this.room.showFirstLetter = roomData.showFirstLetterMotus;
-            } else if (roomData.gameSelected === this.drapeauxGameKey) {
+            } else if (gameName === this.drapeauxGameKey) {
               this.room.showFirstLetter = roomData.showFirstLetterDrapeaux;
-            } else if (roomData.gameSelected === this.marquesGameKey) {
+            } else if (gameName === this.marquesGameKey) {
               this.room.showFirstLetter = roomData.showFirstLetterMarques;
             }
             this.room.stepsNumber = roomData.stepsNumber;
             this.room.categoryFilter = roomData.categoryFilter;
             this.room.isWordLengthIncreasing = roomData.isWordLengthIncreasing;
             this.room.startWordLength = roomData.startWordLength;
+
+            if (roomData.gameSelected === randomGameKey) {
+              this.toastrHelper.info(
+                `Le sort a désigné : ${gameMap[gameName]?.label ?? gameName}`,
+                'Room',
+              );
+            }
           }
 
           this.start();
@@ -828,21 +942,28 @@ export class RoomComponent implements OnInit {
           otherPlayer.finishDate = null;
           otherPlayer.durationMs = null;
           otherPlayer.isReady = false;
+          otherPlayer.currentRoundProgress = null;
+          otherPlayer.vote = null;
 
           return this.playerService.updatePlayerFields(otherPlayer.id, {
             currentRoomWins: [],
             finishDate: null,
             durationMs: null,
             isReady: false,
+            currentRoundProgress: null,
+            vote: null,
           });
         }),
         switchMap(() => {
           this.room.playerIds = this.room.playerIds.filter(
             (playerId) => playerId !== otherPlayer.userId,
           );
-          return this.roomService.updateRoomFields(this.room.id, {
-            playerIds: this.room.playerIds,
-          });
+          return otherPlayer.userId
+            ? this.roomService.removePlayerFromRoom(
+                this.room.id,
+                otherPlayer.userId,
+              )
+            : of(undefined);
         }),
         takeUntilDestroyed(this.destroyRef),
       )

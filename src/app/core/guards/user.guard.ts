@@ -1,34 +1,26 @@
 import { inject } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { CanActivateFn, Router } from '@angular/router';
+import { filter, map, take } from 'rxjs';
 import { UserService } from '../services/user.service';
 
 export const userGuard: CanActivateFn = (route, state) => {
   const userService = inject(UserService);
   const router = inject(Router);
 
-  const waitForUser = (): Promise<boolean> => {
-    return new Promise((resolve) => {
-      const checkUser = () => {
-        const user = userService.currentUserSig();
+  return toObservable(userService.currentUserSig).pipe(
+    filter((user) => user !== undefined),
+    take(1),
+    map((user) => {
+      if (user) {
+        return true;
+      }
 
-        if (user !== undefined) {
-          if (user) {
-            resolve(true);
-          } else {
-            // Le lien demande est memorise : la page de connexion y renvoie
-            // une fois le compte pret.
-            userService.redirectUrl = state.url === '/' ? null : state.url;
-            router.navigate(['/']);
-            resolve(false);
-          }
-        } else {
-          setTimeout(checkUser, 100);
-        }
-      };
-
-      checkUser();
-    });
-  };
-
-  return waitForUser();
+      // Le lien demande est memorise : la page de connexion y renvoie
+      // une fois le compte pret.
+      userService.redirectUrl = state.url === '/' ? null : state.url;
+      router.navigate(['/']);
+      return false;
+    }),
+  );
 };

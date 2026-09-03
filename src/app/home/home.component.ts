@@ -82,18 +82,29 @@ export class HomeComponent {
   }
 
   joinRoom(roomCode: string): void {
+    this.loading = true;
+
     this.roomService
       .getRoomsByCode(roomCode)
-      .pipe(take(1))
-      .subscribe((rooms) => {
-        if (rooms && rooms.length > 0) {
-          const room = rooms[0];
-          this.localStorageService.newGame(room.id!);
+      .pipe(take(1), takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (rooms) => {
           this.loading = false;
-          this.router.navigate([`/room/${room.id!}`]);
-        } else {
-          this.toastrHelper.error('Aucune room trouvée avec ce code');
-        }
+
+          if (rooms && rooms.length > 0) {
+            const room = rooms[0];
+            this.localStorageService.newGame(room.id!);
+            this.router.navigate([`/room/${room.id!}`]);
+          } else {
+            this.toastrHelper.error('Aucune room trouvée avec ce code');
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          this.loading = false;
+          if (!error.message.includes('Missing or insufficient permissions.')) {
+            this.toastrHelper.error(error.message);
+          }
+        },
       });
   }
 }

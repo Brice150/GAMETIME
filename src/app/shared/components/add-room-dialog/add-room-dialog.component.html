@@ -1,112 +1,132 @@
 <section mat-dialog-content>
-  @if(startAgainMode) {
-  <h1>Souhaitez-vous conserver les mêmes paramètres ?</h1>
-  <div class="button-container">
-    <button
-      type="button"
-      title="Non"
-      (click)="startAgainMode = false"
-      class="delete"
-    >
-      <i class="bx bx-x"></i>
-      <span class="text">Non</span>
-    </button>
-    <button type="button" title="Oui" (click)="keepSameSettingsConfirm()">
-      <i class="bx bx-check"></i>
-      <span class="text">Oui</span>
-    </button>
-  </div>
-  } @else {
-  <h1>Veuillez configurer la room</h1>
-  <div class="games">
-    <span class="description">Jeu</span>
-    <mat-form-field>
-      <mat-select [(ngModel)]="gameSelected" name="game" class="cap">
-        @for (game of games; track $index) {
-        <mat-option [value]="game.key" class="cap-option">
-          <div class="flex">
-            <i class="{{ game.icon }}"></i>
-            <span class="game">{{ game.label }}</span>
-          </div>
-        </mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-  </div>
-
-  @if (gameSelected) {
-  <div class="slider-container top">
-    <span class="description">Nombre de manches</span>
-    <mat-slider min="1" max="8" step="1" discrete>
-      <input matSliderThumb [(ngModel)]="stepsNumber" />
-    </mat-slider>
-  </div>
-
-  <div class="slider-container top2">
-    @if(gameSelected === motusGameKey) {
-    <span class="description">Taille du mot de départ</span>
-    <mat-slider min="5" [max]="maxWordLength" step="1" discrete>
-      <input matSliderThumb [(ngModel)]="startWordLength" />
-    </mat-slider>
-    } @else if (gameSelected === drapeauxGameKey) {
-    <span class="description">Filtre par continent</span>
-    <mat-slider
-      min="1"
-      max="6"
-      step="1"
-      discrete
-      [displayWith]="formatLabelContinent"
-      [ngClass]="{
-        showLarger: true
-      }"
-    >
-      <input matSliderThumb [(ngModel)]="categoryFilter" />
-    </mat-slider>
-    } @else if (gameSelected === marquesGameKey) {
-    <span class="description">Filtre par catégorie</span>
-    <mat-slider
-      min="1"
-      max="5"
-      step="1"
-      discrete
-      [displayWith]="formatLabelMarques"
-      [ngClass]="{
-        showLarger: true
-      }"
-    >
-      <input matSliderThumb [(ngModel)]="categoryFilter" />
-    </mat-slider>
-    }
-  </div>
-
-  <div class="toggle-container dialog">
-    @if (gameSelected === motusGameKey) {
-    <mat-slide-toggle [(ngModel)]="isWordLengthIncreasing">
-      Croissance progressive
-    </mat-slide-toggle>
-    <mat-slide-toggle [(ngModel)]="showFirstLetterMotus">
-      Afficher 1<sup>ère</sup> lettre
-    </mat-slide-toggle>
-    } @else if (gameSelected === drapeauxGameKey) {
-    <mat-slide-toggle [(ngModel)]="showFirstLetterDrapeaux">
-      Afficher 1<sup>ère</sup> lettre
-    </mat-slide-toggle>
-    } @else if (gameSelected === marquesGameKey) {
-    <mat-slide-toggle [(ngModel)]="showFirstLetterMarques">
-      Afficher 1<sup>ère</sup> lettre
-    </mat-slide-toggle>
-    }
-  </div>
+  @if (voteHint) {
+    <div class="vote-hint">
+      <i class="bx bx-bar-chart-alt-2"></i>
+      <span>{{ voteHint }}</span>
+    </div>
   }
-  <div class="button-container">
-    <button type="button" title="Annuler" (click)="cancel()" class="delete">
-      <i class="bx bx-x"></i>
-      <span class="text">Annuler</span>
-    </button>
-    <button type="button" title="Valider" (click)="confirm()">
-      <i class="bx bx-check"></i>
-      <span class="text">Valider</span>
-    </button>
-  </div>
+  @if (startAgainMode) {
+    <h1>Souhaitez-vous conserver les mêmes paramètres ?</h1>
+    <div class="button-container">
+      <button
+        type="button"
+        title="Non"
+        (click)="startAgainMode = false"
+        class="delete"
+      >
+        <i class="bx bx-x"></i>
+        <span class="text">Non</span>
+      </button>
+      <button type="button" title="Oui" (click)="keepSameSettingsConfirm()">
+        <i class="bx bx-check"></i>
+        <span class="text">Oui</span>
+      </button>
+    </div>
+  } @else {
+    <h1>Veuillez configurer la room</h1>
+    <div class="games">
+      <span class="description">Jeu</span>
+      <mat-form-field>
+        <mat-select [(ngModel)]="gameSelected" name="game" class="cap">
+          @for (game of games; track $index) {
+            <mat-option [value]="game.key" class="cap-option">
+              <div class="flex">
+                <i class="{{ game.icon }}"></i>
+                <span class="game">{{ game.label }}</span>
+              </div>
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    @if (gameSelected) {
+      <div class="slider-container top">
+        <span class="description">Nombre de manches</span>
+        <mat-slider min="1" max="8" step="1" discrete>
+          <input matSliderThumb [(ngModel)]="stepsNumber" />
+        </mat-slider>
+      </div>
+
+      @if (gameSelected === randomGameKey) {
+        <div class="random-note">
+          <i class="bx bx-dice-5"></i>
+          <span
+            >Le jeu est tiré au sort au lancement, sans filtre de
+            catégorie.</span
+          >
+        </div>
+      } @else {
+        <div class="slider-container top2">
+          @if (gameSelected === motusGameKey) {
+            <span class="description">Taille du mot de départ</span>
+            <mat-slider min="5" [max]="maxWordLength" step="1" discrete>
+              <input matSliderThumb [(ngModel)]="startWordLength" />
+            </mat-slider>
+          } @else if (gameSelected === drapeauxGameKey) {
+            <span class="description">Filtre par continent</span>
+            <mat-slider
+              min="1"
+              max="6"
+              step="1"
+              discrete
+              [displayWith]="formatLabelContinent"
+              [ngClass]="{
+                showLarger: true,
+              }"
+            >
+              <input matSliderThumb [(ngModel)]="categoryFilter" />
+            </mat-slider>
+          } @else if (gameSelected === marquesGameKey) {
+            <span class="description">Filtre par catégorie</span>
+            <mat-slider
+              min="1"
+              max="5"
+              step="1"
+              discrete
+              [displayWith]="formatLabelMarques"
+              [ngClass]="{
+                showLarger: true,
+              }"
+            >
+              <input matSliderThumb [(ngModel)]="categoryFilter" />
+            </mat-slider>
+          }
+        </div>
+      }
+
+      <div class="toggle-container dialog">
+        @if (gameSelected === randomGameKey) {
+          <mat-slide-toggle [(ngModel)]="showFirstLetterRandom">
+            Afficher 1<sup>ère</sup> lettre
+          </mat-slide-toggle>
+        } @else if (gameSelected === motusGameKey) {
+          <mat-slide-toggle [(ngModel)]="isWordLengthIncreasing">
+            Croissance progressive
+          </mat-slide-toggle>
+          <mat-slide-toggle [(ngModel)]="showFirstLetterMotus">
+            Afficher 1<sup>ère</sup> lettre
+          </mat-slide-toggle>
+        } @else if (gameSelected === drapeauxGameKey) {
+          <mat-slide-toggle [(ngModel)]="showFirstLetterDrapeaux">
+            Afficher 1<sup>ère</sup> lettre
+          </mat-slide-toggle>
+        } @else if (gameSelected === marquesGameKey) {
+          <mat-slide-toggle [(ngModel)]="showFirstLetterMarques">
+            Afficher 1<sup>ère</sup> lettre
+          </mat-slide-toggle>
+        }
+      </div>
+    }
+    <div class="button-container">
+      <button type="button" title="Annuler" (click)="cancel()" class="delete">
+        <i class="bx bx-x"></i>
+        <span class="text">Annuler</span>
+      </button>
+      <button type="button" title="Valider" (click)="confirm()">
+        <i class="bx bx-check"></i>
+        <span class="text">Valider</span>
+      </button>
+    </div>
   }
 </section>

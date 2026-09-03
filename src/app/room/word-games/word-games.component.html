@@ -1,34 +1,60 @@
-@if (!isOver) { @if (room().gameName === drapeauxGameKey || room().gameName ===
-marquesGameKey) {
-<div class="container">
-  @if (room().gameName === drapeauxGameKey) {
-  <span class="continent">{{ room().categoryFilter | continent }}</span>
-  } @else if (room().gameName === marquesGameKey) {
-  <span class="continent">{{ room().categoryFilter | brandCategory }}</span>
-  }
-  <div class="flag">
-    @if (imageUrl && !imageError) {
-    <!-- Masquee et non retiree du DOM, sinon elle ne se telecharge pas.
-    `alt` vide : decrire l'image revelerait la reponse. -->
-    <img
-      [src]="imageUrl"
-      [class.pending]="loading"
-      alt=""
-      decoding="async"
-      (load)="imageLoaded()"
-      (error)="imageFailed()"
-    />
-    } @if (loading) {
-    <mat-spinner diameter="34"></mat-spinner>
-    } @else if (imageError) {
-    <i class="bx bx-image-alt" title="Image indisponible"></i>
+@if (!isOver) {
+  <div class="round-header">
+    <span class="step"
+      >Manche {{ currentIndex + 1 }} / {{ room().responses.length }}</span
+    >
+    @if (lastRound(); as last) {
+      <div class="last-round" [ngClass]="last.won ? 'won' : 'lost'">
+        <i
+          class="bx"
+          [ngClass]="last.won ? 'bxs-check-circle' : 'bxs-x-circle'"
+        ></i>
+        <span class="text"
+          >Manche {{ last.stepIndex + 1 }}
+          {{ last.won ? "gagnée" : "perdue" }}</span
+        >
+        <span class="response">{{ last.response }}</span>
+      </div>
     }
   </div>
-</div>
-}
-<app-word-input
-  [response]="response"
-  [room]="room()"
-  (emitEvent)="handleEvent($event)"
-></app-word-input>
+
+  @if (
+    room().gameName === drapeauxGameKey || room().gameName === marquesGameKey
+  ) {
+    <div class="container">
+      @if (room().gameName === drapeauxGameKey) {
+        <span class="continent">{{ room().categoryFilter | continent }}</span>
+      } @else if (room().gameName === marquesGameKey) {
+        <span class="continent">{{
+          room().categoryFilter | brandCategory
+        }}</span>
+      }
+      <div class="flag">
+        @if (imageUrl && !imageError) {
+          <!-- Masquee et non retiree du DOM, sinon elle ne se telecharge pas.
+          `alt` vide : decrire l'image revelerait la reponse. -->
+          <img
+            [src]="imageUrl"
+            [class.pending]="loading"
+            alt=""
+            decoding="async"
+            (load)="imageLoaded()"
+            (error)="imageFailed()"
+          />
+        }
+        @if (loading) {
+          <mat-spinner diameter="34"></mat-spinner>
+        } @else if (imageError) {
+          <i class="bx bx-image-alt" title="Image indisponible"></i>
+        }
+      </div>
+    </div>
+  }
+
+  <app-word-input
+    [response]="response"
+    [room]="room()"
+    (emitEvent)="handleEvent($event)"
+    (progressEvent)="handleProgress($event)"
+  ></app-word-input>
 }

@@ -1,0 +1,135 @@
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+  width: min(420px, 92vw);
+  margin-bottom: 20px;
+}
+
+.chrono {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border: 1px solid var(--accent-border);
+  border-radius: var(--r-pill);
+  background: var(--accent-soft);
+  color: var(--accent-bright);
+}
+
+.chrono i {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.chrono .value {
+  font-size: 15px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  min-width: 58px;
+  text-align: left;
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-md);
+  background: var(--surface-1);
+}
+
+.row.me {
+  border-color: var(--accent-border);
+  background: linear-gradient(135deg, var(--accent-tint), var(--accent-tint-2));
+}
+
+.podium {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  flex-shrink: 0;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.podium .order {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--r-pill);
+  background: var(--surface-3);
+  color: var(--text-2);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.username {
+  flex: 1;
+  min-width: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+}
+
+.wins {
+  flex-shrink: 0;
+  padding: 2px 10px;
+  border-radius: var(--r-pill);
+  background: var(--surface-3);
+  color: var(--text-1);
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.row.me .wins {
+  background: var(--surface-solid);
+  color: var(--accent-bright);
+}
+
+.state {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  min-width: 96px;
+  justify-content: flex-end;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.state i {
+  font-size: 15px;
+  color: var(--success);
+}
+
+@media screen and (max-width: 420px) {
+  .username {
+    font-size: 13px;
+  }
+
+  .state {
+    min-width: 82px;
+    font-size: 11px;
+  }
+}

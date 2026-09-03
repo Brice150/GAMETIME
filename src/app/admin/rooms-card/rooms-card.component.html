@@ -35,12 +35,6 @@
             {{ roomPlayers(room).length }}
             {{ roomPlayers(room).length > 1 ? "joueurs" : "joueur" }}
           </span>
-          @if (room.isStarted) {
-            <span class="chip">
-              <i class="bx bxs-flag-checkered"></i>
-              {{ stepsNumber(room) }} manches
-            </span>
-          }
         </div>
 
         <div class="participants">
@@ -53,44 +47,14 @@
                 {{ player.username }} {{ player.animal }}
               </span>
 
-              @if (room.isStarted) {
-                <div class="progress">
-                  <div class="bar">
-                    <div
-                      class="fill"
-                      [style.width.%]="progress(room, player)"
-                    ></div>
-                  </div>
-                  <span class="value">
-                    @if (isFinished(room, player)) {
-                      {{ winsNumber(player) }}/{{ stepsNumber(room) }}
-                    } @else {
-                      {{ player.currentRoomWins.length }}/{{
-                        stepsNumber(room)
-                      }}
-                    }
-                  </span>
-                </div>
-                @if (isFinished(room, player)) {
-                  <i
-                    class="bx bxs-check-circle done"
-                    title="Terminé"
-                    aria-hidden="true"
-                  ></i>
-                } @else {
-                  <i
-                    class="bx bx-loader-alt bx-spin pending"
-                    title="En cours"
-                    aria-hidden="true"
-                  ></i>
-                }
-              } @else {
-                <div class="medals">
-                  <span class="victory-number">{{
-                    player | totalMedalsNumber
-                  }}</span>
-                  <i class="bx bxs-medal"></i>
-                </div>
+              <div class="medals">
+                <span class="victory-number">{{
+                  player | totalMedalsNumber
+                }}</span>
+                <i class="bx bxs-medal"></i>
+              </div>
+
+              @if (!room.isStarted) {
                 @if (isHost(room, player) || player.isReady) {
                   <i
                     class="bx bxs-check-circle done"

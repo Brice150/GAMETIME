@@ -1,19 +1,15 @@
 import { inject, Injectable } from '@angular/core';
-import {
-  arrayRemove,
-  arrayUnion,
-  doc,
-  Firestore,
-  writeBatch,
-} from '@angular/fire/firestore';
-import { from, Observable } from 'rxjs';
+import { Observable, tap, throwError } from 'rxjs';
 import { Player } from '../interfaces/player';
+import { FriendAction, GameApiService } from './game-api.service';
 import { PlayerService } from './player.service';
 
+// Les amities sont ecrites par la fonction `manageFriendship` : le client ne
+// peut plus toucher aux listes d'amis, ni aux siennes ni a celles des autres.
 @Injectable({ providedIn: 'root' })
 export class FriendService {
-  firestore = inject(Firestore);
   playerService = inject(PlayerService);
+  gameApi = inject(GameApiService);
 
   private get currentPlayer(): Player | null {
     return this.playerService.currentPlayerSig() ?? null;
@@ -49,102 +45,73 @@ export class FriendService {
     );
   }
 
-  // Une demande croisee vaut acceptation : inutile de faire valider deux fois.
+  // Une demande croisee vaut acceptation : le serveur applique la meme regle.
   sendRequest(target: Player): Observable<void> {
-    const me = this.currentPlayer;
+    const wasMutual = this.hasRequestFrom(target);
 
-    if (!me?.userId || !target.userId || target.userId === me.userId) {
-      return from(Promise.reject('Joueur introuvable.'));
-    }
-
-    if (this.hasRequestFrom(target)) {
-      return this.acceptRequest(target);
-    }
-
-    const batch = writeBatch(this.firestore);
-    batch.update(doc(this.firestore, `players/${target.id}`), {
-      friendRequestIds: arrayUnion(me.userId),
-    });
-
-    return from(batch.commit());
+    return this.call('send', target).pipe(
+      tap(() => {
+        if (wasMutual && target.userId) {
+          this.applyLocalAccept(target.userId);
+        }
+      }),
+    );
   }
 
   cancelRequest(target: Player): Observable<void> {
-    const me = this.currentPlayer;
-
-    if (!me?.userId || !target.id) {
-      return from(Promise.reject('Joueur introuvable.'));
-    }
-
-    const batch = writeBatch(this.firestore);
-    batch.update(doc(this.firestore, `players/${target.id}`), {
-      friendRequestIds: arrayRemove(me.userId),
-    });
-
-    return from(batch.commit());
+    return this.call('cancel', target);
   }
 
   acceptRequest(requester: Player): Observable<void> {
-    const me = this.currentPlayer;
-
-    if (!me?.userId || !me.id || !requester.userId || !requester.id) {
-      return from(Promise.reject('Joueur introuvable.'));
-    }
-
-    const batch = writeBatch(this.firestore);
-    batch.update(doc(this.firestore, `players/${me.id}`), {
-      friendIds: arrayUnion(requester.userId),
-      friendRequestIds: arrayRemove(requester.userId),
-    });
-    batch.update(doc(this.firestore, `players/${requester.id}`), {
-      friendIds: arrayUnion(me.userId),
-      friendRequestIds: arrayRemove(me.userId),
-    });
-
-    this.applyLocalAccept(requester.userId);
-
-    return from(batch.commit());
+    return this.call('accept', requester).pipe(
+      tap(() => {
+        if (requester.userId) {
+          this.applyLocalAccept(requester.userId);
+        }
+      }),
+    );
   }
 
   declineRequest(requester: Player): Observable<void> {
-    const me = this.currentPlayer;
+    return this.call('decline', requester).pipe(
+      tap(() => {
+        const me = this.currentPlayer;
 
-    if (!me?.id || !requester.userId) {
-      return from(Promise.reject('Joueur introuvable.'));
-    }
+        if (!me) {
+          return;
+        }
 
-    const batch = writeBatch(this.firestore);
-    batch.update(doc(this.firestore, `players/${me.id}`), {
-      friendRequestIds: arrayRemove(requester.userId),
-    });
-
-    me.friendRequestIds = (me.friendRequestIds ?? []).filter(
-      (id) => id !== requester.userId,
+        me.friendRequestIds = (me.friendRequestIds ?? []).filter(
+          (id) => id !== requester.userId,
+        );
+        this.playerService.currentPlayerSig.set({ ...me });
+      }),
     );
-    this.playerService.currentPlayerSig.set({ ...me });
-
-    return from(batch.commit());
   }
 
   removeFriend(friend: Player): Observable<void> {
-    const me = this.currentPlayer;
+    return this.call('remove', friend).pipe(
+      tap(() => {
+        const me = this.currentPlayer;
 
-    if (!me?.userId || !me.id || !friend.userId || !friend.id) {
-      return from(Promise.reject('Joueur introuvable.'));
+        if (!me) {
+          return;
+        }
+
+        me.friendIds = (me.friendIds ?? []).filter(
+          (id) => id !== friend.userId,
+        );
+        this.playerService.currentPlayerSig.set({ ...me });
+      }),
+    );
+  }
+
+  private call(action: FriendAction, target: Player): Observable<void> {
+    if (!target.userId) {
+      return throwError(() => new Error('Joueur introuvable.'));
     }
 
-    const batch = writeBatch(this.firestore);
-    batch.update(doc(this.firestore, `players/${me.id}`), {
-      friendIds: arrayRemove(friend.userId),
-    });
-    batch.update(doc(this.firestore, `players/${friend.id}`), {
-      friendIds: arrayRemove(me.userId),
-    });
-
-    me.friendIds = (me.friendIds ?? []).filter((id) => id !== friend.userId);
-    this.playerService.currentPlayerSig.set({ ...me });
-
-    return from(batch.commit());
+    return this.gameApi.manageFriendship(action, target.userId);
   }
 
   private applyLocalAccept(requesterUserId: string): void {

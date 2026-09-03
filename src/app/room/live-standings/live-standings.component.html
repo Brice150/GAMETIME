@@ -1,0 +1,39 @@
+<div class="chrono">
+  <i class="bx bx-time-five"></i>
+  <span class="value">{{ elapsedMs() | duration }}</span>
+</div>
+
+<div class="rows">
+  @for (entry of standings(); track entry.player.userId) {
+    <div class="row" [ngClass]="{ me: entry.isMe }">
+      <div class="podium">
+        @if (entry.rank === 1) {
+          <i class="bx bxs-trophy" style="color: var(--gold)"></i>
+        } @else if (entry.rank === 2) {
+          <i class="bx bxs-trophy" style="color: var(--silver)"></i>
+        } @else if (entry.rank === 3) {
+          <i class="bx bxs-trophy" style="color: var(--bronze)"></i>
+        } @else {
+          <span class="order">{{ entry.rank }}</span>
+        }
+      </div>
+      <span class="username"
+        >{{ entry.player.username }} {{ entry.player.animal }}</span
+      >
+      <span class="wins">{{ entry.wins }} / {{ entry.total }}</span>
+      <span class="state">
+        @if (entry.player.finishDate) {
+          <i class="bx bxs-flag-checkered"></i>
+          <span>{{ entry.player.durationMs | duration }}</span>
+        } @else {
+          <span
+            >Manche {{ entry.step }}
+            @if (entry.lettersLabel) {
+              · {{ entry.lettersLabel }}
+            }
+          </span>
+        }
+      </span>
+    </div>
+  }
+</div>

@@ -1,3 +1,4 @@
+import { RoundProgress } from './round-progress';
 import { Stat } from './stat';
 
 export interface Player {
@@ -15,4 +16,6 @@ export interface Player {
   // mutuellement), `friendRequestIds` ne contient que les demandes recues.
   friendIds?: string[];
   friendRequestIds?: string[];
+  currentRoundProgress?: RoundProgress | null;
+  vote?: string | null;
 }

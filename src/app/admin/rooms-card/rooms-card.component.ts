@@ -5,8 +5,8 @@ import { Player } from '../../core/interfaces/player';
 import { Room } from '../../core/interfaces/room';
 import { TotalMedalsNumberPipe } from '../../shared/pipes/total-medals-number.pipe';
 
-// Vue de supervision : tout ce qu'un admin doit savoir d'une room sans avoir
-// a y entrer (etat, hote, participants, avancement).
+// Vue de supervision : qui est dans quelle room. Les resultats de partie
+// n'y figurent pas, ils appartiennent aux joueurs.
 @Component({
   selector: 'app-rooms-card',
   imports: [CommonModule, TotalMedalsNumberPipe],
@@ -43,28 +43,6 @@ export class RoomsCardComponent {
     }
 
     return gameMap[room.gameName]?.icon ?? 'bx bxs-error-alt';
-  }
-
-  stepsNumber(room: Room): number {
-    return room.responses?.length ?? 0;
-  }
-
-  isFinished(room: Room, player: Player): boolean {
-    return !!player.finishDate;
-  }
-
-  progress(room: Room, player: Player): number {
-    const steps = this.stepsNumber(room);
-
-    if (!steps) {
-      return 0;
-    }
-
-    return Math.min(100, (player.currentRoomWins.length / steps) * 100);
-  }
-
-  winsNumber(player: Player): number {
-    return player.currentRoomWins.filter(Boolean).length;
   }
 
   join(roomId: string): void {

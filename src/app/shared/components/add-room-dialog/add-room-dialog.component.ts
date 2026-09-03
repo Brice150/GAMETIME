@@ -7,7 +7,11 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSliderModule } from '@angular/material/slider';
-import { gameMap, games } from '../../../../assets/data/games';
+import {
+  gameMap,
+  randomGameKey,
+  selectableGames,
+} from '../../../../assets/data/games';
 import { BrandCategory } from '../../../core/enums/brand-category.enum';
 import { Continent } from '../../../core/enums/continent.enum';
 import { RoomForm } from '../../../core/interfaces/room-form';
@@ -29,7 +33,7 @@ import { RoomForm } from '../../../core/interfaces/room-form';
 export class AddRoomDialogComponent implements OnInit {
   dialogRef = inject(MatDialogRef<AddRoomDialogComponent>);
   data = inject<RoomForm>(MAT_DIALOG_DATA);
-  games = games;
+  games = selectableGames;
   stepsNumber = 3;
   startWordLength = 5;
   categoryFilter = '1';
@@ -37,11 +41,14 @@ export class AddRoomDialogComponent implements OnInit {
   showFirstLetterMotus = true;
   showFirstLetterDrapeaux = false;
   showFirstLetterMarques = false;
+  showFirstLetterRandom = false;
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
   marquesGameKey = gameMap['marques'].key;
+  randomGameKey = randomGameKey;
   gameSelected: string = this.drapeauxGameKey;
   startAgainMode = false;
+  voteHint = '';
 
   get maxWordLength(): number {
     if (this.isWordLengthIncreasing) {
@@ -52,7 +59,10 @@ export class AddRoomDialogComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.data) {
+      this.voteHint = this.data.voteHint ?? '';
       this.startAgainMode = !!this.data.startAgainMode;
+      this.gameSelected = this.data.gameSelected ?? this.drapeauxGameKey;
+
       if (this.startAgainMode) {
         this.stepsNumber = this.data.stepsNumber ?? 3;
         this.startWordLength = this.data.startWordLength ?? 5;
@@ -62,7 +72,6 @@ export class AddRoomDialogComponent implements OnInit {
         this.showFirstLetterDrapeaux =
           this.data.showFirstLetterDrapeaux ?? false;
         this.showFirstLetterMarques = this.data.showFirstLetterMarques ?? false;
-        this.gameSelected = this.data.gameSelected ?? this.drapeauxGameKey;
       }
     }
   }
@@ -80,15 +89,24 @@ export class AddRoomDialogComponent implements OnInit {
   }
 
   confirm(): void {
+    const isRandom = this.gameSelected === this.randomGameKey;
+
     this.dialogRef.close({
       gameSelected: this.gameSelected,
-      showFirstLetterMotus: this.showFirstLetterMotus,
-      showFirstLetterDrapeaux: this.showFirstLetterDrapeaux,
-      showFirstLetterMarques: this.showFirstLetterMarques,
+      showFirstLetterMotus: isRandom
+        ? this.showFirstLetterRandom
+        : this.showFirstLetterMotus,
+      showFirstLetterDrapeaux: isRandom
+        ? this.showFirstLetterRandom
+        : this.showFirstLetterDrapeaux,
+      showFirstLetterMarques: isRandom
+        ? this.showFirstLetterRandom
+        : this.showFirstLetterMarques,
       stepsNumber: this.stepsNumber,
       isWordLengthIncreasing: this.isWordLengthIncreasing,
       startWordLength: this.startWordLength,
-      categoryFilter: Number(this.categoryFilter),
+      // Monde et Tout valent 1 dans les deux enumerations.
+      categoryFilter: isRandom ? 1 : Number(this.categoryFilter),
     } as RoomForm);
   }
 

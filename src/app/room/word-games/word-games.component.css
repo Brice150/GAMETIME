@@ -54,3 +54,75 @@
   font-size: 34px;
   color: rgba(28, 23, 16, 0.35);
 }
+
+.round-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+  width: min(420px, 92vw);
+  margin-bottom: 16px;
+}
+
+.round-header .step {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.round-header .last-round {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+  padding: 8px 14px;
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-pill);
+  background: var(--surface-1);
+}
+
+.round-header .last-round.won {
+  border-color: var(--success-border);
+  background: var(--success-soft);
+}
+
+.round-header .last-round.lost {
+  border-color: var(--danger-border);
+  background: var(--danger-soft);
+}
+
+.round-header .last-round i {
+  flex-shrink: 0;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.round-header .last-round.won i {
+  color: var(--success);
+}
+
+.round-header .last-round.lost i {
+  color: var(--danger);
+}
+
+.round-header .last-round .text {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-2);
+  white-space: nowrap;
+}
+
+.round-header .last-round .response {
+  min-width: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-1);
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

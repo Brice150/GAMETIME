@@ -1,7 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, EventEmitter, input, Output } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import {
+  Component,
+  computed,
+  EventEmitter,
+  input,
+  Output,
+} from '@angular/core';
+import { voteOptions } from '../../../assets/data/games';
 import { Player } from '../../core/interfaces/player';
 import { Room } from '../../core/interfaces/room';
 import { DurationPipe } from '../../shared/pipes/duration.pipe';
@@ -9,12 +14,7 @@ import { DurationPipe } from '../../shared/pipes/duration.pipe';
 // Classement dans l'en-tete de colonne, detail des manches dans les lignes.
 @Component({
   selector: 'app-results-board',
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatSlideToggleModule,
-    DurationPipe,
-  ],
+  imports: [CommonModule, DurationPipe],
   templateUrl: './results-board.component.html',
   styleUrl: './results-board.component.css',
 })
@@ -22,10 +22,11 @@ export class ResultsBoardComponent {
   room = input.required<Room>();
   players = input.required<Player[]>();
   currentPlayerId = input<string | undefined>(undefined);
-  canHideResponses = input(false);
+  canVote = input(false);
   @Output() deleteEvent = new EventEmitter<Player>();
+  @Output() voteEvent = new EventEmitter<string>();
 
-  hideResponses = true;
+  voteOptions = voteOptions;
 
   // Les joueurs arrivent deja tries par la page room.
   readonly standings = computed(() =>
@@ -33,12 +34,52 @@ export class ResultsBoardComponent {
       player,
       rank: index + 1,
       wins: player.currentRoomWins.filter(Boolean).length,
+      isSpectator: this.isSpectator(player),
     })),
   );
 
   readonly isHost = computed(
-    () => !!this.currentPlayerId() && this.room().userId === this.currentPlayerId(),
+    () =>
+      !!this.currentPlayerId() && this.room().userId === this.currentPlayerId(),
   );
+
+  readonly myVote = computed(
+    () =>
+      this.players().find((player) => player.userId === this.currentPlayerId())
+        ?.vote ?? null,
+  );
+
+  readonly voteCounts = computed(() => {
+    const counts: Record<string, number> = {};
+
+    for (const player of this.players()) {
+      if (player.vote) {
+        counts[player.vote] = (counts[player.vote] ?? 0) + 1;
+      }
+    }
+
+    return counts;
+  });
+
+  readonly votedCount = computed(
+    () => this.players().filter((player) => !!player.vote).length,
+  );
+
+  isSpectator(player: Player): boolean {
+    const startedPlayerIds = this.room().startedPlayerIds;
+
+    return (
+      !!startedPlayerIds?.length &&
+      !!player.userId &&
+      !startedPlayerIds.includes(player.userId) &&
+      !!player.finishDate &&
+      player.currentRoomWins.length === 0
+    );
+  }
+
+  vote(choice: string): void {
+    this.voteEvent.emit(choice);
+  }
 
   delete(player: Player): void {
     this.deleteEvent.emit(player);

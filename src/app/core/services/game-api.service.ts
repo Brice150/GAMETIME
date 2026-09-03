@@ -8,6 +8,8 @@ export interface SubmitRoundResult {
   medalsNumber: number;
 }
 
+export type FriendAction = 'send' | 'cancel' | 'accept' | 'decline' | 'remove';
+
 export interface ClaimGoalResult {
   reward: number;
   medalsNumber: number;
@@ -50,6 +52,18 @@ export class GameApiService {
     return from(callable({ gameName, target })).pipe(
       map((result) => result.data),
     );
+  }
+
+  manageFriendship(
+    action: FriendAction,
+    targetUserId: string,
+  ): Observable<void> {
+    const callable = httpsCallable<
+      { action: FriendAction; targetUserId: string },
+      { ok: boolean }
+    >(this.functions, 'manageFriendship');
+
+    return from(callable({ action, targetUserId })).pipe(map(() => undefined));
   }
 
   linkGuestAccount(guestIdToken: string): Observable<{ migrated: boolean }> {

@@ -1,6 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
 import {
   arrayRemove,
+  arrayUnion,
   collection,
   collectionData,
   deleteDoc,
@@ -15,15 +16,7 @@ import {
   where,
   writeBatch,
 } from '@angular/fire/firestore';
-import {
-  combineLatest,
-  from,
-  map,
-  Observable,
-  of,
-  switchMap,
-  take,
-} from 'rxjs';
+import { from, map, Observable, of, switchMap } from 'rxjs';
 import { gameMap } from '../../../assets/data/games';
 import { BrandCategory } from '../enums/brand-category.enum';
 import { Continent } from '../enums/continent.enum';
@@ -57,13 +50,18 @@ export class RoomService {
   }
 
   getRoomsByCode(roomCode: string): Observable<Room[]> {
-    const roomsCollection = query(
-      collection(this.firestore, 'rooms'),
+    const roomsQuery = query(
+      this.roomsCollection,
       where('roomCode', '==', roomCode),
     );
-    return collectionData(roomsCollection, { idField: 'id' }) as Observable<
-      Room[]
-    >;
+
+    return from(getDocs(roomsQuery)).pipe(
+      map((snapshot) =>
+        snapshot.docs.map(
+          (roomDoc) => ({ ...roomDoc.data(), id: roomDoc.id }) as Room,
+        ),
+      ),
+    );
   }
 
   addRoom(room: Room): Observable<string> {
@@ -95,6 +93,30 @@ export class RoomService {
     }
     const roomDoc = doc(this.firestore, `rooms/${roomId}`);
     return from(updateDoc(roomDoc, fields));
+  }
+
+  // Entrer et sortir se font par operation atomique : reecrire le tableau
+  // entier faisait disparaitre un joueur quand deux rejoignaient en meme temps.
+  addPlayerToRoom(
+    roomId: string | undefined,
+    userId: string,
+  ): Observable<void> {
+    if (!roomId) {
+      return from(Promise.reject('ID de salle manquant.'));
+    }
+    const roomDoc = doc(this.firestore, `rooms/${roomId}`);
+    return from(updateDoc(roomDoc, { playerIds: arrayUnion(userId) }));
+  }
+
+  removePlayerFromRoom(
+    roomId: string | undefined,
+    userId: string,
+  ): Observable<void> {
+    if (!roomId) {
+      return from(Promise.reject('ID de salle manquant.'));
+    }
+    const roomDoc = doc(this.firestore, `rooms/${roomId}`);
+    return from(updateDoc(roomDoc, { playerIds: arrayRemove(userId) }));
   }
 
   deleteRoom(roomId: string): Observable<void> {
@@ -165,23 +187,16 @@ export class RoomService {
       where('userId', '==', this.userService.auth.currentUser?.uid),
     );
 
-    const rooms$ = collectionData(roomsQuery, {
-      idField: 'id',
-    }) as Observable<Room[]>;
-
-    return rooms$.pipe(
-      take(1),
-      switchMap((rooms: Room[]) => {
-        if (rooms.length === 0) {
+    return from(getDocs(roomsQuery)).pipe(
+      switchMap((snapshot) => {
+        if (snapshot.empty) {
           return of(undefined);
         }
 
-        const deleteRequests = rooms.map((room: Room) => {
-          const roomDoc = doc(this.firestore, `rooms/${room.id}`);
-          return deleteDoc(roomDoc);
-        });
+        const batch = writeBatch(this.firestore);
+        snapshot.docs.forEach((roomDoc) => batch.delete(roomDoc.ref));
 
-        return combineLatest(deleteRequests);
+        return from(batch.commit());
       }),
       map(() => undefined),
     );
@@ -247,8 +262,9 @@ export class RoomService {
   }
 
   private async loadCountries(): Promise<Country[]> {
-    this.countriesData ??= (await import('../../../assets/data/countries'))
-      .countries;
+    this.countriesData ??= (
+      await import('../../../assets/data/countries')
+    ).countries;
     return this.countriesData;
   }
 

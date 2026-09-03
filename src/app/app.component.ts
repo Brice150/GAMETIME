@@ -4,6 +4,7 @@ import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, RouterOutlet } from '@angular/router';
 import { of, switchMap } from 'rxjs';
+import { PwaUpdateService } from './core/services/pwa-update.service';
 import { UserService } from './core/services/user.service';
 import { HeaderComponent } from './header/header.component';
 import { InvitationsComponent } from './shared/components/invitations/invitations.component';
@@ -21,11 +22,14 @@ export class AppComponent implements OnInit {
   userService = inject(UserService);
   playerService = inject(PlayerService);
   notificationService = inject(NotificationService);
+  pwaUpdateService = inject(PwaUpdateService);
   router = inject(Router);
   toastrHelper = inject(ToastrHelperService);
   destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
+    this.pwaUpdateService.init();
+
     this.userService.user$
       .pipe(
         takeUntilDestroyed(this.destroyRef),

@@ -20,7 +20,6 @@ import {
 } from 'rxjs';
 import { Player } from '../core/interfaces/player';
 import { Room } from '../core/interfaces/room';
-import { InvitationService } from '../core/services/invitation.service';
 import { LocalStorageService } from '../core/services/local-storage.service';
 import { PlayerService } from '../core/services/player.service';
 import { RoomService } from '../core/services/room.service';
@@ -47,7 +46,6 @@ import { RoomsCardComponent } from './rooms-card/rooms-card.component';
 export class AdminComponent implements OnInit {
   roomService = inject(RoomService);
   playerService = inject(PlayerService);
-  invitationService = inject(InvitationService);
   localStorageService = inject(LocalStorageService);
   destroyRef = inject(DestroyRef);
   toastrHelper = inject(ToastrHelperService);
@@ -198,14 +196,13 @@ export class AdminComponent implements OnInit {
             finishDate: null,
             durationMs: null,
             isReady: false,
+            currentRoundProgress: null,
+            vote: null,
           })),
         )
       : of(undefined);
 
-    return reset$.pipe(
-      switchMap(() => this.invitationService.deleteInvitationsForRoom(roomId)),
-      switchMap(() => this.roomService.deleteRoom(roomId)),
-    );
+    return reset$.pipe(switchMap(() => this.roomService.deleteRoom(roomId)));
   }
 
   openUserDialog(player: Player): void {

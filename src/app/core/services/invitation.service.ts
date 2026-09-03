@@ -5,20 +5,19 @@ import {
   deleteDoc,
   doc,
   Firestore,
-  getDocs,
   query,
   setDoc,
   where,
-  writeBatch,
 } from '@angular/fire/firestore';
-import { from, map, Observable, of, switchMap } from 'rxjs';
+import { from, Observable, of } from 'rxjs';
 import { Invitation } from '../interfaces/invitation';
 import { Player } from '../interfaces/player';
 import { Room } from '../interfaces/room';
 import { UserService } from './user.service';
 
-// Invitations de room entre amis. Pas de push navigateur ici : la
-// notification est temps reel dans l'application, via l'ecoute Firestore.
+// Invitations de room entre amis. Le menage apres suppression d'une room est
+// fait par la fonction `onRoomDeleted`, avec le SDK Admin : le client n'a
+// acces qu'aux invitations dont il est l'expediteur ou le destinataire.
 @Injectable({ providedIn: 'root' })
 export class InvitationService {
   firestore = inject(Firestore);
@@ -77,32 +76,5 @@ export class InvitationService {
 
   deleteInvitation(invitationId: string): Observable<void> {
     return from(deleteDoc(doc(this.firestore, `invitations/${invitationId}`)));
-  }
-
-  // Une room supprimee laisserait des invitations mortes.
-  deleteInvitationsForRoom(roomId: string | undefined): Observable<void> {
-    if (!roomId) {
-      return of(undefined);
-    }
-
-    const invitationsQuery = query(
-      this.invitationsCollection,
-      where('roomId', '==', roomId),
-    );
-
-    return from(getDocs(invitationsQuery)).pipe(
-      switchMap((snapshot) => {
-        if (snapshot.empty) {
-          return of(undefined);
-        }
-
-        const batch = writeBatch(this.firestore);
-        snapshot.docs.forEach((invitationDoc) =>
-          batch.delete(invitationDoc.ref),
-        );
-        return from(batch.commit());
-      }),
-      map(() => undefined),
-    );
   }
 }

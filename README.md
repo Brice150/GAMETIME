@@ -36,11 +36,14 @@ Backend/BDD : Firebase
 
 ### 🎮 Salle
 
-- Partage d’un lien pour permettre aux autres joueurs de rejoindre votre salle
-- Invitation directe d’un ami depuis la salle d’attente ou l’écran de résultats
+- Une seule fenêtre « Inviter » : liste d’amis, code de partie, lien et QR code
 - Notification d’invitation en temps réel dans l’application
+- Pendant la partie, chrono en direct et classement provisoire (trophée ou position, manches gagnées, lettres trouvées par chacun) : les joueurs n’ont pas besoin d’être dans la même pièce
+- Enchaînement automatique des manches, le résultat de la manche précédente restant rappelé au-dessus de la suivante
 - Après une partie, comparaison des résultats avec les autres joueurs
-- Un joueur qui arrive alors que la partie est déjà terminée est classé dernier, sans résultat, plutôt que de rejouer seul
+- Vote de fin de partie : recommencer, changer de jeu ou « peu importe », qui montre aussi à l’hôte qui est prêt
+- Choix « Aléatoire » à la configuration : le jeu est tiré au sort au lancement
+- Un joueur qui arrive alors que la partie est déjà terminée est classé dernier, marqué spectateur, plutôt que de rejouer seul
 
 ---
 
@@ -73,12 +76,10 @@ Backend/BDD : Firebase
 
 ---
 
-### 🤖 Quiz IA
+### 🎲 Aléatoire
 
-- Répondre à des questions générées par une intelligence artificielle
-- 4 réponses proposées avec un seul bon choix
-- Sélection du thème des questions
-- Choix du niveau de difficulté
+- Le jeu est tiré au sort parmi les trois au moment du lancement
+- Filtres les plus larges, réglages communs
 
 ---
 

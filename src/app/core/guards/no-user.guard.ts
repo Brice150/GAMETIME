@@ -1,31 +1,23 @@
-import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { CanActivateFn, Router } from '@angular/router';
+import { filter, map, take } from 'rxjs';
 import { UserService } from '../services/user.service';
 
 export const noUserGuard: CanActivateFn = () => {
   const userService = inject(UserService);
   const router = inject(Router);
 
-  const waitForUser = (): Promise<boolean> => {
-    return new Promise((resolve) => {
-      const checkUser = () => {
-        const user = userService.currentUserSig();
+  return toObservable(userService.currentUserSig).pipe(
+    filter((user) => user !== undefined),
+    take(1),
+    map((user) => {
+      if (user === null) {
+        return true;
+      }
 
-        if (user !== undefined) {
-          if (user === null) {
-            resolve(true);
-          } else {
-            router.navigate(['/accueil']);
-            resolve(false);
-          }
-        } else {
-          setTimeout(checkUser, 100);
-        }
-      };
-
-      checkUser();
-    });
-  };
-
-  return waitForUser();
+      router.navigate(['/accueil']);
+      return false;
+    }),
+  );
 };

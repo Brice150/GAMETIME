@@ -2,17 +2,28 @@
   @if (!loading) {
     @if (room.isStarted) {
       @if (!isResultPageActive) {
+        <!-- Les joueurs ne sont pas forcement cote a cote : le chrono et le
+        classement provisoire remplacent ce qu'ils voyaient de l'ecran voisin. -->
+        <app-live-standings
+          [room]="room"
+          [players]="players"
+          [currentPlayerId]="playerService.currentPlayerSig()!.userId"
+        ></app-live-standings>
         <app-word-games
           [room]="room"
           [player]="playerService.currentPlayerSig()!"
+          [lastRound]="lastRound"
           (finishedStepEvent)="updatePlayerGame($event)"
+          (progressEvent)="publishProgress($event)"
         ></app-word-games>
       } @else {
         <app-results-board
           [room]="room"
           [players]="players"
           [currentPlayerId]="playerService.currentPlayerSig()!.userId"
+          [canVote]="true"
           (deleteEvent)="removePlayer($event)"
+          (voteEvent)="vote($event)"
         ></app-results-board>
       }
     } @else {
@@ -35,29 +46,15 @@
           <span class="text">Quitter</span>
         </button>
       }
-      @if (isNextButtonAvailable) {
-        <button type="button" (click)="next()" title="Suivant">
-          <i class="bx bxs-skip-next-circle"></i>
-          <span class="text">Suivant</span>
-        </button>
-      } @else if (!room.isStarted || isResultPageActive) {
+      @if (!room.isStarted || isResultPageActive) {
         <button
           type="button"
           (click)="multiplayer()"
-          title="Multijoueur"
+          title="Inviter"
           class="share"
         >
           <i class="bx bxs-user-plus"></i>
-          <span class="text">Multijoueur</span>
-        </button>
-        <button
-          type="button"
-          (click)="inviteFriend()"
-          title="Inviter un ami"
-          class="share"
-        >
-          <i class="bx bxs-group"></i>
-          <span class="text">Inviter un ami</span>
+          <span class="text">Inviter</span>
         </button>
       }
       @if (shouldShowPlayButton()) {

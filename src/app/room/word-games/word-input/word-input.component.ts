@@ -33,9 +33,11 @@ export class WordInputComponent implements OnInit, OnChanges {
   inputValue = '';
   tries: WordTry[] = [];
   @Output() emitEvent = new EventEmitter<boolean>();
+  @Output() progressEvent = new EventEmitter<number>();
   emojiClass: string = emojies[1].emojiClass;
   emojiStyle: Record<string, string | number> = emojies[1].emojiStyle;
   isOver = false;
+  private foundPositions = new Set<number>();
 
   ngOnInit(): void {
     if (this.response) {
@@ -68,7 +70,22 @@ export class WordInputComponent implements OnInit, OnChanges {
         this.wordToFind = this.response.replace(/[A-Za-z]/g, '_');
       }
       this.maxlength = this.response.length;
+      this.refreshFoundPositions();
     }
+  }
+
+  private refreshFoundPositions(): void {
+    this.foundPositions = new Set<number>();
+
+    for (const previousTry of this.tries) {
+      previousTry.isWellPlaced.forEach((isWellPlaced, index) => {
+        if (isWellPlaced) {
+          this.foundPositions.add(index);
+        }
+      });
+    }
+
+    this.progressEvent.emit(this.foundPositions.size);
   }
 
   // Seul un changement de mot relance la manche : reagir a `room` remettait a
@@ -170,6 +187,7 @@ export class WordInputComponent implements OnInit, OnChanges {
 
     this.tries.push(newTry);
     this.localStorageService.saveTries(this.tries);
+    this.refreshFoundPositions();
     this.emojiClass = emojies[this.tries.length + 1].emojiClass;
     this.emojiStyle = emojies[this.tries.length + 1].emojiStyle;
 

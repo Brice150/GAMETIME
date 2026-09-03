@@ -8,4 +8,5 @@ export interface RoomForm {
   startWordLength: number;
   categoryFilter: number;
   startAgainMode?: boolean;
+  voteHint?: string;
 }

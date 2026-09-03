@@ -56,14 +56,34 @@ export class PlayerService {
     >;
   }
 
+  // Firestore plafonne l'operateur "in" a 30 valeurs : au-dela il rejette la
+  // requete, et une room de plus de 30 joueurs n'affichait plus personne.
   getPlayers(playerIds: string[]): Observable<Player[]> {
-    const playersCollection = query(
-      collection(this.firestore, 'players'),
-      where('userId', 'in', playerIds),
+    if (!playerIds.length) {
+      return of([]);
+    }
+
+    const streams = this.chunk(playerIds, 30).map(
+      (chunk) =>
+        collectionData(
+          query(this.playersCollection, where('userId', 'in', chunk)),
+          { idField: 'id' },
+        ) as Observable<Player[]>,
     );
-    return collectionData(playersCollection, { idField: 'id' }) as Observable<
-      Player[]
-    >;
+
+    return streams.length === 1
+      ? streams[0]
+      : combineLatest(streams).pipe(map((groups) => groups.flat()));
+  }
+
+  private chunk<T>(items: T[], size: number): T[][] {
+    const chunks: T[][] = [];
+
+    for (let index = 0; index < items.length; index += size) {
+      chunks.push(items.slice(index, index + size));
+    }
+
+    return chunks;
   }
 
   // Le classement, les amis, l'admin et la boite d'invitation lisent tous la
@@ -87,11 +107,9 @@ export class PlayerService {
       where('userId', '==', userId),
     );
 
-    return (
-      collectionData(playersQuery, { idField: 'id' }) as Observable<Player[]>
-    ).pipe(
-      take(1),
-      switchMap((players: Player[]) => {
+    return from(getDocs(playersQuery)).pipe(
+      map((snapshot) => snapshot.docs.map((playerDoc) => playerDoc.data())),
+      switchMap((players) => {
         if (players.length > 0) {
           return of(void 0).pipe(map(() => email));
         }
@@ -270,23 +288,16 @@ export class PlayerService {
       where('userId', '==', this.userService.auth.currentUser?.uid),
     );
 
-    const players$ = collectionData(playersQuery, {
-      idField: 'id',
-    }) as Observable<Player[]>;
-
-    return players$.pipe(
-      take(1),
-      switchMap((players: Player[]) => {
-        if (players.length === 0) {
+    return from(getDocs(playersQuery)).pipe(
+      switchMap((snapshot) => {
+        if (snapshot.empty) {
           return of(undefined);
         }
 
-        const deleteRequests = players.map((player: Player) => {
-          const playerDoc = doc(this.firestore, `players/${player.id}`);
-          return deleteDoc(playerDoc);
-        });
+        const batch = writeBatch(this.firestore);
+        snapshot.docs.forEach((playerDoc) => batch.delete(playerDoc.ref));
 
-        return combineLatest(deleteRequests);
+        return from(batch.commit());
       }),
       map(() => undefined),
     );

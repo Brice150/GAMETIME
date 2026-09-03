@@ -1,13 +1,5 @@
 <span class="title">Résultats</span>
 
-@if (canHideResponses()) {
-  <div class="toggle-container">
-    <mat-slide-toggle [(ngModel)]="hideResponses">
-      Cacher réponses
-    </mat-slide-toggle>
-  </div>
-}
-
 <div class="board-scroll">
   <table class="board">
     <thead>
@@ -41,8 +33,14 @@
                   >{{ entry.wins }} / {{ room().responses.length }}</span
                 >
               </div>
-              @if (entry.player.finishDate) {
-                <span class="time">{{ entry.player.durationMs | duration }}</span>
+              @if (entry.isSpectator) {
+                <span class="spectator" title="Arrivé après la fin"
+                  ><i class="bx bx-glasses"></i> Spectateur</span
+                >
+              } @else if (entry.player.finishDate) {
+                <span class="time">{{
+                  entry.player.durationMs | duration
+                }}</span>
               } @else {
                 <i class="bx bx-loader-alt bx-spin pending"></i>
               }
@@ -65,13 +63,13 @@
       @for (response of room().responses; track $index; let i = $index) {
         <tr>
           <th class="response" scope="row">
-            <span [ngClass]="{ hide: hideResponses && canHideResponses() }">{{
-              response
-            }}</span>
+            <span>{{ response }}</span>
           </th>
           @for (entry of standings(); track entry.player.userId) {
             <td [ngClass]="{ me: entry.player.userId === currentPlayerId() }">
-              @if (entry.player.currentRoomWins[i] === true) {
+              @if (entry.isSpectator) {
+                <i class="bx bx-minus" style="color: var(--text-3)"></i>
+              } @else if (entry.player.currentRoomWins[i] === true) {
                 <i class="bx bx-check" style="color: var(--success)"></i>
               } @else if (entry.player.currentRoomWins[i] === false) {
                 <i class="bx bx-x" style="color: var(--danger)"></i>
@@ -88,3 +86,30 @@
     </tbody>
   </table>
 </div>
+
+@if (canVote()) {
+  <div class="vote">
+    <span class="title">Et maintenant ?</span>
+    <div class="vote-options">
+      @for (option of voteOptions; track option.key) {
+        <button
+          type="button"
+          class="vote-option"
+          [ngClass]="{ selected: myVote() === option.key }"
+          [title]="option.label"
+          (click)="vote(option.key)"
+        >
+          <i class="{{ option.icon }}"></i>
+          <span class="label">{{ option.label }}</span>
+          @if (voteCounts()[option.key]) {
+            <span class="count">{{ voteCounts()[option.key] }}</span>
+          }
+        </button>
+      }
+    </div>
+    <span class="vote-status">
+      {{ votedCount() }} / {{ players().length }}
+      {{ players().length > 1 ? "joueurs ont voté" : "joueur a voté" }}
+    </span>
+  </div>
+}
