@@ -1,6 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -17,6 +24,7 @@ import { ToastrHelperService } from '../../../core/services/toastr-helper.servic
   imports: [CommonModule, QRCodeComponent, MatProgressSpinnerModule],
   templateUrl: './multiplayer-dialog.component.html',
   styleUrl: './multiplayer-dialog.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MultiplayerDialogComponent implements OnInit {
   toastrHelper = inject(ToastrHelperService);
@@ -25,15 +33,18 @@ export class MultiplayerDialogComponent implements OnInit {
   invitationService = inject(InvitationService);
   destroyRef = inject(DestroyRef);
   room = inject<Room>(MAT_DIALOG_DATA);
-  roomCode = '';
-  link = '';
-  loadingFriends = true;
-  friends: Player[] = [];
+  readonly roomCode = signal('');
+  readonly link = signal('');
+  readonly loadingFriends = signal(true);
+  readonly friends = signal<Player[]>([]);
   readonly invitedIds = signal<string[]>([]);
+  // Sur telephone, copier puis ouvrir sa messagerie est un detour : la feuille
+  // de partage du systeme fait le trajet en un geste.
+  readonly canShare = typeof navigator !== 'undefined' && !!navigator.share;
 
   ngOnInit(): void {
-    this.roomCode = this.room?.roomCode ?? '';
-    this.link = window.location.href;
+    this.roomCode.set(this.room?.roomCode ?? '');
+    this.link.set(window.location.href);
     this.loadFriends();
   }
 
@@ -41,7 +52,7 @@ export class MultiplayerDialogComponent implements OnInit {
     const friendIds = this.playerService.currentPlayerSig()?.friendIds ?? [];
 
     if (!friendIds.length) {
-      this.loadingFriends = false;
+      this.loadingFriends.set(false);
       return;
     }
 
@@ -52,16 +63,14 @@ export class MultiplayerDialogComponent implements OnInit {
       .pipe(take(1), takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (players) => {
-          this.friends = [...players].sort((a, b) =>
-            a.username.localeCompare(b.username),
+          this.friends.set(
+            [...players].sort((a, b) => a.username.localeCompare(b.username)),
           );
-          this.loadingFriends = false;
+          this.loadingFriends.set(false);
         },
         error: (error: HttpErrorResponse) => {
-          this.loadingFriends = false;
-          if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastrHelper.error(error.message);
-          }
+          this.loadingFriends.set(false);
+          this.toastrHelper.handleError(error);
         },
       });
   }
@@ -90,21 +99,30 @@ export class MultiplayerDialogComponent implements OnInit {
           this.toastrHelper.info(`${friend.username} a été invité`, 'Room');
         },
         error: (error: HttpErrorResponse) => {
-          if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastrHelper.error(error.message);
-          }
+          this.toastrHelper.handleError(error);
         },
       });
   }
 
+  share(): void {
+    void navigator
+      .share({
+        title: 'Game Time',
+        text: `Rejoignez ma partie avec le code ${this.roomCode()}`,
+        url: this.link(),
+      })
+      // Partage annule : rien a signaler au joueur.
+      .catch(() => undefined);
+  }
+
   copyCode(): void {
-    navigator.clipboard.writeText(this.roomCode).then(() => {
+    navigator.clipboard.writeText(this.roomCode()).then(() => {
       this.toastrHelper.info('Code de la partie copié', 'Code');
     });
   }
 
   copyLink(): void {
-    navigator.clipboard.writeText(this.link).then(() => {
+    navigator.clipboard.writeText(this.link()).then(() => {
       this.toastrHelper.info('Lien de la partie copié', 'Lien');
     });
   }

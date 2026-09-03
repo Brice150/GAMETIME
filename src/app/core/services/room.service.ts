@@ -16,7 +16,7 @@ import {
   where,
   writeBatch,
 } from '@angular/fire/firestore';
-import { from, map, Observable, of, switchMap } from 'rxjs';
+import { combineLatest, from, map, Observable, of, switchMap } from 'rxjs';
 import { gameMap } from '../../../assets/data/games';
 import { BrandCategory } from '../enums/brand-category.enum';
 import { Continent } from '../enums/continent.enum';
@@ -62,6 +62,39 @@ export class RoomService {
         ),
       ),
     );
+  }
+
+  // Rooms ou se trouve au moins un des joueurs donnes. `array-contains-any`
+  // plafonne a 30 valeurs, d'ou le decoupage.
+  getRoomsForPlayers(userIds: string[]): Observable<Room[]> {
+    if (!userIds.length) {
+      return of([]);
+    }
+
+    const streams = this.chunk(userIds, 30).map(
+      (chunk) =>
+        collectionData(
+          query(
+            this.roomsCollection,
+            where('playerIds', 'array-contains-any', chunk),
+          ),
+          { idField: 'id' },
+        ) as Observable<Room[]>,
+    );
+
+    return streams.length === 1
+      ? streams[0]
+      : combineLatest(streams).pipe(map((groups) => groups.flat()));
+  }
+
+  private chunk<T>(items: T[], size: number): T[][] {
+    const chunks: T[][] = [];
+
+    for (let index = 0; index < items.length; index += size) {
+      chunks.push(items.slice(index, index + size));
+    }
+
+    return chunks;
   }
 
   addRoom(room: Room): Observable<string> {
@@ -331,10 +364,10 @@ export class RoomService {
         ? startWordLength + wordsToGenerate.length
         : startWordLength;
 
-      const pool = wordsByLength.get(length);
+      const pool = wordsByLength.get(length) ?? this.longestPool(wordsByLength);
 
-      // Aucun mot de cette longueur : insister pousserait un `undefined` dans
-      // les reponses et ferait tourner la boucle a vide.
+      // Repli sur la plus grande longueur disponible : sortir de la boucle
+      // rendait une partie plus courte que celle demandee.
       if (!pool?.length) {
         break;
       }
@@ -350,6 +383,13 @@ export class RoomService {
     }
 
     return wordsToGenerate;
+  }
+
+  private longestPool(
+    wordsByLength: Map<number, string[]>,
+  ): string[] | undefined {
+    const longest = Math.max(...wordsByLength.keys());
+    return wordsByLength.get(longest);
   }
 
   async generateCountries(

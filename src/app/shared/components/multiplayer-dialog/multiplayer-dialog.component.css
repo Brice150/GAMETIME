@@ -198,3 +198,34 @@ section .content .friends .empty {
 section .content mat-spinner {
   margin: 6px auto;
 }
+
+section .content .share-native {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 46px;
+  padding: 0 20px;
+  border: none;
+  border-radius: var(--r-pill);
+  background: var(--accent-gradient);
+  color: var(--on-accent);
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: var(--shadow-1);
+  transition:
+    transform var(--speed) var(--ease),
+    box-shadow var(--speed) var(--ease);
+}
+
+section .content .share-native:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
+}
+
+section .content .share-native i {
+  font-size: 22px;
+}

@@ -1,9 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, RouterOutlet } from '@angular/router';
 import { of, switchMap } from 'rxjs';
+import { PwaInstallService } from './core/services/pwa-install.service';
 import { PwaUpdateService } from './core/services/pwa-update.service';
 import { UserService } from './core/services/user.service';
 import { HeaderComponent } from './header/header.component';
@@ -17,18 +24,21 @@ import { ToastrHelperService } from './core/services/toastr-helper.service';
   imports: [RouterOutlet, CommonModule, HeaderComponent, InvitationsComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements OnInit {
   userService = inject(UserService);
   playerService = inject(PlayerService);
   notificationService = inject(NotificationService);
   pwaUpdateService = inject(PwaUpdateService);
+  pwaInstallService = inject(PwaInstallService);
   router = inject(Router);
   toastrHelper = inject(ToastrHelperService);
   destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
     this.pwaUpdateService.init();
+    this.pwaInstallService.init();
 
     this.userService.user$
       .pipe(
@@ -62,9 +72,7 @@ export class AppComponent implements OnInit {
         },
         error: (error: HttpErrorResponse) => {
           this.removeShellLoader();
-          if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastrHelper.error(error.message);
-          }
+          this.toastrHelper.handleError(error);
         },
       });
   }
@@ -86,9 +94,7 @@ export class AppComponent implements OnInit {
           this.toastrHelper.info('Vous avez été déconnecté', 'Déconnexion');
         },
         error: (error: HttpErrorResponse) => {
-          if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastrHelper.error(error.message);
-          }
+          this.toastrHelper.handleError(error);
         },
       });
   }

@@ -14,8 +14,8 @@ Backend/BDD : Firebase
 
 ### 🔐 Connexion
 
-- Inscription via un formulaire avec validation des champs
-- Connexion avec animation en cas d’erreur d’identifiants
+- Connexion avec Google, GitHub ou en invité, sans mot de passe à retenir
+- Un compte invité peut être lié plus tard à Google ou GitHub sans perdre sa progression
 - Déconnexion accessible depuis le menu une fois connecté
 
 ---
@@ -30,13 +30,17 @@ Backend/BDD : Firebase
 ### ⚙️ Paramètres
 
 - Onglet Compte : modification du profil, liaison d'un compte invité, suppression du compte (avec confirmation obligatoire)
+- Pseudo déjà pris : un pseudo numéroté est proposé et pré-rempli
 - Onglet Amis : recherche d'un joueur par son nom, demandes d'ami à accepter ou refuser, retrait d'un ami
+- Un ami déjà dans une salle est signalé, avec un bouton pour le rejoindre directement
+- Interrupteur de confidentialité : masquer ses parties à ses amis, sans se rendre injoignable
 
 ---
 
 ### 🎮 Salle
 
-- Une seule fenêtre « Inviter » : liste d’amis, code de partie, lien et QR code
+- Une seule fenêtre « Inviter » : liste d’amis, partage natif du lien, code de partie, url et QR code
+- Code de la partie affiché en grand dans la salle d’attente, copiable d’un clic
 - Notification d’invitation en temps réel dans l’application
 - Pendant la partie, chrono en direct et classement provisoire (trophée ou position, manches gagnées, lettres trouvées par chacun) : les joueurs n’ont pas besoin d’être dans la même pièce
 - Enchaînement automatique des manches, le résultat de la manche précédente restant rappelé au-dessus de la suivante
@@ -56,23 +60,31 @@ Backend/BDD : Firebase
 
 ### 🔤 Motus
 
-- Trouver des mots avec un nombre limité d’essais
-- Indices : première lettre, couleurs des lettres (vert et rouge)
+- Trouver des mots en six essais, le nombre restant s’affichant du vert au rouge
+- Indices : première lettre, couleur et soulignement des lettres (plein si bien placée, pointillé si mal placée)
+- Récapitulatif de l’alphabet sous la saisie, les lettres exclues étant barrées
 
 ---
 
 ### 🏳️ Drapeaux
 
-- Deviner des pays avec un nombre limité d’essais
-- Indices : drapeau, couleurs des lettres (vert et rouge)
+- Deviner des pays en six essais, le nombre restant s’affichant du vert au rouge
+- Indices : drapeau, couleur et soulignement des lettres, alphabet récapitulatif
 
 ---
 
 ### 🏢 Marques
 
-- Deviner des marques à partir de leur logo avec un nombre limité d’essais
+- Deviner des marques à partir de leur logo, en six essais
 - Fonctionnement similaire au mode Drapeaux
-- Indices : logo, couleurs des lettres (vert et rouge)
+- Indices : logo, couleur et soulignement des lettres, alphabet récapitulatif
+
+---
+
+### 📲 Application installable
+
+- Proposition d'installation sur l'écran d'accueil, refusable définitivement
+- Mise à jour appliquée en silence à la navigation suivante, jamais en pleine manche
 
 ---
 

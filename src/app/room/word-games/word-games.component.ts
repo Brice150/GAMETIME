@@ -1,11 +1,13 @@
 import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   Component,
   EventEmitter,
   inject,
   input,
   OnInit,
   Output,
+  signal,
 } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { gameMap } from '../../../assets/data/games';
@@ -29,19 +31,20 @@ import { WordInputComponent } from './word-input/word-input.component';
   ],
   templateUrl: './word-games.component.html',
   styleUrl: './word-games.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WordGamesComponent implements OnInit {
-  response!: string;
-  imageUrl = '';
-  imageError = false;
+  readonly response = signal('');
+  readonly imageUrl = signal('');
+  readonly imageError = signal(false);
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
   marquesGameKey = gameMap['marques'].key;
   imageService = inject(ImageService);
   localStorageService = inject(LocalStorageService);
-  isOver = false;
-  loading = false;
-  currentIndex = 0;
+  readonly isOver = signal(false);
+  readonly loading = signal(false);
+  readonly currentIndex = signal(0);
   preloaders: HTMLImageElement[] = [];
   readonly room = input.required<Room>();
   readonly player = input.required<Player>();
@@ -63,7 +66,7 @@ export class WordGamesComponent implements OnInit {
   handleProgress(lettersFound: number): void {
     this.progressEvent.emit({
       lettersFound,
-      lettersTotal: this.response?.length ?? 0,
+      lettersTotal: this.response().length,
     });
   }
 
@@ -71,19 +74,22 @@ export class WordGamesComponent implements OnInit {
     const index = this.player().currentRoomWins.length;
 
     if (index === this.room().responses.length) {
-      this.isOver = true;
+      this.isOver.set(true);
       return;
     }
 
-    this.currentIndex = index;
-    this.imageUrl = this.buildImageUrl(index);
-    this.imageError = false;
-    this.loading = !!this.imageUrl;
+    const imageUrl = this.buildImageUrl(index);
+
+    this.isOver.set(false);
+    this.currentIndex.set(index);
+    this.imageUrl.set(imageUrl);
+    this.imageError.set(false);
+    this.loading.set(!!imageUrl);
     this.preloadFrom(index + 1);
 
-    this.response = this.room().responses[index || 0];
+    this.response.set(this.room().responses[index || 0]);
 
-    if (!this.loading) {
+    if (!imageUrl) {
       this.startTimer();
     }
   }
@@ -123,13 +129,13 @@ export class WordGamesComponent implements OnInit {
   }
 
   imageLoaded(): void {
-    this.loading = false;
+    this.loading.set(false);
     this.startTimer();
   }
 
   imageFailed(): void {
-    this.loading = false;
-    this.imageError = true;
+    this.loading.set(false);
+    this.imageError.set(true);
     this.startTimer();
   }
 

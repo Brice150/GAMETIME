@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   Component,
   computed,
   EventEmitter,
@@ -17,6 +18,7 @@ import { DurationPipe } from '../../shared/pipes/duration.pipe';
   imports: [CommonModule, DurationPipe],
   templateUrl: './results-board.component.html',
   styleUrl: './results-board.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ResultsBoardComponent {
   room = input.required<Room>();

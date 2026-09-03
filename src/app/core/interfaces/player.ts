@@ -18,4 +18,7 @@ export interface Player {
   friendRequestIds?: string[];
   currentRoundProgress?: RoundProgress | null;
   vote?: string | null;
+  // Laisser ses amis voir qu'on est dans une salle. Absent vaut actif : les
+  // fiches creees avant ce reglage restent visibles.
+  shareActivity?: boolean;
 }

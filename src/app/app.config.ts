@@ -2,21 +2,15 @@ import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import {
   ApplicationConfig,
+  ErrorHandler,
   isDevMode,
   LOCALE_ID,
-  provideZoneChangeDetection,
+  provideZonelessChangeDetection,
 } from '@angular/core';
 import { provideServiceWorker } from '@angular/service-worker';
-import {
-  FirebaseApp,
-  initializeApp,
-  provideFirebaseApp,
-} from '@angular/fire/app';
+import { getApp, initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, GoogleAuthProvider, provideAuth } from '@angular/fire/auth';
-import {
-  initializeFirestore,
-  provideFirestore,
-} from '@angular/fire/firestore';
+import { initializeFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getFunctions, provideFunctions } from '@angular/fire/functions';
 import {
   persistentLocalCache,
@@ -32,15 +26,15 @@ import {
 import { provideToastr } from 'ngx-toastr';
 import { environment } from '../environments/environment';
 import { routes } from './app.routes';
+import { GlobalErrorHandler } from './core/global-error-handler';
 import { SmartPreloading } from './core/services/smart-preloading.service';
-
-const firebaseApp: FirebaseApp = initializeApp(environment.firebase);
 
 registerLocaleData(localeFr);
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideZonelessChangeDetection(),
+    { provide: ErrorHandler, useClass: GlobalErrorHandler },
     provideRouter(
       routes,
       withInMemoryScrolling({
@@ -51,19 +45,17 @@ export const appConfig: ApplicationConfig = {
     ),
     provideToastr(),
     provideAnimationsAsync(),
-    provideFirebaseApp(() => firebaseApp),
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
     provideFirestore(() =>
-      initializeFirestore(firebaseApp, {
+      initializeFirestore(getApp(), {
         ignoreUndefinedProperties: true,
         localCache: persistentLocalCache({
           tabManager: persistentMultipleTabManager(),
         }),
       }),
     ),
-    provideFunctions(() =>
-      getFunctions(firebaseApp, environment.functionsRegion),
-    ),
+    provideFunctions(() => getFunctions(getApp(), environment.functionsRegion)),
     { provide: MAT_DATE_LOCALE, useValue: 'fr-FR' },
     { provide: LOCALE_ID, useValue: 'fr-FR' },
     {

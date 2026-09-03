@@ -1,7 +1,7 @@
-@if (!isOver) {
+@if (!isOver()) {
   <div class="round-header">
     <span class="step"
-      >Manche {{ currentIndex + 1 }} / {{ room().responses.length }}</span
+      >Manche {{ currentIndex() + 1 }} / {{ room().responses.length }}</span
     >
     @if (lastRound(); as last) {
       <div class="last-round" [ngClass]="last.won ? 'won' : 'lost'">
@@ -30,21 +30,21 @@
         }}</span>
       }
       <div class="flag">
-        @if (imageUrl && !imageError) {
+        @if (imageUrl() && !imageError()) {
           <!-- Masquee et non retiree du DOM, sinon elle ne se telecharge pas.
           `alt` vide : decrire l'image revelerait la reponse. -->
           <img
-            [src]="imageUrl"
-            [class.pending]="loading"
+            [src]="imageUrl()"
+            [class.pending]="loading()"
             alt=""
             decoding="async"
             (load)="imageLoaded()"
             (error)="imageFailed()"
           />
         }
-        @if (loading) {
+        @if (loading()) {
           <mat-spinner diameter="34"></mat-spinner>
-        } @else if (imageError) {
+        } @else if (imageError()) {
           <i class="bx bx-image-alt" title="Image indisponible"></i>
         }
       </div>
@@ -52,7 +52,7 @@
   }
 
   <app-word-input
-    [response]="response"
+    [response]="response()"
     [room]="room()"
     (emitEvent)="handleEvent($event)"
     (progressEvent)="handleProgress($event)"

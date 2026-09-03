@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   Component,
   computed,
   DestroyRef,
@@ -15,6 +16,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { filter } from 'rxjs';
+import { gameMap } from '../../assets/data/games';
 import { NavLink } from '../core/interfaces/nav-link';
 import { Player } from '../core/interfaces/player';
 import { LocalStorageService } from '../core/services/local-storage.service';
@@ -35,6 +37,7 @@ import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
   ],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderComponent implements OnInit {
   router = inject(Router);
@@ -66,7 +69,8 @@ export class HeaderComponent implements OnInit {
     const url = this.currentUrl();
 
     if (this.isRoomPage()) {
-      return this.room()!.gameName;
+      const room = this.room()!;
+      return gameMap[room.gameName]?.label ?? room.roomCode;
     }
     if (url.startsWith('/admin')) {
       return 'Admin';

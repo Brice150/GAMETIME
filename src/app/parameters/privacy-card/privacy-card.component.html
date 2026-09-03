@@ -1,0 +1,20 @@
+<div class="privacy">
+  <h2>Confidentialité</h2>
+
+  <mat-slide-toggle
+    [checked]="shareActivity()"
+    (change)="toggle($event.checked)"
+  >
+    Montrer à mes amis que je joue
+  </mat-slide-toggle>
+
+  <p class="hint">
+    @if (shareActivity()) {
+      Vos amis voient que vous êtes dans une salle et peuvent vous y rejoindre
+      depuis leur liste d'amis.
+    } @else {
+      Personne ne voit vos parties. Vous restez joignable par une invitation,
+      le code ou le lien de la salle.
+    }
+  </p>
+</div>

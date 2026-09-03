@@ -147,3 +147,51 @@
 mat-spinner {
   margin: 20px auto;
 }
+
+/* Un ami deja dans une room : le bouton dit ce qu'il fait, la variante
+   `live` signale que la partie a demarre. */
+.actions .join {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid var(--accent-border);
+  border-radius: var(--r-pill);
+  background: var(--accent-soft);
+  color: var(--accent-bright);
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    transform var(--speed) var(--ease),
+    background var(--speed) var(--ease);
+}
+
+.actions .join:hover {
+  transform: translateY(-2px);
+  background: var(--accent-tint);
+}
+
+.actions .join i {
+  font-size: 19px;
+}
+
+.actions .join.live {
+  border-color: transparent;
+  background: var(--accent-gradient);
+  color: var(--on-accent);
+  box-shadow: var(--shadow-1);
+}
+
+@media screen and (max-width: 480px) {
+  .actions .join span {
+    display: none;
+  }
+
+  .actions .join {
+    padding: 0 12px;
+  }
+}

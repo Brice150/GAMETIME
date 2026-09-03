@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable, tap, throwError } from 'rxjs';
 import { Player } from '../interfaces/player';
+import { normalizeUsername } from '../utils/username.util';
 import { FriendAction, GameApiService } from './game-api.service';
 import { PlayerService } from './player.service';
 
@@ -16,11 +17,7 @@ export class FriendService {
   }
 
   normalizeText(value: string): string {
-    return value
-      .trim()
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '');
+    return normalizeUsername(value);
   }
 
   isFriend(player: Player): boolean {

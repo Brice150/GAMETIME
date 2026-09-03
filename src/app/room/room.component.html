@@ -1,7 +1,7 @@
 <section>
-  @if (!loading) {
+  @if (!loading()) {
     @if (room.isStarted) {
-      @if (!isResultPageActive) {
+      @if (!isResultPageActive()) {
         <!-- Les joueurs ne sont pas forcement cote a cote : le chrono et le
         classement provisoire remplacent ce qu'ils voyaient de l'ecran voisin. -->
         <app-live-standings
@@ -12,7 +12,7 @@
         <app-word-games
           [room]="room"
           [player]="playerService.currentPlayerSig()!"
-          [lastRound]="lastRound"
+          [lastRound]="lastRound()"
           (finishedStepEvent)="updatePlayerGame($event)"
           (progressEvent)="publishProgress($event)"
         ></app-word-games>
@@ -35,7 +35,7 @@
       ></app-waiting-room>
     }
     <div class="button-container">
-      @if (!isFinishing) {
+      @if (!isFinishing()) {
         <button
           type="button"
           title="Quitter"
@@ -46,7 +46,7 @@
           <span class="text">Quitter</span>
         </button>
       }
-      @if (!room.isStarted || isResultPageActive) {
+      @if (!room.isStarted || isResultPageActive()) {
         <button
           type="button"
           (click)="multiplayer()"

@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, input, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  input,
+  Output,
+} from '@angular/core';
 import { gameMap } from '../../../assets/data/games';
 import { Player } from '../../core/interfaces/player';
 import { Room } from '../../core/interfaces/room';
@@ -12,6 +18,7 @@ import { TotalMedalsNumberPipe } from '../../shared/pipes/total-medals-number.pi
   imports: [CommonModule, TotalMedalsNumberPipe],
   templateUrl: './rooms-card.component.html',
   styleUrl: './rooms-card.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RoomsCardComponent {
   rooms = input.required<Room[]>();

@@ -126,7 +126,7 @@ export class PlayerService {
     const base = this.generateRandomUsername(email);
     let candidate = base;
 
-    for (let attempt = 0; attempt < 5; attempt++) {
+    for (let attempt = 2; attempt <= 10; attempt++) {
       const existing = await getDocs(
         query(
           this.playersCollection,
@@ -139,21 +139,10 @@ export class PlayerService {
         return candidate;
       }
 
-      candidate = `${base}#${this.generateSuffix()}`;
+      candidate = `${base}${attempt}`;
     }
 
     return candidate;
-  }
-
-  private generateSuffix(): string {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let suffix = '';
-
-    for (let i = 0; i < 4; i++) {
-      suffix += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-
-    return suffix;
   }
 
   private createPlayer(
@@ -193,6 +182,7 @@ export class PlayerService {
       isReady: false,
       friendIds: [],
       friendRequestIds: [],
+      shareActivity: true,
     };
 
     return from(setDoc(playerDoc, { ...player })).pipe(map(() => email));

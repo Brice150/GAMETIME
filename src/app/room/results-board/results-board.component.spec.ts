@@ -1,3 +1,4 @@
+import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Player } from '../../core/interfaces/player';
 import { Room } from '../../core/interfaces/room';
@@ -44,6 +45,7 @@ describe('ResultsBoardComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ResultsBoardComponent],
+      providers: [provideZonelessChangeDetection()],
     }).compileComponents();
   });
 

@@ -3,8 +3,8 @@
 
   @if (isSupported && !isBlocked) {
     <mat-slide-toggle
-      [checked]="enabled"
-      [disabled]="busy"
+      [checked]="enabled()"
+      [disabled]="busy()"
       (change)="toggle($event.checked)"
     >
       M'avertir des invitations
@@ -19,15 +19,15 @@
       votre navigateur, puis revenez ici.
     } @else if (requiresInstall) {
       Sur iPhone et iPad, les notifications ne fonctionnent qu'une fois
-      l'application installée. Ouvrez le menu Partager de Safari, choisissez
-      « Sur l'écran d'accueil », puis revenez ici depuis l'icône Game Time.
-    } @else if (enabled && !isPushConfigured) {
-      Vous serez averti quand l'onglet Game Time est ouvert en arrière-plan.
-      Les notifications application fermée ne sont pas encore configurées.
-    } @else if (enabled && !pushAvailable) {
+      l'application installée. Ouvrez le menu Partager de Safari, choisissez «
+      Sur l'écran d'accueil », puis revenez ici depuis l'icône Game Time.
+    } @else if (enabled() && !isPushConfigured) {
+      Vous serez averti quand l'onglet Game Time est ouvert en arrière-plan. Les
+      notifications application fermée ne sont pas encore configurées.
+    } @else if (enabled() && !pushAvailable()) {
       Vous serez averti quand l'onglet Game Time est ouvert en arrière-plan. Ce
       navigateur ne gère pas les notifications application fermée.
-    } @else if (enabled) {
+    } @else if (enabled()) {
       Vous serez averti d'une invitation même application fermée.
     } @else {
       Soyez averti quand un ami vous invite dans une room.

@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   Component,
   computed,
   inject,
@@ -22,6 +23,7 @@ const TICK_MS = 200;
   imports: [CommonModule, DurationPipe],
   templateUrl: './live-standings.component.html',
   styleUrl: './live-standings.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LiveStandingsComponent implements OnInit {
   private localStorageService = inject(LocalStorageService);

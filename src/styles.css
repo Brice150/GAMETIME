@@ -689,3 +689,27 @@ section[mat-dialog-content] > h1 {
   width: 100%;
   overflow-y: scroll;
 }
+
+/* Actions dans un toast : l'invitation a installer l'application les utilise. */
+.toast-action {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 3px 12px;
+  border-radius: var(--light-radius);
+  background-color: rgba(255, 255, 255, 0.25);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+}
+
+.toast-dismiss {
+  display: inline-block;
+  margin-top: 6px;
+  margin-left: 8px;
+  font-size: 12px;
+  text-decoration: underline;
+  opacity: 0.85;
+  cursor: pointer;
+}

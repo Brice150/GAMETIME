@@ -87,6 +87,25 @@ service cloud.firestore {
         && request.resource.data.fromUserId == request.auth.uid;
     }
 
+    // Journal des erreurs : ecrit sans jamais etre relu par le client, pour
+    // que les incidents remontent au lieu de s'afficher au joueur.
+    match /errors/{errorId} {
+      function boundedText(field, max) {
+        return !(request.resource.data.get(field, null) is string)
+          || request.resource.data[field].size() <= max;
+      }
+
+      allow create: if isSignedIn()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.message is string
+        && request.resource.data.message.size() <= 1000
+        && boundedText('stack', 4000)
+        && boundedText('url', 2000)
+        && boundedText('userAgent', 1000);
+
+      allow read, update, delete: if isAdmin();
+    }
+
     // Un document par jeton Web Push, l'identifiant du document etant le
     // jeton lui-meme. La fonction `notifyInvitation` les lit avec le SDK
     // Admin, donc hors regles.

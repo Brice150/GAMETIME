@@ -3,9 +3,9 @@
 
   <div class="content">
     <span class="section-title">Vos amis</span>
-    @if (!loadingFriends) {
+    @if (!loadingFriends()) {
       <div class="friends">
-        @for (friend of friends; track friend.id) {
+        @for (friend of friends(); track friend.id) {
           <div class="row">
             <span class="username"
               >{{ friend.username }} {{ friend.animal }}</span
@@ -31,7 +31,7 @@
             }
           </div>
         }
-        @if (!friends.length) {
+        @if (!friends().length) {
           <span class="empty"
             >Vous n'avez pas encore d'amis. Ajoutez-en depuis vos
             paramètres.</span
@@ -43,9 +43,15 @@
     }
 
     <span class="section-title">Ou partagez la partie</span>
+    @if (canShare) {
+      <button type="button" class="share-native" (click)="share()">
+        <i class="bx bxs-share-alt"></i>
+        <span>Partager la partie</span>
+      </button>
+    }
     <div class="element">
       <span class="title"
-        >Ce code : <span class="code">{{ roomCode }}</span></span
+        >Ce code : <span class="code">{{ roomCode() }}</span></span
       >
       <button
         type="button"
@@ -70,7 +76,7 @@
     <div class="element qr-code">
       <span class="title">Ou le QR code :</span>
       <qrcode
-        [qrdata]="link"
+        [qrdata]="link()"
         [width]="200"
         [errorCorrectionLevel]="'M'"
         [colorDark]="'#7c2d12'"

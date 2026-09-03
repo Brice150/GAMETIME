@@ -95,25 +95,127 @@ form {
   justify-content: center;
 }
 
+/* La couleur ne suffit pas : sans second indice, les deux etats sont
+   indiscernables pour un joueur daltonien. Le soulignement plein marque le
+   bien place, le pointille le mal place, et il ne change pas la hauteur des
+   lignes. */
 .letter.wellPlaced {
   color: var(--success);
   text-shadow: 0 0 14px var(--success-glow);
+  text-decoration: underline solid currentColor;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 5px;
 }
 
 .letter.wrongPlaced {
   color: var(--danger);
   text-shadow: 0 0 14px var(--danger-glow);
+  text-decoration: underline dotted currentColor;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 5px;
 }
 
 .submit {
   display: none;
 }
 
-/* Humeur : plus les essais s'accumulent, plus l'icone se degrade. */
-.container > i {
-  font-size: 38px;
-  padding: 4px;
+.status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Le nombre restant, du vert au rouge. Le chiffre lui-meme porte
+   l information : la couleur ne fait que l accentuer. */
+.status .remaining {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
+  border: 2px solid currentColor;
   background: var(--bg-deep);
+  font-size: 22px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.status .attempt {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--text-3);
+}
+
+.status.safe {
+  color: var(--success);
+}
+
+.status.warn {
+  color: var(--accent-bright);
+}
+
+.status.alert {
+  color: var(--accent-deep);
+}
+
+.status.critical {
+  color: var(--danger);
+}
+
+.status.critical .remaining {
+  box-shadow: 0 0 18px var(--danger-glow);
+}
+
+/* Recapitulatif de l'alphabet : ce qui est exclu doit se voir sans couleur,
+   d'ou le texte barre. */
+.alphabet {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+}
+
+.alphabet .key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  padding: 3px 0;
   border: 1px solid var(--border-1);
+  border-radius: var(--r-xs);
+  background: var(--surface-1);
+  color: var(--text-2);
+  font-family: ui-monospace, "Courier New", monospace;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.alphabet .key.wellPlaced {
+  border-color: var(--success-border);
+  background: var(--success-soft);
+  color: var(--success);
+  text-decoration: underline solid currentColor;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+}
+
+.alphabet .key.wrongPlaced {
+  border-color: var(--danger-border);
+  background: var(--danger-soft);
+  color: var(--danger);
+  text-decoration: underline dotted currentColor;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+}
+
+.alphabet .key.absent {
+  border-color: transparent;
+  background: transparent;
+  color: var(--text-3);
+  opacity: 0.55;
+  text-decoration: line-through;
 }

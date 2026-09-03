@@ -17,13 +17,31 @@
         </div>
       </div>
     }
+    @if (!isOver) {
+      <div class="alphabet" role="group" aria-label="Lettres déjà essayées">
+        @for (letter of alphabet; track letter) {
+          <span class="key" [ngClass]="letterStates()[letter]">{{
+            letter
+          }}</span>
+        }
+      </div>
+    }
     <form (ngSubmit)="submitAnswer()">
       <div class="input-wrap">
+        <!-- Le correcteur du telephone reecrivait la tentative, et le clavier
+        proposait des mots sur ce qu il faut justement deviner. -->
         <input
+          #answerInput
           [attr.maxlength]="maxlength"
           aria-label="Votre réponse"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="characters"
+          spellcheck="false"
+          enterkeyhint="send"
           (keydown)="onKeyDown($event)"
-          [(ngModel)]="inputValue"
+          [ngModel]="inputValue()"
+          (ngModelChange)="inputValue.set($event)"
           [ngModelOptions]="{ standalone: true }"
           [disabled]="isOver"
         />
@@ -33,6 +51,13 @@
       </div>
       <button class="submit" type="submit">Submit</button>
     </form>
-    <i [ngClass]="emojiClass" [ngStyle]="emojiStyle"></i>
+    @if (!isOver) {
+      <div class="status" [ngClass]="attemptLevel">
+        <span class="remaining">{{ remainingAttempts }}</span>
+        <span class="attempt">{{
+          remainingAttempts > 1 ? "essais restants" : "essai restant"
+        }}</span>
+      </div>
+    }
   </div>
 </div>

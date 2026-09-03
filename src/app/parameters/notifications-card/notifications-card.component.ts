@@ -1,4 +1,10 @@
-import { Component, inject, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { NotificationService } from '../../core/services/notification.service';
 import { ToastrHelperService } from '../../core/services/toastr-helper.service';
@@ -11,13 +17,14 @@ import { ToastrHelperService } from '../../core/services/toastr-helper.service';
   imports: [MatSlideToggleModule],
   templateUrl: './notifications-card.component.html',
   styleUrl: './notifications-card.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotificationsCardComponent implements OnInit {
   notificationService = inject(NotificationService);
   toastrHelper = inject(ToastrHelperService);
-  enabled = false;
-  pushAvailable = false;
-  busy = false;
+  readonly enabled = signal(false);
+  readonly pushAvailable = signal(false);
+  readonly busy = signal(false);
 
   get isSupported(): boolean {
     return this.notificationService.isSupported;
@@ -36,22 +43,22 @@ export class NotificationsCardComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    this.enabled = this.notificationService.isEnabled;
-    this.pushAvailable = await this.notificationService.isPushAvailable();
+    this.enabled.set(this.notificationService.isEnabled);
+    this.pushAvailable.set(await this.notificationService.isPushAvailable());
   }
 
   async toggle(checked: boolean): Promise<void> {
-    this.busy = true;
+    this.busy.set(true);
 
     try {
       if (!checked) {
         await this.notificationService.disable();
-        this.enabled = false;
+        this.enabled.set(false);
         return;
       }
 
       const granted = await this.notificationService.enable();
-      this.enabled = granted;
+      this.enabled.set(granted);
 
       if (granted) {
         this.toastrHelper.info('Notifications activées', 'Notifications');
@@ -61,7 +68,7 @@ export class NotificationsCardComponent implements OnInit {
         );
       }
     } finally {
-      this.busy = false;
+      this.busy.set(false);
     }
   }
 }

@@ -1,10 +1,10 @@
 <section>
-  @if (!loading) {
+  @if (!loading()) {
     <div class="gt-tabs">
       <button
         type="button"
-        [class.active]="tab === 'compte'"
-        (click)="tab = 'compte'"
+        [class.active]="tab() === 'compte'"
+        (click)="tab.set('compte')"
         title="Compte"
       >
         <i class="bx bxs-user"></i>
@@ -12,8 +12,8 @@
       </button>
       <button
         type="button"
-        [class.active]="tab === 'amis'"
-        (click)="tab = 'amis'"
+        [class.active]="tab() === 'amis'"
+        (click)="tab.set('amis')"
         title="Amis"
       >
         <i class="bx bxs-group"></i>
@@ -23,7 +23,7 @@
         }
       </button>
     </div>
-    @if (tab === "compte") {
+    @if (tab() === "compte") {
       <div class="content">
         @if (isTemporaryAccount()) {
           <div class="temporary-account-container welcome-auth">
@@ -84,6 +84,7 @@
           ></app-user>
         }
         <app-notifications-card></app-notifications-card>
+        <app-privacy-card></app-privacy-card>
         <div class="button-container">
           <button
             type="button"
@@ -97,13 +98,13 @@
         </div>
       </div>
     }
-    @if (tab === "amis") {
+    @if (tab() === "amis") {
       <div class="content">
         <app-friends></app-friends>
       </div>
     }
   }
 </section>
-@if (loading) {
+@if (loading()) {
   <mat-spinner></mat-spinner>
 }

@@ -1,6 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -13,7 +21,6 @@ import { Goal } from '../core/interfaces/goal';
 import { GameApiService } from '../core/services/game-api.service';
 import { PlayerService } from '../core/services/player.service';
 import { ToastrHelperService } from '../core/services/toastr-helper.service';
-import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
 
 @Component({
   selector: 'app-success',
@@ -25,128 +32,102 @@ import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
     MatInputModule,
     MatSelectModule,
   ],
-  providers: [MedalsNumberPipe],
   templateUrl: './success.component.html',
   styleUrl: './success.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SuccessComponent implements OnInit {
   playerService = inject(PlayerService);
   gameApi = inject(GameApiService);
   toastrHelper = inject(ToastrHelperService);
-  medalsNumberPipe = inject(MedalsNumberPipe);
   destroyRef = inject(DestroyRef);
-  loading = true;
   games = games;
-  motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
-  marquesGameKey = gameMap['marques'].key;
-  gameSelected: string = this.drapeauxGameKey;
-  isDrapeauSelected = true;
-  motusMedalsNumber = 0;
-  drapeauxMedalsNumber = 0;
-  marquesMedalsNumber = 0;
-  goals = goals;
 
-  get currentMedals(): number {
-    if (this.gameSelected === this.motusGameKey) return this.motusMedalsNumber;
-    if (this.gameSelected === this.drapeauxGameKey)
-      return this.drapeauxMedalsNumber;
-    if (this.gameSelected === this.marquesGameKey)
-      return this.marquesMedalsNumber;
-    return 0;
-  }
+  readonly loading = signal(true);
+  readonly gameSelected = signal<string>(this.drapeauxGameKey);
+
+  readonly currentMedals = computed(
+    () =>
+      this.playerService
+        .currentPlayerSig()
+        ?.stats?.find((stat) => stat.gameName === this.gameSelected())
+        ?.medalsNumber ?? 0,
+  );
+
+  /**
+   * Un seul parcours des paliers par changement d'etat. Le template appelait
+   * `isFirstAvailableSuccess` trois fois par palier, et chaque appel
+   * reparcourait toute la liste.
+   */
+  readonly visibleGoals = computed(() => {
+    const medals = this.currentMedals();
+    const lastRetrieved =
+      this.playerService
+        .currentPlayerSig()
+        ?.stats?.find((stat) => stat.gameName === this.gameSelected())
+        ?.lastSuccessRetrieved ?? 0;
+
+    let firstClaimableFound = false;
+
+    return goals
+      .filter((goal) => lastRetrieved < goal.target)
+      .map((goal) => {
+        const progress = Math.min(100, (medals / goal.target) * 100);
+        const isClaimable = progress === 100 && !firstClaimableFound;
+
+        if (progress === 100) {
+          firstClaimableFound = true;
+        }
+
+        return { goal, progress, isReached: progress === 100, isClaimable };
+      });
+  });
 
   ngOnInit(): void {
     this.playerService.playerReady$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: () => {
-          this.getMedalsNumber();
-          this.loading = false;
-        },
+        next: () => this.loading.set(false),
         error: (error: HttpErrorResponse) => {
-          this.loading = false;
-          if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastrHelper.error(error.message);
-          }
+          this.loading.set(false);
+          this.toastrHelper.handleError(error);
         },
       });
   }
 
-  getMedalsNumber(): void {
-    this.motusMedalsNumber = this.medalsNumberPipe.transform(
-      this.motusGameKey,
-      this.playerService.currentPlayerSig()!,
-    );
-    this.drapeauxMedalsNumber = this.medalsNumberPipe.transform(
-      this.drapeauxGameKey,
-      this.playerService.currentPlayerSig()!,
-    );
-    this.marquesMedalsNumber = this.medalsNumberPipe.transform(
-      this.marquesGameKey,
-      this.playerService.currentPlayerSig()!,
-    );
-  }
-
-  getProgress(target: number): number {
-    const progress = (this.currentMedals / target) * 100;
-    return progress > 100 ? 100 : progress;
-  }
-
-  changeGame(gameSelected: string): void {
-    this.gameSelected = gameSelected;
-  }
-
-  canDisplayGoal(goal: Goal): boolean {
-    const stat = this.playerService
-      .currentPlayerSig()
-      ?.stats.find((stat) => stat.gameName === this.gameSelected);
-
+  medalsFor(gameName: string): number {
     return (
-      stat?.lastSuccessRetrieved === undefined ||
-      (!!stat && stat?.lastSuccessRetrieved < goal.target)
+      this.playerService
+        .currentPlayerSig()
+        ?.stats?.find((stat) => stat.gameName === gameName)?.medalsNumber ?? 0
     );
-  }
-
-  isFirstAvailableSuccess(goal: Goal): boolean {
-    const firstAvailable = this.goals.find(
-      (g) => this.canGetSuccess(g.target) && this.canDisplayGoal(g),
-    );
-
-    return firstAvailable?.target === goal.target;
-  }
-
-  canGetSuccess(target: number): boolean {
-    return this.getProgress(target) === 100;
   }
 
   // La recompense est attribuee par le serveur : le palier et son gain sont
   // verifies la-bas, le client ne fait que demander.
   getSuccess(goal: Goal): void {
-    if (!this.canGetSuccess(goal.target)) return;
-
     const player = this.playerService.currentPlayerSig();
     const stat = player?.stats.find(
-      (stat) => stat.gameName === this.gameSelected,
+      (stat) => stat.gameName === this.gameSelected(),
     );
 
-    if (!player || !stat) return;
+    if (!player || !stat) {
+      return;
+    }
 
     this.gameApi
-      .claimGoal(this.gameSelected, goal.target)
+      .claimGoal(this.gameSelected(), goal.target)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (result) => {
           stat.lastSuccessRetrieved = goal.target;
           stat.medalsNumber = result.medalsNumber;
           this.playerService.currentPlayerSig.set({ ...player });
-          this.getMedalsNumber();
           this.toastrHelper.info('Succès récupéré', 'Succès');
         },
         error: (error: HttpErrorResponse) => {
-          this.toastrHelper.error(
-            "Le succès n'a pas pu être récupéré : " + error.message,
-          );
+          this.toastrHelper.handleError(error);
         },
       });
   }

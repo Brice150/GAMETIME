@@ -1,6 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Timestamp } from '@angular/fire/firestore';
 import { NavigationEnd, Router } from '@angular/router';
@@ -19,6 +26,7 @@ import { ToastrHelperService } from '../../../core/services/toastr-helper.servic
   imports: [CommonModule],
   templateUrl: './invitations.component.html',
   styleUrl: './invitations.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InvitationsComponent implements OnInit {
   invitationService = inject(InvitationService);
@@ -47,9 +55,7 @@ export class InvitationsComponent implements OnInit {
       .subscribe({
         next: (invitations) => this.handleInvitations(invitations),
         error: (error: HttpErrorResponse) => {
-          if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastrHelper.error(error.message);
-          }
+          this.toastrHelper.handleError(error);
         },
       });
   }
@@ -111,9 +117,7 @@ export class InvitationsComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         error: (error: HttpErrorResponse) => {
-          if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastrHelper.error(error.message);
-          }
+          this.toastrHelper.handleError(error);
         },
       });
   }

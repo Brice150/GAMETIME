@@ -1,18 +1,21 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
+  ChangeDetectionStrategy,
   AfterViewInit,
   Component,
   DestroyRef,
   ElementRef,
   inject,
   QueryList,
+  signal,
   ViewChildren,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router } from '@angular/router';
-import { map, switchMap } from 'rxjs';
+import { map, Observable, switchMap } from 'rxjs';
+import { UserCredential } from '@angular/fire/auth';
 import { environment } from '../../environments/environment';
 import { PlayerService } from '../core/services/player.service';
 import { ToastrHelperService } from '../core/services/toastr-helper.service';
@@ -24,6 +27,7 @@ import { ThemeToggleComponent } from '../shared/components/theme-toggle/theme-to
   imports: [CommonModule, MatProgressSpinnerModule, ThemeToggleComponent],
   templateUrl: './welcome.component.html',
   styleUrl: './welcome.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WelcomeComponent implements AfterViewInit {
   imagePath: string = environment.imagePath;
@@ -32,7 +36,7 @@ export class WelcomeComponent implements AfterViewInit {
   router = inject(Router);
   toastrHelper = inject(ToastrHelperService);
   destroyRef = inject(DestroyRef);
-  loading = false;
+  readonly loading = signal(false);
   @ViewChildren('feature') features!: QueryList<ElementRef>;
 
   ngAfterViewInit(): void {
@@ -65,46 +69,24 @@ export class WelcomeComponent implements AfterViewInit {
   }
 
   continueWithGoogle(): void {
-    this.loading = true;
-    this.userService
-      .signInWithGoogle()
-      .pipe(
-        switchMap(() => this.playerService.addPlayer()),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe({
-        next: (email) => {
-          this.loading = false;
-          this.userService.currentUserSig.set({
-            email: email ?? 'Compte invité',
-            isAnonymous: false,
-          });
-          this.navigateAfterLogin();
-          this.toastrHelper.info('Bienvenue sur Game Time', 'Game Time');
-        },
-        error: (error: HttpErrorResponse) => {
-          this.loading = false;
-          if (
-            !error.message.includes('Missing or insufficient permissions.') &&
-            !error.message.includes('auth/popup-closed-by-user')
-          ) {
-            this.toastrHelper.error(error.message);
-          }
-        },
-      });
+    this.signIn(this.userService.signInWithGoogle());
   }
 
   continueWithGithub(): void {
-    this.loading = true;
-    this.userService
-      .signInWithGithub()
+    this.signIn(this.userService.signInWithGithub());
+  }
+
+  // Google et GitHub ne different que par le fournisseur.
+  private signIn(credential$: Observable<UserCredential>): void {
+    this.loading.set(true);
+    credential$
       .pipe(
         switchMap(() => this.playerService.addPlayer()),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
         next: (email) => {
-          this.loading = false;
+          this.loading.set(false);
           this.userService.currentUserSig.set({
             email: email ?? 'Compte invité',
             isAnonymous: false,
@@ -113,19 +95,14 @@ export class WelcomeComponent implements AfterViewInit {
           this.toastrHelper.info('Bienvenue sur Game Time', 'Game Time');
         },
         error: (error: HttpErrorResponse) => {
-          this.loading = false;
-          if (
-            !error.message.includes('Missing or insufficient permissions.') &&
-            !error.message.includes('auth/popup-closed-by-user')
-          ) {
-            this.toastrHelper.error(error.message);
-          }
+          this.loading.set(false);
+          this.toastrHelper.handleError(error);
         },
       });
   }
 
   continueAsGuest(): void {
-    this.loading = true;
+    this.loading.set(true);
     this.userService
       .signInAsGuest()
       .pipe(
@@ -138,7 +115,7 @@ export class WelcomeComponent implements AfterViewInit {
       )
       .subscribe({
         next: (isAnonymous) => {
-          this.loading = false;
+          this.loading.set(false);
           this.userService.currentUserSig.set({
             email: 'Compte invité',
             isAnonymous,
@@ -150,10 +127,8 @@ export class WelcomeComponent implements AfterViewInit {
           );
         },
         error: (error: HttpErrorResponse) => {
-          this.loading = false;
-          if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastrHelper.error(error.message);
-          }
+          this.loading.set(false);
+          this.toastrHelper.handleError(error);
         },
       });
   }

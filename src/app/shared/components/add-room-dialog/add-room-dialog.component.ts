@@ -1,5 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnInit,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -29,6 +34,7 @@ import { RoomForm } from '../../../core/interfaces/room-form';
   ],
   templateUrl: './add-room-dialog.component.html',
   styleUrl: './add-room-dialog.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddRoomDialogComponent implements OnInit {
   dialogRef = inject(MatDialogRef<AddRoomDialogComponent>);
@@ -61,7 +67,7 @@ export class AddRoomDialogComponent implements OnInit {
     if (this.data) {
       this.voteHint = this.data.voteHint ?? '';
       this.startAgainMode = !!this.data.startAgainMode;
-      this.gameSelected = this.data.gameSelected ?? this.drapeauxGameKey;
+      this.gameSelected = this.data.gameSelected || this.drapeauxGameKey;
 
       if (this.startAgainMode) {
         this.stepsNumber = this.data.stepsNumber ?? 3;
@@ -104,7 +110,10 @@ export class AddRoomDialogComponent implements OnInit {
         : this.showFirstLetterMarques,
       stepsNumber: this.stepsNumber,
       isWordLengthIncreasing: this.isWordLengthIncreasing,
-      startWordLength: this.startWordLength,
+      // La borne haute depend du nombre de manches : augmenter les manches
+      // apres avoir choisi la taille laissait une valeur hors bornes, et la
+      // partie rendait alors moins de manches que demande.
+      startWordLength: Math.min(this.startWordLength, this.maxWordLength),
       // Monde et Tout valent 1 dans les deux enumerations.
       categoryFilter: isRandom ? 1 : Number(this.categoryFilter),
     } as RoomForm);

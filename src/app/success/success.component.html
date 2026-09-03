@@ -1,8 +1,13 @@
 <section>
-  @if (!loading) {
+  @if (!loading()) {
     <form>
       <mat-form-field>
-        <mat-select [(ngModel)]="gameSelected" name="game" class="cap">
+        <mat-select
+          [ngModel]="gameSelected()"
+          name="game"
+          class="cap"
+          (ngModelChange)="gameSelected.set($event)"
+        >
           @for (game of games; track $index) {
             <mat-option [value]="game.key" class="cap-option">
               <div class="flex">
@@ -17,55 +22,44 @@
     <div class="description">
       <span class="text-description">Vous avez</span>
       <div class="number">
-        @if (gameSelected === motusGameKey) {
-          <span>{{ motusMedalsNumber }} médailles</span>
-        } @else if (gameSelected === drapeauxGameKey) {
-          <span>{{ drapeauxMedalsNumber }} médailles</span>
-        } @else if (gameSelected === marquesGameKey) {
-          <span>{{ marquesMedalsNumber }} médailles</span>
-        }
+        <span>{{ currentMedals() }} médailles</span>
       </div>
     </div>
     <div class="success-container">
-      @for (goal of goals; track $index) {
-        @if (canDisplayGoal(goal)) {
-          <div class="success">
-            <div class="title">
-              <div class="username">
-                <span>Obtenir {{ goal.target }}</span>
+      @for (entry of visibleGoals(); track entry.goal.target) {
+        <div class="success">
+          <div class="title">
+            <div class="username">
+              <span>Obtenir {{ entry.goal.target }}</span>
+              <i class="bx bxs-medal"></i>
+            </div>
+            <div class="space">
+              <div class="medals">
+                <span class="victory-number">{{ entry.goal.reward }}</span>
                 <i class="bx bxs-medal"></i>
               </div>
-              <div class="space">
-                <div class="medals">
-                  <span class="victory-number">{{ goal.reward }}</span>
-                  <i class="bx bxs-medal"></i>
-                </div>
-              </div>
             </div>
-            @if (getProgress(goal.target) !== 100) {
-              <div class="progress-bar">
-                <div
-                  class="progress-fill"
-                  [style.width.%]="getProgress(goal.target)"
-                ></div>
-              </div>
-              <span class="progress-info">
-                {{ currentMedals }} / {{ goal.target }}
-              </span>
-            } @else {
-              <button
-                type="button"
-                (click)="getSuccess(goal)"
-                [title]="isFirstAvailableSuccess(goal) ? 'Récupérer' : ''"
-                [disabled]="!isFirstAvailableSuccess(goal)"
-                [ngClass]="{ disabled: !isFirstAvailableSuccess(goal) }"
-              >
-                <i class="bx bxs-check-circle"></i>
-                <span class="text">Récupérer</span>
-              </button>
-            }
           </div>
-        }
+          @if (!entry.isReached) {
+            <div class="progress-bar">
+              <div class="progress-fill" [style.width.%]="entry.progress"></div>
+            </div>
+            <span class="progress-info">
+              {{ currentMedals() }} / {{ entry.goal.target }}
+            </span>
+          } @else {
+            <button
+              type="button"
+              (click)="getSuccess(entry.goal)"
+              [title]="entry.isClaimable ? 'Récupérer' : ''"
+              [disabled]="!entry.isClaimable"
+              [ngClass]="{ disabled: !entry.isClaimable }"
+            >
+              <i class="bx bxs-check-circle"></i>
+              <span class="text">Récupérer</span>
+            </button>
+          }
+        </div>
       }
     </div>
   } @else {

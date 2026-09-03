@@ -1,4 +1,4 @@
-@if (!loading) {
+@if (!loading()) {
   <div class="friends">
     <form class="search">
       <mat-form-field>
@@ -113,6 +113,22 @@
             <i class="bx bxs-medal"></i>
           </div>
           <div class="actions">
+            @if (roomOf(player); as room) {
+              <button
+                type="button"
+                class="join"
+                [class.live]="room.isStarted"
+                [title]="
+                  room.isStarted
+                    ? 'Partie en cours, vous la rejoignez en route'
+                    : 'Salle d attente'
+                "
+                (click)="joinRoom(room)"
+              >
+                <i class="bx bxs-log-in-circle"></i>
+                <span>Rejoindre</span>
+              </button>
+            }
             <button
               type="button"
               class="icon refuse"

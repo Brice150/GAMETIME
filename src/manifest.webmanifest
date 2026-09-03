@@ -5,7 +5,6 @@
   "theme_color": "#12100b",
   "background_color": "#12100b",
   "display": "standalone",
-  "orientation": "portrait",
   "scope": "./",
   "start_url": "./",
   "lang": "fr",

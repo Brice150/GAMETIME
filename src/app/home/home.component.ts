@@ -1,6 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, DestroyRef, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router, RouterModule } from '@angular/router';
@@ -27,9 +33,10 @@ import { JoinRoomComponent } from './join-room/join-room.component';
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent {
-  loading = false;
+  readonly loading = signal(false);
   playerService = inject(PlayerService);
   roomService = inject(RoomService);
   toastrHelper = inject(ToastrHelperService);
@@ -39,11 +46,11 @@ export class HomeComponent {
   games = games;
 
   play(): void {
-    this.loading = true;
+    this.loading.set(true);
     const currentUserId = this.playerService.currentPlayerSig()?.userId;
 
     if (!currentUserId) {
-      this.loading = false;
+      this.loading.set(false);
       this.toastrHelper.error('Utilisateur introuvable');
       return;
     }
@@ -51,7 +58,8 @@ export class HomeComponent {
     const roomCode = this.roomService.generateRoomCode();
 
     const newRoom = {
-      gameName: roomCode,
+      // Le jeu est choisi dans la room : vide tant qu il ne l est pas.
+      gameName: '',
       playerIds: [currentUserId],
       isStarted: false,
       startDate: null,
@@ -69,41 +77,47 @@ export class HomeComponent {
       .subscribe({
         next: (roomId) => {
           this.localStorageService.newGame(roomId);
-          this.loading = false;
+          this.loading.set(false);
           this.router.navigate([`/room/${roomId}`]);
         },
         error: (error: HttpErrorResponse) => {
-          this.loading = false;
-          if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastrHelper.error(error.message);
-          }
+          this.loading.set(false);
+          this.toastrHelper.handleError(error);
         },
       });
   }
 
   joinRoom(roomCode: string): void {
-    this.loading = true;
+    this.loading.set(true);
 
     this.roomService
       .getRoomsByCode(roomCode)
       .pipe(take(1), takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (rooms) => {
-          this.loading = false;
+          this.loading.set(false);
 
           if (rooms && rooms.length > 0) {
             const room = rooms[0];
             this.localStorageService.newGame(room.id!);
+
+            // Rejoindre une partie lancee fait commencer a la manche 1 pendant
+            // que les autres ont de l avance : autant le dire.
+            if (room.isStarted) {
+              this.toastrHelper.info(
+                'La partie est déjà en cours, vous la rejoignez en route',
+                'Room',
+              );
+            }
+
             this.router.navigate([`/room/${room.id!}`]);
           } else {
             this.toastrHelper.error('Aucune room trouvée avec ce code');
           }
         },
         error: (error: HttpErrorResponse) => {
-          this.loading = false;
-          if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastrHelper.error(error.message);
-          }
+          this.loading.set(false);
+          this.toastrHelper.handleError(error);
         },
       });
   }

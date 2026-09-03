@@ -10,6 +10,7 @@ export class LocalStorageService {
   private readonly startAgainKey = 'startAgainNumber';
   private readonly roomIdKey = 'roomId';
   private readonly timerKey = 'roundTimer';
+  private readonly pwaInstallDismissedKey = 'pwaInstallDismissed';
 
   private getScopedKey(baseKey: string): string {
     const userId = this.userService.auth.currentUser?.uid ?? 'anonymous';
@@ -98,6 +99,16 @@ export class LocalStorageService {
     } catch {
       return null;
     }
+  }
+
+  // Non prefixe par l utilisateur : le refus d installation vaut pour
+  // l appareil, pas pour un compte.
+  getPwaInstallDismissed(): boolean {
+    return localStorage.getItem(this.pwaInstallDismissedKey) === 'true';
+  }
+
+  setPwaInstallDismissed(): void {
+    localStorage.setItem(this.pwaInstallDismissedKey, 'true');
   }
 
   newGame(roomId: string, startAgainNumber = 0): void {

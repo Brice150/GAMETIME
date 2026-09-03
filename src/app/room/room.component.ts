@@ -1,10 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   DestroyRef,
   inject,
   OnInit,
+  signal,
   ViewChild,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -67,6 +70,7 @@ const NEXT_ROUND_DELAY_MS = 1400;
   ],
   templateUrl: './room.component.html',
   styleUrl: './room.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RoomComponent implements OnInit {
   roomService = inject(RoomService);
@@ -78,14 +82,15 @@ export class RoomComponent implements OnInit {
   localStorageService = inject(LocalStorageService);
   dialog = inject(MatDialog);
   destroyRef = inject(DestroyRef);
-  loading = true;
+  changeDetectorRef = inject(ChangeDetectorRef);
+  readonly loading = signal(true);
   room: Room = {} as Room;
   players: Player[] = [];
-  lastRound: RoundResult | null = null;
-  isResultPageActive = false;
+  readonly lastRound = signal<RoundResult | null>(null);
+  readonly isResultPageActive = signal(false);
   userLeft = false;
   userKickedOut = false;
-  isFinishing = false;
+  readonly isFinishing = signal(false);
   motusGameKey = gameMap['motus'].key;
   drapeauxGameKey = gameMap['drapeaux'].key;
   marquesGameKey = gameMap['marques'].key;
@@ -117,10 +122,8 @@ export class RoomComponent implements OnInit {
       .subscribe({
         next: ([, players]) => this.handlePlayers(players),
         error: (error: HttpErrorResponse) => {
-          this.loading = false;
-          if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastrHelper.error(error.message);
-          }
+          this.loading.set(false);
+          this.toastrHelper.handleError(error);
         },
       });
   }
@@ -161,8 +164,8 @@ export class RoomComponent implements OnInit {
         : room.startDate;
 
     if (start1?.getTime() !== start2?.getTime()) {
-      this.isResultPageActive = false;
-      this.lastRound = null;
+      this.isResultPageActive.set(false);
+      this.lastRound.set(null);
     }
 
     this.room = room;
@@ -206,15 +209,11 @@ export class RoomComponent implements OnInit {
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: () => {
-            this.loading = false;
+            this.loading.set(false);
           },
           error: (error: HttpErrorResponse) => {
-            this.loading = false;
-            if (
-              !error.message.includes('Missing or insufficient permissions.')
-            ) {
-              this.toastrHelper.error(error.message);
-            }
+            this.loading.set(false);
+            this.toastrHelper.handleError(error);
           },
         });
       return this.room;
@@ -257,8 +256,8 @@ export class RoomComponent implements OnInit {
     if (allStepsDone && !this.room.isLoading) {
       if (!currentPlayer.finishDate) {
         this.seeResults();
-      } else if (!this.isFinishing) {
-        this.isResultPageActive = true;
+      } else if (!this.isFinishing()) {
+        this.isResultPageActive.set(true);
       }
     } else if (this.isLateJoinerAfterEnd(currentPlayer)) {
       this.skipFinishedRound(currentPlayer!);
@@ -266,16 +265,17 @@ export class RoomComponent implements OnInit {
       currentPlayer?.finishDate &&
       this.room.isStarted &&
       !this.room.isLoading &&
-      !this.isFinishing
+      !this.isFinishing()
     ) {
       // Arrive apres la fin : la page resultats reste affichee tant que
       // l'hote n'a pas relance.
-      this.isResultPageActive = true;
+      this.isResultPageActive.set(true);
     }
 
     this.roomService.currentRoomSig.set(this.room);
     this.playerService.currentPlayersSig.set(this.players);
-    this.loading = this.room.isLoading ?? false;
+    this.changeDetectorRef.markForCheck();
+    this.loading.set(this.room.isLoading ?? false);
   }
 
   lettersFound(player: Player): number {
@@ -320,7 +320,7 @@ export class RoomComponent implements OnInit {
     currentPlayer.durationMs = null;
     currentPlayer.isReady = true;
     currentPlayer.currentRoundProgress = null;
-    this.isResultPageActive = true;
+    this.isResultPageActive.set(true);
 
     this.playerService
       .updatePlayerFields(currentPlayer.id, {
@@ -339,9 +339,7 @@ export class RoomComponent implements OnInit {
           );
         },
         error: (error: HttpErrorResponse) => {
-          if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastrHelper.error(error.message);
-          }
+          this.toastrHelper.handleError(error);
         },
       });
   }
@@ -419,7 +417,7 @@ export class RoomComponent implements OnInit {
         this.room.startAgainNumber,
       ) ?? this.elapsedSinceRoomStart();
     player.isReady = true;
-    this.isFinishing = true;
+    this.isFinishing.set(true);
   }
 
   // Le chrono local peut manquer (stockage vide, autre appareil) : sans ce
@@ -444,20 +442,20 @@ export class RoomComponent implements OnInit {
     timer(3000)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
-        this.isResultPageActive = true;
+        this.isResultPageActive.set(true);
         this.playerService.currentPlayerSig.set(
           this.playerService.currentPlayerSig(),
         );
-        this.isFinishing = false;
+        this.isFinishing.set(false);
       });
   }
 
   handlePlayerNextAction(stepWon: boolean, stepIndex: number): void {
-    this.lastRound = {
+    this.lastRound.set({
       stepIndex,
       response: this.room.responses[stepIndex],
       won: stepWon,
-    };
+    });
 
     this.playerService.currentPlayerSig.set(
       this.playerService.currentPlayerSig(),
@@ -507,7 +505,7 @@ export class RoomComponent implements OnInit {
         .pipe(
           filter((res: boolean) => res),
           switchMap(() => {
-            this.loading = true;
+            this.loading.set(true);
             this.userLeft = true;
 
             this.players.forEach((player) => {
@@ -533,12 +531,8 @@ export class RoomComponent implements OnInit {
             this.toastrHelper.info('La room a été supprimée', 'Room');
           },
           error: (error: HttpErrorResponse) => {
-            this.loading = false;
-            if (
-              !error.message.includes('Missing or insufficient permissions.')
-            ) {
-              this.toastrHelper.error(error.message);
-            }
+            this.loading.set(false);
+            this.toastrHelper.handleError(error);
           },
         });
     } else {
@@ -551,7 +545,7 @@ export class RoomComponent implements OnInit {
         .pipe(
           filter((res: boolean) => res),
           switchMap(() => {
-            this.loading = true;
+            this.loading.set(true);
             this.userLeft = true;
 
             const userId = this.playerService.currentPlayerSig()?.userId;
@@ -600,12 +594,13 @@ export class RoomComponent implements OnInit {
             this.toastrHelper.info('Vous venez de quitter une room', 'Room');
           },
           error: (error: HttpErrorResponse) => {
-            this.loading = false;
+            this.loading.set(false);
+            // La room a disparu entre-temps : le joueur en est sorti quand meme.
             if (error.message.includes('No document to update')) {
               this.router.navigate(['/accueil']);
               this.toastrHelper.info('Vous venez de quitter une room', 'Room');
             } else {
-              this.toastrHelper.error(error.message);
+              this.toastrHelper.handleError(error);
             }
           },
         });
@@ -627,9 +622,7 @@ export class RoomComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         error: (error: HttpErrorResponse) => {
-          if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastrHelper.error(error.message);
-          }
+          this.toastrHelper.handleError(error);
         },
       });
   }
@@ -689,9 +682,7 @@ export class RoomComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         error: (error: HttpErrorResponse) => {
-          if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastrHelper.error(error.message);
-          }
+          this.toastrHelper.handleError(error);
         },
       });
 
@@ -699,8 +690,8 @@ export class RoomComponent implements OnInit {
   }
 
   start(): void {
-    this.loading = true;
-    this.lastRound = null;
+    this.loading.set(true);
+    this.lastRound.set(null);
 
     this.room.countries = [];
     this.room.brands = [];
@@ -747,7 +738,7 @@ export class RoomComponent implements OnInit {
             this.room.id!,
             this.room.startAgainNumber,
           );
-          this.isResultPageActive = false;
+          this.isResultPageActive.set(false);
 
           this.roomService.currentRoomSig.set(this.room);
           this.playerService.currentPlayersSig.set(this.players);
@@ -758,13 +749,11 @@ export class RoomComponent implements OnInit {
             )!,
           );
 
-          this.loading = false;
+          this.loading.set(false);
         },
         error: (error: HttpErrorResponse) => {
           this.resetRoom();
-          if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastrHelper.error(error.message);
-          }
+          this.toastrHelper.handleError(error);
         },
       });
   }
@@ -794,7 +783,7 @@ export class RoomComponent implements OnInit {
       .updateRoom(this.room)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
-        this.loading = false;
+        this.loading.set(false);
       });
   }
 
@@ -805,7 +794,7 @@ export class RoomComponent implements OnInit {
   shouldShowPlayButton(): boolean {
     const userId = this.playerService.currentPlayerSig()?.userId;
     return (
-      (this.isResultPageActive && userId === this.room.userId) ||
+      (this.isResultPageActive() && userId === this.room.userId) ||
       (!this.room.isStarted && userId === this.room.userId)
     );
   }
@@ -889,7 +878,7 @@ export class RoomComponent implements OnInit {
         showFirstLetterMotus: this.room.showFirstLetter,
         showFirstLetterDrapeaux: this.room.showFirstLetter,
         showFirstLetterMarques: this.room.showFirstLetter,
-        gameSelected: votedGame ?? this.room.gameName,
+        gameSelected: votedGame ?? this.room.gameName ?? '',
         startAgainMode: !!this.room.startDate && keepsSameGame,
         voteHint: this.room.startDate ? this.voteHint() : '',
       },

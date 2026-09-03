@@ -1,3 +1,4 @@
+import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Room } from '../../../core/interfaces/room';
 import { LocalStorageService } from '../../../core/services/local-storage.service';
@@ -55,6 +56,7 @@ describe('WordInputComponent', () => {
     await TestBed.configureTestingModule({
       imports: [WordInputComponent],
       providers: [
+        provideZonelessChangeDetection(),
         { provide: LocalStorageService, useClass: LocalStorageStub },
         { provide: ToastrHelperService, useValue: toastrStub },
       ],
@@ -63,7 +65,7 @@ describe('WordInputComponent', () => {
 
   it('marque en vert les lettres bien placees', async () => {
     await build('CHAT');
-    component.inputValue = 'CHUT';
+    component.inputValue.set('CHUT');
     component.addTry();
 
     const lastTry = component.tries[0];
@@ -73,7 +75,7 @@ describe('WordInputComponent', () => {
 
   it('marque les lettres presentes mais mal placees', async () => {
     await build('CHAT');
-    component.inputValue = 'TACH';
+    component.inputValue.set('TACH');
     component.addTry();
 
     const lastTry = component.tries[0];
@@ -83,7 +85,7 @@ describe('WordInputComponent', () => {
 
   it('ne signale pas plus d occurrences d une lettre que le mot n en contient', async () => {
     await build('ALLO');
-    component.inputValue = 'LLLL';
+    component.inputValue.set('LLLL');
     component.addTry();
 
     const lastTry = component.tries[0];
@@ -96,12 +98,118 @@ describe('WordInputComponent', () => {
     const found: number[] = [];
     component.progressEvent.subscribe((count) => found.push(count));
 
-    component.inputValue = 'CHUT';
+    component.inputValue.set('CHUT');
     component.addTry();
-    component.inputValue = 'CXAT';
+    component.inputValue.set('CXAT');
     component.addTry();
 
     expect(found).toEqual([3, 4]);
+  });
+
+  it('classe chaque lettre essayee : bien placee, mal placee ou exclue', async () => {
+    await build('CHAT');
+    component.inputValue.set('CHUT');
+    component.addTry();
+
+    const states = component.letterStates();
+    expect(states['C']).toBe('wellPlaced');
+    expect(states['H']).toBe('wellPlaced');
+    expect(states['T']).toBe('wellPlaced');
+    expect(states['U']).toBe('absent');
+    expect(states['A']).toBeUndefined();
+  });
+
+  it('ne redescend pas une lettre deja trouvee bien placee', async () => {
+    await build('CHAT');
+    component.inputValue.set('CHUT');
+    component.addTry();
+    component.inputValue.set('TCHU');
+    component.addTry();
+
+    expect(component.letterStates()['C']).toBe('wellPlaced');
+  });
+
+  it('decompte les essais restants et durcit la couleur', async () => {
+    await build('CHAT');
+    expect(component.remainingAttempts).toBe(6);
+    expect(component.attemptLevel).toBe('safe');
+
+    const levels: string[] = [];
+    for (let attempt = 0; attempt < 5; attempt++) {
+      component.inputValue.set('ZZZZ');
+      component.addTry();
+      levels.push(component.attemptLevel);
+    }
+
+    expect(levels).toEqual(['safe', 'warn', 'warn', 'alert', 'critical']);
+    expect(component.remainingAttempts).toBe(1);
+  });
+
+  it('affiche le nombre restant et son accord', async () => {
+    await build('CHAT');
+    fixture.detectChanges();
+    expect(
+      fixture.nativeElement
+        .querySelector('.status .remaining')
+        .textContent.trim(),
+    ).toBe('6');
+    expect(
+      fixture.nativeElement
+        .querySelector('.status .attempt')
+        .textContent.trim(),
+    ).toBe('essais restants');
+
+    for (let attempt = 0; attempt < 5; attempt++) {
+      component.inputValue.set('ZZZZ');
+      component.addTry();
+    }
+    fixture.detectChanges();
+
+    expect(
+      fixture.nativeElement
+        .querySelector('.status .attempt')
+        .textContent.trim(),
+    ).toBe('essai restant');
+  });
+
+  it('affiche la bande alphabet avec l etat de chaque lettre', async () => {
+    await build('CHAT');
+    component.inputValue.set('CHUT');
+    component.addTry();
+    fixture.detectChanges();
+
+    const keys: HTMLElement[] = Array.from(
+      fixture.nativeElement.querySelectorAll('.alphabet .key'),
+    );
+    expect(keys.length).toBe(26);
+
+    const keyFor = (letter: string) =>
+      keys.find((key) => key.textContent?.trim() === letter)!;
+    expect(keyFor('C').classList).toContain('wellPlaced');
+    expect(keyFor('U').classList).toContain('absent');
+    expect(keyFor('B').classList.length).toBe(1);
+  });
+
+  it('distingue les etats autrement que par la couleur', async () => {
+    await build('CHAT');
+    component.inputValue.set('CHUA');
+    component.addTry();
+    fixture.detectChanges();
+
+    const decoration = (selector: string) => {
+      const style = getComputedStyle(
+        fixture.nativeElement.querySelector(selector) as HTMLElement,
+      );
+      return `${style.textDecorationLine} ${style.textDecorationStyle}`;
+    };
+
+    // Trois signatures distinctes, lisibles sans percevoir la couleur.
+    const signatures = new Set([
+      decoration('.key.wellPlaced'),
+      decoration('.key.wrongPlaced'),
+      decoration('.key.absent'),
+    ]);
+    expect(signatures.size).toBe(3);
   });
 
   it('termine la manche sur une defaite au sixieme essai', async () => {
@@ -110,7 +218,7 @@ describe('WordInputComponent', () => {
     component.emitEvent.subscribe((won) => (result = won));
 
     for (let attempt = 0; attempt < 6; attempt++) {
-      component.inputValue = 'ZZZZ';
+      component.inputValue.set('ZZZZ');
       component.addTry();
     }
 
@@ -123,7 +231,7 @@ describe('WordInputComponent', () => {
     let result: boolean | undefined;
     component.emitEvent.subscribe((won) => (result = won));
 
-    component.inputValue = 'CHAT';
+    component.inputValue.set('CHAT');
     component.submitAnswer();
 
     expect(result).toBe(true);
@@ -133,6 +241,6 @@ describe('WordInputComponent', () => {
   it('prefixe la saisie de la premiere lettre quand l indice est actif', async () => {
     await build('CHAT', true);
 
-    expect(component.inputValue).toBe('C');
+    expect(component.inputValue()).toBe('C');
   });
 });

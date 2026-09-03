@@ -1,5 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnInit,
+} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -26,6 +31,7 @@ import { Player } from '../../../core/interfaces/player';
   ],
   templateUrl: './user-dialog.component.html',
   styleUrl: './user-dialog.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserDialogComponent implements OnInit {
   userForm!: FormGroup;

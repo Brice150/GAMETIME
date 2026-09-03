@@ -1,9 +1,9 @@
-<section [class.succes-tab]="tab === 'succes'">
+<section [class.succes-tab]="tab() === 'succes'">
   <div class="gt-tabs">
     <button
       type="button"
-      [class.active]="tab === 'classement'"
-      (click)="tab = 'classement'"
+      [class.active]="tab() === 'classement'"
+      (click)="tab.set('classement')"
       title="Classement"
     >
       <i class="bx bxs-trophy"></i>
@@ -11,8 +11,8 @@
     </button>
     <button
       type="button"
-      [class.active]="tab === 'succes'"
-      (click)="tab = 'succes'"
+      [class.active]="tab() === 'succes'"
+      (click)="tab.set('succes')"
       title="Succès"
     >
       <i class="bx bxs-medal"></i>
@@ -20,14 +20,14 @@
     </button>
   </div>
 
-  @if (tab === "succes") {
+  @if (tab() === "succes") {
     <app-success></app-success>
-  } @else if (!loading) {
+  } @else if (!loading()) {
     <div class="gt-tabs scope">
       <button
         type="button"
-        [class.active]="scope === 'amis'"
-        (click)="changeScope('amis')"
+        [class.active]="scope() === 'amis'"
+        (click)="scope.set('amis')"
         title="Mes amis"
       >
         <i class="bx bxs-group"></i>
@@ -35,8 +35,8 @@
       </button>
       <button
         type="button"
-        [class.active]="scope === 'tous'"
-        (click)="changeScope('tous')"
+        [class.active]="scope() === 'tous'"
+        (click)="scope.set('tous')"
         title="Tous les joueurs"
       >
         <i class="bx bxs-user-detail"></i>
@@ -46,17 +46,15 @@
     <form>
       <mat-form-field>
         <mat-select
-          [(ngModel)]="gameSelected"
+          [ngModel]="gameSelected()"
           name="game"
           class="cap"
-          (ngModelChange)="sortPlayers()"
+          (ngModelChange)="gameSelected.set($event)"
         >
           <mat-option value="general" class="cap-option">
             <div class="flex">
               <i class="bx bxs-universal-access"></i>
-              <span class="game"
-                >Général {{ getPlayerRankingPosition("general") }}</span
-              >
+              <span class="game">Général {{ positions()["general"] }}</span>
             </div>
           </mat-option>
           @for (game of games; track $index) {
@@ -64,8 +62,7 @@
               <div class="flex">
                 <i class="{{ game.icon }}"></i>
                 <span class="game"
-                  >{{ game.label }}
-                  {{ getPlayerRankingPosition(game.key) }}</span
+                  >{{ game.label }} {{ positions()[game.key] }}</span
                 >
               </div>
             </mat-option>
@@ -73,32 +70,31 @@
         </mat-select>
       </mat-form-field>
     </form>
-    @if (currentPlayerPosition) {
+    @if (currentPlayerPosition(); as position) {
       <div class="description">
         <span class="text-description">Vous êtes</span>
         <div class="number">
           <span
             [ngStyle]="{
               color:
-                currentPlayerPosition === 1
+                position === 1
                   ? 'var(--gold)'
-                  : currentPlayerPosition === 2
+                  : position === 2
                     ? 'var(--silver)'
-                    : currentPlayerPosition === 3
+                    : position === 3
                       ? 'var(--bronze)'
                       : 'var(--accent-bright)',
             }"
           >
-            {{ currentPlayerPosition
-            }}<sup>{{ currentPlayerPosition | ordinal }}</sup>
+            {{ position }}<sup>{{ position | ordinal }}</sup>
           </span>
-          <span> / {{ sortedPlayers.length }}</span>
+          <span> / {{ sortedPlayers().length }}</span>
         </div>
       </div>
     }
     <div class="players">
       @for (
-        otherPlayer of sortedPlayers;
+        otherPlayer of sortedPlayers();
         track otherPlayer.userId;
         let i = $index
       ) {
@@ -125,9 +121,9 @@
           </div>
           <div class="space">
             <div class="medals">
-              @if (gameSelected !== "general") {
+              @if (gameSelected() !== "general") {
                 <span class="victory-number">{{
-                  gameSelected | medalsNumber: otherPlayer
+                  gameSelected() | medalsNumber: otherPlayer
                 }}</span>
               } @else {
                 <span class="victory-number">{{
@@ -139,7 +135,7 @@
           </div>
         </div>
       }
-      @if (scope === "amis" && sortedPlayers.length <= 1) {
+      @if (scope() === "amis" && sortedPlayers().length <= 1) {
         <span class="empty"
           >Ajoutez des amis depuis vos paramètres pour vous comparer à
           eux.</span

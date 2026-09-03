@@ -1,0 +1,29 @@
+.privacy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 530px;
+  padding: 22px 24px;
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-xl);
+  background: var(--surface-1);
+}
+
+.privacy h2 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+
+.hint {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-3);
+  text-align: center;
+}

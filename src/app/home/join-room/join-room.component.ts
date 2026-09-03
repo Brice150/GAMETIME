@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  inject,
+  Output,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ToastrHelperService } from '../../core/services/toastr-helper.service';
 
@@ -8,6 +14,7 @@ import { ToastrHelperService } from '../../core/services/toastr-helper.service';
   imports: [CommonModule, FormsModule],
   templateUrl: './join-room.component.html',
   styleUrl: './join-room.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JoinRoomComponent {
   roomCode?: string;

@@ -1,24 +1,24 @@
 <section>
-  @if (!loading) {
+  @if (!loading()) {
     <div class="overview">
       <div class="stat">
         <i class="bx bxs-user-detail"></i>
-        <span class="value">{{ players.length }}</span>
+        <span class="value">{{ players().length }}</span>
         <span class="label">Joueurs</span>
       </div>
       <div class="stat">
         <i class="bx bxs-door-open"></i>
-        <span class="value">{{ rooms.length }}</span>
+        <span class="value">{{ rooms().length }}</span>
         <span class="label">Rooms</span>
       </div>
       <div class="stat accent">
         <i class="bx bx-play"></i>
-        <span class="value">{{ startedRoomsNumber }}</span>
+        <span class="value">{{ startedRoomsNumber() }}</span>
         <span class="label">En cours</span>
       </div>
       <div class="stat">
         <i class="bx bxs-time-five"></i>
-        <span class="value">{{ waitingRoomsNumber }}</span>
+        <span class="value">{{ waitingRoomsNumber() }}</span>
         <span class="label">En attente</span>
       </div>
     </div>
@@ -26,7 +26,7 @@
     <div class="block">
       <div class="block-head">
         <h2>Rooms</h2>
-        @if (staleRooms.length) {
+        @if (staleRooms().length) {
           <button
             type="button"
             class="purge"
@@ -34,13 +34,13 @@
             (click)="purgeStaleRooms()"
           >
             <i class="bx bxs-trash"></i>
-            <span>Nettoyer {{ staleRooms.length }} room(s) inactive(s)</span>
+            <span>Nettoyer {{ staleRooms().length }} room(s) inactive(s)</span>
           </button>
         }
       </div>
       <app-rooms-card
-        [rooms]="rooms"
-        [playersByRoom]="playersByRoom"
+        [rooms]="rooms()"
+        [playersByRoom]="playersByRoom()"
         (joinEvent)="joinRoom($event)"
         (deleteEvent)="deleteRoom($event)"
       ></app-rooms-card>
@@ -52,20 +52,24 @@
         <form>
           <mat-form-field>
             <mat-label>Rechercher un joueur</mat-label>
-            <input matInput [formControl]="playerSearchControl" autocomplete="off" />
+            <input
+              matInput
+              [formControl]="playerSearchControl"
+              autocomplete="off"
+            />
             <i class="bx bxs-search" matSuffix aria-hidden="true"></i>
           </mat-form-field>
         </form>
       </div>
       <div class="players-grid">
-        @for (player of filteredPlayers; track player.id) {
+        @for (player of filteredPlayers(); track player.id) {
           <app-player-card
             [player]="player"
             (updateEvent)="openUserDialog($event)"
           ></app-player-card>
         }
       </div>
-      @if (!filteredPlayers.length) {
+      @if (!filteredPlayers().length) {
         <p class="no-results">Aucun joueur trouvé</p>
       }
     </div>

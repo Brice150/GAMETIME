@@ -1,43 +1,62 @@
+<!-- Le code etait uniquement dans la fenetre d invitation : quand les joueurs
+sont dans la meme piece, le lire a voix haute est le chemin le plus court. -->
+<button
+  type="button"
+  class="room-code"
+  (click)="copyCode()"
+  title="Copier le code"
+>
+  <span class="label">Code de la partie</span>
+  <span class="code">{{ room().roomCode }}</span>
+  <i class="bx bxs-copy-alt"></i>
+</button>
+
 <div class="players">
   @for (otherPlayer of players(); track otherPlayer.userId) {
-  <div class="container">
-    <div
-      class="player"
-      [ngClass]="{ 'alt-color': otherPlayer.userId !== player().userId }"
-    >
-      <div class="flex">
-        <span class="username"
-          >{{ otherPlayer.username }} {{ otherPlayer.animal }}</span
-        >
-        <div class="end">
-          @if (otherPlayer.isReady && room().userId !== otherPlayer.userId) {
-          <i class="bx bxs-check-circle" title="Prêt"></i>
-          } @else if (room().userId !== otherPlayer.userId) {
-          <i class="bx bxs-x-circle" title="Pas prêt" style="color: var(--danger)"></i>
-          }
-          <div class="medals">
-            <span class="victory-number">{{
-              otherPlayer | totalMedalsNumber
-            }}</span>
-            <i class="bx bxs-medal"></i>
+    <div class="container">
+      <div
+        class="player"
+        [ngClass]="{ 'alt-color': otherPlayer.userId !== player().userId }"
+      >
+        <div class="flex">
+          <span class="username"
+            >{{ otherPlayer.username }} {{ otherPlayer.animal }}</span
+          >
+          <div class="end">
+            @if (otherPlayer.isReady && room().userId !== otherPlayer.userId) {
+              <i class="bx bxs-check-circle" title="Prêt"></i>
+            } @else if (room().userId !== otherPlayer.userId) {
+              <i
+                class="bx bxs-x-circle"
+                title="Pas prêt"
+                style="color: var(--danger)"
+              ></i>
+            }
+            <div class="medals">
+              <span class="victory-number">{{
+                otherPlayer | totalMedalsNumber
+              }}</span>
+              <i class="bx bxs-medal"></i>
+            </div>
           </div>
         </div>
       </div>
+      @if (
+        otherPlayer.userId !== player().userId &&
+        room().userId === player().userId
+      ) {
+        <div class="button-container-delete">
+          <button
+            type="button"
+            (click)="delete(otherPlayer)"
+            title="Supprimer"
+            class="delete share"
+          >
+            <i class="bx bxs-trash"></i>
+          </button>
+        </div>
+      }
     </div>
-    @if (otherPlayer.userId !== player().userId && room().userId ===
-    player().userId) {
-    <div class="button-container-delete">
-      <button
-        type="button"
-        (click)="delete(otherPlayer)"
-        title="Supprimer"
-        class="delete share"
-      >
-        <i class="bx bxs-trash"></i>
-      </button>
-    </div>
-    }
-  </div>
   }
   <div class="player spinner">
     <mat-spinner diameter="34"></mat-spinner>

@@ -1,6 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -20,6 +28,7 @@ import {
 } from 'rxjs';
 import { Player } from '../core/interfaces/player';
 import { Room } from '../core/interfaces/room';
+import { normalizeUsername } from '../core/utils/username.util';
 import { LocalStorageService } from '../core/services/local-storage.service';
 import { PlayerService } from '../core/services/player.service';
 import { RoomService } from '../core/services/room.service';
@@ -42,6 +51,7 @@ import { RoomsCardComponent } from './rooms-card/rooms-card.component';
   ],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminComponent implements OnInit {
   roomService = inject(RoomService);
@@ -51,22 +61,27 @@ export class AdminComponent implements OnInit {
   toastrHelper = inject(ToastrHelperService);
   dialog = inject(MatDialog);
   router = inject(Router);
-  rooms: Room[] = [];
-  players: Player[] = [];
-  playersByRoom: Record<string, Player[]> = {};
-  loading = true;
+  readonly rooms = signal<Room[]>([]);
+  readonly players = signal<Player[]>([]);
+  readonly playersByRoom = signal<Record<string, Player[]>>({});
+  readonly loading = signal(true);
   playerSearchControl = new FormControl<string>('');
+  private readonly search = signal('');
   readonly staleRoomMaxAgeMs = 24 * 60 * 60 * 1000;
 
-  get startedRoomsNumber(): number {
-    return this.rooms.filter((room) => room.isStarted).length;
-  }
+  readonly startedRoomsNumber = computed(
+    () => this.rooms().filter((room) => room.isStarted).length,
+  );
 
-  get waitingRoomsNumber(): number {
-    return this.rooms.length - this.startedRoomsNumber;
-  }
+  readonly waitingRoomsNumber = computed(
+    () => this.rooms().length - this.startedRoomsNumber(),
+  );
 
   ngOnInit(): void {
+    this.playerSearchControl.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => this.search.set(value ?? ''));
+
     this.roomService
       .getRooms()
       .pipe(
@@ -80,27 +95,27 @@ export class AdminComponent implements OnInit {
       )
       .subscribe({
         next: ({ rooms, players }) => {
-          this.rooms = this.sortRooms(rooms);
-          this.players = this.sortPlayers(players);
+          this.rooms.set(this.sortRooms(rooms));
+          this.players.set(this.sortPlayers(players));
 
-          this.playersByRoom = rooms.reduce(
-            (acc, room) => {
-              const playerIds = room.playerIds || [];
-              acc[room.id!] = playerIds
-                .map((id) => players.find((p) => p.userId === id))
-                .filter((p): p is Player => !!p);
-              return acc;
-            },
-            {} as Record<string, Player[]>,
+          this.playersByRoom.set(
+            rooms.reduce(
+              (acc, room) => {
+                const playerIds = room.playerIds || [];
+                acc[room.id!] = playerIds
+                  .map((id) => players.find((p) => p.userId === id))
+                  .filter((p): p is Player => !!p);
+                return acc;
+              },
+              {} as Record<string, Player[]>,
+            ),
           );
 
-          this.loading = false;
+          this.loading.set(false);
         },
         error: (error: HttpErrorResponse) => {
-          this.loading = false;
-          if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastrHelper.error(error.message);
-          }
+          this.loading.set(false);
+          this.toastrHelper.handleError(error);
         },
       });
   }
@@ -115,35 +130,33 @@ export class AdminComponent implements OnInit {
       .pipe(
         filter((res: boolean) => res),
         switchMap(() => {
-          this.loading = true;
+          this.loading.set(true);
           return this.cleanupRoom(roomId);
         }),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
         next: () => {
-          this.loading = false;
+          this.loading.set(false);
           this.toastrHelper.info('La room a été supprimée', 'Room');
         },
         error: (error: HttpErrorResponse) => {
-          this.loading = false;
-          if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastrHelper.error(error.message);
-          }
+          this.loading.set(false);
+          this.toastrHelper.handleError(error);
         },
       });
   }
 
   // Une room dont l'hote a ferme l'onglet n'est supprimee par personne :
   // faute de tache planifiee, le menage est declenche depuis cette page.
-  get staleRooms(): Room[] {
-    return this.rooms.filter((room) =>
+  readonly staleRooms = computed(() =>
+    this.rooms().filter((room) =>
       this.roomService.isStale(room, this.staleRoomMaxAgeMs),
-    );
-  }
+    ),
+  );
 
   purgeStaleRooms(): void {
-    const staleRooms = this.staleRooms;
+    const staleRooms = this.staleRooms();
 
     if (!staleRooms.length) {
       return;
@@ -158,7 +171,7 @@ export class AdminComponent implements OnInit {
       .pipe(
         filter((res: boolean) => res),
         switchMap(() => {
-          this.loading = true;
+          this.loading.set(true);
           return from(staleRooms).pipe(
             concatMap((room) => this.cleanupRoom(room.id!)),
             toArray(),
@@ -168,17 +181,15 @@ export class AdminComponent implements OnInit {
       )
       .subscribe({
         next: () => {
-          this.loading = false;
+          this.loading.set(false);
           this.toastrHelper.info(
             `${staleRooms.length} rooms supprimées`,
             'Rooms',
           );
         },
         error: (error: HttpErrorResponse) => {
-          this.loading = false;
-          if (!error.message.includes('Missing or insufficient permissions.')) {
-            this.toastrHelper.error(error.message);
-          }
+          this.loading.set(false);
+          this.toastrHelper.handleError(error);
         },
       });
   }
@@ -186,7 +197,7 @@ export class AdminComponent implements OnInit {
   // Une room supprimee laisse derriere elle des joueurs bloques sur un
   // resultat et des invitations mortes.
   private cleanupRoom(roomId: string): Observable<void> {
-    const players = this.playersByRoom[roomId] ?? [];
+    const players = this.playersByRoom()[roomId] ?? [];
 
     const reset$ = players.length
       ? this.playerService.updatePlayers(
@@ -224,7 +235,7 @@ export class AdminComponent implements OnInit {
           this.toastrHelper.info('Joueur modifié', 'Joueur');
         },
         error: (error: HttpErrorResponse) => {
-          this.toastrHelper.error(error.message);
+          this.toastrHelper.handleError(error);
         },
       });
   }
@@ -262,25 +273,15 @@ export class AdminComponent implements OnInit {
     });
   }
 
-  get filteredPlayers(): Player[] {
-    const normalizedQuery = this.normalizeText(
-      this.playerSearchControl.value || '',
-    );
+  readonly filteredPlayers = computed(() => {
+    const normalizedQuery = normalizeUsername(this.search());
 
     if (!normalizedQuery) {
-      return this.players;
+      return this.players();
     }
 
-    return this.players.filter((player) =>
-      this.normalizeText(player.username).includes(normalizedQuery),
+    return this.players().filter((player) =>
+      normalizeUsername(player.username).includes(normalizedQuery),
     );
-  }
-
-  private normalizeText(value: string): string {
-    return value
-      .trim()
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '');
-  }
+  });
 }
