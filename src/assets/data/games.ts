@@ -285,12 +285,6 @@ export const games: GameDefinition[] = [
     'bx bxs-landmark',
     (country) => country.capital,
   ),
-  countryAttributeGame(
-    'gentiles',
-    'Gentilés',
-    'bx bxs-user-voice',
-    (country) => country.demonym,
-  ),
   {
     key: 'elements',
     label: 'Éléments',

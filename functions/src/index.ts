@@ -56,7 +56,6 @@ const GAME_KEYS = [
   'motus',
   'anagrammes',
   'capitales',
-  'gentiles',
   'elements',
 ];
 

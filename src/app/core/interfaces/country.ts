@@ -9,5 +9,4 @@ export interface Country {
   code: string;
   continent: Continent;
   capital?: string;
-  demonym?: string;
 }
