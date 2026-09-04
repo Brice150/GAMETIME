@@ -1,4 +1,5 @@
-import { inject, Injectable } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { LocalStorageService } from './local-storage.service';
 import { ToastrHelperService } from './toastr-helper.service';
 
@@ -11,9 +12,15 @@ interface BeforeInstallPromptEvent extends Event {
 export class PwaInstallService {
   private toastrHelper = inject(ToastrHelperService);
   private localStorageService = inject(LocalStorageService);
+  private platformId = inject(PLATFORM_ID);
   private deferredPrompt: BeforeInstallPromptEvent | null = null;
 
   init(): void {
+    // Rien a proposer au prerendu : il n'y a pas de navigateur a equiper.
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     window.addEventListener('beforeinstallprompt', (event: Event) => {
       event.preventDefault();
       this.deferredPrompt = event as BeforeInstallPromptEvent;

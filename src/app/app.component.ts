@@ -1,11 +1,13 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
+  DOCUMENT,
   inject,
   OnInit,
+  PLATFORM_ID,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, RouterOutlet } from '@angular/router';
@@ -35,10 +37,17 @@ export class AppComponent implements OnInit {
   router = inject(Router);
   toastrHelper = inject(ToastrHelperService);
   destroyRef = inject(DestroyRef);
+  private readonly document = inject(DOCUMENT);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   ngOnInit(): void {
-    this.pwaUpdateService.init();
-    this.pwaInstallService.init();
+    // Mise a jour et installation ne concernent qu'un vrai navigateur ; au
+    // prerendu, l'ecoute de session ne rendra jamais de compte connecte, et la
+    // page produite est donc celle d'un visiteur anonyme.
+    if (this.isBrowser) {
+      this.pwaUpdateService.init();
+      this.pwaInstallService.init();
+    }
 
     this.userService.user$
       .pipe(
@@ -80,8 +89,12 @@ export class AppComponent implements OnInit {
   // L'écran de chargement inline (index.html) reste affiché tant que Firebase
   // n'a pas résolu la session : cela évite un écran vide, puis un saut de mise
   // en page au moment où le header apparaît.
+  //
+  // Le document est injecté plutôt que pris du global : au prérendu il n'y a
+  // pas de `document`, et l'écran est ainsi retiré du HTML produit — la page
+  // pregenerée n'a rien à masquer, son contenu est déjà là.
   removeShellLoader(): void {
-    document.getElementById('app-shell-loader')?.remove();
+    this.document.getElementById('app-shell-loader')?.remove();
   }
 
   logout(): void {

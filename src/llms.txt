@@ -1,22 +1,51 @@
 # GAME TIME
 
-> Application web de jeux de réflexion multijoueur : Motus, Drapeaux et Marques.
+> Application web de jeux de réflexion multijoueur : six jeux qui partagent une
+> même mécanique, trouver un mot en six essais.
 > Créez une room, partagez le code ou le lien, et comparez vos résultats.
+
+## Mécanique commune
+
+Chaque manche demande de deviner un mot en six essais maximum. Après chaque
+tentative, les lettres bien placées apparaissent en vert et les lettres
+présentes mais mal placées en rouge. Seul l'énoncé change d'un jeu à l'autre.
 
 ## Jeux
 
-- **Motus** : trouver un mot en six essais, avec les lettres bien placées en vert et les lettres présentes mais mal placées en rouge.
-- **Drapeaux** : deviner un pays à partir de son drapeau, avec les mêmes indices de couleur.
-- **Marques** : deviner une marque à partir de son logo, avec les mêmes indices de couleur.
-- **Aléatoire** : le jeu est tiré au sort au lancement de la partie.
+### Mots
+
+- **Motus** : aucun énoncé, seule la longueur du mot est connue.
+- **Anagrammes** : les lettres du mot sont données dans le désordre.
+
+### Géographie
+
+- **Drapeaux** : deviner un pays à partir de son drapeau. Filtre par continent.
+- **Capitales** : deviner la capitale d'un pays donné. Filtre par continent.
+
+### Culture
+
+- **Marques** : deviner une marque à partir de son logo. Filtre par catégorie.
+- **Éléments** : deviner un élément chimique à partir de son symbole. Filtre par
+  famille.
 
 ## Multijoueur
 
-Une room accueille plusieurs joueurs, qui la rejoignent par un code à quatre caractères, un lien, un QR code ou une invitation entre amis. Pendant la partie, chacun voit le chrono, le classement provisoire et l'avancée des autres. À la fin, un vote décide de la suite.
+Une room accueille plusieurs joueurs, qui la rejoignent par un code à quatre
+caractères, un lien, un QR code ou une invitation entre amis. Pendant la partie,
+chacun voit le chrono, le classement provisoire et l'avancée des autres. Entre
+deux parties, un vote désigne le jeu suivant : l'hôte lance avec le choix
+majoritaire déjà sélectionné.
+
+## Progression
+
+Chaque manche gagnée rapporte une médaille, comptée par jeu. Des paliers de
+médailles débloquent des succès, et un classement compare les joueurs, tous ou
+seulement ses amis.
 
 ## Comptes
 
-Connexion avec Google, GitHub ou en invité. Un compte invité peut être lié plus tard à un compte définitif sans perdre sa progression.
+Connexion avec Google, GitHub ou en invité. Un compte invité peut être lié plus
+tard à un compte définitif sans perdre sa progression.
 
 ## Liens
 

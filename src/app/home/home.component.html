@@ -2,32 +2,37 @@
   @if (!loading()) {
     <div class="panel gt-rise">
       <span class="panel-title">Vos dernières stats</span>
-      <!-- Les jeux se multipliant, la grille est coupee par categorie :
-      autrement les cartes formaient un mur sans reperes. Le total general
-      n'est plus repris ici : il tient sa place dans le classement, ou il se
-      compare aux autres joueurs. -->
-      @for (group of gameGroups; track group.category.key) {
-        <span class="group-label">
-          <i class="{{ group.category.icon }}"></i>
-          {{ group.category.label }}
-        </span>
-        <div class="stats-cards">
-          @for (game of group.games; track game.key) {
-            <div class="stat-card">
-              <div class="flex">
-                <i class="{{ game.icon }}"></i>
-                <span class="game">{{ game.label }}</span>
-              </div>
-              <div class="medals">
-                <span class="victory-number">{{
-                  game.key | medalsNumber: playerService.currentPlayerSig()!
-                }}</span>
-                <i class="bx bxs-medal"></i>
-              </div>
+      <!-- Les jeux se multipliant, ils sont ranges par categorie : autrement
+      les cartes formaient un mur sans reperes. Chaque categorie tient dans son
+      propre bloc, place a cote des autres sur grand ecran et sous elles sur
+      mobile. Le total general n'est plus repris ici : il tient sa place dans
+      le classement, ou il se compare aux autres joueurs. -->
+      <div class="stats-groups">
+        @for (group of gameGroups; track group.category.key) {
+          <div class="stats-group">
+            <span class="group-label">
+              <i class="{{ group.category.icon }}"></i>
+              {{ group.category.label }}
+            </span>
+            <div class="stats-cards">
+              @for (game of group.games; track game.key) {
+                <div class="stat-card">
+                  <div class="flex">
+                    <i class="{{ game.icon }}"></i>
+                    <span class="game">{{ game.label }}</span>
+                  </div>
+                  <div class="medals">
+                    <span class="victory-number">{{
+                      game.key | medalsNumber: playerService.currentPlayerSig()!
+                    }}</span>
+                    <i class="bx bxs-medal"></i>
+                  </div>
+                </div>
+              }
             </div>
-          }
-        </div>
-      }
+          </div>
+        }
+      </div>
       <div class="button-container">
         <button type="button" (click)="play()" title="Jouer">
           <i class="bx bx-play"></i>

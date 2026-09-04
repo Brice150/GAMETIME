@@ -37,7 +37,12 @@
             "allowedCommonJsDependencies": [
               "qrcode"
             ],
-            "serviceWorker": "ngsw-config.json"
+            "serviceWorker": "ngsw-config.json",
+            "server": "src/main.server.ts",
+            "prerender": {
+              "routesFile": "prerender-routes.txt",
+              "discoverRoutes": false
+            }
           },
           "configurations": {
             "production": {

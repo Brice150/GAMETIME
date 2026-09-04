@@ -2,6 +2,7 @@
   <div class="top-bar">
     <app-theme-toggle></app-theme-toggle>
   </div>
+
   <div class="hero">
     <span class="badge">
       <i class="bx bxs-medal" aria-hidden="true"></i>
@@ -11,111 +12,223 @@
       <span class="word">Game</span> <span class="word accent">Time</span>
     </h1>
     <h2>Quand réfléchir devient amusant !</h2>
+    <p class="hero-text">
+      Six jeux, une seule mécanique : trouvez le mot, lettre après lettre, en
+      six essais. Ouvrez un salon, donnez son code à vos amis, et voyez qui
+      trouve le plus vite.
+    </p>
     <div class="hero-tags">
       <span class="tag">
-        <i class="bx bxs-objects-horizontal-left" aria-hidden="true"></i> Motus
+        <i class="bx bx-font" aria-hidden="true"></i> Mots
       </span>
       <span class="tag">
-        <i class="bx bxs-flag" aria-hidden="true"></i> Drapeaux
+        <i class="bx bxs-map-alt" aria-hidden="true"></i> Géographie
       </span>
       <span class="tag">
-        <i class="bx bxs-package" aria-hidden="true"></i> Marques
+        <i class="bx bxs-star" aria-hidden="true"></i> Culture
+      </span>
+    </div>
+    <div class="hero-trust">
+      <span>
+        <i class="bx bx-check-circle" aria-hidden="true"></i> Entièrement
+        gratuit
+      </span>
+      <span>
+        <i class="bx bx-check-circle" aria-hidden="true"></i> Rien à installer
+      </span>
+      <span>
+        <i class="bx bx-check-circle" aria-hidden="true"></i> Jouable en invité
       </span>
     </div>
   </div>
 
+  <div class="stats-band reveal" #reveal>
+    <div class="stat">
+      <span class="num">6</span>
+      <span class="label">jeux</span>
+    </div>
+    <div class="stat">
+      <span class="num">3</span>
+      <span class="label">univers</span>
+    </div>
+    <div class="stat">
+      <span class="num">6</span>
+      <span class="label">essais par manche</span>
+    </div>
+    <div class="stat">
+      <span class="num">0 €</span>
+      <span class="label">pour jouer</span>
+    </div>
+  </div>
+
+  <div class="section-head reveal" #reveal>
+    <span class="eyebrow">Fonctionnalités</span>
+    <h3>Tout ce qu’il faut pour jouer entre amis</h3>
+    <p>
+      Une partie se lance en deux clics, et tout le reste se règle à plusieurs.
+    </p>
+  </div>
+
   <div class="features">
-    <div class="feature" #feature>
+    <div class="feature" #reveal>
       <div class="feature-visual">
         <img
-          [src]="imagePath + 'welcome/Motus.webp'"
-          alt="Grille du jeu Motus avec les lettres colorées"
-          width="1023"
-          height="731"
+          [src]="imagePath + 'welcome/Multijoueur.webp'"
+          alt="Classement en direct pendant une partie multijoueur"
           fetchpriority="high"
           decoding="async"
         />
       </div>
       <div class="feature-text">
         <span class="feature-label">
-          <i class="bx bxs-objects-horizontal-left" aria-hidden="true"></i>
-          Motus
-        </span>
-        <span>
-          Défiez votre esprit avec Motus, seul ou entre amis, et découvrez le
-          plaisir de deviner les mots grâce à des indices colorés. Vert si la
-          lettre est bien placée, rouge si elle est présente mais mal placée.
-          Prêt à relever le challenge et à progresser à chaque partie ?
-        </span>
-      </div>
-    </div>
-
-    <div class="feature reverse" #feature>
-      <div class="feature-text">
-        <span class="feature-label">
-          <i class="bx bxs-flag" aria-hidden="true"></i>
-          Drapeaux
-        </span>
-        <span>
-          Testez vos connaissances en géographie en devinant le pays derrière
-          chaque drapeau ! Jouez en solo ou en multijoueur et profitez des
-          indices couleur pour vous rapprocher de la bonne réponse.
-        </span>
-      </div>
-      <div class="feature-visual">
-        <img
-          [src]="imagePath + 'welcome/Drapeaux.webp'"
-          alt="Partie du jeu Drapeaux : deviner le pays derrière son drapeau"
-          width="1046"
-          height="747"
-          loading="lazy"
-          decoding="async"
-        />
-      </div>
-    </div>
-
-    <div class="feature" #feature>
-      <div class="feature-visual">
-        <img
-          [src]="imagePath + 'welcome/Marques.webp'"
-          alt="Partie du jeu Marques : reconnaître une entreprise à son logo"
-          width="1056"
-          height="754"
-          loading="lazy"
-          decoding="async"
-        />
-      </div>
-      <div class="feature-text">
-        <span class="feature-label">
-          <i class="bx bxs-package" aria-hidden="true"></i>
-          Marques
-        </span>
-        <span>
-          Reconnaissez-vous les plus grandes marques du monde ? Associez chaque
-          logo à son entreprise et mettez vos connaissances à l’épreuve. Comme
-          pour les drapeaux et Motus, laissez-vous guider par les indices
-          couleur pour trouver la bonne réponse !
-        </span>
-      </div>
-    </div>
-
-    <div class="feature reverse" #feature>
-      <div class="feature-text">
-        <span class="feature-label">
-          <i class="bx bxs-user-plus" aria-hidden="true"></i>
+          <i class="bx bxs-group" aria-hidden="true"></i>
           Multijoueur
         </span>
+        <h4>Tout le monde joue la même manche, en même temps</h4>
         <span>
-          Collectionnez des médailles à chaque victoire et affrontez vos amis
-          dans ces 3 jeux ludiques !
+          Un chronomètre partagé, un classement qui bouge à chaque lettre
+          trouvée : vous suivez l’avance de vos amis sans quitter votre grille.
+          Personne n’attend son tour, et la partie se termine quand le dernier a
+          rendu sa réponse.
+        </span>
+      </div>
+    </div>
+
+    <div class="feature reverse" #reveal>
+      <div class="feature-text">
+        <span class="feature-label">
+          <i class="bx bxs-key" aria-hidden="true"></i>
+          Salons privés
+        </span>
+        <h4>Un salon, un code à quatre caractères</h4>
+        <span>
+          Créez un salon en un clic et lisez son code à voix haute : ni O ni I,
+          rien qui prête à confusion. Vos amis le saisissent, ou rejoignent
+          d’un simple lien. Un retardataire peut même entrer en cours de
+          partie.
         </span>
       </div>
       <div class="feature-visual">
         <img
-          [src]="imagePath + 'welcome/Multijoueur.webp'"
-          alt="Résultats d'une partie multijoueur et médailles remportées"
-          width="997"
-          height="712"
+          [src]="imagePath + 'welcome/Salon.webp'"
+          alt="Salon d’attente avec le code de la partie et les joueurs présents"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+    </div>
+
+    <div class="feature" #reveal>
+      <div class="feature-visual">
+        <img
+          [src]="imagePath + 'welcome/Vote.webp'"
+          alt="Vote des joueurs pour choisir le prochain jeu"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+      <div class="feature-text">
+        <span class="feature-label">
+          <i class="bx bx-list-check" aria-hidden="true"></i>
+          Vote
+        </span>
+        <h4>C’est le vote qui décide du prochain jeu</h4>
+        <span>
+          Avant chaque partie, chacun donne sa voix. L’hôte n’a plus qu’à
+          lancer : la fenêtre s’ouvre déjà réglée sur le jeu majoritaire, avec
+          les réglages de la partie précédente. Ceux qui n’ont pas d’avis votent
+          « peu importe » et laissent faire.
+        </span>
+      </div>
+    </div>
+
+    <div class="feature reverse" #reveal>
+      <div class="feature-text">
+        <span class="feature-label">
+          <i class="bx bxs-trophy" aria-hidden="true"></i>
+          Progression
+        </span>
+        <h4>Des médailles, des succès et un classement</h4>
+        <span>
+          Chaque manche gagnée rapporte une médaille, comptée jeu par jeu.
+          Franchissez les paliers pour décrocher des succès et leurs
+          récompenses, puis mesurez-vous au classement général — ou seulement à
+          vos amis.
+        </span>
+      </div>
+      <div class="feature-visual">
+        <img
+          [src]="imagePath + 'welcome/Classement.webp'"
+          alt="Classement des joueurs et médailles obtenues"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+    </div>
+
+    <div class="feature" #reveal>
+      <div class="feature-visual">
+        <img
+          [src]="imagePath + 'welcome/Motus.webp'"
+          alt="Grille de jeu avec les lettres bien placées en vert"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+      <div class="feature-text">
+        <span class="feature-label">
+          <i class="bx bxs-category" aria-hidden="true"></i>
+          Catalogue
+        </span>
+        <h4>Six jeux, une mécanique qu’on apprend une fois</h4>
+        <span>
+          Devinez un mot en six essais : vert si la lettre est bien placée,
+          rouge si elle est ailleurs. Seul l’énoncé change d’un jeu à l’autre —
+          un drapeau, un logo, un symbole chimique, des lettres mélangées, ou
+          rien du tout.
+        </span>
+        <div class="game-pills">
+          <span class="game-pill">
+            <i class="bx bxs-objects-horizontal-left" aria-hidden="true"></i>
+            Motus
+          </span>
+          <span class="game-pill">
+            <i class="bx bx-shuffle" aria-hidden="true"></i> Anagrammes
+          </span>
+          <span class="game-pill">
+            <i class="bx bxs-flag" aria-hidden="true"></i> Drapeaux
+          </span>
+          <span class="game-pill">
+            <i class="bx bxs-landmark" aria-hidden="true"></i> Capitales
+          </span>
+          <span class="game-pill">
+            <i class="bx bxs-package" aria-hidden="true"></i> Marques
+          </span>
+          <span class="game-pill">
+            <i class="bx bx-atom" aria-hidden="true"></i> Éléments
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="feature reverse" #reveal>
+      <div class="feature-text">
+        <span class="feature-label">
+          <i class="bx bxs-download" aria-hidden="true"></i>
+          Installation
+        </span>
+        <h4>Sur votre écran d’accueil, comme une vraie application</h4>
+        <span>
+          Ajoutez Game Time à votre téléphone : elle s’ouvre en plein écran, se
+          lance instantanément et vous prévient quand un ami vous invite. Thème
+          clair ou sombre selon votre humeur, et rien à télécharger sur un
+          magasin d’applications.
+        </span>
+      </div>
+      <div class="feature-visual">
+        <img
+          [src]="imagePath + 'welcome/Installation.webp'"
+          alt="Game Time installé sur l’écran d’accueil d’un téléphone"
           loading="lazy"
           decoding="async"
         />
@@ -123,7 +236,7 @@
     </div>
   </div>
 
-  <div class="welcome-auth" #feature>
+  <div class="welcome-auth" #reveal>
     <h3>Commencez maintenant</h3>
     <p>Aucune installation, votre progression est sauvegardée.</p>
     @if (!loading()) {

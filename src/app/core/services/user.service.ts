@@ -32,7 +32,7 @@ export class UserService {
   // force. Prechauffe des l'affichage de la page de connexion, l'iframe est
   // deja pret et la fenetre s'ouvre dans le clic.
   warmUpSignInPopup(): void {
-    if (this.popupWarmedUp) {
+    if (this.popupWarmedUp || typeof window === 'undefined') {
       return;
     }
 

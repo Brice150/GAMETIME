@@ -1,10 +1,12 @@
-import { registerLocaleData } from '@angular/common';
+import { isPlatformBrowser, registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import {
   ApplicationConfig,
   ErrorHandler,
+  inject,
   isDevMode,
   LOCALE_ID,
+  PLATFORM_ID,
   provideZonelessChangeDetection,
 } from '@angular/core';
 import { provideServiceWorker } from '@angular/service-worker';
@@ -47,14 +49,23 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
-    provideFirestore(() =>
-      initializeFirestore(getApp(), {
+    // Le cache persistant s'appuie sur IndexedDB : au prerendu, en Node, il
+    // n'existe pas. La page d'accueil n'interroge de toute facon aucune
+    // collection.
+    provideFirestore(() => {
+      if (!isPlatformBrowser(inject(PLATFORM_ID))) {
+        return initializeFirestore(getApp(), {
+          ignoreUndefinedProperties: true,
+        });
+      }
+
+      return initializeFirestore(getApp(), {
         ignoreUndefinedProperties: true,
         localCache: persistentLocalCache({
           tabManager: persistentMultipleTabManager(),
         }),
-      }),
-    ),
+      });
+    }),
     provideFunctions(() => getFunctions(getApp(), environment.functionsRegion)),
     { provide: MAT_DATE_LOCALE, useValue: 'fr-FR' },
     { provide: LOCALE_ID, useValue: 'fr-FR' },
@@ -62,8 +73,10 @@ export const appConfig: ApplicationConfig = {
       provide: GoogleAuthProvider,
       useValue: new GoogleAuthProvider(),
     },
+    // Le test de plateforme se fait sans `inject` : cette valeur est calculee
+    // au chargement du module, hors de tout contexte d'injection.
     provideServiceWorker('ngsw-worker.js', {
-      enabled: !isDevMode(),
+      enabled: !isDevMode() && typeof navigator !== 'undefined',
       registrationStrategy: 'registerWhenStable:30000',
     }),
   ],

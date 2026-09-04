@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
@@ -8,6 +8,7 @@ import {
   ElementRef,
   inject,
   OnInit,
+  PLATFORM_ID,
   QueryList,
   signal,
   ViewChildren,
@@ -37,21 +38,37 @@ export class WelcomeComponent implements OnInit, AfterViewInit {
   router = inject(Router);
   toastrHelper = inject(ToastrHelperService);
   destroyRef = inject(DestroyRef);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   readonly loading = signal(false);
-  @ViewChildren('feature') features!: QueryList<ElementRef>;
+  // Tous les blocs qui apparaissent au defilement, pas seulement les
+  // fonctionnalites : bandeau de chiffres, titres de section, appel a
+  // l'inscription.
+  @ViewChildren('reveal') revealed!: QueryList<ElementRef>;
 
   ngOnInit(): void {
-    this.userService.warmUpSignInPopup();
+    if (this.isBrowser) {
+      this.userService.warmUpSignInPopup();
+    }
   }
 
+  // Au prerendu il n'y a ni defilement ni `IntersectionObserver` : les blocs
+  // restent dans leur etat initial, et l'hydratation les revele normalement.
   ngAfterViewInit(): void {
+    if (!this.isBrowser) {
+      return;
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry, index) => {
           if (entry.isIntersecting) {
             const element = entry.target as HTMLElement;
             const relativeDelay = index * 0.2;
-            element.style.transitionDelay = `${relativeDelay}s`;
+            // Variable et non `transition-delay` : pose en direct, le
+            // decalage restait sur l'element une fois apparu et retardait
+            // aussi ses transitions de survol. Les feuilles de style ne
+            // l'appliquent qu'aux proprietes de l'apparition.
+            element.style.setProperty('--reveal-delay', `${relativeDelay}s`);
             element.classList.add('visible');
             observer.unobserve(entry.target);
           }
@@ -60,8 +77,8 @@ export class WelcomeComponent implements OnInit, AfterViewInit {
       { threshold: 0.2 },
     );
 
-    this.features.forEach((feature) => {
-      observer.observe(feature.nativeElement);
+    this.revealed.forEach((element) => {
+      observer.observe(element.nativeElement);
     });
   }
 

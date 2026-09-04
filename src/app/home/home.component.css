@@ -36,20 +36,37 @@ section {
   text-align: center;
 }
 
-.stats-cards {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
+.stats-groups {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  width: 100%;
   margin-top: 16px;
+}
+
+/* Une categorie et ses jeux forment un bloc. C'est ce bloc qui se place a
+   cote des autres, les jeux restant empiles a l'interieur : les categories
+   se lisent alors de gauche a droite, et non plus en bandes successives. */
+.stats-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
   width: 100%;
 }
 
-/* Intitule de categorie au-dessus de sa grille de cartes. */
+.stats-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
 .group-label {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  margin-top: 22px;
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.14em;
@@ -60,10 +77,6 @@ section {
 .group-label i {
   font-size: 16px;
   color: var(--accent-bright);
-}
-
-.group-label + .stats-cards {
-  margin-top: 10px;
 }
 
 .stat-card {
@@ -124,19 +137,28 @@ mat-spinner {
 }
 
 @media (min-width: 781px) {
-  /* Rangee centree plutot qu'une grille a quatre colonnes fixes : une
-     categorie de deux ou trois jeux laissait sinon un vide a droite, et les
-     cartes paraissaient collees au bord gauche du panneau. */
-  .stats-cards {
-    display: flex;
+  /* Les categories passent en colonnes, centrees : une categorie de deux
+     jeux laissait sinon un vide a droite de sa bande, et les cartes
+     paraissaient collees au bord gauche du panneau. */
+  .stats-groups {
+    flex-direction: row;
     flex-wrap: wrap;
+    align-items: flex-start;
     justify-content: center;
+    gap: 24px;
+  }
+
+  .stats-group {
+    width: auto;
+  }
+
+  .stats-cards {
     gap: 16px;
+    width: auto;
   }
 
   .stat-card {
-    flex: 0 1 200px;
-    width: auto;
+    width: 200px;
     flex-direction: column;
     justify-content: flex-start;
     gap: 14px;

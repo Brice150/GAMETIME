@@ -1,4 +1,5 @@
-import { Injectable, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
 
 export type Theme = 'light' | 'dark';
 
@@ -16,12 +17,20 @@ export type Theme = 'light' | 'dark';
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
   private readonly storageKey = 'theme';
-  private readonly darkQuery = window.matchMedia(
-    '(prefers-color-scheme: dark)',
-  );
+  // Au prerendu il n'y a ni `matchMedia` ni theme memorise : la page est
+  // produite en sombre, et le navigateur retablit le vrai theme des
+  // l'hydratation, comme il le fait deja au premier rendu.
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+  private readonly darkQuery = this.isBrowser
+    ? window.matchMedia('(prefers-color-scheme: dark)')
+    : null;
   readonly theme = signal<Theme>('dark');
 
   constructor() {
+    if (!this.darkQuery) {
+      return;
+    }
+
     const stored = this.readStoredTheme();
     this.theme.set(stored ?? (this.darkQuery.matches ? 'dark' : 'light'));
     this.apply(this.theme());
@@ -36,6 +45,10 @@ export class ThemeService {
   }
 
   toggle(): void {
+    if (!this.isBrowser) {
+      return;
+    }
+
     const next: Theme = this.theme() === 'dark' ? 'light' : 'dark';
     this.theme.set(next);
     this.apply(next);
@@ -53,6 +66,10 @@ export class ThemeService {
   }
 
   private readStoredTheme(): Theme | null {
+    if (!this.isBrowser) {
+      return null;
+    }
+
     try {
       const stored = localStorage.getItem(this.storageKey);
       return stored === 'light' || stored === 'dark' ? stored : null;
