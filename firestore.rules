@@ -7,8 +7,13 @@ service cloud.firestore {
       return request.auth != null;
     }
 
+    // L'email est toujours dans le jeton : contrairement a un custom claim, ce
+    // droit ne peut pas manquer sur un jeton deja emis, ni se desynchroniser
+    // de la fiche joueur. Un compte invite n'en a pas, il n'est donc jamais
+    // administrateur.
     function isAdmin() {
-      return isSignedIn() && request.auth.token.admin == true;
+      return isSignedIn()
+        && request.auth.token.email == 'lecomte.digitalsolutions@gmail.com';
     }
 
     function isOwner(data) {

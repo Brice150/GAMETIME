@@ -19,6 +19,7 @@ import {
   combineLatest,
   distinctUntilChanged,
   filter,
+  forkJoin,
   from,
   map,
   Observable,
@@ -495,116 +496,118 @@ export class RoomComponent implements OnInit {
   }
 
   openDialog(): void {
-    if (this.playerService.currentPlayerSig()?.userId === this.room.userId) {
-      const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-        data: 'supprimer cette room',
-      });
+    const isHost =
+      this.playerService.currentPlayerSig()?.userId === this.room.userId;
 
-      dialogRef
-        .afterClosed()
-        .pipe(
-          filter((res: boolean) => res),
-          switchMap(() => {
-            this.loading.set(true);
-            this.userLeft = true;
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: isHost ? 'supprimer cette room' : 'quitter cette room',
+    });
 
-            this.players.forEach((player) => {
-              player.currentRoomWins = [];
-              player.finishDate = null;
-              player.durationMs = null;
-              player.isReady = false;
-              player.currentRoundProgress = null;
-              player.vote = null;
-            });
+    dialogRef
+      .afterClosed()
+      .pipe(
+        filter((res: boolean) => res),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(() => (isHost ? this.deleteRoom() : this.leaveRoom()));
+  }
 
-            return this.playerService.updatePlayers(this.players);
-          }),
-          takeUntilDestroyed(this.destroyRef),
-          switchMap(() => this.roomService.deleteRoom(this.room.id!)),
-        )
-        .subscribe({
-          next: () => {
-            this.roomService.currentRoomSig.set(undefined);
-            this.playerService.currentPlayersSig.set([]);
-            this.localStorageService.clearLocalStorage();
-            this.router.navigate(['/accueil']);
-            this.toastrHelper.info('La room a été supprimée', 'Room');
-          },
-          error: (error: HttpErrorResponse) => {
-            this.loading.set(false);
-            this.toastrHelper.handleError(error);
-          },
-        });
-    } else {
-      const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-        data: 'quitter cette room',
-      });
+  deleteRoom(): void {
+    this.loading.set(true);
+    this.userLeft = true;
 
-      dialogRef
-        .afterClosed()
-        .pipe(
-          filter((res: boolean) => res),
-          switchMap(() => {
-            this.loading.set(true);
-            this.userLeft = true;
+    // Remise a zero locale seulement : cote base, c'est la fonction
+    // `onRoomDeleted` qui s'en charge. L'ecrire ici aussi imposait un
+    // aller-retour de plus avant que la suppression ne parte.
+    this.players.forEach((player) => {
+      player.currentRoomWins = [];
+      player.finishDate = null;
+      player.durationMs = null;
+      player.isReady = false;
+      player.currentRoundProgress = null;
+      player.vote = null;
+    });
 
-            const userId = this.playerService.currentPlayerSig()?.userId;
-            this.room.playerIds = this.room.playerIds.filter(
-              (playerId) => playerId !== userId,
-            );
+    // Hors `takeUntilDestroyed` : l'ecoute de la room voit la suppression des
+    // le cache local et quitte la page avant la reponse du serveur. Rattachee
+    // au composant, cette souscription mourait avec lui, et un refus
+    // d'ecriture passait inapercu.
+    this.roomService.deleteRoom(this.room.id!).subscribe({
+      next: () => {
+        this.quitRoomView();
+        this.toastrHelper.info('La room a été supprimée', 'Room');
+      },
+      error: (error: HttpErrorResponse) => {
+        this.loading.set(false);
+        this.toastrHelper.handleError(error, true);
+      },
+    });
+  }
 
-            return userId
-              ? this.roomService.removePlayerFromRoom(this.room.id, userId)
-              : of(undefined);
-          }),
-          takeUntilDestroyed(this.destroyRef),
-          switchMap(() => {
-            const currentPlayer = this.playerService.currentPlayerSig();
+  // Sortir ne depend d'aucune reponse du serveur : enchainer les deux
+  // ecritures avant de rendre la main laissait le joueur devant un ecran de
+  // chargement le temps de deux allers-retours. Elles partent ensemble, la
+  // page bascule aussitot, et seul un echec est encore signale.
+  leaveRoom(): void {
+    this.userLeft = true;
 
-            if (!currentPlayer) {
-              return of(undefined);
-            }
+    const currentPlayer = this.playerService.currentPlayerSig();
+    const userId = currentPlayer?.userId;
 
-            currentPlayer.currentRoomWins = [];
-            currentPlayer.finishDate = null;
-            currentPlayer.durationMs = null;
-            currentPlayer.isReady = false;
-            currentPlayer.currentRoundProgress = null;
-            currentPlayer.vote = null;
+    this.room.playerIds = this.room.playerIds.filter(
+      (playerId) => playerId !== userId,
+    );
 
-            return this.playerService.updatePlayerFields(currentPlayer.id, {
-              currentRoomWins: [],
-              finishDate: null,
-              durationMs: null,
-              isReady: false,
-              currentRoundProgress: null,
-              vote: null,
-            });
-          }),
-        )
-        .subscribe({
-          next: () => {
-            this.roomService.currentRoomSig.set(undefined);
-            this.playerService.currentPlayersSig.set([]);
-            this.playerService.currentPlayerSig.set(
-              this.playerService.currentPlayerSig(),
-            );
-            this.localStorageService.clearLocalStorage();
-            this.router.navigate(['/accueil']);
-            this.toastrHelper.info('Vous venez de quitter une room', 'Room');
-          },
-          error: (error: HttpErrorResponse) => {
-            this.loading.set(false);
-            // La room a disparu entre-temps : le joueur en est sorti quand meme.
-            if (error.message.includes('No document to update')) {
-              this.router.navigate(['/accueil']);
-              this.toastrHelper.info('Vous venez de quitter une room', 'Room');
-            } else {
-              this.toastrHelper.handleError(error);
-            }
-          },
-        });
+    const writes: Observable<void>[] = [];
+
+    if (userId) {
+      writes.push(this.roomService.removePlayerFromRoom(this.room.id, userId));
     }
+
+    if (currentPlayer) {
+      currentPlayer.currentRoomWins = [];
+      currentPlayer.finishDate = null;
+      currentPlayer.durationMs = null;
+      currentPlayer.isReady = false;
+      currentPlayer.currentRoundProgress = null;
+      currentPlayer.vote = null;
+
+      writes.push(
+        this.playerService.updatePlayerFields(currentPlayer.id, {
+          currentRoomWins: [],
+          finishDate: null,
+          durationMs: null,
+          isReady: false,
+          currentRoundProgress: null,
+          vote: null,
+        }),
+      );
+
+      // Nouvelle reference : le signal ne rediffuse pas un objet mute en
+      // place, et l'entete gardait le score de la partie quittee.
+      this.playerService.currentPlayerSig.set({ ...currentPlayer });
+    }
+
+    this.quitRoomView();
+    this.toastrHelper.info('Vous venez de quitter une room', 'Room');
+
+    // Hors `takeUntilDestroyed` : la navigation detruit ce composant avant la
+    // reponse du serveur, et un echec doit rester dit. Une room disparue
+    // entre-temps n'en est pas un, le joueur en est sorti quand meme.
+    forkJoin(writes.length ? writes : [of(undefined)]).subscribe({
+      error: (error: HttpErrorResponse) => {
+        if (!error.message?.includes('No document to update')) {
+          this.toastrHelper.handleError(error);
+        }
+      },
+    });
+  }
+
+  quitRoomView(): void {
+    this.roomService.currentRoomSig.set(undefined);
+    this.playerService.currentPlayersSig.set([]);
+    this.localStorageService.clearLocalStorage();
+    this.router.navigate(['/accueil']);
   }
 
   vote(choice: string): void {

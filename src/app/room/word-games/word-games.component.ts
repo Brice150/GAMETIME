@@ -45,7 +45,10 @@ export class WordGamesComponent implements OnInit {
   readonly isOver = signal(false);
   readonly loading = signal(false);
   readonly currentIndex = signal(0);
-  preloaders: HTMLImageElement[] = [];
+  // Les references sont gardees pour que les telechargements ne soient pas
+  // abandonnes avant la fin. Indexees par URL : une manche ne relance pas les
+  // requetes deja parties.
+  preloaders = new Map<string, HTMLImageElement>();
   readonly room = input.required<Room>();
   readonly player = input.required<Player>();
   readonly lastRound = input<RoundResult | null>(null);
@@ -85,11 +88,13 @@ export class WordGamesComponent implements OnInit {
     this.imageUrl.set(imageUrl);
     this.imageError.set(false);
     this.loading.set(!!imageUrl);
-    this.preloadFrom(index + 1);
 
     this.response.set(this.room().responses[index || 0]);
 
     if (!imageUrl) {
+      // Pas d'image a afficher : rien ne retarde la mise en cache des
+      // suivantes.
+      this.preloadFrom(index + 1);
       this.startTimer();
     }
   }
@@ -109,34 +114,35 @@ export class WordGamesComponent implements OnInit {
   }
 
   // Toutes les images restantes sont mises en cache pendant que le joueur
-  // repond. Les references gardees evitent que les telechargements soient
-  // abandonnes avant la fin.
+  // repond. Lance avant l'affichage de la manche en cours, ce paquet de
+  // telechargements se partageait la bande passante avec l'image attendue :
+  // le drapeau mettait plusieurs secondes a apparaitre. Il n'est donc amorce
+  // qu'une fois celle-ci arrivee.
   preloadFrom(index: number): void {
     const room = this.room();
-    const preloaders: HTMLImageElement[] = [];
 
     for (let i = index; i < room.responses.length; i++) {
       const url = this.buildImageUrl(i);
 
-      if (url) {
+      if (url && !this.preloaders.has(url)) {
         const image = new Image();
         image.src = url;
-        preloaders.push(image);
+        this.preloaders.set(url, image);
       }
     }
-
-    this.preloaders = preloaders;
   }
 
   imageLoaded(): void {
     this.loading.set(false);
     this.startTimer();
+    this.preloadFrom(this.currentIndex() + 1);
   }
 
   imageFailed(): void {
     this.loading.set(false);
     this.imageError.set(true);
     this.startTimer();
+    this.preloadFrom(this.currentIndex() + 1);
   }
 
   // Le chrono part quand la question est reellement lisible, pas a l'arrivee

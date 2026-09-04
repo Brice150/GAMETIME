@@ -91,13 +91,6 @@ export class HeaderComponent implements OnInit {
     const links: NavLink[] = [
       { path: '/accueil', label: 'Accueil', icon: 'bxs-home', exact: true },
       {
-        path: '/parametres',
-        label: 'Paramètres',
-        icon: 'bxs-cog',
-        exact: true,
-        badge: pendingRequests,
-      },
-      {
         path: '/classement',
         label: 'Classement',
         icon: 'bxs-trophy',
@@ -123,6 +116,16 @@ export class HeaderComponent implements OnInit {
         exact: false,
       });
     }
+
+    // Ajoute en dernier : « Paramètres » se retrouve juste avant
+    // « Déconnexion », les deux entrees de compte restant cote a cote.
+    links.push({
+      path: '/parametres',
+      label: 'Paramètres',
+      icon: 'bxs-cog',
+      exact: true,
+      badge: pendingRequests,
+    });
 
     return links;
   });

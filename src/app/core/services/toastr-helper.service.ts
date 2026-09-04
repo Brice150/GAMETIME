@@ -26,12 +26,17 @@ const MESSAGES: Record<string, string> = {
   'not-found': 'Élément introuvable',
 };
 
-// Situations normales : le joueur ferme la fenetre de connexion, ou une
-// ecoute Firestore s'arrete a la deconnexion.
+// Situations normales : le joueur ferme la fenetre de connexion.
 const SILENT = [
   'auth/popup-closed-by-user',
   'auth/cancelled-popup-request',
   'auth/user-cancelled',
+];
+
+// Une ecoute Firestore coupee a la deconnexion rend ce refus : le taire est
+// juste. Mais sur une action declenchee par un clic, le taire donnait un
+// bouton qui semble ne rien faire, d'ou `reportPermissionDenied`.
+const PERMISSION_DENIED = [
   'Missing or insufficient permissions.',
   'permission-denied',
 ];
@@ -102,12 +107,21 @@ export class ToastrHelperService {
     return result.asObservable();
   }
 
-  handleError(error: unknown): void {
+  handleError(error: unknown, reportPermissionDenied = false): void {
     this.logging.logError(error);
 
     const identifier = this.identify(error);
 
     if (SILENT.some((pattern) => identifier.includes(pattern))) {
+      return;
+    }
+
+    if (PERMISSION_DENIED.some((pattern) => identifier.includes(pattern))) {
+      if (reportPermissionDenied) {
+        this.error(
+          'Action refusée : droits insuffisants, reconnectez-vous puis réessayez',
+        );
+      }
       return;
     }
 

@@ -32,12 +32,15 @@
       <div class="flag">
         @if (imageUrl() && !imageError()) {
           <!-- Masquee et non retiree du DOM, sinon elle ne se telecharge pas.
-          `alt` vide : decrire l'image revelerait la reponse. -->
+          `alt` vide : decrire l'image revelerait la reponse.
+          `fetchpriority` haute : c'est la seule image que le joueur attend,
+          les manches suivantes ne sont que du prechargement. -->
           <img
             [src]="imageUrl()"
             [class.pending]="loading()"
             alt=""
             decoding="async"
+            fetchpriority="high"
             (load)="imageLoaded()"
             (error)="imageFailed()"
           />

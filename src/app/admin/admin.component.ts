@@ -22,7 +22,6 @@ import {
   from,
   map,
   Observable,
-  of,
   switchMap,
   toArray,
 } from 'rxjs';
@@ -142,7 +141,7 @@ export class AdminComponent implements OnInit {
         },
         error: (error: HttpErrorResponse) => {
           this.loading.set(false);
-          this.toastrHelper.handleError(error);
+          this.toastrHelper.handleError(error, true);
         },
       });
   }
@@ -189,31 +188,17 @@ export class AdminComponent implements OnInit {
         },
         error: (error: HttpErrorResponse) => {
           this.loading.set(false);
-          this.toastrHelper.handleError(error);
+          this.toastrHelper.handleError(error, true);
         },
       });
   }
 
-  // Une room supprimee laisse derriere elle des joueurs bloques sur un
-  // resultat et des invitations mortes.
+  // Les joueurs bloques sur un resultat et les invitations mortes sont remis
+  // a plat par la fonction `onRoomDeleted`. Les reecrire ici en plus doublait
+  // l'attente, et un joueur qui n'est pas dans la room de l'admin faisait
+  // refuser l'ecriture par les regles : la room ne partait pas.
   private cleanupRoom(roomId: string): Observable<void> {
-    const players = this.playersByRoom()[roomId] ?? [];
-
-    const reset$ = players.length
-      ? this.playerService.updatePlayers(
-          players.map((player) => ({
-            ...player,
-            currentRoomWins: [],
-            finishDate: null,
-            durationMs: null,
-            isReady: false,
-            currentRoundProgress: null,
-            vote: null,
-          })),
-        )
-      : of(undefined);
-
-    return reset$.pipe(switchMap(() => this.roomService.deleteRoom(roomId)));
+    return this.roomService.deleteRoom(roomId);
   }
 
   openUserDialog(player: Player): void {
@@ -235,7 +220,7 @@ export class AdminComponent implements OnInit {
           this.toastrHelper.info('Joueur modifié', 'Joueur');
         },
         error: (error: HttpErrorResponse) => {
-          this.toastrHelper.handleError(error);
+          this.toastrHelper.handleError(error, true);
         },
       });
   }

@@ -14,7 +14,6 @@ import { setGlobalOptions } from 'firebase-functions/v2';
 import {
   onDocumentCreated,
   onDocumentDeleted,
-  onDocumentWritten,
 } from 'firebase-functions/v2/firestore';
 import { HttpsError, onCall } from 'firebase-functions/v2/https';
 import { onSchedule } from 'firebase-functions/v2/scheduler';
@@ -93,50 +92,6 @@ async function findPlayerByUserId(
 
   return snapshot.empty ? null : snapshot.docs[0];
 }
-
-/**
- * `isAdmin` vit sur la fiche joueur, mais les regles Firestore ne peuvent pas
- * la lire pour l'auteur d'une ecriture (le document est retrouve par requete,
- * pas par identifiant). On recopie donc la valeur dans un custom claim, que
- * les regles testent via `request.auth.token.admin`.
- *
- * Amorcage : passer `isAdmin` a true sur sa propre fiche depuis la console
- * Firebase, puis se reconnecter pour que le jeton porte le claim.
- */
-export const syncAdminClaim = onDocumentWritten(
-  'players/{playerId}',
-  async (event) => {
-    const before = event.data?.before.data();
-    const after = event.data?.after.data();
-    const userId = (after?.['userId'] ?? before?.['userId']) as
-      | string
-      | undefined;
-
-    if (!userId) {
-      return;
-    }
-
-    const isAdmin = after?.['isAdmin'] === true;
-
-    if (before && after && before['isAdmin'] === after['isAdmin']) {
-      return;
-    }
-
-    try {
-      const user = await auth.getUser(userId);
-      const claims = user.customClaims ?? {};
-
-      if ((claims['admin'] === true) === isAdmin) {
-        return;
-      }
-
-      await auth.setCustomUserClaims(userId, { ...claims, admin: isAdmin });
-      logger.info(`Claim admin=${isAdmin} pose sur ${userId}`);
-    } catch (error) {
-      logger.warn(`Claim admin non applique pour ${userId}`, error);
-    }
-  },
-);
 
 /**
  * Enregistre le resultat d'une manche. C'est la seule voie d'attribution
