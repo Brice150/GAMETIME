@@ -45,6 +45,11 @@ export const voteMap = Object.fromEntries(
   voteOptions.map((option) => [option.key, option]),
 );
 
+// Dans la salle d'attente il n'y a encore rien a recommencer.
+export const firstGameVoteOptions: KeyLabel[] = voteOptions.filter(
+  (option) => option.key !== restartVoteKey,
+);
+
 export function pickRandomGameKey(): string {
   return games[Math.floor(Math.random() * games.length)].key;
 }

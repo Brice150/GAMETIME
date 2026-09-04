@@ -48,12 +48,14 @@
   color: var(--text-1);
 }
 
+/* La pastille se dimensionne sur son texte : avec `flex: 1` la base valait
+   zero et « En attente » se cassait sur deux lignes dans une pastille etiree
+   en hauteur. */
 .room-head .state {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  flex: 1;
-  min-width: 0;
+  flex: 0 0 auto;
   padding: 5px 12px;
   border: 1px solid var(--border-1);
   border-radius: var(--r-pill);
@@ -61,7 +63,7 @@
   color: var(--text-2);
   font-size: 13px;
   font-weight: 600;
-  flex-grow: 0;
+  white-space: nowrap;
 }
 
 .room.live .state {

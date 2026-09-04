@@ -89,27 +89,11 @@
 
 @if (canVote()) {
   <div class="vote">
-    <span class="title">Et maintenant ?</span>
-    <div class="vote-options">
-      @for (option of voteOptions; track option.key) {
-        <button
-          type="button"
-          class="vote-option"
-          [ngClass]="{ selected: myVote() === option.key }"
-          [title]="option.label"
-          (click)="vote(option.key)"
-        >
-          <i class="{{ option.icon }}"></i>
-          <span class="label">{{ option.label }}</span>
-          @if (voteCounts()[option.key]) {
-            <span class="count">{{ voteCounts()[option.key] }}</span>
-          }
-        </button>
-      }
-    </div>
-    <span class="vote-status">
-      {{ votedCount() }} / {{ players().length }}
-      {{ players().length > 1 ? "joueurs ont voté" : "joueur a voté" }}
-    </span>
+    <app-vote-panel
+      [players]="players()"
+      [options]="voteOptions"
+      [currentPlayerId]="currentPlayerId()"
+      (voteEvent)="vote($event)"
+    ></app-vote-panel>
   </div>
 }

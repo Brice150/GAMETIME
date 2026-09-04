@@ -85,6 +85,17 @@
     <meta name="apple-mobile-web-app-title" content="GAME TIME" />
     <link rel="apple-touch-icon" href="assets/icons/icon-152x152.png" />
 
+    <!-- Connexion Google/GitHub : la fenêtre d'authentification charge un
+         iframe depuis ces deux origines. Les ouvrir à l'avance évite que la
+         première tentative dépasse le délai pendant lequel le navigateur
+         accepte encore d'ouvrir une fenêtre au nom du clic. -->
+    <link rel="preconnect" href="https://apis.google.com" crossorigin />
+    <link
+      rel="preconnect"
+      href="https://game-time-64133.firebaseapp.com"
+      crossorigin
+    />
+
     <!-- Polices auto-hébergées (Roboto + sous-ensemble Boxicons) -->
     <link
       rel="preload"

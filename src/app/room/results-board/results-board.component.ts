@@ -11,11 +11,12 @@ import { voteOptions } from '../../../assets/data/games';
 import { Player } from '../../core/interfaces/player';
 import { Room } from '../../core/interfaces/room';
 import { DurationPipe } from '../../shared/pipes/duration.pipe';
+import { VotePanelComponent } from '../vote-panel/vote-panel.component';
 
 // Classement dans l'en-tete de colonne, detail des manches dans les lignes.
 @Component({
   selector: 'app-results-board',
-  imports: [CommonModule, DurationPipe],
+  imports: [CommonModule, DurationPipe, VotePanelComponent],
   templateUrl: './results-board.component.html',
   styleUrl: './results-board.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -43,28 +44,6 @@ export class ResultsBoardComponent {
   readonly isHost = computed(
     () =>
       !!this.currentPlayerId() && this.room().userId === this.currentPlayerId(),
-  );
-
-  readonly myVote = computed(
-    () =>
-      this.players().find((player) => player.userId === this.currentPlayerId())
-        ?.vote ?? null,
-  );
-
-  readonly voteCounts = computed(() => {
-    const counts: Record<string, number> = {};
-
-    for (const player of this.players()) {
-      if (player.vote) {
-        counts[player.vote] = (counts[player.vote] ?? 0) + 1;
-      }
-    }
-
-    return counts;
-  });
-
-  readonly votedCount = computed(
-    () => this.players().filter((player) => !!player.vote).length,
   );
 
   isSpectator(player: Player): boolean {

@@ -7,6 +7,7 @@ import {
   DestroyRef,
   ElementRef,
   inject,
+  OnInit,
   QueryList,
   signal,
   ViewChildren,
@@ -29,7 +30,7 @@ import { ThemeToggleComponent } from '../shared/components/theme-toggle/theme-to
   styleUrl: './welcome.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WelcomeComponent implements AfterViewInit {
+export class WelcomeComponent implements OnInit, AfterViewInit {
   imagePath: string = environment.imagePath;
   userService = inject(UserService);
   playerService = inject(PlayerService);
@@ -38,6 +39,10 @@ export class WelcomeComponent implements AfterViewInit {
   destroyRef = inject(DestroyRef);
   readonly loading = signal(false);
   @ViewChildren('feature') features!: QueryList<ElementRef>;
+
+  ngOnInit(): void {
+    this.userService.warmUpSignInPopup();
+  }
 
   ngAfterViewInit(): void {
     const observer = new IntersectionObserver(

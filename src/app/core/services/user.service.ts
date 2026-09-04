@@ -23,6 +23,35 @@ export class UserService {
   // URL demandee avant la connexion : un lien de room partage ne doit pas
   // etre perdu par le passage sur la page d'accueil.
   redirectUrl: string | null = null;
+  private popupWarmedUp = false;
+
+  // Firebase charge un iframe `gapi` avant d'ouvrir la fenetre de connexion.
+  // Au tout premier passage sur le site rien n'est en cache : cette attente
+  // consomme l'autorisation d'ouvrir une fenetre accordee par le clic, et la
+  // connexion Google echoue en `auth/popup-blocked` jusqu'a un rechargement
+  // force. Prechauffe des l'affichage de la page de connexion, l'iframe est
+  // deja pret et la fenetre s'ouvre dans le clic.
+  warmUpSignInPopup(): void {
+    if (this.popupWarmedUp) {
+      return;
+    }
+
+    this.popupWarmedUp = true;
+
+    const resolver = (
+      this.auth as unknown as {
+        _popupRedirectResolver?: {
+          _initialize?: (auth: unknown) => Promise<unknown>;
+        };
+      }
+    )._popupRedirectResolver;
+
+    // Un echec n'a aucune consequence visible : la connexion reprend le
+    // chemin habituel, simplement sans l'avance prise.
+    resolver?._initialize?.(this.auth).catch(() => {
+      this.popupWarmedUp = false;
+    });
+  }
 
   signInWithGoogle(): Observable<UserCredential> {
     const provider = new GoogleAuthProvider();

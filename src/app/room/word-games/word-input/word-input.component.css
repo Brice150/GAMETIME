@@ -49,7 +49,8 @@ form {
   font-size: clamp(20px, 5.5vw, 28px);
   font-weight: 600;
   line-height: 1.25;
-  letter-spacing: clamp(6px, 2.2vw, 11px);
+  --letter-gap: clamp(6px, 2.2vw, 11px);
+  letter-spacing: var(--letter-gap);
   text-indent: 2px;
   text-transform: uppercase;
 }
@@ -89,10 +90,15 @@ form {
   pointer-events: none;
 }
 
+/* L'ecart entre lettres est porte par une marge, pas par `letter-spacing` :
+   celui-ci l'ajoute a l'interieur de la boite du caractere, et le trait de
+   soulignement, qui suit cette boite, debordait a droite du glyphe. */
 .letter {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  letter-spacing: 0;
+  margin-right: var(--letter-gap);
 }
 
 /* La couleur ne suffit pas : sans second indice, les deux etats sont

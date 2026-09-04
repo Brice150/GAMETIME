@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -20,7 +19,6 @@ import { gameMap } from '../../assets/data/games';
 import { NavLink } from '../core/interfaces/nav-link';
 import { Player } from '../core/interfaces/player';
 import { LocalStorageService } from '../core/services/local-storage.service';
-import { PlayerService } from '../core/services/player.service';
 import { RoomService } from '../core/services/room.service';
 import { ThemeToggleComponent } from '../shared/components/theme-toggle/theme-toggle.component';
 import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
@@ -28,7 +26,6 @@ import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
 @Component({
   selector: 'app-header',
   imports: [
-    CommonModule,
     RouterModule,
     MatButtonModule,
     MatMenuModule,
@@ -42,7 +39,6 @@ import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
 export class HeaderComponent implements OnInit {
   router = inject(Router);
   roomService = inject(RoomService);
-  playerService = inject(PlayerService);
   localStorageService = inject(LocalStorageService);
   destroyRef = inject(DestroyRef);
   player = input.required<Player>();
@@ -129,13 +125,6 @@ export class HeaderComponent implements OnInit {
 
     return links;
   });
-
-  // Copie avant tri : le tableau est partage avec la page room.
-  readonly players = computed(() =>
-    [...this.playerService.currentPlayersSig()].sort(
-      (a, b) => b.currentRoomWins.length - a.currentRoomWins.length,
-    ),
-  );
 
   ngOnInit(): void {
     this.router.events

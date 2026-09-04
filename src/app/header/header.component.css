@@ -159,66 +159,6 @@ header {
   font-weight: 500;
 }
 
-/* La liste des joueurs occupe sa propre ligne sous la barre. */
-.players-row {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-}
-
-.players {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  width: min(320px, 100%);
-  padding: 8px 12px;
-  border: 1px solid var(--border-1);
-  border-radius: var(--r-md);
-  background: var(--surface-1);
-}
-
-.players .player {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--accent-bright);
-}
-
-.players .player.alt-color {
-  color: var(--text-2);
-}
-
-.players .player .step {
-  flex-shrink: 0;
-  padding: 3px 10px;
-  border-radius: var(--r-pill);
-  background: var(--accent-gradient);
-  color: var(--on-accent);
-  font-size: 13px;
-}
-
-.players .player.alt-color .step {
-  background: var(--surface-3);
-  color: var(--text-1);
-}
-
-.slash {
-  margin: 0 2px;
-  opacity: 0.7;
-}
-
-.username {
-  min-width: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  text-align: left;
-}
-
 @media screen and (min-width: 1024px) {
   header {
     padding: 10px 24px;

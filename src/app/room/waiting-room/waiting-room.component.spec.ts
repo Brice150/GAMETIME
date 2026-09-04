@@ -20,5 +20,8 @@ describe('WaitingRoomComponent', () => {
     fixture.detectChanges();
 
     expect(fixture.componentInstance).toBeTruthy();
+    expect(
+      fixture.nativeElement.querySelector('app-vote-panel'),
+    ).toBeTruthy();
   });
 });

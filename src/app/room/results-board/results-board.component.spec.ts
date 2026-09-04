@@ -102,16 +102,4 @@ describe('ResultsBoardComponent', () => {
     expect(component.standings().map((entry) => entry.rank)).toEqual([1, 2]);
     expect(component.standings().map((entry) => entry.wins)).toEqual([2, 1]);
   });
-
-  it('compte les votes et ignore les joueurs qui n ont pas vote', () => {
-    build(buildRoom(['host', 'other']), [
-      buildPlayer({ id: 'p1', userId: 'host', vote: 'motus' }),
-      buildPlayer({ id: 'p2', userId: 'other', vote: 'motus' }),
-      buildPlayer({ id: 'p3', userId: 'third', vote: null }),
-    ]);
-
-    expect(component.voteCounts()).toEqual({ motus: 2 });
-    expect(component.votedCount()).toBe(2);
-    expect(component.myVote()).toBe('motus');
-  });
 });

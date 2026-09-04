@@ -53,8 +53,6 @@ export class AddRoomDialogComponent implements OnInit {
   marquesGameKey = gameMap['marques'].key;
   randomGameKey = randomGameKey;
   gameSelected: string = this.drapeauxGameKey;
-  startAgainMode = false;
-  voteHint = '';
 
   get maxWordLength(): number {
     if (this.isWordLengthIncreasing) {
@@ -63,23 +61,22 @@ export class AddRoomDialogComponent implements OnInit {
     return 13;
   }
 
+  // Les reglages de la partie precedente sont toujours repris : un vote
+  // « Recommencer » n'a alors plus qu'a etre valide, et les autres n'ont que
+  // le jeu a changer.
   ngOnInit(): void {
-    if (this.data) {
-      this.voteHint = this.data.voteHint ?? '';
-      this.startAgainMode = !!this.data.startAgainMode;
-      this.gameSelected = this.data.gameSelected || this.drapeauxGameKey;
-
-      if (this.startAgainMode) {
-        this.stepsNumber = this.data.stepsNumber ?? 3;
-        this.startWordLength = this.data.startWordLength ?? 5;
-        this.categoryFilter = this.data.categoryFilter?.toString() ?? '1';
-        this.isWordLengthIncreasing = this.data.isWordLengthIncreasing ?? true;
-        this.showFirstLetterMotus = this.data.showFirstLetterMotus ?? true;
-        this.showFirstLetterDrapeaux =
-          this.data.showFirstLetterDrapeaux ?? false;
-        this.showFirstLetterMarques = this.data.showFirstLetterMarques ?? false;
-      }
+    if (!this.data) {
+      return;
     }
+
+    this.gameSelected = this.data.gameSelected || this.drapeauxGameKey;
+    this.stepsNumber = this.data.stepsNumber ?? 3;
+    this.startWordLength = this.data.startWordLength ?? 5;
+    this.categoryFilter = this.data.categoryFilter?.toString() ?? '1';
+    this.isWordLengthIncreasing = this.data.isWordLengthIncreasing ?? true;
+    this.showFirstLetterMotus = this.data.showFirstLetterMotus ?? true;
+    this.showFirstLetterDrapeaux = this.data.showFirstLetterDrapeaux ?? false;
+    this.showFirstLetterMarques = this.data.showFirstLetterMarques ?? false;
   }
 
   formatLabelContinent(index: number): string {
@@ -117,9 +114,5 @@ export class AddRoomDialogComponent implements OnInit {
       // Monde et Tout valent 1 dans les deux enumerations.
       categoryFilter: isRandom ? 1 : Number(this.categoryFilter),
     } as RoomForm);
-  }
-
-  keepSameSettingsConfirm(): void {
-    this.dialogRef.close({});
   }
 }

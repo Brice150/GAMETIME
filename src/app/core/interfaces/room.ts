@@ -17,7 +17,6 @@ export interface Room {
   brands: Brand[];
   startDate: Date | null;
   startAgainNumber: number;
-  isReadyNotificationActivated: boolean;
   roomCode: string;
   // Participants au moment du lancement : sert a reconnaitre un joueur
   // arrive en cours de partie.

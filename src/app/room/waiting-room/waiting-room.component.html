@@ -23,12 +23,12 @@ sont dans la meme piece, le lire a voix haute est le chemin le plus court. -->
             >{{ otherPlayer.username }} {{ otherPlayer.animal }}</span
           >
           <div class="end">
-            @if (otherPlayer.isReady && room().userId !== otherPlayer.userId) {
-              <i class="bx bxs-check-circle" title="Prêt"></i>
+            @if (otherPlayer.vote && room().userId !== otherPlayer.userId) {
+              <i class="bx bxs-check-circle" title="A voté"></i>
             } @else if (room().userId !== otherPlayer.userId) {
               <i
                 class="bx bxs-x-circle"
-                title="Pas prêt"
+                title="N'a pas voté"
                 style="color: var(--danger)"
               ></i>
             }
@@ -62,3 +62,14 @@ sont dans la meme piece, le lire a voix haute est le chemin le plus court. -->
     <mat-spinner diameter="34"></mat-spinner>
   </div>
 </div>
+
+<!-- Voter vaut se declarer pret : l'hote voit d'un coup d'oeil qui attend
+quoi, et la fenetre de lancement s'ouvre sur le jeu majoritaire. -->
+<app-vote-panel
+  class="vote"
+  [players]="players()"
+  [options]="voteOptions"
+  [currentPlayerId]="player().userId"
+  heading="À quoi joue-t-on ?"
+  (voteEvent)="vote($event)"
+></app-vote-panel>

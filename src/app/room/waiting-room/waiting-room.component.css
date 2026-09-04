@@ -137,3 +137,8 @@
     gap: 4px;
   }
 }
+
+.vote {
+  width: min(560px, 92vw);
+  margin-top: 28px;
+}

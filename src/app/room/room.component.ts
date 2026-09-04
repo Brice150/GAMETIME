@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
@@ -62,7 +61,6 @@ const NEXT_ROUND_DELAY_MS = 1400;
 @Component({
   selector: 'app-room',
   imports: [
-    CommonModule,
     WordGamesComponent,
     WaitingRoomComponent,
     ResultsBoardComponent,
@@ -173,18 +171,6 @@ export class RoomComponent implements OnInit {
 
     if (!this.room.isStarted) {
       this.roomService.preloadGameData(this.room.gameName);
-    }
-
-    if (
-      this.room.isReadyNotificationActivated &&
-      !currentPlayer?.isReady &&
-      currentUserId !== this.room.userId &&
-      !this.room.isStarted
-    ) {
-      this.toastrHelper.info(
-        "L'hôte veut lancer la room, cliquez sur prêt",
-        'Room',
-      );
     }
 
     if (currentUserId && this.room.playerIds.includes(currentUserId)) {
@@ -620,8 +606,17 @@ export class RoomComponent implements OnInit {
     const vote = currentPlayer.vote === choice ? null : choice;
     currentPlayer.vote = vote;
 
+    // Avant le lancement le vote a remplace le bouton « Pret » : voter suffit
+    // a se declarer disponible, retirer son vote revient en arriere.
+    const fields: Partial<Player> = { vote };
+
+    if (!this.room.isStarted) {
+      currentPlayer.isReady = !!vote;
+      fields.isReady = currentPlayer.isReady;
+    }
+
     this.playerService
-      .updatePlayerFields(currentPlayer.id, { vote })
+      .updatePlayerFields(currentPlayer.id, fields)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         error: (error: HttpErrorResponse) => {
@@ -630,13 +625,20 @@ export class RoomComponent implements OnInit {
       });
   }
 
+  // Un joueur qui n'a pas vote, faute d'avoir fini ou de s'etre prononce,
+  // compte pour « Peu importe » : son silence ne bloque pas le depouillement.
+  // Ce report reste interne, les compteurs affiches aux joueurs ne montrant
+  // que les votes exprimes. Sans aucun vote il n'y a rien a depouiller.
   winningVote(): string | null {
+    if (this.players.every((player) => !player.vote)) {
+      return null;
+    }
+
     const counts = new Map<string, number>();
 
     for (const player of this.players) {
-      if (player.vote) {
-        counts.set(player.vote, (counts.get(player.vote) ?? 0) + 1);
-      }
+      const vote = player.vote ?? randomGameKey;
+      counts.set(vote, (counts.get(vote) ?? 0) + 1);
     }
 
     let winner: string | null = null;
@@ -654,17 +656,6 @@ export class RoomComponent implements OnInit {
     }
 
     return winner;
-  }
-
-  voteHint(): string {
-    const votedCount = this.players.filter((player) => !!player.vote).length;
-    const winner = this.winningVote();
-
-    if (!winner) {
-      return `Personne n'a voté (0 / ${this.players.length})`;
-    }
-
-    return `Vote des joueurs : ${voteMap[winner]?.label ?? winner} — ${votedCount} / ${this.players.length} ont voté`;
   }
 
   seeResults(): void {
@@ -699,7 +690,6 @@ export class RoomComponent implements OnInit {
     this.room.countries = [];
     this.room.brands = [];
     this.room.responses = [];
-    this.room.isReadyNotificationActivated = false;
     this.room.isLoading = true;
     this.room.lastActivityAt = new Date();
     this.room.startedPlayerIds = this.players
@@ -779,7 +769,6 @@ export class RoomComponent implements OnInit {
   resetRoom(): void {
     this.room.isStarted = false;
     this.room.startDate = null;
-    this.room.isReadyNotificationActivated = false;
     this.room.isLoading = false;
 
     this.roomService
@@ -802,36 +791,11 @@ export class RoomComponent implements OnInit {
     );
   }
 
-  shouldShowReadyButton(): boolean {
-    return (
-      !this.room.isStarted &&
-      this.playerService.currentPlayerSig()?.userId !== this.room.userId
-    );
-  }
-
-  ready(): void {
-    const currentPlayer = this.playerService.currentPlayerSig()!;
-    currentPlayer.isReady = !currentPlayer.isReady;
-
-    this.playerService
-      .updatePlayerFields(currentPlayer.id, { isReady: currentPlayer.isReady })
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() =>
-        this.playerService.currentPlayerSig.set(
-          this.playerService.currentPlayerSig(),
-        ),
-      );
-  }
-
+  // Les votes manquants ne retiennent plus l'hote : ils comptent pour
+  // « Peu importe » au depouillement. Une manche en cours, elle, doit encore
+  // s'achever avant d'etre relancee, sans quoi le retardataire perdrait sa
+  // partie en pleine saisie.
   openDialogs(): void {
-    const playerNotReady =
-      !this.room.isStarted &&
-      this.players.some(
-        (player) =>
-          player.userId !== this.playerService.currentPlayerSig()?.userId &&
-          !player.isReady,
-      );
-
     const playerNotDone =
       this.room.isStarted &&
       this.players.some(
@@ -840,37 +804,20 @@ export class RoomComponent implements OnInit {
           !player.finishDate,
       );
 
-    if (playerNotReady || playerNotDone) {
-      this.room.isReadyNotificationActivated =
-        !this.room.isReadyNotificationActivated;
-      this.roomService
-        .updateRoomFields(this.room.id, {
-          isReadyNotificationActivated: this.room.isReadyNotificationActivated,
-        })
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe(() => {
-          if (playerNotReady) {
-            this.toastrHelper.info(
-              'Tous les joueurs ne sont pas prêts',
-              'Joueurs',
-            );
-          } else if (playerNotDone) {
-            this.toastrHelper.info(
-              "Tous les joueurs n'ont pas fini",
-              'Joueurs',
-            );
-          }
-        });
+    if (playerNotDone) {
+      this.toastrHelper.info("Tous les joueurs n'ont pas fini", 'Joueurs');
       return;
     }
 
     this.openAddRoomDialog();
   }
 
+  // La fenetre s'ouvre sur le resultat du vote : le jeu majoritaire s'il y
+  // en a un, « Aleatoire » si « Peu importe » l'emporte, et le jeu en cours
+  // pour « Recommencer », ses reglages etant de toute facon repris tels quels.
   openAddRoomDialog(): void {
     const winner = this.winningVote();
     const votedGame = winner && winner !== restartVoteKey ? winner : null;
-    const keepsSameGame = !votedGame || votedGame === this.room.gameName;
 
     const dialogRef = this.dialog.open(AddRoomDialogComponent, {
       data: {
@@ -882,8 +829,6 @@ export class RoomComponent implements OnInit {
         showFirstLetterDrapeaux: this.room.showFirstLetter,
         showFirstLetterMarques: this.room.showFirstLetter,
         gameSelected: votedGame ?? this.room.gameName ?? '',
-        startAgainMode: !!this.room.startDate && keepsSameGame,
-        voteHint: this.room.startDate ? this.voteHint() : '',
       },
     });
 

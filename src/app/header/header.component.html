@@ -78,31 +78,4 @@
       </mat-menu>
     </div>
   </div>
-
-  @if (isRoomPage() && room()?.isStarted && !room()?.isLoading) {
-    <div class="players-row">
-      <div class="players">
-        @for (otherPlayer of players(); track otherPlayer.userId) {
-          <div
-            class="player"
-            [ngClass]="{ 'alt-color': otherPlayer.userId !== player().userId }"
-          >
-            <span class="username"
-              >{{ otherPlayer.username }} {{ otherPlayer.animal }}</span
-            >
-            @if (
-              otherPlayer.currentRoomWins.length !== room()!.responses.length
-            ) {
-              <span class="step">
-                {{ otherPlayer.currentRoomWins.length + 1
-                }}<span class="slash">/</span>{{ room()!.responses.length }}
-              </span>
-            } @else {
-              <span class="step">Terminé</span>
-            }
-          </div>
-        }
-      </div>
-    </div>
-  }
 </header>

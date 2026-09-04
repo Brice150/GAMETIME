@@ -64,7 +64,6 @@ export function buildRoom(overrides: Partial<Room> = {}): Room {
     brands: [],
     startDate: null,
     startAgainNumber: 0,
-    isReadyNotificationActivated: false,
     roomCode: 'ABCD',
     ...overrides,
   };
@@ -157,6 +156,7 @@ export function appTestProviders(
         user$: of(null),
         currentUserSig: signal(null),
         redirectUrl: null,
+        warmUpSignInPopup: noop,
         signInWithGoogle: () => EMPTY,
         signInWithGithub: () => EMPTY,
         signInAsGuest: () => EMPTY,

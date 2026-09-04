@@ -58,6 +58,14 @@ export class ParametersComponent {
   readonly loading = signal(false);
   readonly tab = signal<'compte' | 'amis'>('compte');
 
+  constructor() {
+    // Lier un compte invite passe par la meme fenetre que la connexion :
+    // elle a besoin de la meme avance.
+    if (this.isTemporaryAccount()) {
+      this.userService.warmUpSignInPopup();
+    }
+  }
+
   get pendingRequestsNumber(): number {
     return this.playerService.currentPlayerSig()?.friendRequestIds?.length ?? 0;
   }
