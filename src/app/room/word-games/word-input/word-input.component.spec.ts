@@ -1,5 +1,6 @@
 import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RoundAnswer } from '../../../core/interfaces/round-answer';
 import { Room } from '../../../core/interfaces/room';
 import { LocalStorageService } from '../../../core/services/local-storage.service';
 import { ToastrHelperService } from '../../../core/services/toastr-helper.service';
@@ -214,27 +215,28 @@ describe('WordInputComponent', () => {
 
   it('termine la manche sur une defaite au sixieme essai', async () => {
     await build('CHAT');
-    let result: boolean | undefined;
-    component.emitEvent.subscribe((won) => (result = won));
+    let result: RoundAnswer | undefined;
+    component.emitEvent.subscribe((round) => (result = round));
 
     for (let attempt = 0; attempt < 6; attempt++) {
       component.inputValue.set('ZZZZ');
       component.addTry();
     }
 
-    expect(result).toBe(false);
+    // Le dernier mot saisi part au serveur, qui tranche.
+    expect(result).toEqual({ won: false, answer: 'ZZZZ' });
     expect(component.isOver).toBe(true);
   });
 
   it('revele la reponse et signale la victoire', async () => {
     await build('CHAT');
-    let result: boolean | undefined;
-    component.emitEvent.subscribe((won) => (result = won));
+    let result: RoundAnswer | undefined;
+    component.emitEvent.subscribe((round) => (result = round));
 
     component.inputValue.set('CHAT');
     component.submitAnswer();
 
-    expect(result).toBe(true);
+    expect(result).toEqual({ won: true, answer: 'CHAT' });
     expect(component.tries.at(-1)?.letter.join('')).toBe('CHAT');
   });
 
@@ -242,5 +244,36 @@ describe('WordInputComponent', () => {
     await build('CHAT', true);
 
     expect(component.inputValue()).toBe('C');
+  });
+
+  it('verrouille le champ sans lui retirer le curseur entre deux manches', async () => {
+    await build('CHAT');
+    fixture.detectChanges();
+
+    const input: HTMLInputElement =
+      fixture.nativeElement.querySelector('input');
+    expect(input.readOnly).toBeFalse();
+
+    component.inputValue.set('CHAT');
+    component.submitAnswer();
+    fixture.detectChanges();
+
+    // Verrouille, mais toujours focalisable : le joueur n'a pas a recliquer
+    // dedans a la manche suivante.
+    expect(input.readOnly).toBeTrue();
+    expect(input.disabled).toBeFalse();
+  });
+
+  it('ignore une soumission une fois la manche jouee', async () => {
+    await build('CHAT');
+    const results: RoundAnswer[] = [];
+    component.emitEvent.subscribe((round) => results.push(round));
+
+    component.inputValue.set('CHAT');
+    component.submitAnswer();
+    component.inputValue.set('CHAT');
+    component.submitAnswer();
+
+    expect(results).toEqual([{ won: true, answer: 'CHAT' }]);
   });
 });

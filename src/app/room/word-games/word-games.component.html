@@ -18,39 +18,42 @@
     }
   </div>
 
-  @if (
-    room().gameName === drapeauxGameKey || room().gameName === marquesGameKey
-  ) {
+  <!-- Enonce de la manche : un jeu peut n'avoir ni categorie, ni texte, ni
+  illustration, comme Motus, et ce bloc disparait alors entierement. -->
+  @if (categoryLabel() || prompt() || imageUrl()) {
     <div class="container">
-      @if (room().gameName === drapeauxGameKey) {
-        <span class="continent">{{ room().categoryFilter | continent }}</span>
-      } @else if (room().gameName === marquesGameKey) {
-        <span class="continent">{{
-          room().categoryFilter | brandCategory
+      @if (categoryLabel()) {
+        <span class="continent">{{ categoryLabel() }}</span>
+      }
+      @if (prompt()) {
+        <span class="prompt" [class.emoji]="isEmojiPrompt()">{{
+          prompt()
         }}</span>
       }
-      <div class="flag">
-        @if (imageUrl() && !imageError()) {
+      @if (imageUrl()) {
+        <div class="flag">
           <!-- Masquee et non retiree du DOM, sinon elle ne se telecharge pas.
           `alt` vide : decrire l'image revelerait la reponse.
           `fetchpriority` haute : c'est la seule image que le joueur attend,
           les manches suivantes ne sont que du prechargement. -->
-          <img
-            [src]="imageUrl()"
-            [class.pending]="loading()"
-            alt=""
-            decoding="async"
-            fetchpriority="high"
-            (load)="imageLoaded()"
-            (error)="imageFailed()"
-          />
-        }
-        @if (loading()) {
-          <mat-spinner diameter="34"></mat-spinner>
-        } @else if (imageError()) {
-          <i class="bx bx-image-alt" title="Image indisponible"></i>
-        }
-      </div>
+          @if (!imageError()) {
+            <img
+              [src]="imageUrl()"
+              [class.pending]="loading()"
+              alt=""
+              decoding="async"
+              fetchpriority="high"
+              (load)="imageLoaded()"
+              (error)="imageFailed()"
+            />
+          }
+          @if (loading()) {
+            <mat-spinner diameter="34"></mat-spinner>
+          } @else if (imageError()) {
+            <i class="bx bx-image-alt" title="Image indisponible"></i>
+          }
+        </div>
+      }
     </div>
   }
 

@@ -47,7 +47,19 @@ const GOALS: { target: number; reward: number }[] = [
   { target: 10000, reward: 100 },
 ];
 
-const GAME_KEYS = ['drapeaux', 'marques', 'motus'];
+// Doit suivre le catalogue du client (src/assets/data/games.ts) : cette
+// liste ne borne que le jeu passe a `claimGoal`, les medailles etant comptees
+// par jeu.
+const GAME_KEYS = [
+  'drapeaux',
+  'marques',
+  'motus',
+  'capitales',
+  'devises',
+  'gentiles',
+  'elements',
+  'emojis',
+];
 
 // Marge de tolerance sur le chrono envoye par le client : le temps mesure
 // localement demarre a l'affichage de la question, donc apres le lancement
@@ -59,6 +71,18 @@ interface Stat {
   gameName: string;
   medalsNumber: number;
   lastSuccessRetrieved: number;
+}
+
+/**
+ * Comparaison des reponses : la casse et les accents ne comptent pas, le
+ * client saisissant sans accent.
+ */
+function normalizeAnswer(value: string): string {
+  return value
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .trim()
+    .toUpperCase();
 }
 
 function toDate(value: unknown): Date | null {
@@ -97,12 +121,16 @@ async function findPlayerByUserId(
  * Enregistre le resultat d'une manche. C'est la seule voie d'attribution
  * d'une medaille de partie : le client ne peut plus ecrire `stats` lui-meme.
  *
- * Verifie que la manche soumise est bien la suivante, ce qui empeche de
+ * Le client envoie le mot saisi, pas un verdict : c'est ici qu'il est compare
+ * au mot de la manche. Sur parole, il suffisait d'appeler cette fonction avec
+ * `won: true` pour remplir son compteur sans jouer.
+ *
+ * Verifie aussi que la manche soumise est bien la suivante, ce qui empeche de
  * rejouer la meme ou d'en sauter.
  */
 export const submitRound = onCall(async (request) => {
   const uid = requireUid(request.auth);
-  const { roomId, stepIndex, won, durationMs } = request.data ?? {};
+  const { roomId, stepIndex, answer, durationMs } = request.data ?? {};
 
   if (typeof roomId !== 'string' || !roomId) {
     throw new HttpsError('invalid-argument', 'Room manquante.');
@@ -110,8 +138,8 @@ export const submitRound = onCall(async (request) => {
   if (!Number.isInteger(stepIndex) || stepIndex < 0) {
     throw new HttpsError('invalid-argument', 'Manche invalide.');
   }
-  if (typeof won !== 'boolean') {
-    throw new HttpsError('invalid-argument', 'Resultat invalide.');
+  if (typeof answer !== 'string' || answer.length > 64) {
+    throw new HttpsError('invalid-argument', 'Reponse invalide.');
   }
 
   return db.runTransaction(async (transaction) => {
@@ -137,6 +165,9 @@ export const submitRound = onCall(async (request) => {
       throw new HttpsError('invalid-argument', 'Manche hors partie.');
     }
 
+    const won =
+      normalizeAnswer(answer) === normalizeAnswer(responses[stepIndex]);
+
     const playerQuery = db
       .collection('players')
       .where('userId', '==', uid)
@@ -159,8 +190,21 @@ export const submitRound = onCall(async (request) => {
     }
 
     const updatedWins = [...wins, won];
-    const stats = ((player['stats'] as Stat[]) ?? []).map((stat) =>
-      won && stat.gameName === room['gameName']
+    const gameName = room['gameName'] as string;
+    const currentStats = (player['stats'] as Stat[]) ?? [];
+
+    // Les fiches ne portent que les compteurs des jeux deja pratiques : celui
+    // du jeu en cours nait ici. Sans cette creation, un jeu ajoute apres la
+    // fiche n'attribuait aucune medaille, sans erreur visible.
+    const knownStats = currentStats.some((stat) => stat.gameName === gameName)
+      ? currentStats
+      : [
+          ...currentStats,
+          { gameName, medalsNumber: 0, lastSuccessRetrieved: 0 },
+        ];
+
+    const stats = knownStats.map((stat) =>
+      won && stat.gameName === gameName
         ? { ...stat, medalsNumber: (stat.medalsNumber ?? 0) + 1 }
         : stat,
     );
@@ -193,9 +237,10 @@ export const submitRound = onCall(async (request) => {
 
     transaction.update(playerDoc.ref, update);
 
-    const gameStat = stats.find((stat) => stat.gameName === room['gameName']);
+    const gameStat = stats.find((stat) => stat.gameName === gameName);
 
     return {
+      won,
       currentRoomWins: updatedWins,
       finished: updatedWins.length === responses.length,
       medalsNumber: gameStat?.medalsNumber ?? 0,

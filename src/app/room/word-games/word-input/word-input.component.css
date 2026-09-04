@@ -78,7 +78,7 @@ form {
   box-shadow: 0 0 0 4px var(--accent-soft);
 }
 
-.input-wrap input:disabled {
+.input-wrap input.locked {
   opacity: 0.5;
 }
 

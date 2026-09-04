@@ -87,12 +87,13 @@
   </table>
 </div>
 
-@if (canVote()) {
+@if (canVote() && players().length > 1) {
   <div class="vote">
     <app-vote-panel
       [players]="players()"
-      [options]="voteOptions"
+      [groups]="voteGroups"
       [currentPlayerId]="currentPlayerId()"
+      [hostId]="room().userId"
       (voteEvent)="vote($event)"
     ></app-vote-panel>
   </div>

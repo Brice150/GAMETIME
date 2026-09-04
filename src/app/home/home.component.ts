@@ -11,7 +11,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router, RouterModule } from '@angular/router';
 import { switchMap, take } from 'rxjs';
-import { games } from '../../assets/data/games';
+import { gamesByCategory } from '../../assets/data/games';
 import { Room } from '../core/interfaces/room';
 import { LocalStorageService } from '../core/services/local-storage.service';
 import { PlayerService } from '../core/services/player.service';
@@ -43,7 +43,7 @@ export class HomeComponent {
   localStorageService = inject(LocalStorageService);
   destroyRef = inject(DestroyRef);
   router = inject(Router);
-  games = games;
+  gameGroups = gamesByCategory();
 
   play(): void {
     this.loading.set(true);
@@ -55,23 +55,22 @@ export class HomeComponent {
       return;
     }
 
-    const roomCode = this.roomService.generateRoomCode();
-
-    const newRoom = {
-      // Le jeu est choisi dans la room : vide tant qu il ne l est pas.
-      gameName: '',
-      playerIds: [currentUserId],
-      isStarted: false,
-      startDate: null,
-      startAgainNumber: 0,
-      roomCode: roomCode,
-    };
-
     this.roomService
       .deleteUserRooms()
       .pipe(
         takeUntilDestroyed(this.destroyRef),
-        switchMap(() => this.roomService.addRoom(newRoom as Room)),
+        switchMap(() => this.roomService.generateUniqueRoomCode()),
+        switchMap((roomCode) =>
+          this.roomService.addRoom({
+            // Le jeu est choisi dans la room : vide tant qu il ne l est pas.
+            gameName: '',
+            playerIds: [currentUserId],
+            isStarted: false,
+            startDate: null,
+            startAgainNumber: 0,
+            roomCode,
+          } as Room),
+        ),
       )
       .subscribe({
         next: (roomId) => {

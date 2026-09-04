@@ -2,8 +2,10 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
   OnInit,
+  signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -14,11 +16,11 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSliderModule } from '@angular/material/slider';
 import {
   gameMap,
+  gamesByCategory,
+  randomGame,
   randomGameKey,
-  selectableGames,
 } from '../../../../assets/data/games';
-import { BrandCategory } from '../../../core/enums/brand-category.enum';
-import { Continent } from '../../../core/enums/continent.enum';
+import { GameDefinition } from '../../../core/interfaces/game';
 import { RoomForm } from '../../../core/interfaces/room-form';
 
 @Component({
@@ -39,20 +41,27 @@ import { RoomForm } from '../../../core/interfaces/room-form';
 export class AddRoomDialogComponent implements OnInit {
   dialogRef = inject(MatDialogRef<AddRoomDialogComponent>);
   data = inject<RoomForm>(MAT_DIALOG_DATA);
-  games = selectableGames;
+  // Les jeux sont proposes ranges par categorie ; « Aleatoire » reste a part,
+  // n'etant pas un jeu mais un choix de configuration.
+  gameGroups = gamesByCategory();
+  randomGame = randomGame;
+  randomGameKey = randomGameKey;
   stepsNumber = 3;
   startWordLength = 5;
-  categoryFilter = '1';
+  categoryFilter = 1;
   isWordLengthIncreasing = true;
-  showFirstLetterMotus = true;
-  showFirstLetterDrapeaux = false;
-  showFirstLetterMarques = false;
-  showFirstLetterRandom = false;
-  motusGameKey = gameMap['motus'].key;
-  drapeauxGameKey = gameMap['drapeaux'].key;
-  marquesGameKey = gameMap['marques'].key;
-  randomGameKey = randomGameKey;
-  gameSelected: string = this.drapeauxGameKey;
+  showFirstLetter = false;
+  readonly gameSelected = signal('drapeaux');
+
+  // Toute la mise en forme de la fenetre se lit dans le descripteur du jeu :
+  // filtre propose ou non, reglage de longueur de mot, libelles du curseur.
+  readonly game = computed<GameDefinition | undefined>(
+    () => gameMap[this.gameSelected()],
+  );
+
+  readonly filterLabels = computed(() => this.game()?.filterLabels ?? []);
+
+  readonly hasWordLength = computed(() => !!this.game()?.hasWordLength);
 
   get maxWordLength(): number {
     if (this.isWordLengthIncreasing) {
@@ -69,22 +78,26 @@ export class AddRoomDialogComponent implements OnInit {
       return;
     }
 
-    this.gameSelected = this.data.gameSelected || this.drapeauxGameKey;
+    this.gameSelected.set(this.data.gameSelected || 'drapeaux');
     this.stepsNumber = this.data.stepsNumber ?? 3;
     this.startWordLength = this.data.startWordLength ?? 5;
-    this.categoryFilter = this.data.categoryFilter?.toString() ?? '1';
+    this.categoryFilter = Number(this.data.categoryFilter) || 1;
     this.isWordLengthIncreasing = this.data.isWordLengthIncreasing ?? true;
-    this.showFirstLetterMotus = this.data.showFirstLetterMotus ?? true;
-    this.showFirstLetterDrapeaux = this.data.showFirstLetterDrapeaux ?? false;
-    this.showFirstLetterMarques = this.data.showFirstLetterMarques ?? false;
+    this.showFirstLetter =
+      this.data.showFirstLetter ?? !!this.game()?.showFirstLetter;
   }
 
-  formatLabelContinent(index: number): string {
-    return Continent[index] ?? Continent[1];
-  }
+  // Le curseur affiche le libelle du filtre, pas son rang.
+  readonly formatFilter = (value: number): string =>
+    this.filterLabels()[value - 1] ?? '';
 
-  formatLabelMarques(index: number): string {
-    return BrandCategory[index] ?? BrandCategory[1];
+  selectGame(key: string): void {
+    this.gameSelected.set(key);
+
+    // Les filtres n'ont pas le meme sens d'un jeu a l'autre : garder le rang
+    // choisi pour les drapeaux appliquait un continent a une categorie de
+    // marques. Le plus large, toujours en tete, sert de repli.
+    this.categoryFilter = 1;
   }
 
   cancel(): void {
@@ -92,27 +105,19 @@ export class AddRoomDialogComponent implements OnInit {
   }
 
   confirm(): void {
-    const isRandom = this.gameSelected === this.randomGameKey;
-
     this.dialogRef.close({
-      gameSelected: this.gameSelected,
-      showFirstLetterMotus: isRandom
-        ? this.showFirstLetterRandom
-        : this.showFirstLetterMotus,
-      showFirstLetterDrapeaux: isRandom
-        ? this.showFirstLetterRandom
-        : this.showFirstLetterDrapeaux,
-      showFirstLetterMarques: isRandom
-        ? this.showFirstLetterRandom
-        : this.showFirstLetterMarques,
+      gameSelected: this.gameSelected(),
+      showFirstLetter: this.showFirstLetter,
       stepsNumber: this.stepsNumber,
       isWordLengthIncreasing: this.isWordLengthIncreasing,
       // La borne haute depend du nombre de manches : augmenter les manches
       // apres avoir choisi la taille laissait une valeur hors bornes, et la
       // partie rendait alors moins de manches que demande.
       startWordLength: Math.min(this.startWordLength, this.maxWordLength),
-      // Monde et Tout valent 1 dans les deux enumerations.
-      categoryFilter: isRandom ? 1 : Number(this.categoryFilter),
+      // En aleatoire le jeu n'est connu qu'au lancement : aucun filtre de
+      // categorie n'aurait de sens, on retient donc le plus large.
+      categoryFilter:
+        this.gameSelected() === randomGameKey ? 1 : this.categoryFilter,
     } as RoomForm);
   }
 }

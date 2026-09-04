@@ -3,6 +3,8 @@ import { Functions, httpsCallable } from '@angular/fire/functions';
 import { from, map, Observable } from 'rxjs';
 
 export interface SubmitRoundResult {
+  // Verdict du serveur : c'est lui qui compare la reponse au mot de la manche.
+  won: boolean;
   currentRoomWins: boolean[];
   finished: boolean;
   medalsNumber: number;
@@ -25,20 +27,20 @@ export class GameApiService {
   submitRound(
     roomId: string,
     stepIndex: number,
-    won: boolean,
+    answer: string,
     durationMs: number | null,
   ): Observable<SubmitRoundResult> {
     const callable = httpsCallable<
       {
         roomId: string;
         stepIndex: number;
-        won: boolean;
+        answer: string;
         durationMs: number | null;
       },
       SubmitRoundResult
     >(this.functions, 'submitRound');
 
-    return from(callable({ roomId, stepIndex, won, durationMs })).pipe(
+    return from(callable({ roomId, stepIndex, answer, durationMs })).pipe(
       map((result) => result.data),
     );
   }

@@ -15,7 +15,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
-import { games } from '../../assets/data/games';
+import { games, gamesByCategory } from '../../assets/data/games';
 import { Player } from '../core/interfaces/player';
 import { PlayerService } from '../core/services/player.service';
 import { ToastrHelperService } from '../core/services/toastr-helper.service';
@@ -49,6 +49,7 @@ export class RankingComponent implements OnInit {
   toastrHelper = inject(ToastrHelperService);
   destroyRef = inject(DestroyRef);
   games = games;
+  gameGroups = gamesByCategory();
 
   readonly loading = signal(true);
   readonly tab = signal<'classement' | 'succes'>('classement');

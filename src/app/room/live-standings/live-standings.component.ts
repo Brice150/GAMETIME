@@ -16,7 +16,9 @@ import { Room } from '../../core/interfaces/room';
 import { LocalStorageService } from '../../core/services/local-storage.service';
 import { DurationPipe } from '../../shared/pipes/duration.pipe';
 
-const TICK_MS = 200;
+// Le chrono affiche les dixiemes : rafraichi plus lentement, le chiffre
+// sautait de deux en deux.
+const TICK_MS = 100;
 
 @Component({
   selector: 'app-live-standings',

@@ -24,15 +24,34 @@ service cloud.firestore {
       return request.resource.data.diff(resource.data).affectedKeys();
     }
 
+    // Etat de partie neutre : aucune manche jouee, aucun temps, aucun vote.
+    // `get` plutot qu'un acces direct, ces deux champs etant absents des
+    // fiches creees avant leur introduction.
+    function isClearedGameState(data) {
+      return data.currentRoomWins.size() == 0
+        && data.finishDate == null
+        && data.durationMs == null
+        && data.isReady == false
+        && data.get('currentRoundProgress', null) == null
+        && data.get('vote', null) == null;
+    }
+
     match /players/{playerId} {
       // Classement, recherche d'amis et page admin lisent toute la collection.
       allow read: if isSignedIn();
 
-      // Un compte ne cree que sa propre fiche, sans s'y declarer
-      // administrateur ni se pre-attribuer des medailles.
+      // Un compte ne cree que sa propre fiche : ni administrateur, ni
+      // medailles, ni amis, ni partie deja jouee. Sans ces bornes, une fiche
+      // fabriquee a la main pouvait naitre en tete du classement, les
+      // medailles n'etant protegees qu'en modification. Les compteurs partent
+      // vides, `submitRound` creant celui d'un jeu a sa premiere medaille.
       allow create: if isSignedIn()
         && request.resource.data.userId == request.auth.uid
-        && request.resource.data.isAdmin == false;
+        && request.resource.data.isAdmin == false
+        && request.resource.data.stats.size() == 0
+        && request.resource.data.get('friendIds', []).size() == 0
+        && request.resource.data.get('friendRequestIds', []).size() == 0
+        && isClearedGameState(request.resource.data);
 
       allow update: if isAdmin()
         // Le proprietaire modifie sa fiche, sauf les champs reserves aux
@@ -45,16 +64,19 @@ service cloud.firestore {
                  'friendIds',
                  'friendRequestIds'
                ]))
-        // Un tiers ne touche qu'a l'etat de partie : remise a zero par l'hote,
-        // exclusion d'un joueur, vote de fin de partie.
-        || changedKeys().hasOnly([
-             'currentRoomWins',
-             'finishDate',
-             'durationMs',
-             'isReady',
-             'currentRoundProgress',
-             'vote'
-           ]);
+        // Un tiers ne fait que remettre l'etat de partie a zero : relance
+        // par l'hote, exclusion d'un joueur. Les valeurs sont imposees, donc
+        // personne ne peut fabriquer un resultat, un temps ou un vote a la
+        // place d'un autre. Seul le proprietaire ecrit sa progression.
+        || (changedKeys().hasOnly([
+              'currentRoomWins',
+              'finishDate',
+              'durationMs',
+              'isReady',
+              'currentRoundProgress',
+              'vote'
+            ])
+            && isClearedGameState(request.resource.data));
 
       allow delete: if isAdmin() || isOwner(resource.data);
     }

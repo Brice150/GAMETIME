@@ -15,6 +15,27 @@
   color: var(--text-3);
 }
 
+/* Un groupe par categorie : a plat, la liste devenait illisible. */
+.vote-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+
+.vote-group + .vote-group {
+  margin-top: 14px;
+}
+
+.group-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
 .vote-options {
   display: flex;
   justify-content: center;
@@ -51,10 +72,17 @@
   line-height: 1;
 }
 
-.vote-option:hover {
+.vote-option:hover:enabled {
   transform: translateY(-2px);
   border-color: var(--border-2);
   background: var(--surface-3);
+}
+
+/* Depouillement pour l'hote : le decompte reste lisible, l'invitation a
+   cliquer disparait. */
+.vote-option:disabled {
+  cursor: default;
+  color: var(--text-2);
 }
 
 .vote-option.selected {

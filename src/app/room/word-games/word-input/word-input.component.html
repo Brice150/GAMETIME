@@ -29,7 +29,10 @@
     <form (ngSubmit)="submitAnswer()">
       <div class="input-wrap">
         <!-- Le correcteur du telephone reecrivait la tentative, et le clavier
-        proposait des mots sur ce qu il faut justement deviner. -->
+        proposait des mots sur ce qu il faut justement deviner.
+        Entre deux manches le champ passe en lecture seule plutot que
+        desactive : un champ desactive perd le curseur, et il fallait
+        recliquer dedans - ou rouvrir le clavier sur mobile - a chaque mot. -->
         <input
           #answerInput
           [attr.maxlength]="maxlength"
@@ -43,7 +46,8 @@
           [ngModel]="inputValue()"
           (ngModelChange)="inputValue.set($event)"
           [ngModelOptions]="{ standalone: true }"
-          [disabled]="isOver"
+          [readOnly]="isOver"
+          [class.locked]="isOver"
         />
         @if (!isOver) {
           <span class="placeholder" aria-hidden="true">{{ wordToFind }}</span>

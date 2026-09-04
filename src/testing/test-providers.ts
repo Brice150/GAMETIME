@@ -12,7 +12,6 @@ import { Player } from '../app/core/interfaces/player';
 import { Room } from '../app/core/interfaces/room';
 import { FriendService } from '../app/core/services/friend.service';
 import { GameApiService } from '../app/core/services/game-api.service';
-import { ImageService } from '../app/core/services/image.service';
 import { InvitationService } from '../app/core/services/invitation.service';
 import { LocalStorageService } from '../app/core/services/local-storage.service';
 import { NotificationService } from '../app/core/services/notification.service';
@@ -60,8 +59,8 @@ export function buildRoom(overrides: Partial<Room> = {}): Room {
     isWordLengthIncreasing: true,
     startWordLength: 5,
     responses: ['CHAT', 'CHIEN', 'CHEVAL'],
-    countries: [],
-    brands: [],
+    prompts: ['', '', ''],
+    media: ['', '', ''],
     startDate: null,
     startAgainNumber: 0,
     roomCode: 'ABCD',
@@ -99,7 +98,7 @@ export function appTestProviders(
         addPlayer: () => of('test@example.com'),
         updatePlayer: () => of(undefined),
         updatePlayerFields: () => of(undefined),
-        updatePlayers: () => of(undefined),
+        resetPlayersState: () => of(undefined),
         deletePlayer: () => of(undefined),
         deleteUserPlayer: () => of(undefined),
       },
@@ -122,7 +121,9 @@ export function appTestProviders(
         leaveOtherRooms: () => of(undefined),
         isStale: () => false,
         preloadGameData: noop,
+        drawRounds: () => Promise.resolve([]),
         generateRoomCode: () => 'ABCD',
+        generateUniqueRoomCode: () => of('ABCD'),
       },
     },
     {
@@ -204,13 +205,6 @@ export function appTestProviders(
         claimGoal: () => EMPTY,
         manageFriendship: () => of(undefined),
         linkGuestAccount: () => of({ migrated: false }),
-      },
-    },
-    {
-      provide: ImageService,
-      useValue: {
-        getDrapeauImageUrl: () => '',
-        getLogoMarqueUrl: () => '',
       },
     },
     {

@@ -8,13 +8,17 @@
           class="cap"
           (ngModelChange)="gameSelected.set($event)"
         >
-          @for (game of games; track $index) {
-            <mat-option [value]="game.key" class="cap-option">
-              <div class="flex">
-                <i class="{{ game.icon }}"></i>
-                <span class="game">{{ game.label }}</span>
-              </div>
-            </mat-option>
+          @for (group of gameGroups; track group.category.key) {
+            <mat-optgroup [label]="group.category.label">
+              @for (game of group.games; track game.key) {
+                <mat-option [value]="game.key" class="cap-option">
+                  <div class="flex">
+                    <i class="{{ game.icon }}"></i>
+                    <span class="game">{{ game.label }}</span>
+                  </div>
+                </mat-option>
+              }
+            </mat-optgroup>
           }
         </mat-select>
       </mat-form-field>

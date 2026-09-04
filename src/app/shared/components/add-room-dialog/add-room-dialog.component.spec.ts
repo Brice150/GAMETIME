@@ -37,7 +37,7 @@ describe('AddRoomDialogComponent', () => {
 
   it('ramene la taille du mot dans la borne imposee par le nombre de manches', () => {
     const component = build();
-    component.gameSelected = component.motusGameKey;
+    component.selectGame('motus');
     component.isWordLengthIncreasing = true;
     // Taille choisie avec une seule manche, puis nombre de manches augmente.
     component.startWordLength = 13;
@@ -51,7 +51,7 @@ describe('AddRoomDialogComponent', () => {
 
   it('laisse la taille inchangee quand elle tient dans la borne', () => {
     const component = build();
-    component.gameSelected = component.motusGameKey;
+    component.selectGame('motus');
     component.isWordLengthIncreasing = true;
     component.startWordLength = 5;
     component.stepsNumber = 3;
@@ -63,15 +63,49 @@ describe('AddRoomDialogComponent', () => {
 
   it('applique le filtre le plus large en mode aleatoire', () => {
     const component = build();
-    component.gameSelected = component.randomGameKey;
-    component.categoryFilter = '4';
-    component.showFirstLetterRandom = true;
+    component.selectGame(component.randomGameKey);
+    component.categoryFilter = 4;
 
     component.confirm();
 
     expect(closed?.categoryFilter).toBe(1);
-    expect(closed?.showFirstLetterMotus).toBe(true);
-    expect(closed?.showFirstLetterDrapeaux).toBe(true);
-    expect(closed?.showFirstLetterMarques).toBe(true);
+  });
+
+  it('propose le reglage de longueur a Motus seul', () => {
+    const component = build();
+
+    component.selectGame('motus');
+    expect(component.hasWordLength()).toBeTrue();
+    expect(component.filterLabels()).toEqual([]);
+
+    component.selectGame('drapeaux');
+    expect(component.hasWordLength()).toBeFalse();
+    expect(component.filterLabels().length).toBe(6);
+    expect(component.formatFilter(2)).toBe('Europe');
+  });
+
+  it('ramene le filtre au plus large en changeant de jeu', () => {
+    const component = build();
+    component.selectGame('drapeaux');
+    component.categoryFilter = 5;
+
+    // Le rang 5 ne designe pas la meme chose d'un jeu a l'autre.
+    component.selectGame('marques');
+
+    expect(component.categoryFilter).toBe(1);
+  });
+
+  it('reprend les reglages de la partie precedente', () => {
+    const component = build({
+      gameSelected: 'marques',
+      stepsNumber: 6,
+      categoryFilter: 3,
+      showFirstLetter: true,
+    });
+
+    expect(component.gameSelected()).toBe('marques');
+    expect(component.stepsNumber).toBe(6);
+    expect(component.categoryFilter).toBe(3);
+    expect(component.showFirstLetter).toBeTrue();
   });
 });

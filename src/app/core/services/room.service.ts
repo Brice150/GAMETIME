@@ -17,11 +17,8 @@ import {
   writeBatch,
 } from '@angular/fire/firestore';
 import { combineLatest, from, map, Observable, of, switchMap } from 'rxjs';
-import { gameMap } from '../../../assets/data/games';
-import { BrandCategory } from '../enums/brand-category.enum';
-import { Continent } from '../enums/continent.enum';
-import { Brand } from '../interfaces/brand';
-import { Country } from '../interfaces/country';
+import { gameMap, games } from '../../../assets/data/games';
+import { GameRound } from '../interfaces/game';
 import { Room } from '../interfaces/room';
 import { ConnectionService } from './connection.service';
 import { UserService } from './user.service';
@@ -32,9 +29,6 @@ export class RoomService {
   userService = inject(UserService);
   connection = inject(ConnectionService);
   roomsCollection = collection(this.firestore, 'rooms');
-  motusGameKey = gameMap['motus'].key;
-  drapeauxGameKey = gameMap['drapeaux'].key;
-  marquesGameKey = gameMap['marques'].key;
   currentRoomSig = signal<Room | null | undefined>(undefined);
 
   getRooms(): Observable<Room[]> {
@@ -235,221 +229,66 @@ export class RoomService {
     );
   }
 
+  // Le code se lit a voix haute : ni O/0 ni I/1, qui se confondent.
+  private readonly roomCodeChars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+
   generateRoomCode(): string {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     let code = '';
     for (let i = 0; i < 4; i++) {
-      code += chars.charAt(Math.floor(Math.random() * chars.length));
+      code += this.roomCodeChars.charAt(
+        Math.floor(Math.random() * this.roomCodeChars.length),
+      );
     }
     return code;
   }
 
-  // Les jeux de donnees (mots, pays, marques) pesent ~310 Ko de source et ne
-  // servent qu'a la generation d'une partie : on les charge a la demande
-  // plutot que de les embarquer dans le bundle initial.
-  private wordsByLength?: Map<number, string[]>;
-  private countriesData?: Country[];
-  private brandsData?: Brand[];
+  // Deux rooms partageant un code, le joueur qui le saisit tombait dans l'une
+  // ou l'autre au hasard. Apres quelques essais infructueux on garde le
+  // dernier tirage : un doublon reste preferable a un blocage de creation.
+  generateUniqueRoomCode(attemptsLeft = 5): Observable<string> {
+    const code = this.generateRoomCode();
 
-  // Amorce le chargement pendant l'attente, pour qu'il ne pese plus sur le
-  // temps mort entre le lancement et la premiere manche.
+    if (attemptsLeft <= 1) {
+      return of(code);
+    }
+
+    return this.getRoomsByCode(code).pipe(
+      switchMap((rooms) =>
+        rooms.length ? this.generateUniqueRoomCode(attemptsLeft - 1) : of(code),
+      ),
+    );
+  }
+
+  // Amorce le chargement du jeu de donnees pendant que les joueurs
+  // attendent, pour qu'il ne pese plus sur le temps mort entre le lancement
+  // et la premiere manche. Le jeu n'etant choisi qu'au lancement, une room
+  // neuve precharge tout le catalogue.
   preloadGameData(gameName: string): void {
     if (!this.connection.shouldPreload()) {
       return;
     }
 
-    if (gameName === this.motusGameKey) {
-      void this.loadWordsByLength().catch(() => undefined);
-    } else if (gameName === this.drapeauxGameKey) {
-      void this.loadCountries().catch(() => undefined);
-    } else if (gameName === this.marquesGameKey) {
-      void this.loadBrands().catch(() => undefined);
-    } else {
-      // Room neuve : le jeu n'est pas encore choisi.
-      void this.loadWordsByLength().catch(() => undefined);
-      void this.loadCountries().catch(() => undefined);
-      void this.loadBrands().catch(() => undefined);
+    const game = gameMap[gameName];
+
+    for (const target of game ? [game] : games) {
+      void target.load().catch(() => undefined);
     }
   }
 
-  // Indexe une fois par longueur : `newWord` refiltrait les 19 000 mots a
-  // chaque tirage.
-  private async loadWordsByLength(): Promise<Map<number, string[]>> {
-    if (!this.wordsByLength) {
-      const { words } = await import('../../../assets/data/words');
-      const byLength = new Map<number, string[]>();
+  // Le tirage appartient au descripteur du jeu : ce service ne sait plus quels
+  // jeux existent, il leur demande simplement une partie.
+  drawRounds(room: Room): Promise<GameRound[]> {
+    const game = gameMap[room.gameName];
 
-      for (const word of words) {
-        const pool = byLength.get(word.length);
-        if (pool) {
-          pool.push(word);
-        } else {
-          byLength.set(word.length, [word]);
-        }
-      }
-
-      this.wordsByLength = byLength;
+    if (!game) {
+      return Promise.resolve([]);
     }
 
-    return this.wordsByLength;
-  }
-
-  private async loadCountries(): Promise<Country[]> {
-    this.countriesData ??= (
-      await import('../../../assets/data/countries')
-    ).countries;
-    return this.countriesData;
-  }
-
-  private async loadBrands(): Promise<Brand[]> {
-    this.brandsData ??= (await import('../../../assets/data/brands')).brands;
-    return this.brandsData;
-  }
-
-  async generateResponses(
-    gameSelected: string,
-    stepsNumber: number,
-    categoryFilter: number,
-    isWordLengthIncreasing: boolean,
-    startWordLength: number,
-    countries: Country[],
-    brands: Brand[],
-    responses: string[],
-  ): Promise<void> {
-    if (gameSelected === this.drapeauxGameKey) {
-      const generatedCountries = await this.generateCountries(
-        stepsNumber,
-        categoryFilter,
-      );
-      countries.splice(0, countries.length, ...generatedCountries);
-      responses.splice(
-        0,
-        responses.length,
-        ...generatedCountries.map((country) => country.name),
-      );
-    } else if (gameSelected === this.marquesGameKey) {
-      const generatedBrands = await this.generateBrands(
-        stepsNumber,
-        categoryFilter,
-      );
-      brands.splice(0, brands.length, ...generatedBrands);
-      responses.splice(
-        0,
-        responses.length,
-        ...generatedBrands.map((brand) => brand.name),
-      );
-    } else if (gameSelected === this.motusGameKey) {
-      const generatedWords = await this.generateMotusWords(
-        stepsNumber,
-        isWordLengthIncreasing,
-        startWordLength,
-      );
-      responses.splice(0, responses.length, ...generatedWords);
-    }
-  }
-
-  async generateMotusWords(
-    stepsNumber: number,
-    isWordLengthIncreasing: boolean,
-    startWordLength: number,
-  ): Promise<string[]> {
-    const wordsByLength = await this.loadWordsByLength();
-    const wordsToGenerate: string[] = [];
-
-    const usedWords = new Set<string>();
-
-    let attempts = 0;
-    while (wordsToGenerate.length < stepsNumber && attempts < 1000) {
-      const length = isWordLengthIncreasing
-        ? startWordLength + wordsToGenerate.length
-        : startWordLength;
-
-      const pool = wordsByLength.get(length) ?? this.longestPool(wordsByLength);
-
-      // Repli sur la plus grande longueur disponible : sortir de la boucle
-      // rendait une partie plus courte que celle demandee.
-      if (!pool?.length) {
-        break;
-      }
-
-      const word = pool[Math.floor(Math.random() * pool.length)];
-
-      if (!usedWords.has(word)) {
-        usedWords.add(word);
-        wordsToGenerate.push(word);
-      }
-
-      attempts++;
-    }
-
-    return wordsToGenerate;
-  }
-
-  private longestPool(
-    wordsByLength: Map<number, string[]>,
-  ): string[] | undefined {
-    const longest = Math.max(...wordsByLength.keys());
-    return wordsByLength.get(longest);
-  }
-
-  async generateCountries(
-    stepsNumber: number,
-    continentFilter: number,
-  ): Promise<Country[]> {
-    return this.generateRandomItems(
-      await this.loadCountries(),
-      stepsNumber,
-      continentFilter === Continent.Monde ? null : continentFilter,
-      (country, continent) => country.continent === continent,
-      (country) => country.name,
-    );
-  }
-
-  async generateBrands(
-    stepsNumber: number,
-    categoryFilter: number,
-  ): Promise<Brand[]> {
-    return this.generateRandomItems(
-      await this.loadBrands(),
-      stepsNumber,
-      categoryFilter === BrandCategory.Tout ? null : categoryFilter,
-      (brand, category) => brand.category === category,
-      (brand) => brand.name,
-    );
-  }
-
-  generateRandomItems<T, U>(
-    items: T[],
-    stepsNumber: number,
-    filterValue: U | null,
-    filterFn: (item: T, filterValue: U) => boolean,
-    getNameFn: (item: T) => string,
-  ): T[] {
-    const generated: T[] = [];
-    const usedNames = new Set<string>();
-
-    const pool =
-      filterValue === null
-        ? items
-        : items.filter((item) => filterFn(item, filterValue));
-
-    if (!pool.length) {
-      return generated;
-    }
-
-    let attempts = 0;
-    while (generated.length < stepsNumber && attempts < 1000) {
-      const randomIndex = Math.floor(Math.random() * pool.length);
-      const candidate = pool[randomIndex];
-
-      if (!usedNames.has(getNameFn(candidate))) {
-        usedNames.add(getNameFn(candidate));
-        generated.push(candidate);
-      }
-
-      attempts++;
-    }
-
-    return generated;
+    return game.draw({
+      stepsNumber: room.stepsNumber,
+      categoryFilter: room.categoryFilter,
+      isWordLengthIncreasing: room.isWordLengthIncreasing,
+      startWordLength: room.startWordLength,
+    });
   }
 }

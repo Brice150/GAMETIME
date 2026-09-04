@@ -39,6 +39,7 @@ import { goals } from '../../assets/data/goals';
 import { Player } from '../core/interfaces/player';
 import { Room } from '../core/interfaces/room';
 import { RoomForm } from '../core/interfaces/room-form';
+import { RoundAnswer } from '../core/interfaces/round-answer';
 import { RoundProgress } from '../core/interfaces/round-progress';
 import { RoundResult } from '../core/interfaces/round-result';
 
@@ -56,7 +57,7 @@ import { ResultsBoardComponent } from './results-board/results-board.component';
 import { WaitingRoomComponent } from './waiting-room/waiting-room.component';
 import { WordGamesComponent } from './word-games/word-games.component';
 
-const NEXT_ROUND_DELAY_MS = 1400;
+const NEXT_ROUND_DELAY_MS = 1000;
 
 @Component({
   selector: 'app-room',
@@ -90,9 +91,6 @@ export class RoomComponent implements OnInit {
   userLeft = false;
   userKickedOut = false;
   readonly isFinishing = signal(false);
-  motusGameKey = gameMap['motus'].key;
-  drapeauxGameKey = gameMap['drapeaux'].key;
-  marquesGameKey = gameMap['marques'].key;
   goals = goals;
   @ViewChild(WordGamesComponent) wordGamesComponent!: WordGamesComponent;
 
@@ -334,7 +332,7 @@ export class RoomComponent implements OnInit {
   // La manche part au serveur : lui seul attribue la medaille, le client ne
   // peut plus ecrire `stats`. L'affichage avance sans attendre la reponse,
   // et revient en arriere si l'enregistrement echoue.
-  updatePlayerGame(stepWon: boolean): void {
+  updatePlayerGame(round: RoundAnswer): void {
     const currentPlayer = this.playerService.currentPlayerSig();
 
     if (!currentPlayer) {
@@ -346,7 +344,7 @@ export class RoomComponent implements OnInit {
       stepIndex + 1 === this.room.responses?.length &&
       !currentPlayer.finishDate;
 
-    currentPlayer.currentRoomWins.push(stepWon);
+    currentPlayer.currentRoomWins.push(round.won);
 
     if (justFinished) {
       this.stampFinish(currentPlayer);
@@ -356,14 +354,17 @@ export class RoomComponent implements OnInit {
       .submitRound(
         this.room.id!,
         stepIndex,
-        stepWon,
+        round.answer,
         justFinished ? currentPlayer.durationMs : null,
       )
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (result) => {
-          this.announceGoal(result.medalsNumber, stepWon);
-          this.handlePlayerNextAction(stepWon, stepIndex);
+          // Le serveur a le dernier mot : en jeu honnete son verdict rejoint
+          // celui affiche, la manche n'ayant pas a attendre la reponse.
+          currentPlayer.currentRoomWins[stepIndex] = result.won;
+          this.announceGoal(result.medalsNumber, result.won);
+          this.handlePlayerNextAction(result.won, stepIndex);
         },
         error: (error: HttpErrorResponse) => {
           currentPlayer.currentRoomWins.splice(stepIndex);
@@ -629,14 +630,20 @@ export class RoomComponent implements OnInit {
   // compte pour « Peu importe » : son silence ne bloque pas le depouillement.
   // Ce report reste interne, les compteurs affiches aux joueurs ne montrant
   // que les votes exprimes. Sans aucun vote il n'y a rien a depouiller.
+  // L'hote est hors scrutin : il tranche dans la fenetre de lancement, son
+  // abstention n'a donc pas a peser pour « Peu importe ».
   winningVote(): string | null {
-    if (this.players.every((player) => !player.vote)) {
+    const voters = this.players.filter(
+      (player) => player.userId !== this.room.userId,
+    );
+
+    if (voters.every((player) => !player.vote)) {
       return null;
     }
 
     const counts = new Map<string, number>();
 
-    for (const player of this.players) {
+    for (const player of voters) {
       const vote = player.vote ?? randomGameKey;
       counts.set(vote, (counts.get(vote) ?? 0) + 1);
     }
@@ -687,9 +694,9 @@ export class RoomComponent implements OnInit {
     this.loading.set(true);
     this.lastRound.set(null);
 
-    this.room.countries = [];
-    this.room.brands = [];
     this.room.responses = [];
+    this.room.prompts = [];
+    this.room.media = [];
     this.room.isLoading = true;
     this.room.lastActivityAt = new Date();
     this.room.startedPlayerIds = this.players
@@ -709,7 +716,7 @@ export class RoomComponent implements OnInit {
             player.currentRoundProgress = null;
             player.vote = null;
           });
-          return this.playerService.updatePlayers(this.players);
+          return this.playerService.resetPlayersState(this.players);
         }),
         switchMap(() => {
           this.room.startAgainNumber += 1;
@@ -752,18 +759,14 @@ export class RoomComponent implements OnInit {
   }
 
   generateQuestions(): Observable<Room> {
-    return from(
-      this.roomService.generateResponses(
-        this.room.gameName,
-        this.room.stepsNumber,
-        this.room.categoryFilter,
-        this.room.isWordLengthIncreasing,
-        this.room.startWordLength,
-        this.room.countries,
-        this.room.brands,
-        this.room.responses,
-      ),
-    ).pipe(map(() => this.room));
+    return from(this.roomService.drawRounds(this.room)).pipe(
+      map((rounds) => {
+        this.room.responses = rounds.map((round) => round.response);
+        this.room.prompts = rounds.map((round) => round.prompt);
+        this.room.media = rounds.map((round) => round.media);
+        return this.room;
+      }),
+    );
   }
 
   resetRoom(): void {
@@ -825,9 +828,7 @@ export class RoomComponent implements OnInit {
         startWordLength: this.room.startWordLength,
         categoryFilter: this.room.categoryFilter?.toString(),
         isWordLengthIncreasing: this.room.isWordLengthIncreasing,
-        showFirstLetterMotus: this.room.showFirstLetter,
-        showFirstLetterDrapeaux: this.room.showFirstLetter,
-        showFirstLetterMarques: this.room.showFirstLetter,
+        showFirstLetter: this.room.showFirstLetter,
         gameSelected: votedGame ?? this.room.gameName ?? '',
       },
     });
@@ -840,13 +841,7 @@ export class RoomComponent implements OnInit {
           if (roomData && roomData.gameSelected) {
             const gameName = resolveGameKey(roomData.gameSelected);
             this.room.gameName = gameName;
-            if (gameName === this.motusGameKey) {
-              this.room.showFirstLetter = roomData.showFirstLetterMotus;
-            } else if (gameName === this.drapeauxGameKey) {
-              this.room.showFirstLetter = roomData.showFirstLetterDrapeaux;
-            } else if (gameName === this.marquesGameKey) {
-              this.room.showFirstLetter = roomData.showFirstLetterMarques;
-            }
+            this.room.showFirstLetter = roomData.showFirstLetter;
             this.room.stepsNumber = roomData.stepsNumber;
             this.room.categoryFilter = roomData.categoryFilter;
             this.room.isWordLengthIncreasing = roomData.isWordLengthIncreasing;

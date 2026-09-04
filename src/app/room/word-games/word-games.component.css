@@ -25,6 +25,23 @@
   text-transform: uppercase;
 }
 
+/* Enonce d'une manche : le nom d'un pays pour les capitales, un symbole
+   chimique pour les elements. */
+.container .prompt {
+  font-size: clamp(22px, 6vw, 32px);
+  font-weight: 600;
+  color: var(--text-1);
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* Un emoji n'a pas d'epaisseur de trait : a taille de texte il se lit mal,
+   et c'est pourtant tout l'enonce. */
+.container .prompt.emoji {
+  font-size: clamp(64px, 22vw, 96px);
+  line-height: 1;
+}
+
 /* Plaque claire : les drapeaux et logos sont concus pour un fond blanc. */
 .container .flag {
   display: flex;

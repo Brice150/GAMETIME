@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   EventEmitter,
   inject,
   input,
@@ -13,34 +14,23 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { gameMap } from '../../../assets/data/games';
 import { Player } from '../../core/interfaces/player';
 import { Room } from '../../core/interfaces/room';
+import { RoundAnswer } from '../../core/interfaces/round-answer';
 import { RoundResult } from '../../core/interfaces/round-result';
-import { ImageService } from '../../core/services/image.service';
 import { LocalStorageService } from '../../core/services/local-storage.service';
-import { BrandCategoryPipe } from '../../shared/pipes/brand-category.pipe';
-import { ContinentPipe } from '../../shared/pipes/continent.pipe';
 import { WordInputComponent } from './word-input/word-input.component';
 
 @Component({
   selector: 'app-word-games',
-  imports: [
-    CommonModule,
-    WordInputComponent,
-    MatProgressSpinnerModule,
-    ContinentPipe,
-    BrandCategoryPipe,
-  ],
+  imports: [CommonModule, WordInputComponent, MatProgressSpinnerModule],
   templateUrl: './word-games.component.html',
   styleUrl: './word-games.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WordGamesComponent implements OnInit {
   readonly response = signal('');
+  readonly prompt = signal('');
   readonly imageUrl = signal('');
   readonly imageError = signal(false);
-  motusGameKey = gameMap['motus'].key;
-  drapeauxGameKey = gameMap['drapeaux'].key;
-  marquesGameKey = gameMap['marques'].key;
-  imageService = inject(ImageService);
   localStorageService = inject(LocalStorageService);
   readonly isOver = signal(false);
   readonly loading = signal(false);
@@ -52,7 +42,19 @@ export class WordGamesComponent implements OnInit {
   readonly room = input.required<Room>();
   readonly player = input.required<Player>();
   readonly lastRound = input<RoundResult | null>(null);
-  @Output() finishedStepEvent = new EventEmitter<boolean>();
+
+  // Libelle du filtre choisi a la creation, quand le jeu en propose un.
+  readonly categoryLabel = computed(() => {
+    const room = this.room();
+    return (
+      gameMap[room.gameName]?.filterLabels?.[room.categoryFilter - 1] ?? ''
+    );
+  });
+
+  readonly isEmojiPrompt = computed(
+    () => !!gameMap[this.room().gameName]?.emojiPrompt,
+  );
+  @Output() finishedStepEvent = new EventEmitter<RoundAnswer>();
   @Output() progressEvent = new EventEmitter<{
     lettersFound: number;
     lettersTotal: number;
@@ -62,8 +64,8 @@ export class WordGamesComponent implements OnInit {
     this.new();
   }
 
-  handleEvent(stepWon: boolean): void {
-    this.finishedStepEvent.emit(stepWon);
+  handleEvent(answer: RoundAnswer): void {
+    this.finishedStepEvent.emit(answer);
   }
 
   handleProgress(lettersFound: number): void {
@@ -81,11 +83,12 @@ export class WordGamesComponent implements OnInit {
       return;
     }
 
-    const imageUrl = this.buildImageUrl(index);
+    const imageUrl = this.room().media?.[index] ?? '';
 
     this.isOver.set(false);
     this.currentIndex.set(index);
     this.imageUrl.set(imageUrl);
+    this.prompt.set(this.room().prompts?.[index] ?? '');
     this.imageError.set(false);
     this.loading.set(!!imageUrl);
 
@@ -99,20 +102,6 @@ export class WordGamesComponent implements OnInit {
     }
   }
 
-  buildImageUrl(index: number): string {
-    const room = this.room();
-
-    if (room.gameName === this.drapeauxGameKey && room.countries?.[index]) {
-      return this.imageService.getDrapeauImageUrl(room.countries[index].code);
-    }
-
-    if (room.gameName === this.marquesGameKey && room.brands?.[index]) {
-      return this.imageService.getLogoMarqueUrl(room.brands[index].website);
-    }
-
-    return '';
-  }
-
   // Toutes les images restantes sont mises en cache pendant que le joueur
   // repond. Lance avant l'affichage de la manche en cours, ce paquet de
   // telechargements se partageait la bande passante avec l'image attendue :
@@ -122,7 +111,7 @@ export class WordGamesComponent implements OnInit {
     const room = this.room();
 
     for (let i = index; i < room.responses.length; i++) {
-      const url = this.buildImageUrl(i);
+      const url = room.media?.[i] ?? '';
 
       if (url && !this.preloaders.has(url)) {
         const image = new Image();

@@ -1,6 +1,3 @@
-import { Brand } from './brand';
-import { Country } from './country';
-
 export interface Room {
   id?: string;
   gameName: string;
@@ -12,9 +9,11 @@ export interface Room {
   categoryFilter: number;
   isWordLengthIncreasing: boolean;
   startWordLength: number;
+  // Une entree par manche. `prompts` porte l'enonce affiche et `media`
+  // l'illustration ; l'un comme l'autre est vide pour un jeu qui s'en passe.
   responses: string[];
-  countries: Country[];
-  brands: Brand[];
+  prompts: string[];
+  media: string[];
   startDate: Date | null;
   startAgainNumber: number;
   roomCode: string;

@@ -64,12 +64,16 @@ sont dans la meme piece, le lire a voix haute est le chemin le plus court. -->
 </div>
 
 <!-- Voter vaut se declarer pret : l'hote voit d'un coup d'oeil qui attend
-quoi, et la fenetre de lancement s'ouvre sur le jeu majoritaire. -->
-<app-vote-panel
-  class="vote"
-  [players]="players()"
-  [options]="voteOptions"
-  [currentPlayerId]="player().userId"
-  heading="À quoi joue-t-on ?"
-  (voteEvent)="vote($event)"
-></app-vote-panel>
+quoi, et la fenetre de lancement s'ouvre sur le jeu majoritaire. Seul dans sa
+room, il n'a personne a consulter. -->
+@if (players().length > 1) {
+  <app-vote-panel
+    class="vote"
+    [players]="players()"
+    [groups]="voteGroups"
+    [currentPlayerId]="player().userId"
+    [hostId]="room().userId"
+    heading="À quoi joue-t-on ?"
+    (voteEvent)="vote($event)"
+  ></app-vote-panel>
+}

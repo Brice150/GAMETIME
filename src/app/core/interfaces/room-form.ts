@@ -1,8 +1,6 @@
 export interface RoomForm {
   gameSelected: string;
-  showFirstLetterMotus: boolean;
-  showFirstLetterDrapeaux: boolean;
-  showFirstLetterMarques: boolean;
+  showFirstLetter: boolean;
   stepsNumber: number;
   isWordLengthIncreasing: boolean;
   startWordLength: number;

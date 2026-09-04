@@ -1,5 +1,9 @@
 import { TestBed } from '@angular/core/testing';
-import { appTestProviders, buildPlayer } from '../../testing/test-providers';
+import {
+  appTestProviders,
+  buildPlayer,
+  buildRoom,
+} from '../../testing/test-providers';
 import { RoomComponent } from './room.component';
 
 describe('RoomComponent', () => {
@@ -50,6 +54,29 @@ describe('RoomComponent', () => {
     ];
 
     expect(component.winningVote()).toBe('motus');
+  });
+
+  it('ne compte ni le vote ni le silence de l hote', async () => {
+    const component = await build();
+    component.room = buildRoom({ userId: 'host' });
+    component.players = [
+      buildPlayer({ id: 'p1', userId: 'host', vote: 'drapeaux' }),
+      buildPlayer({ id: 'p2', userId: 'u2', vote: 'motus' }),
+    ];
+
+    // Sans cette exclusion, « drapeaux » l'emportait sur l'egalite.
+    expect(component.winningVote()).toBe('motus');
+  });
+
+  it('ne designe rien quand seul l hote a vote', async () => {
+    const component = await build();
+    component.room = buildRoom({ userId: 'host' });
+    component.players = [
+      buildPlayer({ id: 'p1', userId: 'host', vote: 'motus' }),
+      buildPlayer({ id: 'p2', userId: 'u2', vote: null }),
+    ];
+
+    expect(component.winningVote()).toBeNull();
   });
 
   it('ne designe rien quand personne n a vote', async () => {

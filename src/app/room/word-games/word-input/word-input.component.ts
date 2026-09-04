@@ -17,6 +17,7 @@ import {
   inject,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RoundAnswer } from '../../../core/interfaces/round-answer';
 import { Room } from '../../../core/interfaces/room';
 import { WordTry } from '../../../core/interfaces/word-try';
 import { LocalStorageService } from '../../../core/services/local-storage.service';
@@ -44,7 +45,7 @@ export class WordInputComponent implements OnInit, OnChanges {
   maxlength!: number;
   readonly inputValue = signal('');
   tries: WordTry[] = [];
-  @Output() emitEvent = new EventEmitter<boolean>();
+  @Output() emitEvent = new EventEmitter<RoundAnswer>();
   @Output() progressEvent = new EventEmitter<number>();
   isOver = false;
   readonly maxTries = MAX_TRIES;
@@ -78,42 +79,61 @@ export class WordInputComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    if (this.response) {
-      this.isOver = false;
-      this.response = this.response.toUpperCase();
-      const tries = this.localStorageService.getTries();
-      const startAgainNumber = this.localStorageService.getStartAgainNumber();
-      const roomId = this.localStorageService.getRoomId();
+    this.startRound();
+  }
 
-      if (
-        tries &&
-        startAgainNumber !== undefined &&
-        roomId &&
-        roomId === this.room().id &&
-        this.room().startAgainNumber === startAgainNumber
-      ) {
-        this.tries = tries;
-      } else {
-        this.localStorageService.newGame(roomId!, this.room().startAgainNumber);
-        this.tries = [];
-      }
-      if (this.room().showFirstLetter) {
-        this.wordToFind = this.response.replace(/[A-Za-z]/g, '_');
-        this.inputValue.set(this.response.charAt(0));
-      } else {
-        this.wordToFind = this.response.replace(/[A-Za-z]/g, '_');
-      }
-      this.maxlength = this.response.length;
-      this.refreshProgress();
-      this.focusInput();
+  // Seul un changement de mot relance la manche : reagir a `room` remettait a
+  // zero la saisie en cours.
+  ngOnChanges(changes: SimpleChanges): void {
+    const responseChange = changes['response'];
+
+    if (!responseChange || responseChange.firstChange) {
+      return;
     }
+
+    this.startRound();
+  }
+
+  private startRound(): void {
+    if (!this.response) {
+      return;
+    }
+
+    this.isOver = false;
+    this.response = this.response.toUpperCase();
+    const tries = this.localStorageService.getTries();
+    const startAgainNumber = this.localStorageService.getStartAgainNumber();
+    const roomId = this.localStorageService.getRoomId();
+
+    if (
+      tries &&
+      startAgainNumber !== undefined &&
+      roomId &&
+      roomId === this.room().id &&
+      this.room().startAgainNumber === startAgainNumber
+    ) {
+      this.tries = tries;
+    } else {
+      this.localStorageService.newGame(roomId!, this.room().startAgainNumber);
+      this.tries = [];
+    }
+
+    this.wordToFind = this.response.replace(/[A-Za-z]/g, '_');
+
+    if (this.room().showFirstLetter) {
+      this.inputValue.set(this.response.charAt(0));
+    }
+
+    this.maxlength = this.response.length;
+    this.refreshProgress();
+    this.focusInput();
   }
 
   // La manche s enchaine seule : sans ce rappel du focus, le joueur devait
   // recliquer dans le champ a chaque mot.
   private focusInput(): void {
-    // Apres le rendu : le champ est encore desactive au moment ou la manche
-    // demarre, un focus immediat serait sans effet.
+    // Apres le rendu : le champ n'est pas encore dans le DOM a la premiere
+    // manche, un focus immediat serait sans effet.
     afterNextRender(() => this.answerInput?.nativeElement.focus(), {
       injector: this.injector,
     });
@@ -143,18 +163,6 @@ export class WordInputComponent implements OnInit, OnChanges {
     this.progressEvent.emit(this.foundPositions.size);
   }
 
-  // Seul un changement de mot relance la manche : reagir a `room` remettait a
-  // zero la saisie en cours.
-  ngOnChanges(changes: SimpleChanges) {
-    const responseChange = changes['response'];
-
-    if (!responseChange || responseChange.firstChange) {
-      return;
-    }
-
-    this.ngOnInit();
-  }
-
   onKeyDown(event: KeyboardEvent) {
     const key = event.key.toUpperCase();
     const isAllowedCharacter = /^[A-Z]+$/.test(key);
@@ -172,6 +180,12 @@ export class WordInputComponent implements OnInit, OnChanges {
   }
 
   submitAnswer(): void {
+    // Le champ garde le curseur entre deux manches : « Entree » y arrive
+    // encore, alors que la manche est deja jouee.
+    if (this.isOver) {
+      return;
+    }
+
     if (this.inputValue()) {
       this.inputValue.set(
         this.inputValue()
@@ -188,7 +202,7 @@ export class WordInputComponent implements OnInit, OnChanges {
         /^[A-Z]+$/.test(value)
       ) {
         if (value === response) {
-          this.reset(true);
+          this.reset(true, value);
         } else {
           this.addTry();
         }
@@ -243,11 +257,13 @@ export class WordInputComponent implements OnInit, OnChanges {
     this.refreshProgress();
 
     if (this.tries.length >= MAX_TRIES) {
-      this.reset(false);
+      this.reset(false, value);
     }
   }
 
-  reset(stepWon: boolean) {
+  // `answer` est le dernier mot soumis : c'est lui que le serveur compare au
+  // mot de la manche pour trancher, le client n'etant pas cru sur parole.
+  reset(stepWon: boolean, answer: string) {
     const response: WordTry = {
       letter: Array.from(this.response),
       isWellPlaced: Array.from({ length: this.response!.length }, () => true),
@@ -259,6 +275,6 @@ export class WordInputComponent implements OnInit, OnChanges {
       this.inputValue.set('');
       this.localStorageService.saveTries([]);
     });
-    this.emitEvent.emit(stepWon);
+    this.emitEvent.emit({ won: stepWon, answer });
   }
 }

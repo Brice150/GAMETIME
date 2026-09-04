@@ -15,7 +15,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
-import { gameMap, games } from '../../assets/data/games';
+import { gameMap, games, gamesByCategory } from '../../assets/data/games';
 import { goals } from '../../assets/data/goals';
 import { Goal } from '../core/interfaces/goal';
 import { GameApiService } from '../core/services/game-api.service';
@@ -42,6 +42,7 @@ export class SuccessComponent implements OnInit {
   toastrHelper = inject(ToastrHelperService);
   destroyRef = inject(DestroyRef);
   games = games;
+  gameGroups = gamesByCategory();
   drapeauxGameKey = gameMap['drapeaux'].key;
 
   readonly loading = signal(true);

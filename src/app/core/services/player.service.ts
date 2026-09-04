@@ -26,9 +26,7 @@ import {
   take,
 } from 'rxjs';
 import { animalsWithEmojis } from '../../../assets/data/animals';
-import { gameMap } from '../../../assets/data/games';
 import { Player } from '../interfaces/player';
-import { Stat } from '../interfaces/stat';
 import { UserService } from './user.service';
 
 @Injectable({ providedIn: 'root' })
@@ -153,28 +151,15 @@ export class PlayerService {
     const animal = this.generateRandomAnimal();
     const playerDoc = doc(this.playersCollection);
 
-    const statMotus: Stat = {
-      gameName: gameMap['motus'].key,
-      medalsNumber: 0,
-      lastSuccessRetrieved: 0,
-    };
-    const statDrapeaux: Stat = {
-      gameName: gameMap['drapeaux'].key,
-      medalsNumber: 0,
-      lastSuccessRetrieved: 0,
-    };
-    const statMarques: Stat = {
-      gameName: gameMap['marques'].key,
-      medalsNumber: 0,
-      lastSuccessRetrieved: 0,
-    };
-
     const player: Player = {
       id: playerDoc.id,
       userId: userId,
       username: username,
       animal: animal,
-      stats: [statMotus, statDrapeaux, statMarques],
+      // Aucun compteur au depart : `submitRound` cree celui d'un jeu a la
+      // premiere medaille. Les regles peuvent ainsi exiger une liste vide, et
+      // ajouter un jeu ne demande aucune reprise des fiches existantes.
+      stats: [],
       isAdmin: false,
       currentRoomWins: [],
       finishDate: null,
@@ -250,7 +235,11 @@ export class PlayerService {
   }
 
   // Batch : la remise a zero de tous les joueurs doit etre atomique.
-  updatePlayers(players: Player[]): Observable<void> {
+  // Seuls les champs d'etat de partie sont ecrits. Renvoyer la fiche entiere
+  // reecrivait aussi les medailles avec la copie locale de l'hote : une fiche
+  // ayant evolue entre-temps etait ramenee en arriere, et les regles
+  // refusaient alors tout le lot, donc le lancement.
+  resetPlayersState(players: Player[]): Observable<void> {
     if (!players.length) {
       return of(undefined);
     }
@@ -260,8 +249,14 @@ export class PlayerService {
 
     const batch = writeBatch(this.firestore);
     players.forEach((player) => {
-      const { id, ...data } = player;
-      batch.update(doc(this.firestore, `players/${id}`), data);
+      batch.update(doc(this.firestore, `players/${player.id}`), {
+        currentRoomWins: [],
+        finishDate: null,
+        durationMs: null,
+        isReady: false,
+        currentRoundProgress: null,
+        vote: null,
+      });
     });
 
     return from(batch.commit());

@@ -110,11 +110,25 @@ mat-slide-toggle {
   .mdc-switch:enabled
   + .mdc-label {
   width: 100%;
-  margin: 0;
+  /* Remonte et ecarte le libelle : centre a la lettre, il paraissait bas et
+     colle a l'interrupteur. */
+  margin: -5px 0 0 10px;
   font-size: 15px;
   font-weight: 500;
   color: var(--text-2);
   text-align: left;
+}
+
+/* Le `sup` de « 1ère » rehaussait la boite du libelle de 5px : centree face a
+   l'interrupteur, elle faisait descendre le texte sous son axe. Sorti du calcul
+   de la ligne, l'exposant ne deplace plus rien. */
+:host
+  ::ng-deep
+  .toggle-container.dialog
+  .mat-mdc-slide-toggle
+  .mdc-label
+  sup {
+  line-height: 0;
 }
 
 /* Bulle de valeur elargie pour les libelles textuels (continent, categorie). */

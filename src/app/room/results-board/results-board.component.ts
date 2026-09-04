@@ -7,7 +7,7 @@ import {
   input,
   Output,
 } from '@angular/core';
-import { voteOptions } from '../../../assets/data/games';
+import { buildVoteGroups } from '../../../assets/data/games';
 import { Player } from '../../core/interfaces/player';
 import { Room } from '../../core/interfaces/room';
 import { DurationPipe } from '../../shared/pipes/duration.pipe';
@@ -29,7 +29,7 @@ export class ResultsBoardComponent {
   @Output() deleteEvent = new EventEmitter<Player>();
   @Output() voteEvent = new EventEmitter<string>();
 
-  voteOptions = voteOptions;
+  voteGroups = buildVoteGroups(true);
 
   // Les joueurs arrivent deja tries par la page room.
   readonly standings = computed(() =>
