@@ -33,8 +33,6 @@ export interface GameDefinition extends KeyLabel {
   hasWordLength?: boolean;
   // Etat par defaut de « Afficher la 1ere lettre » pour ce jeu.
   showFirstLetter?: boolean;
-  // L'enonce est un emoji : il s'affiche bien plus grand qu'un texte.
-  emojiPrompt?: boolean;
   // Charge le jeu de donnees sans rien tirer : sert au prechargement pendant
   // que les joueurs attendent dans la salle.
   load: () => Promise<unknown>;

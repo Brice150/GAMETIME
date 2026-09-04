@@ -26,9 +26,7 @@
         <span class="continent">{{ categoryLabel() }}</span>
       }
       @if (prompt()) {
-        <span class="prompt" [class.emoji]="isEmojiPrompt()">{{
-          prompt()
-        }}</span>
+        <span class="prompt">{{ prompt() }}</span>
       }
       @if (imageUrl()) {
         <div class="flag">

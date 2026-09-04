@@ -1,6 +1,6 @@
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { buildVoteGroups } from '../../../assets/data/games';
+import { voteGroups } from '../../../assets/data/games';
 import { buildPlayer } from '../../../testing/test-providers';
 import { VotePanelComponent } from './vote-panel.component';
 
@@ -19,7 +19,7 @@ describe('VotePanelComponent', () => {
       buildPlayer({ id: 'p2', userId: 'other', vote: 'motus' }),
       buildPlayer({ id: 'p3', userId: 'third', vote: null }),
     ]);
-    fixture.componentRef.setInput('groups', buildVoteGroups(true));
+    fixture.componentRef.setInput('groups', voteGroups);
     fixture.componentRef.setInput('currentPlayerId', currentPlayerId);
     fixture.componentRef.setInput('hostId', hostId);
     fixture.detectChanges();

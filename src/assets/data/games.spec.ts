@@ -3,8 +3,8 @@ import {
   gameMap,
   games,
   gamesByCategory,
-  buildVoteGroups,
-  restartVoteKey,
+  voteGroups,
+  voteOptions,
   anyGameVoteKey,
 } from './games';
 
@@ -29,25 +29,27 @@ describe('catalogue des jeux', () => {
     }
   });
 
-  it('range les bulletins par categorie, recommencer et peu importe a part', () => {
-    const groups = buildVoteGroups(true);
-    const keys = groups.flatMap((group) =>
+  it('propose un bulletin par jeu, peu importe en dernier', () => {
+    const keys = voteGroups.flatMap((group) =>
       group.options.map((option) => option.key),
     );
 
-    expect(keys[0]).toBe(restartVoteKey);
-    expect(keys.at(-1)).toBe(anyGameVoteKey);
-    expect(keys).toEqual(
-      jasmine.arrayContaining(games.map((game) => game.key)),
+    // Les bulletins suivent l'ordre des categories, pas celui du catalogue :
+    // seule leur presence et la place du dernier sont garanties.
+    expect(new Set(keys)).toEqual(
+      new Set([...games.map((game) => game.key), anyGameVoteKey]),
     );
+    expect(keys.length).toBe(games.length + 1);
+    expect(keys.at(-1)).toBe(anyGameVoteKey);
   });
 
-  it('retire recommencer avant la premiere partie', () => {
-    const keys = buildVoteGroups(false).flatMap((group) =>
-      group.options.map((option) => option.key),
-    );
-
-    expect(keys).not.toContain(restartVoteKey);
+  it('depouille dans l ordre du catalogue, peu importe en dernier', () => {
+    // `voteMap` est construit sur cette liste : son ordre tranche les egalites,
+    // et « Peu importe » ne doit l'emporter qu'a defaut.
+    expect(voteOptions.map((option) => option.key)).toEqual([
+      ...games.map((game) => game.key),
+      anyGameVoteKey,
+    ]);
   });
 
   for (const game of games) {

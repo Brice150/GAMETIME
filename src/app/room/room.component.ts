@@ -29,7 +29,6 @@ import {
 } from 'rxjs';
 import {
   anyGameVoteKey,
-  restartVoteKey,
   voteMap,
 } from '../../assets/data/games';
 import { goals } from '../../assets/data/goals';
@@ -813,16 +812,12 @@ export class RoomComponent implements OnInit {
     this.openAddRoomDialog();
   }
 
-  // La fenetre s'ouvre sur le resultat du vote quand il designe un jeu.
-  // « Recommencer » et « Peu importe » n'en designent aucun : le jeu en cours
-  // reste selectionne, ses reglages etant de toute facon repris tels quels, et
-  // l'hote tranche.
+  // La fenetre s'ouvre sur le jeu vote. « Peu importe » n'en designe aucun :
+  // le jeu en cours reste selectionne et l'hote tranche. Ses reglages sont de
+  // toute facon repris, donc revoter pour lui revient a recommencer.
   openAddRoomDialog(): void {
     const winner = this.winningVote();
-    const votedGame =
-      winner && winner !== restartVoteKey && winner !== anyGameVoteKey
-        ? winner
-        : null;
+    const votedGame = winner && winner !== anyGameVoteKey ? winner : null;
 
     const dialogRef = this.dialog.open(AddRoomDialogComponent, {
       data: {

@@ -50,10 +50,6 @@ export class WordGamesComponent implements OnInit {
       gameMap[room.gameName]?.filterLabels?.[room.categoryFilter - 1] ?? ''
     );
   });
-
-  readonly isEmojiPrompt = computed(
-    () => !!gameMap[this.room().gameName]?.emojiPrompt,
-  );
   @Output() finishedStepEvent = new EventEmitter<RoundAnswer>();
   @Output() progressEvent = new EventEmitter<{
     lettersFound: number;

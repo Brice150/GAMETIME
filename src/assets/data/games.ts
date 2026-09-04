@@ -7,11 +7,9 @@ import { KeyLabel } from '../../app/core/interfaces/key-label';
 import { BrandCategory } from '../../app/core/enums/brand-category.enum';
 import { Continent } from '../../app/core/enums/continent.enum';
 import { ElementFamily } from '../../app/core/enums/element-family.enum';
-import { EmojiTheme } from '../../app/core/enums/emoji-theme.enum';
 import { Brand } from '../../app/core/interfaces/brand';
 import { ChemicalElement } from '../../app/core/interfaces/chemical-element';
 import { Country } from '../../app/core/interfaces/country';
-import { EmojiRiddle } from '../../app/core/interfaces/emoji-riddle';
 import { pickRandom } from '../../app/core/utils/draw.util';
 import { brandLogoUrl, flagUrl } from '../../app/core/utils/media.util';
 
@@ -21,7 +19,6 @@ import { brandLogoUrl, flagUrl } from '../../app/core/utils/media.util';
 let countriesCache: Country[] | undefined;
 let brandsCache: Brand[] | undefined;
 let elementsCache: ChemicalElement[] | undefined;
-let emojisCache: EmojiRiddle[] | undefined;
 let wordsByLengthCache: Map<number, string[]> | undefined;
 
 async function loadCountries(): Promise<Country[]> {
@@ -37,11 +34,6 @@ async function loadBrands(): Promise<Brand[]> {
 async function loadElements(): Promise<ChemicalElement[]> {
   elementsCache ??= (await import('./elements')).elements;
   return elementsCache;
-}
-
-async function loadEmojis(): Promise<EmojiRiddle[]> {
-  emojisCache ??= (await import('./emojis')).emojis;
-  return emojisCache;
 }
 
 // Indexe une fois par longueur : un tirage refiltrait sinon les 19 000 mots.
@@ -209,8 +201,6 @@ const elementFamilyLabels = [
   'Terres rares',
 ];
 
-const emojiThemeLabels = ['Tout', 'Animaux', 'Nourriture', 'Nature', 'Objets'];
-
 // Trois categories pour sept jeux : en dessous de deux ou trois jeux par
 // groupe, l'intitule coute une ligne pour n'annoncer qu'une pastille. Les
 // sciences ressortiront a part le jour ou elles auront de quoi remplir un
@@ -325,30 +315,6 @@ export const games: GameDefinition[] = [
       );
     },
   },
-  {
-    key: 'emojis',
-    label: 'Emojis',
-    icon: 'bx bxs-happy-alt',
-    categoryKey: 'culture',
-    filterLabels: emojiThemeLabels,
-    emojiPrompt: true,
-    load: loadEmojis,
-    draw: async ({ stepsNumber, categoryFilter }) => {
-      const riddles = await loadEmojis();
-      const pool = riddles.filter(
-        (riddle) =>
-          categoryFilter === EmojiTheme.Tout || riddle.theme === categoryFilter,
-      );
-
-      return pickRandom(pool, stepsNumber, (riddle) => riddle.name).map(
-        (riddle) => ({
-          response: riddle.name,
-          prompt: riddle.emoji,
-          media: '',
-        }),
-      );
-    },
-  },
 ];
 
 export const gameMap = Object.fromEntries(
@@ -366,14 +332,6 @@ export function gamesByCategory(): { category: KeyLabel; games: KeyLabel[] }[] {
     .filter((group) => group.games.length > 0);
 }
 
-export const restartVoteKey = 'recommencer';
-
-const restartVote: KeyLabel = {
-  key: restartVoteKey,
-  label: 'Recommencer',
-  icon: 'bx bx-revision',
-};
-
 // Bulletin d'indifference : il ne designe aucun jeu, il laisse l'hote
 // choisir. C'est aussi la voix pretee a qui n'a pas vote.
 export const anyGameVoteKey = 'peu-importe';
@@ -386,7 +344,7 @@ const anyGameVote: KeyLabel = {
 
 // Ordre de reference du depouillement : une egalite designe toujours le meme
 // gagnant, et « Peu importe », en dernier, ne l'emporte qu'a defaut.
-export const voteOptions: KeyLabel[] = [restartVote, ...games, anyGameVote];
+export const voteOptions: KeyLabel[] = [...games, anyGameVote];
 
 export const voteMap = Object.fromEntries(
   voteOptions.map((option) => [option.key, option]),
@@ -399,21 +357,14 @@ export interface VoteGroup {
 
 /**
  * Bulletins ranges par categorie : a plat, la liste devient illisible a
- * mesure que les jeux se multiplient. « Recommencer » est absent de la salle
- * d'attente, ou il n'y a encore rien a recommencer.
+ * mesure que les jeux se multiplient. Rejouer le meme jeu ne demande pas de
+ * bulletin dedie, il suffit de voter pour lui : la fenetre de lancement
+ * reprend de toute facon les reglages de la partie precedente.
  */
-export function buildVoteGroups(includeRestart: boolean): VoteGroup[] {
-  const groups: VoteGroup[] = [];
-
-  if (includeRestart) {
-    groups.push({ label: '', options: [restartVote] });
-  }
-
-  for (const group of gamesByCategory()) {
-    groups.push({ label: group.category.label, options: group.games });
-  }
-
-  groups.push({ label: '', options: [anyGameVote] });
-
-  return groups;
-}
+export const voteGroups: VoteGroup[] = [
+  ...gamesByCategory().map((group) => ({
+    label: group.category.label,
+    options: group.games,
+  })),
+  { label: '', options: [anyGameVote] },
+];

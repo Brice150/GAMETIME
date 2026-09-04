@@ -8,7 +8,7 @@ import {
   Output,
 } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { buildVoteGroups } from '../../../assets/data/games';
+import { voteGroups } from '../../../assets/data/games';
 import { Player } from '../../core/interfaces/player';
 import { Room } from '../../core/interfaces/room';
 import { ToastrHelperService } from '../../core/services/toastr-helper.service';
@@ -34,8 +34,7 @@ export class WaitingRoomComponent {
   players = input.required<Player[]>();
   @Output() deleteEvent = new EventEmitter<Player>();
   @Output() voteEvent = new EventEmitter<string>();
-  // Rien a recommencer avant la premiere partie.
-  voteGroups = buildVoteGroups(false);
+  voteGroups = voteGroups;
 
   copyCode(): void {
     navigator.clipboard.writeText(this.room().roomCode).then(() => {

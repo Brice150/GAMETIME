@@ -58,7 +58,6 @@ const GAME_KEYS = [
   'capitales',
   'gentiles',
   'elements',
-  'emojis',
 ];
 
 // Marge de tolerance sur le chrono envoye par le client : le temps mesure
