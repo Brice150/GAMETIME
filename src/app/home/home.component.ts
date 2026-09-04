@@ -18,7 +18,6 @@ import { PlayerService } from '../core/services/player.service';
 import { RoomService } from '../core/services/room.service';
 import { ToastrHelperService } from '../core/services/toastr-helper.service';
 import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
-import { TotalMedalsNumberPipe } from '../shared/pipes/total-medals-number.pipe';
 import { JoinRoomComponent } from './join-room/join-room.component';
 
 @Component({
@@ -29,7 +28,6 @@ import { JoinRoomComponent } from './join-room/join-room.component';
     MatProgressSpinnerModule,
     MedalsNumberPipe,
     JoinRoomComponent,
-    TotalMedalsNumberPipe,
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],

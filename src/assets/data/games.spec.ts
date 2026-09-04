@@ -5,7 +5,7 @@ import {
   gamesByCategory,
   buildVoteGroups,
   restartVoteKey,
-  randomGameKey,
+  anyGameVoteKey,
 } from './games';
 
 // La saisie n'accepte que des lettres non accentuees : une reponse qui ne
@@ -36,7 +36,7 @@ describe('catalogue des jeux', () => {
     );
 
     expect(keys[0]).toBe(restartVoteKey);
-    expect(keys.at(-1)).toBe(randomGameKey);
+    expect(keys.at(-1)).toBe(anyGameVoteKey);
     expect(keys).toEqual(
       jasmine.arrayContaining(games.map((game) => game.key)),
     );

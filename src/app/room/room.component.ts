@@ -28,9 +28,7 @@ import {
   timer,
 } from 'rxjs';
 import {
-  gameMap,
-  randomGameKey,
-  resolveGameKey,
+  anyGameVoteKey,
   restartVoteKey,
   voteMap,
 } from '../../assets/data/games';
@@ -644,7 +642,7 @@ export class RoomComponent implements OnInit {
     const counts = new Map<string, number>();
 
     for (const player of voters) {
-      const vote = player.vote ?? randomGameKey;
+      const vote = player.vote ?? anyGameVoteKey;
       counts.set(vote, (counts.get(vote) ?? 0) + 1);
     }
 
@@ -815,12 +813,16 @@ export class RoomComponent implements OnInit {
     this.openAddRoomDialog();
   }
 
-  // La fenetre s'ouvre sur le resultat du vote : le jeu majoritaire s'il y
-  // en a un, « Aleatoire » si « Peu importe » l'emporte, et le jeu en cours
-  // pour « Recommencer », ses reglages etant de toute facon repris tels quels.
+  // La fenetre s'ouvre sur le resultat du vote quand il designe un jeu.
+  // « Recommencer » et « Peu importe » n'en designent aucun : le jeu en cours
+  // reste selectionne, ses reglages etant de toute facon repris tels quels, et
+  // l'hote tranche.
   openAddRoomDialog(): void {
     const winner = this.winningVote();
-    const votedGame = winner && winner !== restartVoteKey ? winner : null;
+    const votedGame =
+      winner && winner !== restartVoteKey && winner !== anyGameVoteKey
+        ? winner
+        : null;
 
     const dialogRef = this.dialog.open(AddRoomDialogComponent, {
       data: {
@@ -839,20 +841,12 @@ export class RoomComponent implements OnInit {
       .subscribe({
         next: (roomData: RoomForm) => {
           if (roomData && roomData.gameSelected) {
-            const gameName = resolveGameKey(roomData.gameSelected);
-            this.room.gameName = gameName;
+            this.room.gameName = roomData.gameSelected;
             this.room.showFirstLetter = roomData.showFirstLetter;
             this.room.stepsNumber = roomData.stepsNumber;
             this.room.categoryFilter = roomData.categoryFilter;
             this.room.isWordLengthIncreasing = roomData.isWordLengthIncreasing;
             this.room.startWordLength = roomData.startWordLength;
-
-            if (roomData.gameSelected === randomGameKey) {
-              this.toastrHelper.info(
-                `Le sort a désigné : ${gameMap[gameName]?.label ?? gameName}`,
-                'Room',
-              );
-            }
           }
 
           this.start();

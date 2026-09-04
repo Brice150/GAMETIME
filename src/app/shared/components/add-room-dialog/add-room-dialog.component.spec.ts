@@ -61,16 +61,6 @@ describe('AddRoomDialogComponent', () => {
     expect(closed?.startWordLength).toBe(5);
   });
 
-  it('applique le filtre le plus large en mode aleatoire', () => {
-    const component = build();
-    component.selectGame(component.randomGameKey);
-    component.categoryFilter = 4;
-
-    component.confirm();
-
-    expect(closed?.categoryFilter).toBe(1);
-  });
-
   it('propose le reglage de longueur a Motus seul', () => {
     const component = build();
 

@@ -88,11 +88,6 @@ section {
   background: var(--surface-3);
 }
 
-.stat-card.featured {
-  border-color: var(--accent-border);
-  background: linear-gradient(135deg, var(--accent-tint), var(--accent-tint-2));
-}
-
 .flex {
   display: flex;
   align-items: center;
@@ -129,12 +124,19 @@ mat-spinner {
 }
 
 @media (min-width: 781px) {
+  /* Rangee centree plutot qu'une grille a quatre colonnes fixes : une
+     categorie de deux ou trois jeux laissait sinon un vide a droite, et les
+     cartes paraissaient collees au bord gauche du panneau. */
   .stats-cards {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 16px;
   }
 
   .stat-card {
+    flex: 0 1 200px;
+    width: auto;
     flex-direction: column;
     justify-content: flex-start;
     gap: 14px;

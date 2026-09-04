@@ -2,22 +2,10 @@
   @if (!loading()) {
     <div class="panel gt-rise">
       <span class="panel-title">Vos dernières stats</span>
-      <div class="stats-cards">
-        <div class="stat-card featured">
-          <div class="flex">
-            <i class="bx bxs-universal-access"></i>
-            <span class="game">Général</span>
-          </div>
-          <div class="medals">
-            <span class="victory-number">{{
-              playerService.currentPlayerSig()! | totalMedalsNumber
-            }}</span>
-            <i class="bx bxs-medal"></i>
-          </div>
-        </div>
-      </div>
       <!-- Les jeux se multipliant, la grille est coupee par categorie :
-      autrement les cartes formaient un mur sans reperes. -->
+      autrement les cartes formaient un mur sans reperes. Le total general
+      n'est plus repris ici : il tient sa place dans le classement, ou il se
+      compare aux autres joueurs. -->
       @for (group of gameGroups; track group.category.key) {
         <span class="group-label">
           <i class="{{ group.category.icon }}"></i>

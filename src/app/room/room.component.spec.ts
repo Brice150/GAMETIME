@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { anyGameVoteKey } from '../../assets/data/games';
 import {
   appTestProviders,
   buildPlayer,
@@ -38,12 +39,12 @@ describe('RoomComponent', () => {
   it('compte un joueur sans vote comme « Peu importe »', async () => {
     const component = await build();
     component.players = [
-      buildPlayer({ id: 'p1', userId: 'u1', vote: 'aleatoire' }),
+      buildPlayer({ id: 'p1', userId: 'u1', vote: anyGameVoteKey }),
       buildPlayer({ id: 'p2', userId: 'u2', vote: null }),
       buildPlayer({ id: 'p3', userId: 'u3', vote: 'motus' }),
     ];
 
-    expect(component.winningVote()).toBe('aleatoire');
+    expect(component.winningVote()).toBe(anyGameVoteKey);
   });
 
   it('tranche une egalite en faveur du premier choix propose', async () => {

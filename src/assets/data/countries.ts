@@ -7,7 +7,6 @@ export const countries: Country[] = [
     code: 'AF',
     continent: Continent.Asie,
     capital: 'Kaboul',
-    currency: 'Afghani',
     demonym: 'Afghan',
   },
   {
@@ -15,7 +14,6 @@ export const countries: Country[] = [
     code: 'AL',
     continent: Continent.Europe,
     capital: 'Tirana',
-    currency: 'Lek',
     demonym: 'Albanais',
   },
   {
@@ -23,14 +21,12 @@ export const countries: Country[] = [
     code: 'DZ',
     continent: Continent.Afrique,
     capital: 'Alger',
-    currency: 'Dinar',
     demonym: 'Algerien',
   },
   {
     name: 'Andorre',
     code: 'AD',
     continent: Continent.Europe,
-    currency: 'Euro',
     demonym: 'Andorran',
   },
   {
@@ -38,14 +34,12 @@ export const countries: Country[] = [
     code: 'AO',
     continent: Continent.Afrique,
     capital: 'Luanda',
-    currency: 'Kwanza',
     demonym: 'Angolais',
   },
   {
     name: 'Argentine',
     code: 'AR',
     continent: Continent.Amerique,
-    currency: 'Peso',
     demonym: 'Argentin',
   },
   {
@@ -53,7 +47,6 @@ export const countries: Country[] = [
     code: 'AM',
     continent: Continent.Asie,
     capital: 'Erevan',
-    currency: 'Dram',
     demonym: 'Armenien',
   },
   {
@@ -61,7 +54,6 @@ export const countries: Country[] = [
     code: 'AU',
     continent: Continent.Oceanie,
     capital: 'Canberra',
-    currency: 'Dollar',
     demonym: 'Australien',
   },
   {
@@ -69,7 +61,6 @@ export const countries: Country[] = [
     code: 'AT',
     continent: Continent.Europe,
     capital: 'Vienne',
-    currency: 'Euro',
     demonym: 'Autrichien',
   },
   {
@@ -77,7 +68,6 @@ export const countries: Country[] = [
     code: 'AZ',
     continent: Continent.Asie,
     capital: 'Bakou',
-    currency: 'Manat',
     demonym: 'Azerbaidjanais',
   },
   {
@@ -85,7 +75,6 @@ export const countries: Country[] = [
     code: 'BS',
     continent: Continent.Amerique,
     capital: 'Nassau',
-    currency: 'Dollar',
     demonym: 'Bahamien',
   },
   {
@@ -93,7 +82,6 @@ export const countries: Country[] = [
     code: 'BH',
     continent: Continent.Asie,
     capital: 'Manama',
-    currency: 'Dinar',
     demonym: 'Bahreinien',
   },
   {
@@ -101,7 +89,6 @@ export const countries: Country[] = [
     code: 'BD',
     continent: Continent.Asie,
     capital: 'Dacca',
-    currency: 'Taka',
     demonym: 'Bangladais',
   },
   {
@@ -109,7 +96,6 @@ export const countries: Country[] = [
     code: 'BB',
     continent: Continent.Amerique,
     capital: 'Bridgetown',
-    currency: 'Dollar',
     demonym: 'Barbadien',
   },
   {
@@ -117,7 +103,6 @@ export const countries: Country[] = [
     code: 'BY',
     continent: Continent.Europe,
     capital: 'Minsk',
-    currency: 'Rouble',
     demonym: 'Bielorusse',
   },
   {
@@ -125,7 +110,6 @@ export const countries: Country[] = [
     code: 'BE',
     continent: Continent.Europe,
     capital: 'Bruxelles',
-    currency: 'Euro',
     demonym: 'Belge',
   },
   {
@@ -133,14 +117,12 @@ export const countries: Country[] = [
     code: 'BZ',
     continent: Continent.Amerique,
     capital: 'Belmopan',
-    currency: 'Dollar',
     demonym: 'Belizien',
   },
   {
     name: 'Benin',
     code: 'BJ',
     continent: Continent.Afrique,
-    currency: 'Franc',
     demonym: 'Beninois',
   },
   {
@@ -148,7 +130,6 @@ export const countries: Country[] = [
     code: 'BT',
     continent: Continent.Asie,
     capital: 'Thimphou',
-    currency: 'Ngultrum',
     demonym: 'Bhoutanais',
   },
   {
@@ -156,7 +137,6 @@ export const countries: Country[] = [
     code: 'BO',
     continent: Continent.Amerique,
     capital: 'Sucre',
-    currency: 'Boliviano',
     demonym: 'Bolivien',
   },
   {
@@ -164,7 +144,6 @@ export const countries: Country[] = [
     code: 'BW',
     continent: Continent.Afrique,
     capital: 'Gaborone',
-    currency: 'Pula',
     demonym: 'Botswanais',
   },
   {
@@ -172,14 +151,12 @@ export const countries: Country[] = [
     code: 'BR',
     continent: Continent.Amerique,
     capital: 'Brasilia',
-    currency: 'Real',
     demonym: 'Bresilien',
   },
   {
     name: 'Brunei',
     code: 'BN',
     continent: Continent.Asie,
-    currency: 'Dollar',
     demonym: 'Bruneien',
   },
   {
@@ -187,7 +164,6 @@ export const countries: Country[] = [
     code: 'BG',
     continent: Continent.Europe,
     capital: 'Sofia',
-    currency: 'Euro',
     demonym: 'Bulgare',
   },
   {
@@ -195,14 +171,12 @@ export const countries: Country[] = [
     code: 'BI',
     continent: Continent.Afrique,
     capital: 'Gitega',
-    currency: 'Franc',
     demonym: 'Burundais',
   },
   {
     name: 'Cambodge',
     code: 'KH',
     continent: Continent.Asie,
-    currency: 'Riel',
     demonym: 'Cambodgien',
   },
   {
@@ -210,7 +184,6 @@ export const countries: Country[] = [
     code: 'CM',
     continent: Continent.Afrique,
     capital: 'Yaounde',
-    currency: 'Franc',
     demonym: 'Camerounais',
   },
   {
@@ -218,7 +191,6 @@ export const countries: Country[] = [
     code: 'CA',
     continent: Continent.Amerique,
     capital: 'Ottawa',
-    currency: 'Dollar',
     demonym: 'Canadien',
   },
   {
@@ -226,14 +198,12 @@ export const countries: Country[] = [
     code: 'HR',
     continent: Continent.Europe,
     capital: 'Zagreb',
-    currency: 'Euro',
     demonym: 'Croate',
   },
   {
     name: 'Cuba',
     code: 'CU',
     continent: Continent.Amerique,
-    currency: 'Peso',
     demonym: 'Cubain',
   },
   {
@@ -241,7 +211,6 @@ export const countries: Country[] = [
     code: 'CY',
     continent: Continent.Europe,
     capital: 'Nicosie',
-    currency: 'Euro',
     demonym: 'Chypriote',
   },
   {
@@ -249,7 +218,6 @@ export const countries: Country[] = [
     code: 'DK',
     continent: Continent.Europe,
     capital: 'Copenhague',
-    currency: 'Couronne',
     demonym: 'Danois',
   },
   {
@@ -257,7 +225,6 @@ export const countries: Country[] = [
     code: 'DJ',
     continent: Continent.Afrique,
     capital: 'Djibouti',
-    currency: 'Franc',
     demonym: 'Djiboutien',
   },
   {
@@ -265,7 +232,6 @@ export const countries: Country[] = [
     code: 'DM',
     continent: Continent.Amerique,
     capital: 'Roseau',
-    currency: 'Dollar',
     demonym: 'Dominiquais',
   },
   {
@@ -273,21 +239,18 @@ export const countries: Country[] = [
     code: 'EC',
     continent: Continent.Amerique,
     capital: 'Quito',
-    currency: 'Dollar',
     demonym: 'Equatorien',
   },
   {
     name: 'Egypte',
     code: 'EG',
     continent: Continent.Afrique,
-    currency: 'Livre',
     demonym: 'Egyptien',
   },
   {
     name: 'Salvador',
     code: 'SV',
     continent: Continent.Amerique,
-    currency: 'Dollar',
     demonym: 'Salvadorien',
   },
   {
@@ -295,7 +258,6 @@ export const countries: Country[] = [
     code: 'ER',
     continent: Continent.Afrique,
     capital: 'Asmara',
-    currency: 'Nakfa',
     demonym: 'Erythreen',
   },
   {
@@ -303,7 +265,6 @@ export const countries: Country[] = [
     code: 'EE',
     continent: Continent.Europe,
     capital: 'Tallinn',
-    currency: 'Euro',
     demonym: 'Estonien',
   },
   {
@@ -311,14 +272,12 @@ export const countries: Country[] = [
     code: 'SZ',
     continent: Continent.Afrique,
     capital: 'Mbabane',
-    currency: 'Lilangeni',
     demonym: 'Swazi',
   },
   {
     name: 'Ethiopie',
     code: 'ET',
     continent: Continent.Afrique,
-    currency: 'Birr',
     demonym: 'Ethiopien',
   },
   {
@@ -326,7 +285,6 @@ export const countries: Country[] = [
     code: 'FJ',
     continent: Continent.Oceanie,
     capital: 'Suva',
-    currency: 'Dollar',
     demonym: 'Fidjien',
   },
   {
@@ -334,7 +292,6 @@ export const countries: Country[] = [
     code: 'FI',
     continent: Continent.Europe,
     capital: 'Helsinki',
-    currency: 'Euro',
     demonym: 'Finlandais',
   },
   {
@@ -342,7 +299,6 @@ export const countries: Country[] = [
     code: 'FR',
     continent: Continent.Europe,
     capital: 'Paris',
-    currency: 'Euro',
     demonym: 'Francais',
   },
   {
@@ -350,7 +306,6 @@ export const countries: Country[] = [
     code: 'GA',
     continent: Continent.Afrique,
     capital: 'Libreville',
-    currency: 'Franc',
     demonym: 'Gabonais',
   },
   {
@@ -358,7 +313,6 @@ export const countries: Country[] = [
     code: 'GM',
     continent: Continent.Afrique,
     capital: 'Banjul',
-    currency: 'Dalasi',
     demonym: 'Gambien',
   },
   {
@@ -366,7 +320,6 @@ export const countries: Country[] = [
     code: 'GE',
     continent: Continent.Asie,
     capital: 'Tbilissi',
-    currency: 'Lari',
     demonym: 'Georgien',
   },
   {
@@ -374,7 +327,6 @@ export const countries: Country[] = [
     code: 'DE',
     continent: Continent.Europe,
     capital: 'Berlin',
-    currency: 'Euro',
     demonym: 'Allemand',
   },
   {
@@ -382,7 +334,6 @@ export const countries: Country[] = [
     code: 'GH',
     continent: Continent.Afrique,
     capital: 'Accra',
-    currency: 'Cedi',
     demonym: 'Ghaneen',
   },
   {
@@ -390,14 +341,12 @@ export const countries: Country[] = [
     code: 'GR',
     continent: Continent.Europe,
     capital: 'Athenes',
-    currency: 'Euro',
     demonym: 'Grec',
   },
   {
     name: 'Grenade',
     code: 'GD',
     continent: Continent.Amerique,
-    currency: 'Dollar',
     demonym: 'Grenadien',
   },
   {
@@ -405,7 +354,6 @@ export const countries: Country[] = [
     code: 'GT',
     continent: Continent.Amerique,
     capital: 'Guatemala',
-    currency: 'Quetzal',
     demonym: 'Guatemalteque',
   },
   {
@@ -413,7 +361,6 @@ export const countries: Country[] = [
     code: 'GN',
     continent: Continent.Afrique,
     capital: 'Conakry',
-    currency: 'Franc',
     demonym: 'Guineen',
   },
   {
@@ -421,14 +368,12 @@ export const countries: Country[] = [
     code: 'GY',
     continent: Continent.Amerique,
     capital: 'Georgetown',
-    currency: 'Dollar',
     demonym: 'Guyanien',
   },
   {
     name: 'Haiti',
     code: 'HT',
     continent: Continent.Amerique,
-    currency: 'Gourde',
     demonym: 'Haitien',
   },
   {
@@ -436,7 +381,6 @@ export const countries: Country[] = [
     code: 'HN',
     continent: Continent.Amerique,
     capital: 'Tegucigalpa',
-    currency: 'Lempira',
     demonym: 'Hondurien',
   },
   {
@@ -444,7 +388,6 @@ export const countries: Country[] = [
     code: 'HU',
     continent: Continent.Europe,
     capital: 'Budapest',
-    currency: 'Forint',
     demonym: 'Hongrois',
   },
   {
@@ -452,14 +395,12 @@ export const countries: Country[] = [
     code: 'IS',
     continent: Continent.Europe,
     capital: 'Reykjavik',
-    currency: 'Couronne',
     demonym: 'Islandais',
   },
   {
     name: 'Inde',
     code: 'IN',
     continent: Continent.Asie,
-    currency: 'Roupie',
     demonym: 'Indien',
   },
   {
@@ -467,7 +408,6 @@ export const countries: Country[] = [
     code: 'ID',
     continent: Continent.Asie,
     capital: 'Jakarta',
-    currency: 'Roupie',
     demonym: 'Indonesien',
   },
   {
@@ -475,7 +415,6 @@ export const countries: Country[] = [
     code: 'IR',
     continent: Continent.Asie,
     capital: 'Teheran',
-    currency: 'Rial',
     demonym: 'Iranien',
   },
   {
@@ -483,7 +422,6 @@ export const countries: Country[] = [
     code: 'IQ',
     continent: Continent.Asie,
     capital: 'Bagdad',
-    currency: 'Dinar',
     demonym: 'Irakien',
   },
   {
@@ -491,14 +429,12 @@ export const countries: Country[] = [
     code: 'IE',
     continent: Continent.Europe,
     capital: 'Dublin',
-    currency: 'Euro',
     demonym: 'Irlandais',
   },
   {
     name: 'Israel',
     code: 'IL',
     continent: Continent.Asie,
-    currency: 'Shekel',
     demonym: 'Israelien',
   },
   {
@@ -506,7 +442,6 @@ export const countries: Country[] = [
     code: 'IT',
     continent: Continent.Europe,
     capital: 'Rome',
-    currency: 'Euro',
     demonym: 'Italien',
   },
   {
@@ -514,7 +449,6 @@ export const countries: Country[] = [
     code: 'JM',
     continent: Continent.Amerique,
     capital: 'Kingston',
-    currency: 'Dollar',
     demonym: 'Jamaicain',
   },
   {
@@ -522,7 +456,6 @@ export const countries: Country[] = [
     code: 'JP',
     continent: Continent.Asie,
     capital: 'Tokyo',
-    currency: 'Yen',
     demonym: 'Japonais',
   },
   {
@@ -530,7 +463,6 @@ export const countries: Country[] = [
     code: 'JO',
     continent: Continent.Asie,
     capital: 'Amman',
-    currency: 'Dinar',
     demonym: 'Jordanien',
   },
   {
@@ -538,7 +470,6 @@ export const countries: Country[] = [
     code: 'KZ',
     continent: Continent.Asie,
     capital: 'Astana',
-    currency: 'Tenge',
     demonym: 'Kazakh',
   },
   {
@@ -546,7 +477,6 @@ export const countries: Country[] = [
     code: 'KE',
     continent: Continent.Afrique,
     capital: 'Nairobi',
-    currency: 'Shilling',
     demonym: 'Kenyan',
   },
   {
@@ -554,7 +484,6 @@ export const countries: Country[] = [
     code: 'KI',
     continent: Continent.Oceanie,
     capital: 'Tarawa',
-    currency: 'Dollar',
     demonym: 'Kiribatien',
   },
   {
@@ -562,7 +491,6 @@ export const countries: Country[] = [
     code: 'KW',
     continent: Continent.Asie,
     capital: 'Koweit',
-    currency: 'Dinar',
     demonym: 'Koweitien',
   },
   {
@@ -570,7 +498,6 @@ export const countries: Country[] = [
     code: 'KG',
     continent: Continent.Asie,
     capital: 'Bichkek',
-    currency: 'Som',
     demonym: 'Kirghize',
   },
   {
@@ -578,7 +505,6 @@ export const countries: Country[] = [
     code: 'LA',
     continent: Continent.Asie,
     capital: 'Vientiane',
-    currency: 'Kip',
     demonym: 'Laotien',
   },
   {
@@ -586,7 +512,6 @@ export const countries: Country[] = [
     code: 'LV',
     continent: Continent.Europe,
     capital: 'Riga',
-    currency: 'Euro',
     demonym: 'Letton',
   },
   {
@@ -594,7 +519,6 @@ export const countries: Country[] = [
     code: 'LB',
     continent: Continent.Asie,
     capital: 'Beyrouth',
-    currency: 'Livre',
     demonym: 'Libanais',
   },
   {
@@ -602,7 +526,6 @@ export const countries: Country[] = [
     code: 'LS',
     continent: Continent.Afrique,
     capital: 'Maseru',
-    currency: 'Loti',
     demonym: 'Lesothan',
   },
   {
@@ -610,7 +533,6 @@ export const countries: Country[] = [
     code: 'LR',
     continent: Continent.Afrique,
     capital: 'Monrovia',
-    currency: 'Dollar',
     demonym: 'Liberien',
   },
   {
@@ -618,7 +540,6 @@ export const countries: Country[] = [
     code: 'LY',
     continent: Continent.Afrique,
     capital: 'Tripoli',
-    currency: 'Dinar',
     demonym: 'Libyen',
   },
   {
@@ -626,7 +547,6 @@ export const countries: Country[] = [
     code: 'LT',
     continent: Continent.Europe,
     capital: 'Vilnius',
-    currency: 'Euro',
     demonym: 'Lituanien',
   },
   {
@@ -634,7 +554,6 @@ export const countries: Country[] = [
     code: 'LU',
     continent: Continent.Europe,
     capital: 'Luxembourg',
-    currency: 'Euro',
     demonym: 'Luxembourgeois',
   },
   {
@@ -642,7 +561,6 @@ export const countries: Country[] = [
     code: 'MG',
     continent: Continent.Afrique,
     capital: 'Antananarivo',
-    currency: 'Ariary',
     demonym: 'Malgache',
   },
   {
@@ -650,14 +568,12 @@ export const countries: Country[] = [
     code: 'MW',
     continent: Continent.Afrique,
     capital: 'Lilongwe',
-    currency: 'Kwacha',
     demonym: 'Malawite',
   },
   {
     name: 'Malaisie',
     code: 'MY',
     continent: Continent.Asie,
-    currency: 'Ringgit',
     demonym: 'Malaisien',
   },
   {
@@ -665,7 +581,6 @@ export const countries: Country[] = [
     code: 'MV',
     continent: Continent.Asie,
     capital: 'Male',
-    currency: 'Rufiyaa',
     demonym: 'Maldivien',
   },
   {
@@ -673,14 +588,12 @@ export const countries: Country[] = [
     code: 'ML',
     continent: Continent.Afrique,
     capital: 'Bamako',
-    currency: 'Franc',
     demonym: 'Malien',
   },
   {
     name: 'Malte',
     code: 'MT',
     continent: Continent.Europe,
-    currency: 'Euro',
     demonym: 'Maltais',
   },
   {
@@ -688,14 +601,12 @@ export const countries: Country[] = [
     code: 'MR',
     continent: Continent.Afrique,
     capital: 'Nouakchott',
-    currency: 'Ouguiya',
     demonym: 'Mauritanien',
   },
   {
     name: 'Maurice',
     code: 'MU',
     continent: Continent.Afrique,
-    currency: 'Roupie',
     demonym: 'Mauricien',
   },
   {
@@ -703,7 +614,6 @@ export const countries: Country[] = [
     code: 'MX',
     continent: Continent.Amerique,
     capital: 'Mexico',
-    currency: 'Peso',
     demonym: 'Mexicain',
   },
   {
@@ -711,7 +621,6 @@ export const countries: Country[] = [
     code: 'FM',
     continent: Continent.Oceanie,
     capital: 'Palikir',
-    currency: 'Dollar',
     demonym: 'Micronesien',
   },
   {
@@ -719,7 +628,6 @@ export const countries: Country[] = [
     code: 'MD',
     continent: Continent.Europe,
     capital: 'Chisinau',
-    currency: 'Leu',
     demonym: 'Moldave',
   },
   {
@@ -727,14 +635,12 @@ export const countries: Country[] = [
     code: 'MC',
     continent: Continent.Europe,
     capital: 'Monaco',
-    currency: 'Euro',
     demonym: 'Monegasque',
   },
   {
     name: 'Mongolie',
     code: 'MN',
     continent: Continent.Asie,
-    currency: 'Tugrik',
     demonym: 'Mongol',
   },
   {
@@ -742,7 +648,6 @@ export const countries: Country[] = [
     code: 'ME',
     continent: Continent.Europe,
     capital: 'Podgorica',
-    currency: 'Euro',
     demonym: 'Montenegrin',
   },
   {
@@ -750,7 +655,6 @@ export const countries: Country[] = [
     code: 'MA',
     continent: Continent.Afrique,
     capital: 'Rabat',
-    currency: 'Dirham',
     demonym: 'Marocain',
   },
   {
@@ -758,7 +662,6 @@ export const countries: Country[] = [
     code: 'MZ',
     continent: Continent.Afrique,
     capital: 'Maputo',
-    currency: 'Metical',
     demonym: 'Mozambicain',
   },
   {
@@ -766,7 +669,6 @@ export const countries: Country[] = [
     code: 'MM',
     continent: Continent.Asie,
     capital: 'Naypyidaw',
-    currency: 'Kyat',
     demonym: 'Birman',
   },
   {
@@ -774,7 +676,6 @@ export const countries: Country[] = [
     code: 'NA',
     continent: Continent.Afrique,
     capital: 'Windhoek',
-    currency: 'Dollar',
     demonym: 'Namibien',
   },
   {
@@ -782,7 +683,6 @@ export const countries: Country[] = [
     code: 'NR',
     continent: Continent.Oceanie,
     capital: 'Yaren',
-    currency: 'Dollar',
     demonym: 'Nauruan',
   },
   {
@@ -790,7 +690,6 @@ export const countries: Country[] = [
     code: 'NP',
     continent: Continent.Asie,
     capital: 'Katmandou',
-    currency: 'Roupie',
     demonym: 'Nepalais',
   },
   {
@@ -798,7 +697,6 @@ export const countries: Country[] = [
     code: 'NI',
     continent: Continent.Amerique,
     capital: 'Managua',
-    currency: 'Cordoba',
     demonym: 'Nicaraguayen',
   },
   {
@@ -806,7 +704,6 @@ export const countries: Country[] = [
     code: 'NE',
     continent: Continent.Afrique,
     capital: 'Niamey',
-    currency: 'Franc',
     demonym: 'Nigerien',
   },
   {
@@ -814,7 +711,6 @@ export const countries: Country[] = [
     code: 'NG',
     continent: Continent.Afrique,
     capital: 'Abuja',
-    currency: 'Naira',
     demonym: 'Nigerian',
   },
   {
@@ -822,7 +718,6 @@ export const countries: Country[] = [
     code: 'NU',
     continent: Continent.Oceanie,
     capital: 'Alofi',
-    currency: 'Dollar',
     demonym: 'Niueen',
   },
   {
@@ -830,7 +725,6 @@ export const countries: Country[] = [
     code: 'NO',
     continent: Continent.Europe,
     capital: 'Oslo',
-    currency: 'Couronne',
     demonym: 'Norvegien',
   },
   {
@@ -838,7 +732,6 @@ export const countries: Country[] = [
     code: 'OM',
     continent: Continent.Asie,
     capital: 'Mascate',
-    currency: 'Rial',
     demonym: 'Omanais',
   },
   {
@@ -846,7 +739,6 @@ export const countries: Country[] = [
     code: 'PK',
     continent: Continent.Asie,
     capital: 'Islamabad',
-    currency: 'Roupie',
     demonym: 'Pakistanais',
   },
   {
@@ -854,14 +746,12 @@ export const countries: Country[] = [
     code: 'PW',
     continent: Continent.Oceanie,
     capital: 'Ngerulmud',
-    currency: 'Dollar',
     demonym: 'Palaosien',
   },
   {
     name: 'Palestine',
     code: 'PS',
     continent: Continent.Asie,
-    currency: 'Shekel',
     demonym: 'Palestinien',
   },
   {
@@ -869,7 +759,6 @@ export const countries: Country[] = [
     code: 'PA',
     continent: Continent.Amerique,
     capital: 'Panama',
-    currency: 'Balboa',
     demonym: 'Panameen',
   },
   {
@@ -877,7 +766,6 @@ export const countries: Country[] = [
     code: 'PY',
     continent: Continent.Amerique,
     capital: 'Asuncion',
-    currency: 'Guarani',
     demonym: 'Paraguayen',
   },
   {
@@ -885,7 +773,6 @@ export const countries: Country[] = [
     code: 'PE',
     continent: Continent.Amerique,
     capital: 'Lima',
-    currency: 'Sol',
     demonym: 'Peruvien',
   },
   {
@@ -893,7 +780,6 @@ export const countries: Country[] = [
     code: 'PH',
     continent: Continent.Asie,
     capital: 'Manille',
-    currency: 'Peso',
     demonym: 'Philippin',
   },
   {
@@ -901,7 +787,6 @@ export const countries: Country[] = [
     code: 'PL',
     continent: Continent.Europe,
     capital: 'Varsovie',
-    currency: 'Zloty',
     demonym: 'Polonais',
   },
   {
@@ -909,7 +794,6 @@ export const countries: Country[] = [
     code: 'PT',
     continent: Continent.Europe,
     capital: 'Lisbonne',
-    currency: 'Euro',
     demonym: 'Portugais',
   },
   {
@@ -917,7 +801,6 @@ export const countries: Country[] = [
     code: 'QA',
     continent: Continent.Asie,
     capital: 'Doha',
-    currency: 'Rial',
     demonym: 'Qatarien',
   },
   {
@@ -925,7 +808,6 @@ export const countries: Country[] = [
     code: 'RO',
     continent: Continent.Europe,
     capital: 'Bucarest',
-    currency: 'Leu',
     demonym: 'Roumain',
   },
   {
@@ -933,7 +815,6 @@ export const countries: Country[] = [
     code: 'RU',
     continent: Continent.Europe,
     capital: 'Moscou',
-    currency: 'Rouble',
     demonym: 'Russe',
   },
   {
@@ -941,7 +822,6 @@ export const countries: Country[] = [
     code: 'RW',
     continent: Continent.Afrique,
     capital: 'Kigali',
-    currency: 'Franc',
     demonym: 'Rwandais',
   },
   {
@@ -949,7 +829,6 @@ export const countries: Country[] = [
     code: 'WS',
     continent: Continent.Oceanie,
     capital: 'Apia',
-    currency: 'Tala',
     demonym: 'Samoan',
   },
   {
@@ -957,7 +836,6 @@ export const countries: Country[] = [
     code: 'SN',
     continent: Continent.Afrique,
     capital: 'Dakar',
-    currency: 'Franc',
     demonym: 'Senegalais',
   },
   {
@@ -965,7 +843,6 @@ export const countries: Country[] = [
     code: 'RS',
     continent: Continent.Europe,
     capital: 'Belgrade',
-    currency: 'Dinar',
     demonym: 'Serbe',
   },
   {
@@ -973,7 +850,6 @@ export const countries: Country[] = [
     code: 'SC',
     continent: Continent.Afrique,
     capital: 'Victoria',
-    currency: 'Roupie',
     demonym: 'Seychellois',
   },
   {
@@ -981,7 +857,6 @@ export const countries: Country[] = [
     code: 'SG',
     continent: Continent.Asie,
     capital: 'Singapour',
-    currency: 'Dollar',
     demonym: 'Singapourien',
   },
   {
@@ -989,7 +864,6 @@ export const countries: Country[] = [
     code: 'SK',
     continent: Continent.Europe,
     capital: 'Bratislava',
-    currency: 'Euro',
     demonym: 'Slovaque',
   },
   {
@@ -997,7 +871,6 @@ export const countries: Country[] = [
     code: 'SI',
     continent: Continent.Europe,
     capital: 'Ljubljana',
-    currency: 'Euro',
     demonym: 'Slovene',
   },
   {
@@ -1005,7 +878,6 @@ export const countries: Country[] = [
     code: 'SO',
     continent: Continent.Afrique,
     capital: 'Mogadiscio',
-    currency: 'Shilling',
     demonym: 'Somalien',
   },
   {
@@ -1013,7 +885,6 @@ export const countries: Country[] = [
     code: 'ES',
     continent: Continent.Europe,
     capital: 'Madrid',
-    currency: 'Euro',
     demonym: 'Espagnol',
   },
   {
@@ -1021,7 +892,6 @@ export const countries: Country[] = [
     code: 'SD',
     continent: Continent.Afrique,
     capital: 'Khartoum',
-    currency: 'Livre',
     demonym: 'Soudanais',
   },
   {
@@ -1029,7 +899,6 @@ export const countries: Country[] = [
     code: 'SR',
     continent: Continent.Amerique,
     capital: 'Paramaribo',
-    currency: 'Dollar',
     demonym: 'Surinamais',
   },
   {
@@ -1037,7 +906,6 @@ export const countries: Country[] = [
     code: 'SE',
     continent: Continent.Europe,
     capital: 'Stockholm',
-    currency: 'Couronne',
     demonym: 'Suedois',
   },
   {
@@ -1045,7 +913,6 @@ export const countries: Country[] = [
     code: 'CH',
     continent: Continent.Europe,
     capital: 'Berne',
-    currency: 'Franc',
     demonym: 'Suisse',
   },
   {
@@ -1053,7 +920,6 @@ export const countries: Country[] = [
     code: 'SY',
     continent: Continent.Asie,
     capital: 'Damas',
-    currency: 'Livre',
     demonym: 'Syrien',
   },
   {
@@ -1061,7 +927,6 @@ export const countries: Country[] = [
     code: 'TJ',
     continent: Continent.Asie,
     capital: 'Douchanbe',
-    currency: 'Somoni',
     demonym: 'Tadjik',
   },
   {
@@ -1069,7 +934,6 @@ export const countries: Country[] = [
     code: 'TZ',
     continent: Continent.Afrique,
     capital: 'Dodoma',
-    currency: 'Shilling',
     demonym: 'Tanzanien',
   },
   {
@@ -1077,7 +941,6 @@ export const countries: Country[] = [
     code: 'TH',
     continent: Continent.Asie,
     capital: 'Bangkok',
-    currency: 'Baht',
     demonym: 'Thailandais',
   },
   {
@@ -1085,14 +948,12 @@ export const countries: Country[] = [
     code: 'TG',
     continent: Continent.Afrique,
     capital: 'Lome',
-    currency: 'Franc',
     demonym: 'Togolais',
   },
   {
     name: 'Tonga',
     code: 'TO',
     continent: Continent.Oceanie,
-    currency: 'Paanga',
     demonym: 'Tongien',
   },
   {
@@ -1100,7 +961,6 @@ export const countries: Country[] = [
     code: 'TN',
     continent: Continent.Afrique,
     capital: 'Tunis',
-    currency: 'Dinar',
     demonym: 'Tunisien',
   },
   {
@@ -1108,7 +968,6 @@ export const countries: Country[] = [
     code: 'TR',
     continent: Continent.Europe,
     capital: 'Ankara',
-    currency: 'Livre',
     demonym: 'Turc',
   },
   {
@@ -1116,7 +975,6 @@ export const countries: Country[] = [
     code: 'TM',
     continent: Continent.Asie,
     capital: 'Achgabat',
-    currency: 'Manat',
     demonym: 'Turkmene',
   },
   {
@@ -1124,7 +982,6 @@ export const countries: Country[] = [
     code: 'TV',
     continent: Continent.Oceanie,
     capital: 'Funafuti',
-    currency: 'Dollar',
     demonym: 'Tuvaluan',
   },
   {
@@ -1132,7 +989,6 @@ export const countries: Country[] = [
     code: 'UG',
     continent: Continent.Afrique,
     capital: 'Kampala',
-    currency: 'Shilling',
     demonym: 'Ougandais',
   },
   {
@@ -1140,7 +996,6 @@ export const countries: Country[] = [
     code: 'UA',
     continent: Continent.Europe,
     capital: 'Kiev',
-    currency: 'Hryvnia',
     demonym: 'Ukrainien',
   },
   {
@@ -1148,7 +1003,6 @@ export const countries: Country[] = [
     code: 'UY',
     continent: Continent.Amerique,
     capital: 'Montevideo',
-    currency: 'Peso',
     demonym: 'Uruguayen',
   },
   {
@@ -1156,14 +1010,12 @@ export const countries: Country[] = [
     code: 'UZ',
     continent: Continent.Asie,
     capital: 'Tachkent',
-    currency: 'Soum',
     demonym: 'Ouzbek',
   },
   {
     name: 'Vanuatu',
     code: 'VU',
     continent: Continent.Oceanie,
-    currency: 'Vatu',
     demonym: 'Vanuatuan',
   },
   {
@@ -1171,14 +1023,12 @@ export const countries: Country[] = [
     code: 'VA',
     continent: Continent.Europe,
     capital: 'Vatican',
-    currency: 'Euro',
   },
   {
     name: 'Venezuela',
     code: 'VE',
     continent: Continent.Amerique,
     capital: 'Caracas',
-    currency: 'Bolivar',
     demonym: 'Venezuelien',
   },
   {
@@ -1186,7 +1036,6 @@ export const countries: Country[] = [
     code: 'VN',
     continent: Continent.Asie,
     capital: 'Hanoi',
-    currency: 'Dong',
     demonym: 'Vietnamien',
   },
   {
@@ -1194,7 +1043,6 @@ export const countries: Country[] = [
     code: 'YE',
     continent: Continent.Asie,
     capital: 'Sanaa',
-    currency: 'Rial',
     demonym: 'Yemenite',
   },
   {
@@ -1202,7 +1050,6 @@ export const countries: Country[] = [
     code: 'ZM',
     continent: Continent.Afrique,
     capital: 'Lusaka',
-    currency: 'Kwacha',
     demonym: 'Zambien',
   },
   {

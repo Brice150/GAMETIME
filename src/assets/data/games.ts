@@ -1,4 +1,8 @@
-import { GameDefinition, GameRound } from '../../app/core/interfaces/game';
+import {
+  GameDefinition,
+  GameDrawOptions,
+  GameRound,
+} from '../../app/core/interfaces/game';
 import { KeyLabel } from '../../app/core/interfaces/key-label';
 import { BrandCategory } from '../../app/core/enums/brand-category.enum';
 import { Continent } from '../../app/core/enums/continent.enum';
@@ -66,6 +70,68 @@ function longestPool(
 ): string[] | undefined {
   const longest = Math.max(...wordsByLength.keys());
   return wordsByLength.get(longest);
+}
+
+// Mots distincts pour une partie, de la longueur demandee. Motus les fait
+// deviner sans indice, Anagrammes en montre les lettres melangees.
+async function drawWords({
+  stepsNumber,
+  isWordLengthIncreasing,
+  startWordLength,
+}: GameDrawOptions): Promise<string[]> {
+  const wordsByLength = await loadWordsByLength();
+  const words: string[] = [];
+  const used = new Set<string>();
+
+  let attempts = 0;
+
+  while (words.length < stepsNumber && attempts < 1000) {
+    const length = isWordLengthIncreasing
+      ? startWordLength + words.length
+      : startWordLength;
+
+    // Repli sur la plus grande longueur disponible : sortir de la boucle
+    // rendait une partie plus courte que celle demandee.
+    const pool = wordsByLength.get(length) ?? longestPool(wordsByLength);
+
+    if (!pool?.length) {
+      break;
+    }
+
+    const word = pool[Math.floor(Math.random() * pool.length)];
+
+    if (!used.has(word)) {
+      used.add(word);
+      words.push(word);
+    }
+
+    attempts++;
+  }
+
+  return words;
+}
+
+/**
+ * Lettres d'un mot dans le desordre, espacees pour rester lisibles. Un
+ * melange qui redonnerait le mot d'origine n'aurait rien a deviner : il est
+ * rejoue. Les mots faisant cinq lettres au minimum, l'echec repete n'est pas
+ * un cas a traiter.
+ */
+function shuffleLetters(word: string): string {
+  const letters = [...word.toUpperCase()];
+
+  for (let attempt = 0; attempt < 10; attempt++) {
+    for (let i = letters.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [letters[i], letters[j]] = [letters[j], letters[i]];
+    }
+
+    if (letters.join('') !== word.toUpperCase()) {
+      break;
+    }
+  }
+
+  return letters.join(' ');
 }
 
 // Tirage commun aux jeux batis sur les pays : d'un jeu a l'autre, seuls
@@ -145,10 +211,13 @@ const elementFamilyLabels = [
 
 const emojiThemeLabels = ['Tout', 'Animaux', 'Nourriture', 'Nature', 'Objets'];
 
+// Trois categories pour sept jeux : en dessous de deux ou trois jeux par
+// groupe, l'intitule coute une ligne pour n'annoncer qu'une pastille. Les
+// sciences ressortiront a part le jour ou elles auront de quoi remplir un
+// groupe.
 export const gameCategories: KeyLabel[] = [
-  { key: 'lettres', label: 'Lettres', icon: 'bx bx-font' },
+  { key: 'mots', label: 'Mots', icon: 'bx bx-font' },
   { key: 'geographie', label: 'Géographie', icon: 'bx bxs-map-alt' },
-  { key: 'sciences', label: 'Sciences', icon: 'bx bx-atom' },
   { key: 'culture', label: 'Culture', icon: 'bx bxs-star' },
 ];
 
@@ -195,54 +264,36 @@ export const games: GameDefinition[] = [
     key: 'motus',
     label: 'Motus',
     icon: 'bx bxs-objects-horizontal-left',
-    categoryKey: 'lettres',
+    categoryKey: 'mots',
     hasWordLength: true,
     showFirstLetter: true,
     load: loadWordsByLength,
-    draw: async ({ stepsNumber, isWordLengthIncreasing, startWordLength }) => {
-      const wordsByLength = await loadWordsByLength();
-      const words: string[] = [];
-      const used = new Set<string>();
-
-      let attempts = 0;
-
-      while (words.length < stepsNumber && attempts < 1000) {
-        const length = isWordLengthIncreasing
-          ? startWordLength + words.length
-          : startWordLength;
-
-        // Repli sur la plus grande longueur disponible : sortir de la boucle
-        // rendait une partie plus courte que celle demandee.
-        const pool = wordsByLength.get(length) ?? longestPool(wordsByLength);
-
-        if (!pool?.length) {
-          break;
-        }
-
-        const word = pool[Math.floor(Math.random() * pool.length)];
-
-        if (!used.has(word)) {
-          used.add(word);
-          words.push(word);
-        }
-
-        attempts++;
-      }
-
-      return words.map((word) => ({ response: word, prompt: '', media: '' }));
-    },
+    draw: async (options) =>
+      (await drawWords(options)).map((word) => ({
+        response: word,
+        prompt: '',
+        media: '',
+      })),
+  },
+  {
+    key: 'anagrammes',
+    label: 'Anagrammes',
+    icon: 'bx bx-shuffle',
+    categoryKey: 'mots',
+    hasWordLength: true,
+    load: loadWordsByLength,
+    draw: async (options) =>
+      (await drawWords(options)).map((word) => ({
+        response: word,
+        prompt: shuffleLetters(word),
+        media: '',
+      })),
   },
   countryAttributeGame(
     'capitales',
     'Capitales',
     'bx bxs-landmark',
     (country) => country.capital,
-  ),
-  countryAttributeGame(
-    'devises',
-    'Devises',
-    'bx bxs-coin-stack',
-    (country) => country.currency,
   ),
   countryAttributeGame(
     'gentiles',
@@ -254,7 +305,7 @@ export const games: GameDefinition[] = [
     key: 'elements',
     label: 'Éléments',
     icon: 'bx bx-atom',
-    categoryKey: 'sciences',
+    categoryKey: 'culture',
     filterLabels: elementFamilyLabels,
     load: loadElements,
     draw: async ({ stepsNumber, categoryFilter }) => {
@@ -315,15 +366,6 @@ export function gamesByCategory(): { category: KeyLabel; games: KeyLabel[] }[] {
     .filter((group) => group.games.length > 0);
 }
 
-// Choix de configuration, pas un jeu : resolu en jeu reel au lancement.
-export const randomGameKey = 'aleatoire';
-
-export const randomGame: KeyLabel = {
-  key: randomGameKey,
-  label: 'Aléatoire',
-  icon: 'bx bx-shuffle',
-};
-
 export const restartVoteKey = 'recommencer';
 
 const restartVote: KeyLabel = {
@@ -332,10 +374,14 @@ const restartVote: KeyLabel = {
   icon: 'bx bx-revision',
 };
 
+// Bulletin d'indifference : il ne designe aucun jeu, il laisse l'hote
+// choisir. C'est aussi la voix pretee a qui n'a pas vote.
+export const anyGameVoteKey = 'peu-importe';
+
 const anyGameVote: KeyLabel = {
-  key: randomGameKey,
+  key: anyGameVoteKey,
   label: 'Peu importe',
-  icon: 'bx bx-shuffle',
+  icon: 'bx bx-dots-horizontal-rounded',
 };
 
 // Ordre de reference du depouillement : une egalite designe toujours le meme
@@ -370,12 +416,4 @@ export function buildVoteGroups(includeRestart: boolean): VoteGroup[] {
   groups.push({ label: '', options: [anyGameVote] });
 
   return groups;
-}
-
-export function pickRandomGameKey(): string {
-  return games[Math.floor(Math.random() * games.length)].key;
-}
-
-export function resolveGameKey(gameKey: string): string {
-  return gameKey === randomGameKey ? pickRandomGameKey() : gameKey;
 }

@@ -14,12 +14,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSliderModule } from '@angular/material/slider';
-import {
-  gameMap,
-  gamesByCategory,
-  randomGame,
-  randomGameKey,
-} from '../../../../assets/data/games';
+import { gameMap, gamesByCategory } from '../../../../assets/data/games';
 import { GameDefinition } from '../../../core/interfaces/game';
 import { RoomForm } from '../../../core/interfaces/room-form';
 
@@ -41,11 +36,8 @@ import { RoomForm } from '../../../core/interfaces/room-form';
 export class AddRoomDialogComponent implements OnInit {
   dialogRef = inject(MatDialogRef<AddRoomDialogComponent>);
   data = inject<RoomForm>(MAT_DIALOG_DATA);
-  // Les jeux sont proposes ranges par categorie ; « Aleatoire » reste a part,
-  // n'etant pas un jeu mais un choix de configuration.
+  // Les jeux sont proposes ranges par categorie.
   gameGroups = gamesByCategory();
-  randomGame = randomGame;
-  randomGameKey = randomGameKey;
   stepsNumber = 3;
   startWordLength = 5;
   categoryFilter = 1;
@@ -114,10 +106,7 @@ export class AddRoomDialogComponent implements OnInit {
       // apres avoir choisi la taille laissait une valeur hors bornes, et la
       // partie rendait alors moins de manches que demande.
       startWordLength: Math.min(this.startWordLength, this.maxWordLength),
-      // En aleatoire le jeu n'est connu qu'au lancement : aucun filtre de
-      // categorie n'aurait de sens, on retient donc le plus large.
-      categoryFilter:
-        this.gameSelected() === randomGameKey ? 1 : this.categoryFilter,
+      categoryFilter: this.categoryFilter,
     } as RoomForm);
   }
 }
