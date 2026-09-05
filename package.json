@@ -10,7 +10,8 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint",
-    "generate:routes": "node scripts/generate-sitemap.mjs"
+    "generate:routes": "node scripts/generate-sitemap.mjs",
+    "postbuild": "node scripts/stamp-sw-csp.mjs"
   },
   "private": true,
   "dependencies": {
