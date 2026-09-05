@@ -6,6 +6,7 @@ import { filter } from 'rxjs';
 
 const CHECK_INTERVAL = 30 * 60 * 1000;
 const BACKGROUND_THRESHOLD = 30 * 60 * 1000;
+const STARTUP_WINDOW = 15 * 1000;
 
 @Injectable({ providedIn: 'root' })
 export class PwaUpdateService {
@@ -14,6 +15,7 @@ export class PwaUpdateService {
   private dialog = inject(MatDialog);
   private ngZone = inject(NgZone);
 
+  private readonly startedAt = Date.now();
   private updatePending = false;
   private applying = false;
   private hiddenSince = 0;
@@ -31,6 +33,14 @@ export class PwaUpdateService {
       )
       .subscribe(() => {
         this.updatePending = true;
+
+        // Reperee dans la foulee de l'ouverture, la version est appliquee
+        // aussitot : la page vient de s'afficher, l'utilisateur n'a rien
+        // engage, et attendre une navigation le laisserait tourner sur
+        // l'ancien code, parfois toute la visite.
+        if (Date.now() - this.startedAt < STARTUP_WINDOW && this.canApply()) {
+          this.apply();
+        }
       });
 
     this.swUpdate.unrecoverable.subscribe(() => document.location.reload());
@@ -53,6 +63,11 @@ export class PwaUpdateService {
       );
       setInterval(() => this.check(), CHECK_INTERVAL);
     });
+
+    // Le worker programme deja une verification a chaque navigation, mais
+    // seulement une fois inactif : la demander ici raccourcit le delai entre
+    // un deploiement et sa prise en compte.
+    this.check();
   }
 
   private onVisibilityChange(): void {

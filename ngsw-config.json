@@ -9,10 +9,12 @@
         "files": [
           "/favicon.ico",
           "/index.html",
+          "/index.csr.html",
           "/manifest.webmanifest",
           "/assets/fonts/*.woff2",
           "/*.css",
-          "/*.js"
+          "/*.js",
+          "!/firebase-messaging-sw.js"
         ]
       }
     },
