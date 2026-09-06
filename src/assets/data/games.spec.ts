@@ -124,4 +124,33 @@ describe('catalogue des jeux', () => {
       });
     });
   }
+
+  // Les jeux de mots seuls sont concernes : eux seuls tirent par longueur.
+  for (const game of games.filter((game) => game.hasWordLength)) {
+    describe(`${game.label} : longueurs extremes`, () => {
+      it('retombe sur les mots les plus longs quand la longueur demandee n existe pas', async () => {
+        const rounds = await game.draw({
+          stepsNumber: 3,
+          categoryFilter: 1,
+          isWordLengthIncreasing: false,
+          startWordLength: 40,
+        });
+
+        // Sans ce repli, la partie serait plus courte que celle demandee.
+        expect(rounds.length).toBe(3);
+      });
+
+      it('tient la longueur croissante jusqu au bout de la partie', async () => {
+        const rounds = await game.draw({
+          stepsNumber: 8,
+          categoryFilter: 1,
+          isWordLengthIncreasing: true,
+          startWordLength: 5,
+        });
+
+        expect(rounds.length).toBe(8);
+        expect(rounds[0].response.length).toBe(5);
+      });
+    });
+  }
 });

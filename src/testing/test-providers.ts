@@ -1,6 +1,7 @@
 import {
   EnvironmentProviders,
   Provider,
+  ProviderToken,
   provideZonelessChangeDetection,
   signal,
 } from '@angular/core';
@@ -224,4 +225,23 @@ export function appTestProviders(
     },
     ...extra,
   ];
+}
+
+/**
+ * Reprend la doublure standard d'un service en n'en changeant que ce qu'un
+ * test regarde : redecrire le service entier a chaque cas le rendait fragile
+ * au moindre ajout de methode.
+ */
+export function overrideProvider(
+  token: ProviderToken<unknown>,
+  patch: Record<string, unknown>,
+): Provider {
+  const standard = appTestProviders().find(
+    (provider) =>
+      typeof provider === 'object' &&
+      'provide' in provider &&
+      provider.provide === token,
+  ) as { useValue: object };
+
+  return { provide: token, useValue: { ...standard.useValue, ...patch } };
 }

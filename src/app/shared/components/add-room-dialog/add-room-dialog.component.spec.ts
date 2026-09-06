@@ -99,4 +99,31 @@ describe('AddRoomDialogComponent', () => {
     expect(component.categoryFilter).toBe(3);
     expect(component.showFirstLetter).toBe(true);
   });
+
+  it('reprend les valeurs par defaut quand les reglages sont incomplets', () => {
+    const component = build({ gameSelected: '' });
+
+    expect(component.gameSelected()).toBe('drapeaux');
+    expect(component.stepsNumber).toBe(3);
+    expect(component.startWordLength).toBe(5);
+    expect(component.categoryFilter).toBe(1);
+    expect(component.isWordLengthIncreasing).toBe(true);
+  });
+
+  it('laisse toute la plage quand la longueur ne croit pas', () => {
+    const component = build();
+    component.selectGame('motus');
+    component.isWordLengthIncreasing = false;
+    component.stepsNumber = 8;
+
+    expect(component.maxWordLength).toBe(13);
+  });
+
+  it('ferme sans rien renvoyer quand la fenetre est annulee', () => {
+    const component = build();
+
+    component.cancel();
+
+    expect(closed).toBeUndefined();
+  });
 });

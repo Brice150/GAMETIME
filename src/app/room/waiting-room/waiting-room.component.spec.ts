@@ -1,5 +1,5 @@
-import { afterEach, describe, expect, it } from 'vitest';
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   appTestProviders,
   buildPlayer,
@@ -8,7 +8,9 @@ import {
 import { WaitingRoomComponent } from './waiting-room.component';
 
 describe('WaitingRoomComponent', () => {
-  async function build(players = [buildPlayer()]) {
+  async function build(
+    players = [buildPlayer()],
+  ): Promise<ComponentFixture<WaitingRoomComponent>> {
     await TestBed.configureTestingModule({
       imports: [WaitingRoomComponent],
       providers: appTestProviders(),
@@ -23,7 +25,18 @@ describe('WaitingRoomComponent', () => {
     return fixture;
   }
 
-  afterEach(() => TestBed.resetTestingModule());
+  beforeEach(() => {
+    // jsdom ne fournit pas de presse-papiers.
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText: vi.fn().mockResolvedValue(undefined) },
+      configurable: true,
+    });
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    TestBed.resetTestingModule();
+  });
 
   it('propose le vote des qu un autre joueur est la', async () => {
     const fixture = await build([
@@ -39,5 +52,31 @@ describe('WaitingRoomComponent', () => {
     const fixture = await build();
 
     expect(fixture.nativeElement.querySelector('app-vote-panel')).toBeNull();
+  });
+
+  it('copie le code de la partie', async () => {
+    const component = (await build()).componentInstance;
+    const info = vi.spyOn(component.toastrHelper, 'info');
+
+    component.copyCode();
+    await Promise.resolve();
+
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith('ABCD');
+    expect(info).toHaveBeenCalledWith('Code de la partie copié', 'Code');
+  });
+
+  it('remonte le vote et l exclusion a la page room', async () => {
+    const component = (await build()).componentInstance;
+    const voted = vi.fn();
+    const deleted = vi.fn();
+    component.voteEvent.subscribe(voted);
+    component.deleteEvent.subscribe(deleted);
+    const other = buildPlayer({ id: 'p2', userId: 'u2' });
+
+    component.vote('motus');
+    component.delete(other);
+
+    expect(voted).toHaveBeenCalledWith('motus');
+    expect(deleted).toHaveBeenCalledWith(other);
   });
 });

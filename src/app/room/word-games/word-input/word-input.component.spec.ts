@@ -1,8 +1,9 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RoundAnswer } from '../../../core/interfaces/round-answer';
 import { Room } from '../../../core/interfaces/room';
+import { WordTry } from '../../../core/interfaces/word-try';
 import { LocalStorageService } from '../../../core/services/local-storage.service';
 import { ToastrHelperService } from '../../../core/services/toastr-helper.service';
 import { WordInputComponent } from './word-input.component';
@@ -63,6 +64,11 @@ describe('WordInputComponent', () => {
         { provide: ToastrHelperService, useValue: toastrStub },
       ],
     }).compileComponents();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    TestBed.resetTestingModule();
   });
 
   it('marque en vert les lettres bien placees', async () => {
@@ -281,5 +287,142 @@ describe('WordInputComponent', () => {
     component.submitAnswer();
 
     expect(results).toEqual([{ won: true, answer: 'CHAT' }]);
+  });
+
+  describe('saisie', () => {
+    function press(key: string, value = ''): KeyboardEvent {
+      const event = new KeyboardEvent('keydown', { key, cancelable: true });
+      Object.defineProperty(event, 'target', { value: { value } });
+      component.onKeyDown(event);
+      return event;
+    }
+
+    it('n accepte que des lettres', async () => {
+      await build('CHAT');
+
+      expect(press('a').defaultPrevented).toBe(false);
+      expect(press('Z').defaultPrevented).toBe(false);
+      expect(press('4').defaultPrevented).toBe(true);
+      expect(press('-').defaultPrevented).toBe(true);
+      // Les touches d'edition portent un nom fait de lettres : elles passent
+      // par la meme porte, et restent donc utilisables.
+      expect(press('Backspace').defaultPrevented).toBe(false);
+    });
+
+    it('impose la premiere lettre quand l indice est actif', async () => {
+      await build('CHAT', true);
+
+      expect(press('H', '').defaultPrevented).toBe(true);
+      expect(press('C', '').defaultPrevented).toBe(false);
+      // Une fois la premiere lettre posee, la suite est libre.
+      expect(press('H', 'C').defaultPrevented).toBe(false);
+    });
+
+    it('ote les accents et passe en majuscules', async () => {
+      await build('CHAT');
+      let result: RoundAnswer | undefined;
+      component.emitEvent.subscribe((round) => (result = round));
+
+      component.inputValue.set('chât');
+      component.submitAnswer();
+
+      expect(result).toEqual({ won: true, answer: 'CHAT' });
+    });
+
+    it('refuse une tentative vide', async () => {
+      await build('CHAT');
+      const error = vi.spyOn(component.toastrHelper, 'error');
+
+      component.inputValue.set('');
+      component.submitAnswer();
+
+      expect(error).toHaveBeenCalledWith('Tentative vide');
+      expect(component.tries).toEqual([]);
+    });
+
+    it('refuse une tentative de mauvaise longueur', async () => {
+      await build('CHAT');
+      const error = vi.spyOn(component.toastrHelper, 'error');
+
+      component.inputValue.set('CHA');
+      component.submitAnswer();
+
+      expect(error).toHaveBeenCalledWith('Tentative invalide');
+      expect(component.tries).toEqual([]);
+    });
+
+    it('refuse une tentative qui ignore la premiere lettre imposee', async () => {
+      await build('CHAT', true);
+      const error = vi.spyOn(component.toastrHelper, 'error');
+
+      component.inputValue.set('HAT1');
+      component.submitAnswer();
+
+      expect(error).toHaveBeenCalledWith('Tentative invalide');
+      // Le champ repart de la premiere lettre.
+      expect(component.inputValue()).toBe('C');
+    });
+
+    it('enregistre une tentative valide qui n est pas la bonne', async () => {
+      await build('CHAT');
+      const save = vi.spyOn(component.localStorageService, 'saveTries');
+
+      component.inputValue.set('CHUT');
+      component.submitAnswer();
+
+      expect(component.tries.length).toBe(1);
+      expect(save).toHaveBeenCalled();
+      expect(component.inputValue()).toBe('');
+    });
+  });
+
+  describe('reprise d une manche', () => {
+    it('reprend les essais enregistres pour cette room', async () => {
+      const saved: WordTry[] = [
+        {
+          letter: ['C', 'H', 'U', 'T'],
+          isWellPlaced: [true, true, false, true],
+          isWrongPlaced: [false, false, false, false],
+        },
+      ];
+      TestBed.overrideProvider(LocalStorageService, {
+        useValue: {
+          ...new LocalStorageStub(),
+          getTries: () => saved,
+          getStartAgainNumber: () => 0,
+          getRoomId: () => 'room-1',
+        },
+      });
+
+      await build('CHAT');
+
+      expect(component.tries).toEqual(saved);
+      expect(component.letterStates()['C']).toBe('wellPlaced');
+    });
+
+    it('repart de zero quand les essais viennent d une autre partie', async () => {
+      const newGame = vi.fn();
+      TestBed.overrideProvider(LocalStorageService, {
+        useValue: {
+          ...new LocalStorageStub(),
+          getTries: () => [],
+          getStartAgainNumber: () => 4,
+          getRoomId: () => 'room-1',
+          newGame,
+        },
+      });
+
+      await build('CHAT');
+
+      expect(component.tries).toEqual([]);
+      expect(newGame).toHaveBeenCalledWith('room-1', 0);
+    });
+
+    it('ne prepare rien tant que le mot n est pas connu', async () => {
+      await build('');
+
+      expect(component.tries).toEqual([]);
+      expect(component.wordToFind).toBeUndefined();
+    });
   });
 });

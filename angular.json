@@ -113,10 +113,10 @@
             "setupFiles": ["src/testing/setup.ts"],
             "runnerConfig": "vitest.config.ts",
             "coverageThresholds": {
-              "statements": 68,
-              "branches": 70,
-              "functions": 57,
-              "lines": 65
+              "statements": 99,
+              "branches": 97,
+              "functions": 99,
+              "lines": 99
             }
           }
         },

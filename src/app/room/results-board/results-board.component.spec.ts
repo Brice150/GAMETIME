@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Player } from '../../core/interfaces/player';
@@ -34,7 +34,11 @@ describe('ResultsBoardComponent', () => {
   let fixture: ComponentFixture<ResultsBoardComponent>;
   let component: ResultsBoardComponent;
 
-  function build(room: Room, players: Player[], currentPlayerId = 'host') {
+  function build(
+    room: Room,
+    players: Player[],
+    currentPlayerId: string | undefined = 'host',
+  ) {
     fixture = TestBed.createComponent(ResultsBoardComponent);
     component = fixture.componentInstance;
     fixture.componentRef.setInput('room', room);
@@ -49,6 +53,8 @@ describe('ResultsBoardComponent', () => {
       providers: [provideZonelessChangeDetection()],
     }).compileComponents();
   });
+
+  afterEach(() => TestBed.resetTestingModule());
 
   it('marque spectateur un joueur arrive apres la fin de la partie', () => {
     const latecomer = buildPlayer({
@@ -102,5 +108,32 @@ describe('ResultsBoardComponent', () => {
 
     expect(component.standings().map((entry) => entry.rank)).toEqual([1, 2]);
     expect(component.standings().map((entry) => entry.wins)).toEqual([2, 1]);
+  });
+
+  it('reconnait l hote, seul a pouvoir relancer', () => {
+    build(buildRoom(['host']), [buildPlayer({ userId: 'host' })]);
+    expect(component.isHost()).toBe(true);
+
+    build(buildRoom(['host']), [buildPlayer({ userId: 'autre' })], 'autre');
+    expect(component.isHost()).toBe(false);
+
+    // Spectateur non identifie : personne n'est hote a ses yeux.
+    build(buildRoom(['host']), [buildPlayer({ userId: 'host' })], '');
+    expect(component.isHost()).toBe(false);
+  });
+
+  it('remonte le vote et l exclusion a la page room', () => {
+    const other = buildPlayer({ id: 'p2', userId: 'other' });
+    build(buildRoom(['host']), [other]);
+    const voted = vi.fn();
+    const deleted = vi.fn();
+    component.voteEvent.subscribe(voted);
+    component.deleteEvent.subscribe(deleted);
+
+    component.vote('motus');
+    component.delete(other);
+
+    expect(voted).toHaveBeenCalledWith('motus');
+    expect(deleted).toHaveBeenCalledWith(other);
   });
 });

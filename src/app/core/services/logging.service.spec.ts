@@ -155,6 +155,14 @@ describe('LoggingService', () => {
     expect(written()).toMatchObject({ userId: null, email: null });
   });
 
+  it('encaisse une ecriture refusee : journaliser ne doit rien casser', () => {
+    (addDoc as Mock).mockReturnValueOnce(
+      Promise.reject(new Error('hors ligne')),
+    );
+
+    expect(() => service.logError(new Error('Boum'))).not.toThrow();
+  });
+
   it('tronque un message trop long', () => {
     service.logError(new Error('x'.repeat(2000)));
 

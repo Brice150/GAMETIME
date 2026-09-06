@@ -96,4 +96,13 @@ describe('PrivacyCardComponent', () => {
 
     expect(component.shareActivity()).toBe(true);
   });
+
+  it('ne bascule rien sans fiche joueur', () => {
+    const { component, currentPlayerSig } = build(buildPlayer(true));
+    currentPlayerSig.set(null);
+
+    component.toggle(false);
+
+    expect(saved).toBeUndefined();
+  });
 });

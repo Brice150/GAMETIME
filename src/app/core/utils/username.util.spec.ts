@@ -34,4 +34,17 @@ describe('suggestAvailableUsername', () => {
       'Élodie2',
     );
   });
+
+  it('garde une base quand le pseudo demande n est fait que de chiffres', () => {
+    expect(suggestAvailableUsername('42', new Set(['42']))).toBe('422');
+  });
+
+  it('finit par numeroter a l horloge quand tout est pris', () => {
+    const taken = new Set(['alex']);
+    for (let suffix = 2; suffix <= 999; suffix++) {
+      taken.add(`alex${suffix}`);
+    }
+
+    expect(suggestAvailableUsername('Alex', taken)).toMatch(/^Alex\d{4}$/);
+  });
 });
