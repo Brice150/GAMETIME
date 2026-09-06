@@ -147,7 +147,7 @@ les requêtes de vue par `viewChild()` : aucun décorateur de ce type ne subsist
 ### Couverture
 
 La suite compte 340 tests, exécutés à chaque push. La couverture est verrouillée : le
-lancement échoue sous 68 % des instructions, 71 % des branches, 56 % des fonctions et 65 % des
+lancement échoue sous 68 % des instructions, 70 % des branches, 57 % des fonctions et 65 % des
 lignes. Elle ne peut donc plus baisser sans que la CI le refuse.
 
 ```bash

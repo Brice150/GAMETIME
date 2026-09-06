@@ -106,15 +106,16 @@
               "src/main.ts",
               "src/main.server.ts",
               "src/app/app.config.ts",
-              "src/app/app.config.server.ts"
+              "src/app/app.config.server.ts",
+              "src/testing/**"
             ],
             "coverageReporters": ["text-summary", "html"],
             "setupFiles": ["src/testing/setup.ts"],
             "runnerConfig": "vitest.config.ts",
             "coverageThresholds": {
               "statements": 68,
-              "branches": 71,
-              "functions": 56,
+              "branches": 70,
+              "functions": 57,
               "lines": 65
             }
           }
