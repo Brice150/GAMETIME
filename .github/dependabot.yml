@@ -20,6 +20,11 @@ updates:
         update-types: ['version-update:semver-major']
       - dependency-name: 'angular-eslint'
         update-types: ['version-update:semver-major']
+      # Angular fixe la version de TypeScript qu'il accepte, `>=5.9 <6.0` en 21 : un major se
+      # prend avec le framework, jamais avant lui. Dependabot a propose TypeScript 7, que
+      # `npm ci` refuse sur la pair non satisfaite.
+      - dependency-name: 'typescript'
+        update-types: ['version-update:semver-major']
     groups:
       angular:
         patterns:
