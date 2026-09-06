@@ -25,6 +25,10 @@ updates:
       # `npm ci` refuse sur la pair non satisfaite.
       - dependency-name: 'typescript'
         update-types: ['version-update:semver-major']
+      # `angularx-qrcode` verrouille sa pair sur le major d'Angular : sa version 22 refuse une
+      # application en 21. Son major se prend donc avec le framework, pas avant lui.
+      - dependency-name: 'angularx-qrcode'
+        update-types: ['version-update:semver-major']
     groups:
       angular:
         patterns:
