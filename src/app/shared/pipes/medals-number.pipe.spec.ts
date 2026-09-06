@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { Player } from '../../core/interfaces/player';
 import { MedalsNumberPipe } from './medals-number.pipe';
 import { TotalMedalsNumberPipe } from './total-medals-number.pipe';

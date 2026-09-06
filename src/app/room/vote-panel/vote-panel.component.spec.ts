@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { voteGroups } from '../../../assets/data/games';
@@ -53,8 +54,8 @@ describe('VotePanelComponent', () => {
       emitted.push(choice),
     );
 
-    expect(fixture.componentInstance.canVote()).toBeFalse();
-    expect(options.every((option) => option.disabled)).toBeTrue();
+    expect(fixture.componentInstance.canVote()).toBe(false);
+    expect(options.every((option) => option.disabled)).toBe(true);
 
     fixture.componentInstance.vote('motus');
     expect(emitted).toEqual([]);
@@ -69,7 +70,7 @@ describe('VotePanelComponent', () => {
 
     fixture.componentInstance.vote('drapeaux');
 
-    expect(fixture.componentInstance.canVote()).toBeTrue();
+    expect(fixture.componentInstance.canVote()).toBe(true);
     expect(emitted).toEqual(['drapeaux']);
   });
 });

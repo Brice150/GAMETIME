@@ -2,9 +2,8 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
   inject,
-  Output,
+  output,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ToastrHelperService } from '../../core/services/toastr-helper.service';
@@ -19,7 +18,7 @@ import { ToastrHelperService } from '../../core/services/toastr-helper.service';
 export class JoinRoomComponent {
   roomCode?: string;
   toastrHelper = inject(ToastrHelperService);
-  @Output() joinRoomEvent = new EventEmitter<string>();
+  readonly joinRoomEvent = output<string>();
 
   onKeyDown(event: KeyboardEvent) {
     const key = event.key;

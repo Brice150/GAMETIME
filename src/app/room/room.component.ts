@@ -7,7 +7,7 @@ import {
   inject,
   OnInit,
   signal,
-  ViewChild,
+  viewChild,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Timestamp } from '@angular/fire/firestore';
@@ -27,10 +27,7 @@ import {
   switchMap,
   timer,
 } from 'rxjs';
-import {
-  anyGameVoteKey,
-  voteMap,
-} from '../../assets/data/games';
+import { anyGameVoteKey, voteMap } from '../../assets/data/games';
 import { goals } from '../../assets/data/goals';
 
 import { Player } from '../core/interfaces/player';
@@ -89,7 +86,7 @@ export class RoomComponent implements OnInit {
   userKickedOut = false;
   readonly isFinishing = signal(false);
   goals = goals;
-  @ViewChild(WordGamesComponent) wordGamesComponent!: WordGamesComponent;
+  readonly wordGamesComponent = viewChild.required(WordGamesComponent);
 
   ngOnInit(): void {
     const room$ = this.activatedRoute.params.pipe(
@@ -452,7 +449,7 @@ export class RoomComponent implements OnInit {
 
     timer(NEXT_ROUND_DELAY_MS)
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.wordGamesComponent?.new());
+      .subscribe(() => this.wordGamesComponent()?.new());
   }
 
   publishProgress(progress: {

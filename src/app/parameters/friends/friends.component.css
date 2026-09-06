@@ -160,7 +160,7 @@ mat-spinner {
   border-radius: var(--r-pill);
   background: var(--accent-soft);
   color: var(--accent-bright);
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
   font-size: 14px;
   font-weight: 600;
   white-space: nowrap;

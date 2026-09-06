@@ -2,9 +2,8 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  EventEmitter,
   input,
-  Output,
+  output,
 } from '@angular/core';
 import { VoteGroup } from '../../../assets/data/games';
 import { Player } from '../../core/interfaces/player';
@@ -24,7 +23,7 @@ export class VotePanelComponent {
   heading = input('Et maintenant ?');
   currentPlayerId = input<string | undefined>(undefined);
   hostId = input<string | undefined>(undefined);
-  @Output() voteEvent = new EventEmitter<string>();
+  readonly voteEvent = output<string>();
 
   // L'hote choisit le jeu dans la fenetre de lancement : lui donner en plus un
   // bulletin ne ferait que dupliquer cette decision. Il lit le depouillement.

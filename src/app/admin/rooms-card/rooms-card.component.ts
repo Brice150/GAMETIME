@@ -2,9 +2,8 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
   input,
-  Output,
+  output,
 } from '@angular/core';
 import { gameMap } from '../../../assets/data/games';
 import { Player } from '../../core/interfaces/player';
@@ -23,8 +22,8 @@ import { TotalMedalsNumberPipe } from '../../shared/pipes/total-medals-number.pi
 export class RoomsCardComponent {
   rooms = input.required<Room[]>();
   playersByRoom = input.required<Record<string, Player[]>>();
-  @Output() joinEvent = new EventEmitter<string>();
-  @Output() deleteEvent = new EventEmitter<string>();
+  readonly joinEvent = output<string>();
+  readonly deleteEvent = output<string>();
 
   roomPlayers(room: Room): Player[] {
     return this.playersByRoom()[room.id!] ?? [];

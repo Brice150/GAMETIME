@@ -1,3 +1,5 @@
+import type { Mock } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { provideZonelessChangeDetection, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
@@ -6,10 +8,10 @@ import { UserService } from '../services/user.service';
 import { noUserGuard } from './no-user.guard';
 
 describe('noUserGuard', () => {
-  let navigate: jasmine.Spy;
+  let navigate: Mock;
 
   function setup(user: unknown) {
-    navigate = jasmine.createSpy('navigate');
+    navigate = vi.fn();
 
     TestBed.configureTestingModule({
       providers: [
@@ -27,12 +29,12 @@ describe('noUserGuard', () => {
   }
 
   it('laisse passer un visiteur non connecte', async () => {
-    await expectAsync(setup(null)).toBeResolvedTo(true);
+    expect(await setup(null)).toEqual(true);
     expect(navigate).not.toHaveBeenCalled();
   });
 
   it('renvoie un utilisateur connecte vers accueil', async () => {
-    await expectAsync(setup({ uid: 'u1' })).toBeResolvedTo(false);
+    expect(await setup({ uid: 'u1' })).toEqual(false);
     expect(navigate).toHaveBeenCalledWith(['/accueil']);
   });
 });

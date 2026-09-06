@@ -117,7 +117,7 @@ section {
 .game {
   font-size: 17px;
   font-weight: 500;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
   color: var(--text-1);
 }
 

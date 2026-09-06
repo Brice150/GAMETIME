@@ -151,10 +151,16 @@ export const submitRound = onCall(async (request) => {
     const room = roomSnapshot.data()!;
 
     if (room['isStarted'] !== true) {
-      throw new HttpsError('failed-precondition', "La partie n'est pas lancee.");
+      throw new HttpsError(
+        'failed-precondition',
+        "La partie n'est pas lancee.",
+      );
     }
     if (!((room['playerIds'] as string[]) ?? []).includes(uid)) {
-      throw new HttpsError('permission-denied', 'Vous n etes pas dans cette room.');
+      throw new HttpsError(
+        'permission-denied',
+        'Vous n etes pas dans cette room.',
+      );
     }
 
     const responses = (room['responses'] as string[]) ?? [];
@@ -406,11 +412,17 @@ export const linkGuestAccount = onCall(async (request) => {
   const { guestIdToken } = request.data ?? {};
 
   if (typeof guestIdToken !== 'string' || !guestIdToken) {
-    throw new HttpsError('invalid-argument', 'Jeton du compte invite manquant.');
+    throw new HttpsError(
+      'invalid-argument',
+      'Jeton du compte invite manquant.',
+    );
   }
 
   const decoded = await auth.verifyIdToken(guestIdToken, true).catch(() => {
-    throw new HttpsError('permission-denied', 'Jeton du compte invite invalide.');
+    throw new HttpsError(
+      'permission-denied',
+      'Jeton du compte invite invalide.',
+    );
   });
 
   if (decoded.firebase?.sign_in_provider !== 'anonymous') {
@@ -474,7 +486,10 @@ export const linkGuestAccount = onCall(async (request) => {
   return { migrated: true };
 });
 
-async function migrateRooms(guestUid: string, targetUid: string): Promise<void> {
+async function migrateRooms(
+  guestUid: string,
+  targetUid: string,
+): Promise<void> {
   const [ownedRooms, joinedRooms] = await Promise.all([
     db.collection('rooms').where('userId', '==', guestUid).get(),
     db.collection('rooms').where('playerIds', 'array-contains', guestUid).get(),
@@ -553,8 +568,7 @@ export const notifyInvitation = onDocumentCreated(
 
     const deadTokenDocs = response.responses
       .map((result, index) =>
-        !result.success &&
-        deadTokenCodes.includes(result.error?.code ?? '')
+        !result.success && deadTokenCodes.includes(result.error?.code ?? '')
           ? tokensSnapshot.docs[index]
           : null,
       )
@@ -581,7 +595,9 @@ export const onRoomDeleted = onDocumentDeleted(
       .get();
 
     const batch = db.batch();
-    invitations.docs.forEach((invitationDoc) => batch.delete(invitationDoc.ref));
+    invitations.docs.forEach((invitationDoc) =>
+      batch.delete(invitationDoc.ref),
+    );
 
     for (const chunk of chunkArray(playerIds, 30)) {
       const players = await db

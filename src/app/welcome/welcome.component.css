@@ -526,7 +526,7 @@ section {
 .auth-buttons button .text {
   font-size: 16px;
   font-weight: 500;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
 mat-spinner {

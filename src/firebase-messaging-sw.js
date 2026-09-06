@@ -24,7 +24,10 @@ firebase.messaging();
 self.addEventListener('notificationclick', (event) => {
   const payload = event.notification && event.notification.data;
   const link =
-    (payload && payload.FCM_MSG && payload.FCM_MSG.data && payload.FCM_MSG.data.link) ||
+    (payload &&
+      payload.FCM_MSG &&
+      payload.FCM_MSG.data &&
+      payload.FCM_MSG.data.link) ||
     (payload && payload.link) ||
     '/';
   const url = new URL(link, self.location.origin).href;
@@ -36,7 +39,10 @@ self.addEventListener('notificationclick', (event) => {
       .matchAll({ type: 'window', includeUncontrolled: true })
       .then((clientList) => {
         for (const client of clientList) {
-          if (client.url.indexOf(self.location.origin) === 0 && 'focus' in client) {
+          if (
+            client.url.indexOf(self.location.origin) === 0 &&
+            'focus' in client
+          ) {
             client.navigate(url);
             return client.focus();
           }

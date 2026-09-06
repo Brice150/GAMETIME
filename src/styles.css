@@ -100,11 +100,11 @@
 }
 
 /* Choix explicite de l'utilisateur : `light-dark()` suit `color-scheme`. */
-:root[data-theme="light"] {
+:root[data-theme='light'] {
   color-scheme: light;
 }
 
-:root[data-theme="dark"] {
+:root[data-theme='dark'] {
   color-scheme: dark;
 }
 
@@ -123,7 +123,7 @@ body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
   color: var(--text-1);
   background-color: var(--bg-base);
   -webkit-font-smoothing: antialiased;
@@ -133,7 +133,7 @@ body {
 /* Halos d'ambiance : calque fixe compose a part pour eviter les repeints
    couteux d'un `background-attachment: fixed` pendant le defilement. */
 body::before {
-  content: "";
+  content: '';
   position: fixed;
   inset: 0;
   z-index: -1;
@@ -190,7 +190,7 @@ body::before {
   border-radius: var(--r-pill);
   background: var(--accent-gradient);
   color: var(--on-accent);
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
   font-size: 16px;
   font-weight: 500;
   letter-spacing: 0.2px;
@@ -212,7 +212,7 @@ body::before {
 .button-container button .text {
   font-size: 16px;
   font-weight: 500;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
   white-space: nowrap;
 }
 
@@ -310,7 +310,7 @@ body::before {
   border-radius: var(--r-pill);
   background: transparent;
   color: var(--text-2);
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
   font-size: 15px;
   font-weight: 500;
   white-space: nowrap;

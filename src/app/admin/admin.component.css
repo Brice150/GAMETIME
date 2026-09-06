@@ -91,7 +91,7 @@ section {
   border-radius: var(--r-pill);
   background: var(--danger-soft);
   color: var(--danger);
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;

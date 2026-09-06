@@ -64,7 +64,7 @@ header {
   border-radius: var(--r-pill);
   background: transparent;
   color: var(--text-2);
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
   font-size: 15px;
   font-weight: 500;
   text-decoration: none;

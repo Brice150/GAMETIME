@@ -1,3 +1,4 @@
+import { afterEach, describe, expect, it } from 'vitest';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -65,11 +66,11 @@ describe('AddRoomDialogComponent', () => {
     const component = build();
 
     component.selectGame('motus');
-    expect(component.hasWordLength()).toBeTrue();
+    expect(component.hasWordLength()).toBe(true);
     expect(component.filterLabels()).toEqual([]);
 
     component.selectGame('drapeaux');
-    expect(component.hasWordLength()).toBeFalse();
+    expect(component.hasWordLength()).toBe(false);
     expect(component.filterLabels().length).toBe(6);
     expect(component.formatFilter(2)).toBe('Europe');
   });
@@ -96,6 +97,6 @@ describe('AddRoomDialogComponent', () => {
     expect(component.gameSelected()).toBe('marques');
     expect(component.stepsNumber).toBe(6);
     expect(component.categoryFilter).toBe(3);
-    expect(component.showFirstLetter).toBeTrue();
+    expect(component.showFirstLetter).toBe(true);
   });
 });

@@ -32,7 +32,7 @@ section .content .element .title {
 
 section .content .element .code {
   margin-left: 8px;
-  font-family: ui-monospace, "Courier New", monospace;
+  font-family: ui-monospace, 'Courier New', monospace;
   font-size: 22px;
   font-weight: 700;
   letter-spacing: 4px;
@@ -151,7 +151,7 @@ section .content .friends .row .invite {
   border-radius: var(--r-pill);
   background: var(--accent-gradient);
   color: var(--on-accent);
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
   font-size: 15px;
   font-weight: 500;
   cursor: pointer;
@@ -211,7 +211,7 @@ section .content .share-native {
   border-radius: var(--r-pill);
   background: var(--accent-gradient);
   color: var(--on-accent);
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;

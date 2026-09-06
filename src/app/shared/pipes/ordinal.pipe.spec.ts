@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { ordinalSuffix } from '../../core/utils/ordinal.util';
 import { OrdinalPipe } from './ordinal.pipe';
 

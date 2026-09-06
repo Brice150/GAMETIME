@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { appTestProviders, buildPlayer } from '../../testing/test-providers';
 import { HeaderComponent } from './header.component';

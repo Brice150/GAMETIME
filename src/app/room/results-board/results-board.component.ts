@@ -3,9 +3,8 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  EventEmitter,
   input,
-  Output,
+  output,
 } from '@angular/core';
 import { voteGroups } from '../../../assets/data/games';
 import { Player } from '../../core/interfaces/player';
@@ -26,8 +25,8 @@ export class ResultsBoardComponent {
   players = input.required<Player[]>();
   currentPlayerId = input<string | undefined>(undefined);
   canVote = input(false);
-  @Output() deleteEvent = new EventEmitter<Player>();
-  @Output() voteEvent = new EventEmitter<string>();
+  readonly deleteEvent = output<Player>();
+  readonly voteEvent = output<string>();
 
   voteGroups = voteGroups;
 

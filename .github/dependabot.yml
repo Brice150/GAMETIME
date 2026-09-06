@@ -1,0 +1,43 @@
+version: 2
+
+# One pull request per group rather than one per package: a lockstep family like Angular only
+# resolves when its packages move together, and a flood of single-package pull requests each
+# costs a full CI run for no added signal.
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 3
+    # A major Angular release is migrated with `ng update`, which runs the schematics rewriting
+    # the code that changed. Dependabot only edits the manifest, so it opens pull requests that
+    # cannot install: Material and the CDK follow the major of the framework, and a bump of one
+    # alone contradicts the peer dependency of the other.
+    ignore:
+      - dependency-name: '@angular/*'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@angular-devkit/*'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'angular-eslint'
+        update-types: ['version-update:semver-major']
+    groups:
+      angular:
+        patterns:
+          - '@angular/*'
+          - '@angular-devkit/*'
+          - 'angular-eslint'
+      minor-and-patch:
+        patterns:
+          - '*'
+        update-types:
+          - minor
+          - patch
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns:
+          - '*'

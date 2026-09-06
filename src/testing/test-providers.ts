@@ -197,7 +197,10 @@ export function appTestProviders(
         removeFriend: () => of(undefined),
       },
     },
-    { provide: ProfileService, useValue: { deleteProfile: () => of(undefined) } },
+    {
+      provide: ProfileService,
+      useValue: { deleteProfile: () => of(undefined) },
+    },
     {
       provide: GameApiService,
       useValue: {

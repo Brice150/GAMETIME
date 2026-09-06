@@ -2,10 +2,9 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
   inject,
   input,
-  Output,
+  output,
 } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { voteGroups } from '../../../assets/data/games';
@@ -32,8 +31,8 @@ export class WaitingRoomComponent {
   room = input.required<Room>();
   player = input.required<Player>();
   players = input.required<Player[]>();
-  @Output() deleteEvent = new EventEmitter<Player>();
-  @Output() voteEvent = new EventEmitter<string>();
+  readonly deleteEvent = output<Player>();
+  readonly voteEvent = output<string>();
   voteGroups = voteGroups;
 
   copyCode(): void {

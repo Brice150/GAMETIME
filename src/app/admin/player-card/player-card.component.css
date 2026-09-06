@@ -40,7 +40,7 @@
   min-width: 0;
   font-size: 17px;
   font-weight: 600;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
   color: var(--text-1);
   white-space: nowrap;
   overflow: hidden;
@@ -118,7 +118,7 @@
 .game {
   font-size: 14px;
   font-weight: 500;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
   color: var(--text-2);
 }
 

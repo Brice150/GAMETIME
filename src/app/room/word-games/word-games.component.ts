@@ -3,11 +3,10 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  EventEmitter,
   inject,
   input,
   OnInit,
-  Output,
+  output,
   signal,
 } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -50,8 +49,8 @@ export class WordGamesComponent implements OnInit {
       gameMap[room.gameName]?.filterLabels?.[room.categoryFilter - 1] ?? ''
     );
   });
-  @Output() finishedStepEvent = new EventEmitter<RoundAnswer>();
-  @Output() progressEvent = new EventEmitter<{
+  readonly finishedStepEvent = output<RoundAnswer>();
+  readonly progressEvent = output<{
     lettersFound: number;
     lettersTotal: number;
   }>();

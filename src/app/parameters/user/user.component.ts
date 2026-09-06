@@ -2,9 +2,8 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
   input,
-  Output,
+  output,
 } from '@angular/core';
 import { Player } from '../../core/interfaces/player';
 
@@ -17,7 +16,7 @@ import { Player } from '../../core/interfaces/player';
 })
 export class UserComponent {
   readonly player = input.required<Player>();
-  @Output() updateEvent = new EventEmitter<void>();
+  readonly updateEvent = output<void>();
 
   update(): void {
     this.updateEvent.emit();

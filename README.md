@@ -1,8 +1,10 @@
 <div align="center">
 <img height="130px" width="130px" src="./src/assets/images/Logo.webp">
 </div>
-  
+
 # GAME TIME, une application web de quiz multijoueur
+
+[![CI](https://github.com/Brice150/GAMETIME/actions/workflows/ci.yml/badge.svg)](https://github.com/Brice150/GAMETIME/actions/workflows/ci.yml)
 
 Frontend : Angular
 <br>
@@ -117,5 +119,48 @@ Backend/BDD : Firebase
 ```bash
   ng serve -o
 ```
+
+### Lancer les tests
+
+```bash
+  npm test
+```
+
+### Vérifier le formatage et le style
+
+```bash
+  npm run format:check
+  npm run lint
+```
+
+</details>
+
+<details>
+  <summary>Qualité et tests</summary>
+
+### Socle technique
+
+Angular 21, composants autonomes, détection de changement **zoneless**, routes chargées à la
+demande. Les entrées et sorties des composants passent par les fonctions `input()` et `output()`,
+les requêtes de vue par `viewChild()` : aucun décorateur de ce type ne subsiste.
+
+### Couverture
+
+La suite compte 340 tests, exécutés à chaque push. La couverture est verrouillée : le
+lancement échoue sous 68 % des instructions, 71 % des branches, 56 % des fonctions et 65 % des
+lignes. Elle ne peut donc plus baisser sans que la CI le refuse.
+
+```bash
+  npm run test:ci
+```
+
+### Intégration continue
+
+Chaque push et chaque pull request déclenchent un job unique : installation, vérification du
+formatage Prettier, ESLint, tests unitaires sur jsdom, puis build de production. Un nouveau
+push sur une branche annule le run encore en cours.
+
+Dependabot suit les dépendances npm et les actions GitHub, groupées par famille. Les majors
+d'Angular en sont exclus : ils se migrent avec `ng update`, pas en fusionnant un bot.
 
 </details>

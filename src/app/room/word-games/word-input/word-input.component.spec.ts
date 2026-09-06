@@ -1,3 +1,4 @@
+import { beforeEach, describe, expect, it } from 'vitest';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RoundAnswer } from '../../../core/interfaces/round-answer';
@@ -191,26 +192,31 @@ describe('WordInputComponent', () => {
     expect(keyFor('B').classList.length).toBe(1);
   });
 
-  it('distingue les etats autrement que par la couleur', async () => {
+  // Le rendu ne distingue pas que par la couleur : chaque etat porte sa propre classe, a laquelle
+  // la feuille de style attache une decoration differente (soulignement plein, pointille, barre).
+  //
+  // Que ces decorations soient bien appliquees et bien distinctes se verifie dans un vrai
+  // navigateur : jsdom n'applique aucune feuille de style, et un `getComputedStyle` y renvoie la
+  // meme chose pour les trois. Ce controle-la revient donc a la suite end to end. Ce qui suit
+  // garantit ce qui peut l'etre ici : les trois etats sont bien rendus, et separement.
+  it('marque chaque etat par une classe distincte', async () => {
     await build('CHAT');
     component.inputValue.set('CHUA');
     component.addTry();
     fixture.detectChanges();
 
-    const decoration = (selector: string) => {
-      const style = getComputedStyle(
-        fixture.nativeElement.querySelector(selector) as HTMLElement,
-      );
-      return `${style.textDecorationLine} ${style.textDecorationStyle}`;
-    };
+    const states = ['wellPlaced', 'wrongPlaced', 'absent'];
+    const keys = states.map((state) => {
+      const key = fixture.nativeElement.querySelector(`.key.${state}`);
+      expect(key, `aucune touche ${state}`).toBeTruthy();
+      return key as HTMLElement;
+    });
 
-    // Trois signatures distinctes, lisibles sans percevoir la couleur.
-    const signatures = new Set([
-      decoration('.key.wellPlaced'),
-      decoration('.key.wrongPlaced'),
-      decoration('.key.absent'),
-    ]);
-    expect(signatures.size).toBe(3);
+    // Aucune touche ne cumule deux etats : ils resteraient indistinguables.
+    for (const key of keys) {
+      const carried = states.filter((state) => key.classList.contains(state));
+      expect(carried.length, key.textContent?.trim()).toBe(1);
+    }
   });
 
   it('termine la manche sur une defaite au sixieme essai', async () => {
@@ -252,7 +258,7 @@ describe('WordInputComponent', () => {
 
     const input: HTMLInputElement =
       fixture.nativeElement.querySelector('input');
-    expect(input.readOnly).toBeFalse();
+    expect(input.readOnly).toBe(false);
 
     component.inputValue.set('CHAT');
     component.submitAnswer();
@@ -260,8 +266,8 @@ describe('WordInputComponent', () => {
 
     // Verrouille, mais toujours focalisable : le joueur n'a pas a recliquer
     // dedans a la manche suivante.
-    expect(input.readOnly).toBeTrue();
-    expect(input.disabled).toBeFalse();
+    expect(input.readOnly).toBe(true);
+    expect(input.disabled).toBe(false);
   });
 
   it('ignore une soumission une fois la manche jouee', async () => {

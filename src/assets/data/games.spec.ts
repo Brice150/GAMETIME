@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import {
   gameCategories,
   gameMap,
@@ -17,9 +18,10 @@ describe('catalogue des jeux', () => {
     const known = new Set(gameCategories.map((category) => category.key));
 
     for (const game of games) {
-      expect(known.has(game.categoryKey))
-        .withContext(`${game.key} -> ${game.categoryKey}`)
-        .toBeTrue();
+      expect(
+        known.has(game.categoryKey),
+        `${game.key} -> ${game.categoryKey}`,
+      ).toBe(true);
     }
   });
 
@@ -65,9 +67,10 @@ describe('catalogue des jeux', () => {
         expect(rounds.length).toBe(8);
 
         for (const round of rounds) {
-          expect(TYPEABLE.test(round.response))
-            .withContext(`${game.key} : "${round.response}"`)
-            .toBeTrue();
+          expect(
+            TYPEABLE.test(round.response),
+            `${game.key} : "${round.response}"`,
+          ).toBe(true);
         }
       });
 
@@ -92,16 +95,20 @@ describe('catalogue des jeux', () => {
         });
 
         for (const round of rounds) {
-          expect(round.prompt)
-            .withContext(`${game.key} : "${round.prompt}"`)
-            .not.toBe(round.response);
+          expect(round.prompt, `${game.key} : "${round.prompt}"`).not.toBe(
+            round.response,
+          );
         }
       });
 
       it('remplit chaque filtre propose', async () => {
         const labels = gameMap[game.key].filterLabels ?? [];
+        // Un jeu sans filtre tire quand meme sur sa categorie par defaut. Sans cette valeur de
+        // repli la boucle serait vide pour lui, et le test passerait sans rien verifier.
+        const filters =
+          labels.length > 0 ? labels.map((_, index) => index + 1) : [1];
 
-        for (let filter = 1; filter <= labels.length; filter++) {
+        for (const filter of filters) {
           const rounds = await game.draw({
             stepsNumber: 3,
             categoryFilter: filter,
@@ -109,9 +116,10 @@ describe('catalogue des jeux', () => {
             startWordLength: 5,
           });
 
-          expect(rounds.length)
-            .withContext(`${game.key} / ${labels[filter - 1]}`)
-            .toBe(3);
+          expect(
+            rounds.length,
+            `${game.key} / ${labels[filter - 1] ?? 'sans filtre'}`,
+          ).toBe(3);
         }
       });
     });

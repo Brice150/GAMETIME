@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { normalizeUsername, suggestAvailableUsername } from './username.util';
 
 describe('normalizeUsername', () => {

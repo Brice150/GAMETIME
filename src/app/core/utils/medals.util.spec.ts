@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { Player } from '../interfaces/player';
 import { getTotalMedalsNumber } from './medals.util';
 

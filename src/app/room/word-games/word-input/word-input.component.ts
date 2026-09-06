@@ -3,18 +3,16 @@ import {
   afterNextRender,
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
-  Input,
-  input,
-  OnChanges,
+  computed,
+  effect,
   ElementRef,
-  Injector,
-  OnInit,
-  Output,
-  signal,
-  SimpleChanges,
-  ViewChild,
   inject,
+  Injector,
+  input,
+  output,
+  signal,
+  untracked,
+  viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RoundAnswer } from '../../../core/interfaces/round-answer';
@@ -35,18 +33,21 @@ export type LetterState = 'wellPlaced' | 'wrongPlaced' | 'absent';
   styleUrls: ['./word-input.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WordInputComponent implements OnInit, OnChanges {
+export class WordInputComponent {
   toastrHelper = inject(ToastrHelperService);
   localStorageService = inject(LocalStorageService);
   private injector = inject(Injector);
-  @Input() response = '';
+  readonly response = input('');
   readonly room = input.required<Room>();
+  // La reponse est comparee en majuscules : la saisie du joueur l est aussi. Le calcul remplace
+  // une reecriture de l entree, qu un signal ne permet plus et qui masquait la valeur recue.
+  private readonly word = computed(() => this.response().toUpperCase());
   wordToFind!: string;
   maxlength!: number;
   readonly inputValue = signal('');
   tries: WordTry[] = [];
-  @Output() emitEvent = new EventEmitter<RoundAnswer>();
-  @Output() progressEvent = new EventEmitter<number>();
+  readonly emitEvent = output<RoundAnswer>();
+  readonly progressEvent = output<number>();
   isOver = false;
   readonly maxTries = MAX_TRIES;
   readonly alphabet = ALPHABET;
@@ -54,7 +55,7 @@ export class WordInputComponent implements OnInit, OnChanges {
   // relire toutes les lignes precedentes pour savoir ce qui est deja exclu.
   readonly letterStates = signal<Record<string, LetterState>>({});
   private foundPositions = new Set<number>();
-  @ViewChild('answerInput') answerInput?: ElementRef<HTMLInputElement>;
+  readonly answerInput = viewChild<ElementRef<HTMLInputElement>>('answerInput');
 
   get remainingAttempts(): number {
     return Math.max(MAX_TRIES - this.tries.length, 0);
@@ -78,29 +79,21 @@ export class WordInputComponent implements OnInit, OnChanges {
     return 'critical';
   }
 
-  ngOnInit(): void {
-    this.startRound();
-  }
-
-  // Seul un changement de mot relance la manche : reagir a `room` remettait a
-  // zero la saisie en cours.
-  ngOnChanges(changes: SimpleChanges): void {
-    const responseChange = changes['response'];
-
-    if (!responseChange || responseChange.firstChange) {
-      return;
-    }
-
-    this.startRound();
+  constructor() {
+    // Seul un changement de mot relance la manche : reagir a `room` remettait a zero la saisie
+    // en cours, d ou le `untracked` autour de la mise en place.
+    effect(() => {
+      this.word();
+      untracked(() => this.startRound());
+    });
   }
 
   private startRound(): void {
-    if (!this.response) {
+    if (!this.word()) {
       return;
     }
 
     this.isOver = false;
-    this.response = this.response.toUpperCase();
     const tries = this.localStorageService.getTries();
     const startAgainNumber = this.localStorageService.getStartAgainNumber();
     const roomId = this.localStorageService.getRoomId();
@@ -118,13 +111,13 @@ export class WordInputComponent implements OnInit, OnChanges {
       this.tries = [];
     }
 
-    this.wordToFind = this.response.replace(/[A-Za-z]/g, '_');
+    this.wordToFind = this.word().replace(/[A-Za-z]/g, '_');
 
     if (this.room().showFirstLetter) {
-      this.inputValue.set(this.response.charAt(0));
+      this.inputValue.set(this.word().charAt(0));
     }
 
-    this.maxlength = this.response.length;
+    this.maxlength = this.word().length;
     this.refreshProgress();
     this.focusInput();
   }
@@ -134,7 +127,7 @@ export class WordInputComponent implements OnInit, OnChanges {
   private focusInput(): void {
     // Apres le rendu : le champ n'est pas encore dans le DOM a la premiere
     // manche, un focus immediat serait sans effet.
-    afterNextRender(() => this.answerInput?.nativeElement.focus(), {
+    afterNextRender(() => this.answerInput()?.nativeElement.focus(), {
       injector: this.injector,
     });
   }
@@ -173,7 +166,7 @@ export class WordInputComponent implements OnInit, OnChanges {
 
     if (this.room().showFirstLetter) {
       const inputValue = (event.target as HTMLInputElement).value;
-      if (inputValue.length === 0 && key !== this.response.charAt(0)) {
+      if (inputValue.length === 0 && key !== this.word().charAt(0)) {
         event.preventDefault();
       }
     }
@@ -193,7 +186,7 @@ export class WordInputComponent implements OnInit, OnChanges {
           .replace(/\p{Diacritic}/gu, '')
           .toUpperCase(),
       );
-      const response = this.response;
+      const response = this.word();
       const value = this.inputValue();
       if (
         value.length === this.maxlength &&
@@ -214,7 +207,7 @@ export class WordInputComponent implements OnInit, OnChanges {
     }
 
     this.inputValue.set(
-      this.room().showFirstLetter ? this.response.charAt(0) : '',
+      this.room().showFirstLetter ? this.word().charAt(0) : '',
     );
   }
 
@@ -228,13 +221,13 @@ export class WordInputComponent implements OnInit, OnChanges {
 
     const letterCountMap = new Map<string, number>();
 
-    for (const letter of this.response) {
+    for (const letter of this.word()) {
       letterCountMap.set(letter, (letterCountMap.get(letter) ?? 0) + 1);
     }
 
     for (let i = 0; i < value.length; i++) {
       const letter = value[i];
-      if (letter === this.response[i]) {
+      if (letter === this.word()[i]) {
         newTry.isWellPlaced[i] = true;
         letterCountMap.set(letter, letterCountMap.get(letter)! - 1);
       }
@@ -245,7 +238,7 @@ export class WordInputComponent implements OnInit, OnChanges {
       if (
         !newTry.isWellPlaced[i] &&
         letterCountMap.get(letter) &&
-        this.response.includes(letter)
+        this.word().includes(letter)
       ) {
         newTry.isWrongPlaced[i] = true;
         letterCountMap.set(letter, letterCountMap.get(letter)! - 1);
@@ -265,9 +258,9 @@ export class WordInputComponent implements OnInit, OnChanges {
   // mot de la manche pour trancher, le client n'etant pas cru sur parole.
   reset(stepWon: boolean, answer: string) {
     const response: WordTry = {
-      letter: Array.from(this.response),
-      isWellPlaced: Array.from({ length: this.response!.length }, () => true),
-      isWrongPlaced: Array.from({ length: this.response!.length }, () => false),
+      letter: Array.from(this.word()),
+      isWellPlaced: Array.from({ length: this.word().length }, () => true),
+      isWrongPlaced: Array.from({ length: this.word().length }, () => false),
     };
     this.tries.push(response);
     this.isOver = true;

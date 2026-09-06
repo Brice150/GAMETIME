@@ -2,9 +2,8 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
   input,
-  Output,
+  output,
 } from '@angular/core';
 import { games } from '../../../assets/data/games';
 import { Player } from '../../core/interfaces/player';
@@ -21,7 +20,7 @@ import { TotalMedalsNumberPipe } from '../../shared/pipes/total-medals-number.pi
 export class PlayerCardComponent {
   player = input.required<Player>();
   games = games;
-  @Output() updateEvent = new EventEmitter<Player>();
+  readonly updateEvent = output<Player>();
 
   get friendsNumber(): number {
     return this.player().friendIds?.length ?? 0;

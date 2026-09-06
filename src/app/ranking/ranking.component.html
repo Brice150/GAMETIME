@@ -20,7 +20,7 @@
     </button>
   </div>
 
-  @if (tab() === "succes") {
+  @if (tab() === 'succes') {
     <app-success></app-success>
   } @else if (!loading()) {
     <div class="gt-tabs scope">
@@ -54,7 +54,7 @@
           <mat-option value="general" class="cap-option">
             <div class="flex">
               <i class="bx bxs-universal-access"></i>
-              <span class="game">Général {{ positions()["general"] }}</span>
+              <span class="game">Général {{ positions()['general'] }}</span>
             </div>
           </mat-option>
           @for (group of gameGroups; track group.category.key) {
@@ -125,7 +125,7 @@
           </div>
           <div class="space">
             <div class="medals">
-              @if (gameSelected() !== "general") {
+              @if (gameSelected() !== 'general') {
                 <span class="victory-number">{{
                   gameSelected() | medalsNumber: otherPlayer
                 }}</span>
@@ -139,7 +139,7 @@
           </div>
         </div>
       }
-      @if (scope() === "amis" && sortedPlayers().length <= 1) {
+      @if (scope() === 'amis' && sortedPlayers().length <= 1) {
         <span class="empty"
           >Ajoutez des amis depuis vos paramètres pour vous comparer à
           eux.</span

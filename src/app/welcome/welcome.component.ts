@@ -1,17 +1,16 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
-  ChangeDetectionStrategy,
   AfterViewInit,
+  ChangeDetectionStrategy,
   Component,
   DestroyRef,
   ElementRef,
   inject,
   OnInit,
   PLATFORM_ID,
-  QueryList,
   signal,
-  ViewChildren,
+  viewChildren,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -43,7 +42,7 @@ export class WelcomeComponent implements OnInit, AfterViewInit {
   // Tous les blocs qui apparaissent au defilement, pas seulement les
   // fonctionnalites : bandeau de chiffres, titres de section, appel a
   // l'inscription.
-  @ViewChildren('reveal') revealed!: QueryList<ElementRef>;
+  readonly revealed = viewChildren<ElementRef>('reveal');
 
   ngOnInit(): void {
     if (this.isBrowser) {
@@ -77,7 +76,7 @@ export class WelcomeComponent implements OnInit, AfterViewInit {
       { threshold: 0.2 },
     );
 
-    this.revealed.forEach((element) => {
+    this.revealed().forEach((element) => {
       observer.observe(element.nativeElement);
     });
   }

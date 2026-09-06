@@ -3,11 +3,10 @@ import {
   Component,
   computed,
   DestroyRef,
-  EventEmitter,
   inject,
   input,
   OnInit,
-  Output,
+  output,
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -42,7 +41,7 @@ export class HeaderComponent implements OnInit {
   localStorageService = inject(LocalStorageService);
   destroyRef = inject(DestroyRef);
   player = input.required<Player>();
-  @Output() logoutEvent = new EventEmitter<void>();
+  readonly logoutEvent = output<void>();
 
   // Ni l'URL ni localStorage ne sont reactifs : relus a chaque navigation.
   private readonly currentUrl = signal(this.router.url);
