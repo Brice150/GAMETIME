@@ -152,7 +152,7 @@ Backend/BDD : Firebase
 - **Durées de conservation** appliquées par `purgeExpiredData` (quotidienne) : journal des erreurs
   6 mois, comptes invités inactifs 12 mois. L'email n'est plus écrit dans le journal des erreurs.
 - **Publicité prête mais éteinte** : `environment.ads`, `ConsentService` (Consent Mode v2),
-  `AdService`, `<app-ad-slot>` sur l'accueil et le classement, `src/ads.txt`. Désactivée, elle
+  `AdService`, `<app-ad-slot>` sur l'accueil, le classement, la salle d'attente et l'écran de résultats (jamais pendant une manche), `src/ads.txt`. Désactivée, elle
   ne charge rien, n'affiche aucun bandeau et les pages légales disent qu'il n'y a aucune publicité ;
   activée, elles décrivent automatiquement AdSense.
 

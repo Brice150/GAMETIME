@@ -65,6 +65,14 @@
         </button>
       }
     </div>
+    <!-- Jamais pendant une manche : seulement avant la partie et sur les
+    resultats. Deux blocs distincts, pour qu'AdSense remplisse un
+    emplacement neuf a chaque changement d'ecran. -->
+    @if (!room.isStarted) {
+      <app-ad-slot [slot]="adSlots.waitingRoom"></app-ad-slot>
+    } @else if (isResultPageActive()) {
+      <app-ad-slot [slot]="adSlots.results"></app-ad-slot>
+    }
   } @else {
     <mat-spinner></mat-spinner>
   }

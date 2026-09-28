@@ -23,6 +23,8 @@ export const environment = {
     slots: {
       home: '',
       ranking: '',
+      waitingRoom: '',
+      results: '',
     },
   },
   firebase: {

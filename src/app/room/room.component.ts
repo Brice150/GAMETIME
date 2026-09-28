@@ -47,6 +47,8 @@ import { ConfirmationDialogComponent } from '../shared/components/confirmation-d
 import { MultiplayerDialogComponent } from '../shared/components/multiplayer-dialog/multiplayer-dialog.component';
 
 import { LiveStandingsComponent } from './live-standings/live-standings.component';
+import { environment } from '../../environments/environment';
+import { AdSlotComponent } from '../shared/components/ad-slot/ad-slot.component';
 import { ResultsBoardComponent } from './results-board/results-board.component';
 import { WaitingRoomComponent } from './waiting-room/waiting-room.component';
 import { WordGamesComponent } from './word-games/word-games.component';
@@ -61,12 +63,14 @@ const NEXT_ROUND_DELAY_MS = 1000;
     ResultsBoardComponent,
     LiveStandingsComponent,
     MatProgressSpinnerModule,
+    AdSlotComponent,
   ],
   templateUrl: './room.component.html',
   styleUrl: './room.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RoomComponent implements OnInit {
+  readonly adSlots = environment.ads.slots;
   roomService = inject(RoomService);
   playerService = inject(PlayerService);
   gameApi = inject(GameApiService);
