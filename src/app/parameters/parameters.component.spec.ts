@@ -213,14 +213,14 @@ describe('ParametersComponent', () => {
     });
   });
 
-  describe('suppression du profil', () => {
-    it('efface rooms, fiche joueur, profil puis deconnecte', async () => {
+  describe('suppression du compte', () => {
+    it('fait tout effacer par le serveur, vide l appareil puis deconnecte', async () => {
       const component = await build();
       stubDialog(component, true);
-      const deleteRooms = vi.spyOn(component.roomService, 'deleteUserRooms');
-      const deletePlayer = vi.spyOn(
-        component.playerService,
-        'deleteUserPlayer',
+      const deleteAccount = vi.spyOn(component.gameApi, 'deleteAccount');
+      const clear = vi.spyOn(
+        component.localStorageService,
+        'clearLocalStorage',
       );
       const logout = vi.spyOn(component.userService, 'logout');
       const navigate = vi
@@ -230,19 +230,19 @@ describe('ParametersComponent', () => {
 
       component.openDialog();
 
-      expect(deleteRooms).toHaveBeenCalled();
-      expect(deletePlayer).toHaveBeenCalled();
+      expect(deleteAccount).toHaveBeenCalled();
+      expect(clear).toHaveBeenCalled();
       expect(logout).toHaveBeenCalled();
       expect(navigate).toHaveBeenCalledWith(['/']);
-      expect(info).toHaveBeenCalledWith('Profil supprimé', 'Profil');
+      expect(info).toHaveBeenCalledWith(
+        'Compte et données supprimés',
+        'Compte',
+      );
     });
 
-    it('va au bout meme si le compte ou la deconnexion resiste', async () => {
+    it('va au bout meme si la deconnexion resiste', async () => {
       const component = await build();
       stubDialog(component, true);
-      vi.spyOn(component.profileService, 'deleteProfile').mockReturnValue(
-        throwError(() => new Error('refus')),
-      );
       vi.spyOn(component.userService, 'logout').mockReturnValue(
         throwError(() => new Error('refus')),
       );
@@ -251,30 +251,35 @@ describe('ParametersComponent', () => {
 
       component.openDialog();
 
-      expect(info).toHaveBeenCalledWith('Profil supprimé', 'Profil');
+      expect(info).toHaveBeenCalledWith(
+        'Compte et données supprimés',
+        'Compte',
+      );
     });
 
     it('ne supprime rien sans confirmation', async () => {
       const component = await build();
       stubDialog(component, false);
-      const deleteRooms = vi.spyOn(component.roomService, 'deleteUserRooms');
+      const deleteAccount = vi.spyOn(component.gameApi, 'deleteAccount');
 
       component.openDialog();
 
-      expect(deleteRooms).not.toHaveBeenCalled();
+      expect(deleteAccount).not.toHaveBeenCalled();
     });
 
-    it('signale un refus de suppression', async () => {
+    it('signale un refus de suppression sans deconnecter', async () => {
       const component = await build();
       stubDialog(component, true);
-      vi.spyOn(component.roomService, 'deleteUserRooms').mockReturnValue(
+      vi.spyOn(component.gameApi, 'deleteAccount').mockReturnValue(
         throwError(() => new Error('refus')),
       );
+      const logout = vi.spyOn(component.userService, 'logout');
       const handleError = vi.spyOn(component.toastrHelper, 'handleError');
 
       component.openDialog();
 
       expect(handleError).toHaveBeenCalled();
+      expect(logout).not.toHaveBeenCalled();
       expect(component.loading()).toBe(false);
     });
   });

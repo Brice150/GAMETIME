@@ -24,6 +24,10 @@ describe('routes', () => {
     expect(routeFor('admin').canActivate).toEqual([adminGuard]);
   });
 
+  it('laisse les documents legaux ouverts a tous', () => {
+    expect(routeFor('infos/:infoType').canActivate).toBeUndefined();
+  });
+
   it('renvoie a l accueil toute adresse inconnue', () => {
     expect(routeFor('**')).toMatchObject({
       redirectTo: 'accueil',
@@ -36,7 +40,7 @@ describe('routes', () => {
       .map((route) => route.loadComponent)
       .filter((load): load is () => Promise<Type<unknown>> => !!load);
 
-    expect(loaders.length).toBe(6);
+    expect(loaders.length).toBe(7);
 
     for (const load of loaders) {
       expect(await load()).toBeTruthy();

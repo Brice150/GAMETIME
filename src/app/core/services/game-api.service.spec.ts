@@ -107,4 +107,27 @@ describe('GameApiService', () => {
     expect(sent()).toEqual({ guestIdToken: 'jeton' });
     expect(result).toEqual({ migrated: true });
   });
+
+  it('demande au serveur la suppression complete du compte', async () => {
+    callable.mockResolvedValueOnce({ data: { ok: true } });
+
+    const result = await new Promise<unknown>((resolve) =>
+      service.deleteAccount().subscribe((value) => resolve(value)),
+    );
+
+    expect(lastName).toBe('deleteAccount');
+    expect(result).toBeUndefined();
+  });
+
+  it('rend l export des donnees personnelles', async () => {
+    const data = { account: { uid: 'u1' } };
+    callable.mockResolvedValueOnce({ data });
+
+    const result = await new Promise((resolve) =>
+      service.exportMyData().subscribe(resolve),
+    );
+
+    expect(lastName).toBe('exportMyData');
+    expect(result).toBe(data);
+  });
 });

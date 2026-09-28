@@ -1,1 +1,5 @@
 /
+/infos/mentions-legales
+/infos/cgu
+/infos/confidentialite
+/infos/cookies

@@ -657,3 +657,223 @@ function chunkArray<T>(items: T[], size: number): T[][] {
 
   return chunks;
 }
+
+// ---------------------------------------------------------------------------
+// Donnees personnelles (RGPD)
+// ---------------------------------------------------------------------------
+
+const ERROR_LOG_MAX_AGE_MS = 182 * 24 * 60 * 60 * 1000;
+const INACTIVE_GUEST_MAX_AGE_MS = 365 * 24 * 60 * 60 * 1000;
+
+/**
+ * Efface tout ce qui se rapporte a un compte, y compris sa trace chez les
+ * autres joueurs (listes d'amis, salons rejoints).
+ *
+ * `BulkWriter` plutot qu'un lot : un joueur ancien peut depasser les 500
+ * ecritures d'un lot.
+ */
+async function deleteUserData(uid: string): Promise<void> {
+  const [
+    players,
+    friendOf,
+    requestedBy,
+    ownedRooms,
+    joinedRooms,
+    sentInvitations,
+    receivedInvitations,
+    tokens,
+    errors,
+  ] = await Promise.all([
+    db.collection('players').where('userId', '==', uid).get(),
+    db.collection('players').where('friendIds', 'array-contains', uid).get(),
+    db
+      .collection('players')
+      .where('friendRequestIds', 'array-contains', uid)
+      .get(),
+    db.collection('rooms').where('userId', '==', uid).get(),
+    db.collection('rooms').where('playerIds', 'array-contains', uid).get(),
+    db.collection('invitations').where('fromUserId', '==', uid).get(),
+    db.collection('invitations').where('toUserId', '==', uid).get(),
+    db.collection('fcmTokens').where('userId', '==', uid).get(),
+    db.collection('errors').where('userId', '==', uid).get(),
+  ]);
+
+  const writer = db.bulkWriter();
+  const ownedRoomIds = new Set(ownedRooms.docs.map((roomDoc) => roomDoc.id));
+
+  friendOf.docs.forEach((playerDoc) =>
+    writer.update(playerDoc.ref, {
+      friendIds: FieldValue.arrayRemove(uid),
+    }),
+  );
+  requestedBy.docs.forEach((playerDoc) =>
+    writer.update(playerDoc.ref, {
+      friendRequestIds: FieldValue.arrayRemove(uid),
+    }),
+  );
+
+  // Un salon dont il est l'hote disparait (`onRoomDeleted` fait le reste) ;
+  // dans les autres, il est simplement retire des participants.
+  joinedRooms.docs
+    .filter((roomDoc) => !ownedRoomIds.has(roomDoc.id))
+    .forEach((roomDoc) =>
+      writer.update(roomDoc.ref, {
+        playerIds: FieldValue.arrayRemove(uid),
+        startedPlayerIds: FieldValue.arrayRemove(uid),
+      }),
+    );
+
+  [
+    players,
+    ownedRooms,
+    sentInvitations,
+    receivedInvitations,
+    tokens,
+    errors,
+  ].forEach((snapshot) =>
+    snapshot.docs.forEach((document) => writer.delete(document.ref)),
+  );
+
+  await writer.close();
+}
+
+/**
+ * Droit a l'effacement. Tout est fait ici avec le SDK Admin : cote client,
+ * `deleteUser` exige une connexion recente et une partie du menage (listes
+ * d'amis des autres, journal des erreurs) est interdite par les regles.
+ */
+export const deleteAccount = onCall(async (request) => {
+  const uid = requireUid(request.auth);
+
+  await deleteUserData(uid);
+
+  await auth.deleteUser(uid).catch((error: { code?: string }) => {
+    if (error.code !== 'auth/user-not-found') {
+      throw error;
+    }
+  });
+
+  logger.info(`Compte ${uid} supprime a sa demande.`);
+
+  return { ok: true };
+});
+
+/** Dates Firestore en ISO : l'export doit etre lisible sans outil. */
+function toPlain(value: unknown): unknown {
+  const date = toDate(value);
+
+  if (date) {
+    return date.toISOString();
+  }
+  if (Array.isArray(value)) {
+    return value.map(toPlain);
+  }
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, entry]) => [key, toPlain(entry)]),
+    );
+  }
+
+  return value;
+}
+
+function exportDocs(
+  snapshot: FirebaseFirestore.QuerySnapshot,
+): Record<string, unknown>[] {
+  return snapshot.docs.map((document) => ({
+    id: document.id,
+    ...(toPlain(document.data()) as Record<string, unknown>),
+  }));
+}
+
+/**
+ * Droits d'acces et a la portabilite : toutes les donnees rattachees au
+ * compte, dans un format structure et lisible.
+ */
+export const exportMyData = onCall(async (request) => {
+  const uid = requireUid(request.auth);
+
+  const [user, players, rooms, sentInvitations, receivedInvitations, tokens] =
+    await Promise.all([
+      auth.getUser(uid),
+      db.collection('players').where('userId', '==', uid).get(),
+      db.collection('rooms').where('playerIds', 'array-contains', uid).get(),
+      db.collection('invitations').where('fromUserId', '==', uid).get(),
+      db.collection('invitations').where('toUserId', '==', uid).get(),
+      db.collection('fcmTokens').where('userId', '==', uid).get(),
+    ]);
+
+  return {
+    exportedAt: new Date().toISOString(),
+    account: {
+      uid: user.uid,
+      email: user.email ?? null,
+      displayName: user.displayName ?? null,
+      providers: user.providerData.map((provider) => provider.providerId),
+      isGuest: user.providerData.length === 0,
+      createdAt: user.metadata.creationTime,
+      lastSignInAt: user.metadata.lastSignInTime,
+    },
+    player: exportDocs(players)[0] ?? null,
+    rooms: exportDocs(rooms),
+    invitations: {
+      sent: exportDocs(sentInvitations),
+      received: exportDocs(receivedInvitations),
+    },
+    // Le jeton lui-meme ne dit rien a son titulaire : seule sa presence et sa
+    // date comptent.
+    notificationDevices: tokens.docs.map((tokenDoc) => ({
+      updatedAt: toPlain(tokenDoc.data()['updatedAt']),
+    })),
+  };
+});
+
+/**
+ * Durees de conservation annoncees dans la politique de confidentialite :
+ * journal des erreurs 6 mois, compte invite inactif 12 mois.
+ */
+export const purgeExpiredData = onSchedule('every 24 hours', async () => {
+  const errorCutoff = Timestamp.fromMillis(Date.now() - ERROR_LOG_MAX_AGE_MS);
+  const oldErrors = await db
+    .collection('errors')
+    .where('createdAt', '<', errorCutoff)
+    .get();
+
+  const writer = db.bulkWriter();
+  oldErrors.docs.forEach((errorDoc) => writer.delete(errorDoc.ref));
+  await writer.close();
+
+  const guestCutoff = Date.now() - INACTIVE_GUEST_MAX_AGE_MS;
+  const inactiveGuests: string[] = [];
+  let pageToken: string | undefined;
+
+  do {
+    const page = await auth.listUsers(1000, pageToken);
+
+    page.users
+      .filter((user) => {
+        const lastSeen =
+          user.metadata.lastRefreshTime ?? user.metadata.lastSignInTime;
+
+        return (
+          user.providerData.length === 0 &&
+          new Date(lastSeen).getTime() < guestCutoff
+        );
+      })
+      .forEach((user) => inactiveGuests.push(user.uid));
+
+    pageToken = page.pageToken;
+  } while (pageToken);
+
+  for (const uid of inactiveGuests) {
+    await deleteUserData(uid);
+  }
+
+  for (const chunk of chunkArray(inactiveGuests, 1000)) {
+    await auth.deleteUsers(chunk);
+  }
+
+  logger.info(
+    `${oldErrors.size} erreurs et ${inactiveGuests.length} comptes invites expires supprimes.`,
+  );
+});

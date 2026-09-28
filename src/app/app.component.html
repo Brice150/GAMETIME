@@ -8,3 +8,7 @@
 @if (userService.currentUserSig() && playerService.currentPlayerSig()) {
   <app-invitations></app-invitations>
 }
+<!-- Charge a la demande : sans publicite, le bandeau ne coute rien. -->
+@defer (when consentService.bannerVisible()) {
+  <app-consent-banner></app-consent-banner>
+}

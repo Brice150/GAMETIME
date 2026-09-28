@@ -1,9 +1,11 @@
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { provideZonelessChangeDetection, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { Player } from '../../core/interfaces/player';
+import { GameApiService } from '../../core/services/game-api.service';
 import { PlayerService } from '../../core/services/player.service';
 import { ToastrHelperService } from '../../core/services/toastr-helper.service';
 import { PrivacyCardComponent } from './privacy-card.component';
@@ -27,6 +29,8 @@ function buildPlayer(shareActivity?: boolean): Player {
 describe('PrivacyCardComponent', () => {
   let saved: Partial<Player> | undefined;
   let shouldFail = false;
+  const handleError = vi.fn();
+  const exportMyData = vi.fn(() => of<Record<string, unknown>>({ a: 1 }));
 
   function build(player: Player) {
     saved = undefined;
@@ -37,6 +41,8 @@ describe('PrivacyCardComponent', () => {
       providers: [
         provideZonelessChangeDetection(),
         provideNoopAnimations(),
+        provideRouter([]),
+        { provide: GameApiService, useValue: { exportMyData } },
         {
           provide: PlayerService,
           useValue: {
@@ -51,7 +57,7 @@ describe('PrivacyCardComponent', () => {
         },
         {
           provide: ToastrHelperService,
-          useValue: { handleError: () => undefined },
+          useValue: { handleError },
         },
       ],
     });
@@ -63,9 +69,17 @@ describe('PrivacyCardComponent', () => {
 
   beforeEach(() => {
     shouldFail = false;
+    handleError.mockClear();
+    exportMyData.mockClear();
   });
 
-  afterEach(() => TestBed.resetTestingModule());
+  afterEach(() => {
+    TestBed.resetTestingModule();
+    vi.restoreAllMocks();
+    const url = URL as unknown as Record<string, unknown>;
+    delete url['createObjectURL'];
+    delete url['revokeObjectURL'];
+  });
 
   it('considere une fiche sans reglage comme visible', () => {
     const { component } = build(buildPlayer(undefined));
@@ -104,5 +118,43 @@ describe('PrivacyCardComponent', () => {
     component.toggle(false);
 
     expect(saved).toBeUndefined();
+  });
+
+  describe('export des donnees', () => {
+    it('telecharge la copie rendue par le serveur', () => {
+      const { component } = build(buildPlayer(true));
+      const createUrl = vi.fn(() => 'blob:export');
+      const revokeUrl = vi.fn();
+      // jsdom ne fournit pas ces deux methodes : elles sont posees puis
+      // retirees apres le test.
+      Object.assign(URL, {
+        createObjectURL: createUrl,
+        revokeObjectURL: revokeUrl,
+      });
+      const click = vi
+        .spyOn(HTMLAnchorElement.prototype, 'click')
+        .mockImplementation(() => undefined);
+
+      component.exportData();
+
+      expect(exportMyData).toHaveBeenCalled();
+      expect(createUrl).toHaveBeenCalled();
+      const link = click.mock.contexts[0] as HTMLAnchorElement;
+      expect(link.download).toMatch(
+        /^game-time-mes-donnees-\d{4}-\d{2}-\d{2}\.json$/,
+      );
+      expect(revokeUrl).toHaveBeenCalledWith('blob:export');
+      expect(component.exporting()).toBe(false);
+    });
+
+    it('signale un echec d export', () => {
+      exportMyData.mockReturnValueOnce(throwError(() => new Error('refus')));
+      const { component } = build(buildPlayer(true));
+
+      component.exportData();
+
+      expect(handleError).toHaveBeenCalled();
+      expect(component.exporting()).toBe(false);
+    });
   });
 });

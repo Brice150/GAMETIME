@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { Firestore } from '@angular/fire/firestore';
-import { Observable, firstValueFrom, of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Player } from '../interfaces/player';
 import { buildPlayer } from '../../../testing/test-providers';
@@ -348,27 +348,6 @@ describe('PlayerService', () => {
         currentRoundProgress: null,
         vote: null,
       });
-      expect(commit).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('suppression du compte', () => {
-    it('ne commet rien quand le compte n a aucune fiche', async () => {
-      snapshots = [snapshot([])];
-
-      await firstValueFrom(service.deleteUserPlayer() as Observable<void>);
-
-      expect(commit).not.toHaveBeenCalled();
-    });
-
-    it('supprime en un lot toutes les fiches du compte', async () => {
-      snapshots = [
-        snapshot([buildPlayer({ id: 'p1' }), buildPlayer({ id: 'p2' })]),
-      ];
-
-      await firstValueFrom(service.deleteUserPlayer() as Observable<void>);
-
-      expect(batchDelete).toHaveBeenCalledTimes(2);
       expect(commit).toHaveBeenCalledTimes(1);
     });
   });

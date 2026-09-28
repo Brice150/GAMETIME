@@ -1,0 +1,40 @@
+.legal-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 24px 16px 32px;
+  text-align: center;
+}
+
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 18px;
+}
+
+nav a,
+nav button {
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--text-2);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+nav a:hover,
+nav button:hover {
+  color: var(--accent-bright);
+  text-decoration: underline;
+}
+
+p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-3);
+}

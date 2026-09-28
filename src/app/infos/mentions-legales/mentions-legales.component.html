@@ -1,0 +1,108 @@
+<p>
+  Conformément aux articles 6 et 19 de la loi n° 2004-575 du 21 juin 2004 pour
+  la confiance dans l’économie numérique (LCEN), les informations suivantes sont
+  portées à la connaissance des utilisateurs du site Game Time, accessible à
+  l’adresse
+  <a href="https://game-time-64133.web.app">game-time-64133.web.app</a>.
+</p>
+
+<h2>1. Éditeur du site</h2>
+<p>
+  Nom / dénomination : <span class="value">{{ enterprise().name }}</span>
+  <span class="todo">(EI)</span><br />
+  Forme juridique : <span class="value">{{ enterprise().legalStatus }}</span
+  ><br />
+  Adresse : <span class="todo">{{ enterprise().adress }}</span
+  ><br />
+  SIREN / SIRET : <span class="todo">{{ enterprise().siret }}</span
+  ><br />
+  RCS : <span class="todo">{{ enterprise().rcs }}</span
+  ><br />
+  Email :
+  <a [href]="'mailto:' + enterprise().email">{{ enterprise().email }}</a>
+</p>
+<p class="todo">
+  À compléter après la création de l’entreprise : adresse, SIREN/SIRET, RCS (ou
+  « Dispensé d’immatriculation » selon l’activité déclarée) et la mention « EI »
+  ou « Entrepreneur individuel » à côté du nom. Un entrepreneur individuel
+  exerçant à domicile peut indiquer une adresse de domiciliation.
+</p>
+
+<h2>2. Directeur de la publication</h2>
+<p>
+  <span class="value">{{ enterprise().contactName }}</span
+  >, joignable à l’adresse
+  <a [href]="'mailto:' + enterprise().email">{{ enterprise().email }}</a
+  >.
+</p>
+
+<h2>3. Hébergeur</h2>
+<p>
+  <span class="value">{{ enterprise().hostName }}</span
+  ><br />
+  {{ enterprise().hostAdress }}<br />
+  Téléphone : +353 1 436 1000
+</p>
+
+<h2>4. Nature du service</h2>
+<p>
+  Game Time est un jeu de réflexion multijoueur en ligne, entièrement gratuit.
+  Aucun achat n’est proposé. Le service peut être financé par l’affichage de
+  publicités, toujours signalées comme telles.
+</p>
+
+<h2>5. Propriété intellectuelle</h2>
+<p>
+  La structure du site, ses textes, graphismes, logos Game Time, son code et ses
+  bases de mots sont la propriété de l’éditeur ou utilisés avec autorisation.
+  Toute reproduction ou réutilisation, totale ou partielle, sans autorisation
+  écrite est interdite.
+</p>
+<p>
+  Les logos et noms de marques affichés dans le jeu « Marques » appartiennent à
+  leurs titulaires respectifs. Ils sont présentés dans le seul but de les faire
+  deviner, sans lien d’affiliation, de partenariat ou de soutien de la part de
+  ces titulaires. Les drapeaux sont fournis par flagcdn.com. Tout titulaire de
+  droits qui souhaite le retrait d’un élément peut écrire à
+  <a [href]="'mailto:' + enterprise().email">{{ enterprise().email }}</a> : la
+  demande sera traitée dans les meilleurs délais.
+</p>
+
+<h2>6. Signaler un contenu</h2>
+<p>
+  Les pseudonymes sont choisis par les joueurs. Pour signaler un pseudonyme
+  injurieux, illicite ou usurpant l’identité d’un tiers, écrivez à
+  <a [href]="'mailto:' + enterprise().email">{{ enterprise().email }}</a> en
+  précisant le pseudonyme concerné et le motif. Le contenu manifestement
+  illicite sera retiré promptement.
+</p>
+
+<h2>7. Données personnelles et cookies</h2>
+<p>
+  Le traitement des données personnelles est décrit dans la
+  <a routerLink="/infos/confidentialite">politique de confidentialité</a>, et
+  l’usage des cookies et traceurs dans la page
+  <a routerLink="/infos/cookies">cookies et traceurs</a>.
+</p>
+
+<h2>8. Limitation de responsabilité</h2>
+<p>
+  L’éditeur s’efforce d’assurer l’exactitude des contenus et la disponibilité du
+  site, sans pouvoir la garantir. Il ne saurait être tenu responsable des
+  interruptions, erreurs, ou dommages indirects résultant de l’utilisation du
+  site.
+</p>
+
+<h2>9. Liens hypertextes</h2>
+<p>
+  Le site peut contenir des liens vers des sites tiers, y compris des
+  publicités. L’éditeur n’exerce aucun contrôle sur ces sites et décline toute
+  responsabilité quant à leur contenu.
+</p>
+
+<h2>10. Droit applicable</h2>
+<p>
+  Les présentes mentions légales sont régies par le droit français. En cas de
+  litige, et à défaut de résolution amiable, les tribunaux français sont seuls
+  compétents.
+</p>

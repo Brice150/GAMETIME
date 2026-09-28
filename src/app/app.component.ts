@@ -12,10 +12,12 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, RouterOutlet } from '@angular/router';
 import { of, switchMap } from 'rxjs';
+import { ConsentService } from './core/services/consent.service';
 import { PwaInstallService } from './core/services/pwa-install.service';
 import { PwaUpdateService } from './core/services/pwa-update.service';
 import { UserService } from './core/services/user.service';
 import { HeaderComponent } from './header/header.component';
+import { ConsentBannerComponent } from './shared/components/consent-banner/consent-banner.component';
 import { InvitationsComponent } from './shared/components/invitations/invitations.component';
 import { NotificationService } from './core/services/notification.service';
 import { PlayerService } from './core/services/player.service';
@@ -23,7 +25,13 @@ import { ToastrHelperService } from './core/services/toastr-helper.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, CommonModule, HeaderComponent, InvitationsComponent],
+  imports: [
+    RouterOutlet,
+    CommonModule,
+    HeaderComponent,
+    InvitationsComponent,
+    ConsentBannerComponent,
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,6 +39,7 @@ import { ToastrHelperService } from './core/services/toastr-helper.service';
 export class AppComponent implements OnInit {
   userService = inject(UserService);
   playerService = inject(PlayerService);
+  consentService = inject(ConsentService);
   notificationService = inject(NotificationService);
   pwaUpdateService = inject(PwaUpdateService);
   pwaInstallService = inject(PwaInstallService);

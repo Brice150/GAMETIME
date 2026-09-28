@@ -70,6 +70,9 @@ export class HeaderComponent implements OnInit {
     if (url.startsWith('/admin')) {
       return 'Admin';
     }
+    if (url.startsWith('/infos')) {
+      return 'Infos légales';
+    }
     if (url === '/' || url.startsWith('/room')) {
       return 'Game Time';
     }

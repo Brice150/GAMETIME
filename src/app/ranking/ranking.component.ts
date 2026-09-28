@@ -26,6 +26,8 @@ import { OrdinalPipe } from '../shared/pipes/ordinal.pipe';
 import { TotalMedalsNumberPipe } from '../shared/pipes/total-medals-number.pipe';
 import { SuccessComponent } from '../success/success.component';
 
+import { environment } from '../../environments/environment';
+import { AdSlotComponent } from '../shared/components/ad-slot/ad-slot.component';
 @Component({
   selector: 'app-ranking',
   imports: [
@@ -39,12 +41,14 @@ import { SuccessComponent } from '../success/success.component';
     MatSelectModule,
     TotalMedalsNumberPipe,
     SuccessComponent,
+    AdSlotComponent,
   ],
   templateUrl: './ranking.component.html',
   styleUrl: './ranking.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RankingComponent implements OnInit {
+  readonly adSlot = environment.ads.slots.ranking;
   playerService = inject(PlayerService);
   toastrHelper = inject(ToastrHelperService);
   destroyRef = inject(DestroyRef);

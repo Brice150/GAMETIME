@@ -23,6 +23,7 @@
               "src/assets",
               "src/manifest.webmanifest",
               "src/robots.txt",
+              "src/ads.txt",
               "src/sitemap.xml",
               "src/llms.txt",
               "src/firebase-messaging-sw.js"

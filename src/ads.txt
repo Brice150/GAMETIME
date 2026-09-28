@@ -1,0 +1,5 @@
+# ads.txt — vendeurs autorisés à vendre l'inventaire publicitaire de Game Time.
+# Vide tant qu'aucune publicité n'est diffusée. À l'activation d'AdSense,
+# décommenter la ligne suivante en y mettant l'identifiant éditeur
+# (celui de environment.ads.client, sans le préfixe « ca- ») :
+# google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0

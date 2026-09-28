@@ -14,8 +14,8 @@ import { Router, RouterModule } from '@angular/router';
 import { catchError, filter, map, of, switchMap, take } from 'rxjs';
 import { FriendService } from '../core/services/friend.service';
 import { PlayerService } from '../core/services/player.service';
-import { ProfileService } from '../core/services/profile.service';
-import { RoomService } from '../core/services/room.service';
+import { GameApiService } from '../core/services/game-api.service';
+import { LocalStorageService } from '../core/services/local-storage.service';
 import { UserService } from '../core/services/user.service';
 import { ToastrHelperService } from '../core/services/toastr-helper.service';
 import { ConfirmationDialogComponent } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
@@ -47,10 +47,10 @@ import {
 })
 export class ParametersComponent {
   toastrHelper = inject(ToastrHelperService);
-  profileService = inject(ProfileService);
   userService = inject(UserService);
   playerService = inject(PlayerService);
-  roomService = inject(RoomService);
+  gameApi = inject(GameApiService);
+  localStorageService = inject(LocalStorageService);
   friendService = inject(FriendService);
   dialog = inject(MatDialog);
   router = inject(Router);
@@ -152,7 +152,7 @@ export class ParametersComponent {
 
   openDialog(): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-      data: 'supprimer votre profil',
+      data: 'supprimer définitivement votre compte et toutes vos données',
     });
 
     dialogRef
@@ -161,30 +161,23 @@ export class ParametersComponent {
         filter((res: boolean) => res),
         switchMap(() => {
           this.loading.set(true);
-          return this.roomService.deleteUserRooms();
+          return this.gameApi.deleteAccount();
         }),
-        switchMap(() => this.playerService.deleteUserPlayer()),
-        switchMap(() =>
-          this.profileService.deleteProfile().pipe(
-            catchError(() => {
-              return of(undefined);
-            }),
-          ),
-        ),
-        switchMap(() =>
-          this.userService.logout().pipe(
-            catchError(() => {
-              return of(undefined);
-            }),
-          ),
-        ),
+        // Le compte n'existe plus : la deconnexion ne fait que vider la
+        // session locale, son echec ne change rien.
+        switchMap(() => {
+          this.localStorageService.clearLocalStorage();
+          return this.userService
+            .logout()
+            .pipe(catchError(() => of(undefined)));
+        }),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
         next: () => {
           this.loading.set(false);
           this.router.navigate(['/']);
-          this.toastrHelper.info('Profil supprimé', 'Profil');
+          this.toastrHelper.info('Compte et données supprimés', 'Compte');
         },
         error: (error: HttpErrorResponse) => {
           this.loading.set(false);

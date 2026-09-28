@@ -6,10 +6,16 @@ const BASE_URL = 'https://game-time-64133.web.app';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 
-// Seule la page d'accueil est publique : tout le reste est derrière un garde
-// d'authentification et n'aurait rien à montrer à un robot. Ces mêmes routes
-// sont refusées dans robots.txt.
-const INDEXED_ROUTES = [{ path: '', changefreq: 'weekly' }];
+// Pages publiques : l'accueil et les documents légaux. Tout le reste est
+// derrière un garde d'authentification et n'aurait rien à montrer à un robot ;
+// ces routes-là sont refusées dans robots.txt.
+const INDEXED_ROUTES = [
+  { path: '', changefreq: 'weekly' },
+  { path: '/infos/mentions-legales', changefreq: 'yearly' },
+  { path: '/infos/cgu', changefreq: 'yearly' },
+  { path: '/infos/confidentialite', changefreq: 'yearly' },
+  { path: '/infos/cookies', changefreq: 'yearly' },
+];
 
 // Routes pregenerees en plus de celles du sitemap, si un jour une page
 // publique ne doit pas être indexée.

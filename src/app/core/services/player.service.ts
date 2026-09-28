@@ -266,25 +266,4 @@ export class PlayerService {
     const playerDoc = doc(this.firestore, `players/${playerId}`);
     return from(deleteDoc(playerDoc));
   }
-
-  deleteUserPlayer(): Observable<void> {
-    const playersQuery = query(
-      this.playersCollection,
-      where('userId', '==', this.userService.auth.currentUser?.uid),
-    );
-
-    return from(getDocs(playersQuery)).pipe(
-      switchMap((snapshot) => {
-        if (snapshot.empty) {
-          return of(undefined);
-        }
-
-        const batch = writeBatch(this.firestore);
-        snapshot.docs.forEach((playerDoc) => batch.delete(playerDoc.ref));
-
-        return from(batch.commit());
-      }),
-      map(() => undefined),
-    );
-  }
 }

@@ -76,9 +76,10 @@ describe('LoggingService', () => {
     expect(written()).toMatchObject({
       message: 'Boum',
       userId: 'u1',
-      email: 'joueur@example.com',
     });
     expect(written()['stack']).toContain('Boum');
+    // Minimisation : l'identifiant suffit, l'email n'est jamais conserve.
+    expect(written()).not.toHaveProperty('email');
   });
 
   it('retombe sur le nom quand l erreur n a pas de message', () => {
@@ -152,7 +153,7 @@ describe('LoggingService', () => {
 
     service.logError(new Error('Boum'));
 
-    expect(written()).toMatchObject({ userId: null, email: null });
+    expect(written()).toMatchObject({ userId: null });
   });
 
   it('encaisse une ecriture refusee : journaliser ne doit rien casser', () => {

@@ -92,6 +92,11 @@ describe('HeaderComponent', () => {
       expect(component.pageTitle()).toBe('Game Time');
     });
 
+    it('nomme les documents legaux', async () => {
+      atUrl('/infos/cgu');
+      expect((await build()).pageTitle()).toBe('Infos légales');
+    });
+
     it('reprend l URL pour une page sans titre declare', async () => {
       atUrl('/succes');
       expect((await build()).pageTitle()).toBe('succes');

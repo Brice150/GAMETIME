@@ -76,4 +76,26 @@ export class GameApiService {
 
     return from(callable({ guestIdToken })).pipe(map((result) => result.data));
   }
+
+  // Tout le menage est fait par le serveur : le client ne peut ni retirer un
+  // joueur des listes d'amis des autres, ni effacer le journal des erreurs.
+  deleteAccount(): Observable<void> {
+    const callable = httpsCallable<void, { ok: boolean }>(
+      this.functions,
+      'deleteAccount',
+    );
+
+    return from(callable()).pipe(map(() => undefined));
+  }
+
+  // Copie structuree de toutes les donnees du compte (droit a la
+  // portabilite).
+  exportMyData(): Observable<Record<string, unknown>> {
+    const callable = httpsCallable<void, Record<string, unknown>>(
+      this.functions,
+      'exportMyData',
+    );
+
+    return from(callable()).pipe(map((result) => result.data));
+  }
 }

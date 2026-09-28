@@ -14,18 +14,25 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { map, Observable, switchMap } from 'rxjs';
 import { UserCredential } from '@angular/fire/auth';
 import { environment } from '../../environments/environment';
 import { PlayerService } from '../core/services/player.service';
 import { ToastrHelperService } from '../core/services/toastr-helper.service';
 import { UserService } from '../core/services/user.service';
+import { LegalFooterComponent } from '../shared/components/legal-footer/legal-footer.component';
 import { ThemeToggleComponent } from '../shared/components/theme-toggle/theme-toggle.component';
 
 @Component({
   selector: 'app-welcome',
-  imports: [CommonModule, MatProgressSpinnerModule, ThemeToggleComponent],
+  imports: [
+    CommonModule,
+    MatProgressSpinnerModule,
+    RouterLink,
+    ThemeToggleComponent,
+    LegalFooterComponent,
+  ],
   templateUrl: './welcome.component.html',
   styleUrl: './welcome.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

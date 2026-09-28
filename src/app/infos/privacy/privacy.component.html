@@ -1,0 +1,255 @@
+<p>
+  Cette politique explique quelles données personnelles Game Time traite,
+  pourquoi, combien de temps, et comment exercer vos droits, conformément au
+  règlement (UE) 2016/679 (RGPD) et à la loi n° 78-17 du 6 janvier 1978 «
+  Informatique et Libertés ».
+</p>
+
+<h2>1. Responsable du traitement</h2>
+<p>
+  <span class="value">{{ enterprise().name }}</span
+  >, représentée par {{ enterprise().contactName }}. Contact :
+  <a [href]="'mailto:' + enterprise().email">{{ enterprise().email }}</a
+  >. Aucun délégué à la protection des données n’a été désigné, la désignation
+  n’étant pas obligatoire pour ce service.
+</p>
+
+<h2>2. Données traitées</h2>
+<h3>Compte</h3>
+<ul>
+  <li>
+    Identifiant technique de compte et, en cas de connexion par Google ou
+    GitHub, l’adresse email et les informations de profil transmises par ce
+    fournisseur. Elles sont conservées par Firebase Authentication et ne sont
+    pas visibles des autres joueurs.
+  </li>
+  <li>Un compte invité ne comporte qu’un identifiant technique anonyme.</li>
+</ul>
+<h3>Profil de joueur</h3>
+<ul>
+  <li>
+    Pseudonyme (proposé à partir de la partie de votre adresse email située
+    avant le « @ », et modifiable à tout moment), avatar, médailles, succès et
+    statistiques par jeu.
+  </li>
+  <li>
+    Liste d’amis, demandes d’amis, réglage de visibilité de votre activité.
+  </li>
+</ul>
+<h3>Parties</h3>
+<ul>
+  <li>
+    Salons créés ou rejoints, réglages de partie, progression, temps de réponse
+    et votes.
+  </li>
+  <li>
+    Invitations envoyées ou reçues (avec le pseudonyme et l’avatar de
+    l’expéditeur).
+  </li>
+</ul>
+<h3>Notifications</h3>
+<ul>
+  <li>
+    Si vous activez les notifications, un jeton identifiant votre navigateur
+    auprès du service d’envoi de notifications.
+  </li>
+</ul>
+<h3>Données techniques</h3>
+<ul>
+  <li>
+    Journal des erreurs de l’application : message d’erreur, page concernée,
+    type de navigateur et identifiant de compte.
+  </li>
+  <li>
+    Adresse IP et journaux de connexion, traités par l’hébergeur pour acheminer
+    les pages et sécuriser le service.
+  </li>
+  <li>
+    Données stockées sur votre appareil, détaillées dans la page
+    <a routerLink="/infos/cookies">cookies et traceurs</a>.
+  </li>
+</ul>
+@if (consent.required) {
+  <h3>Publicité</h3>
+  <ul>
+    <li>
+      Si vous l’acceptez : identifiants publicitaires, adresse IP, informations
+      sur votre navigateur et votre navigation, collectés par Google via des
+      cookies pour afficher et mesurer les annonces.
+    </li>
+  </ul>
+}
+<p>
+  Game Time ne collecte aucune donnée sensible, aucune donnée de paiement, et ne
+  réalise aucune mesure d’audience.
+</p>
+
+<h2>3. Finalités et bases légales</h2>
+<ul>
+  <li>
+    <strong>Faire fonctionner le jeu</strong> (compte, parties, classement,
+    amis, invitations) : exécution des CGU que vous acceptez en vous connectant
+    (art. 6.1.b RGPD).
+  </li>
+  <li>
+    <strong>Envoyer des notifications d’invitation</strong> : votre
+    consentement, donné en activant l’option dans les Paramètres et retiré en la
+    désactivant (art. 6.1.a).
+  </li>
+  <li>
+    <strong
+      >Sécuriser le service, lutter contre la triche et corriger les
+      erreurs</strong
+    >
+    : intérêt légitime de l’éditeur à fournir un jeu fiable et équitable (art.
+    6.1.f).
+  </li>
+  @if (consent.required) {
+    <li>
+      <strong>Afficher des publicités personnalisées</strong> : votre
+      consentement, recueilli par le bandeau cookies (art. 6.1.a RGPD et art. 82
+      de la loi Informatique et Libertés).
+      @if (consent.usesGoogleCmp) {
+        Si vous refusez, seules des annonces non personnalisées peuvent être
+        affichées.
+      } @else {
+        Si vous refusez, aucun script publicitaire n’est chargé.
+      }
+    </li>
+  }
+  <li>
+    <strong>Répondre aux demandes des autorités</strong> : obligation légale
+    (art. 6.1.c).
+  </li>
+</ul>
+
+<h2>4. Qui a accès à vos données</h2>
+<ul>
+  <li>
+    <strong>Les autres joueurs</strong> voient votre pseudonyme, votre avatar,
+    vos médailles et, dans un salon partagé, votre progression. Jamais votre
+    adresse email.
+  </li>
+  <li><strong>L’éditeur</strong>, pour l’administration et l’assistance.</li>
+  <li>
+    <strong>Google Ireland Limited et Google LLC</strong> (Firebase :
+    authentification, base de données, fonctions serveur, hébergement,
+    notifications), en qualité de sous-traitant.
+  </li>
+  <li>
+    <strong>GitHub, Inc.</strong>, uniquement si vous vous connectez avec
+    GitHub, en tant que fournisseur d’identité.
+  </li>
+  <li>
+    <strong>flagcdn.com et Brandfetch</strong>, qui fournissent les images de
+    drapeaux et de logos du jeu : votre navigateur les télécharge directement,
+    ce qui leur transmet votre adresse IP.
+  </li>
+  @if (consent.required) {
+    <li>
+      <strong>Google Ireland Limited</strong> (Google AdSense), si vous acceptez
+      la publicité personnalisée. Google agit alors comme responsable de
+      traitement pour ses propres finalités : voir
+      <a
+        href="https://policies.google.com/technologies/partner-sites"
+        target="_blank"
+        rel="noopener noreferrer"
+        >comment Google utilise les données</a
+      >.
+    </li>
+  }
+</ul>
+<p>Vos données ne sont jamais vendues.</p>
+
+<h2>5. Transferts hors de l’Union européenne</h2>
+<p>
+  Certains prestataires (Google, GitHub) peuvent traiter des données aux
+  États-Unis. Ces transferts sont encadrés par la décision d’adéquation de la
+  Commission européenne du 10 juillet 2023 (Data Privacy Framework), à laquelle
+  ces sociétés ont adhéré, et par des clauses contractuelles types.
+</p>
+
+<h2>6. Durées de conservation</h2>
+<ul>
+  <li>Compte et profil : jusqu’à la suppression du compte.</li>
+  <li>
+    Compte invité : supprimé automatiquement, avec son profil, après 12 mois
+    sans connexion.
+  </li>
+  <li>
+    Salons : supprimés 24 heures après leur dernière activité, avec leurs
+    invitations.
+  </li>
+  <li>Journal des erreurs : 6 mois.</li>
+  <li>
+    Jeton de notification : jusqu’à la désactivation des notifications, la
+    suppression du compte, ou son invalidation par le navigateur.
+  </li>
+  @if (consent.required) {
+    <li>Choix relatif aux cookies : 6 mois, puis il vous est redemandé.</li>
+  }
+</ul>
+
+<h2>7. Vos droits</h2>
+<p>Vous disposez des droits suivants sur vos données :</p>
+<ul>
+  <li>
+    <strong>Accès et portabilité</strong> : Paramètres › Confidentialité ›
+    Télécharger mes données fournit une copie de vos données dans un format
+    lisible (JSON).
+  </li>
+  <li>
+    <strong>Rectification</strong> : pseudonyme et avatar sont modifiables dans
+    les Paramètres.
+  </li>
+  <li>
+    <strong>Effacement</strong> : Paramètres › Supprimer mon compte efface
+    immédiatement l’ensemble de vos données.
+  </li>
+  <li>
+    <strong>Opposition, limitation</strong>, et
+    <strong>retrait du consentement</strong> à tout moment, sans remettre en
+    cause les traitements déjà effectués.
+  </li>
+  <li>
+    <strong>Directives post-mortem</strong> sur le sort de vos données après
+    votre décès.
+  </li>
+</ul>
+<p>
+  Pour toute demande, écrivez à
+  <a [href]="'mailto:' + enterprise().email">{{ enterprise().email }}</a
+  >. Une réponse vous sera apportée dans un délai d’un mois. Si vous estimez que
+  vos droits ne sont pas respectés, vous pouvez introduire une réclamation
+  auprès de la CNIL (<a
+    href="https://www.cnil.fr/fr/plaintes"
+    target="_blank"
+    rel="noopener noreferrer"
+    >cnil.fr</a
+  >, 3 place de Fontenoy, TSA 80715, 75334 Paris Cedex 07).
+</p>
+
+<h2>8. Mineurs</h2>
+<p>
+  En France, un mineur peut consentir seul au traitement de ses données à partir
+  de 15 ans. En dessous, l’accord d’un titulaire de l’autorité parentale est
+  nécessaire pour utiliser Game Time et pour tout choix soumis à consentement.
+  Un parent peut demander la suppression du compte de son enfant par email.
+</p>
+
+<h2>9. Sécurité</h2>
+<p>
+  Les échanges sont chiffrés (HTTPS). L’accès aux données est limité par des
+  règles vérifiées côté serveur : chaque joueur ne peut modifier que ses propres
+  données, et les actions sensibles (médailles, amitiés, suppression de compte)
+  passent par des fonctions serveur. Aucun mot de passe n’est stocké par Game
+  Time.
+</p>
+
+<h2>10. Modification de cette politique</h2>
+<p>
+  Cette politique peut évoluer, notamment en cas de nouveau prestataire. La
+  version en vigueur est toujours publiée sur cette page ; toute nouvelle
+  finalité soumise à consentement vous sera présentée avant d’être mise en
+  œuvre.
+</p>

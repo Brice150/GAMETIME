@@ -36,6 +36,7 @@ Backend/BDD : Firebase
 - Onglet Amis : recherche d'un joueur par son nom, demandes d'ami à accepter ou refuser, retrait d'un ami
 - Un ami déjà dans une salle est signalé, avec un bouton pour le rejoindre directement
 - Interrupteur de confidentialité : masquer ses parties à ses amis, sans se rendre injoignable
+- Téléchargement de toutes ses données (JSON) et suppression complète du compte, faites par le serveur
 
 ---
 
@@ -136,6 +137,60 @@ Backend/BDD : Firebase
 </details>
 
 <details>
+  <summary>Légal, données personnelles et publicité</summary>
+
+### Ce qui est en place
+
+- **Documents légaux** publics, prérendus et dans le sitemap : `/infos/mentions-legales`,
+  `/infos/cgu`, `/infos/confidentialite`, `/infos/cookies`. Accessibles sans garde, liés depuis
+  le pied de page de l'accueil, la page elle-même et Paramètres › Confidentialité. Les
+  informations de l'éditeur sont dans `src/assets/data/entreprise.ts` (les mêmes que Life Rise).
+- **Acceptation des CGU** : mention sous les boutons de connexion.
+- **Droits RGPD** : fonctions `deleteAccount` (effacement complet : fiche, salons, invitations,
+  jetons, journal d'erreurs, trace dans les listes d'amis des autres, compte Firebase) et
+  `exportMyData` (accès et portabilité).
+- **Durées de conservation** appliquées par `purgeExpiredData` (quotidienne) : journal des erreurs
+  6 mois, comptes invités inactifs 12 mois. L'email n'est plus écrit dans le journal des erreurs.
+- **Publicité prête mais éteinte** : `environment.ads`, `ConsentService` (Consent Mode v2),
+  `AdService`, `<app-ad-slot>` sur l'accueil et le classement, `src/ads.txt`. Désactivée, elle
+  ne charge rien, n'affiche aucun bandeau et les pages légales disent qu'il n'y a aucune publicité ;
+  activée, elles décrivent automatiquement AdSense.
+
+### Avant la mise en ligne
+
+1. Compléter `src/assets/data/entreprise.ts` (adresse, SIRET, RCS) et retirer les mentions en rouge
+   des mentions légales.
+2. Déployer les fonctions **avant** le front : `firebase deploy --only functions`. La suppression de
+   compte du client appelle `deleteAccount`.
+3. À chaque modification d'un document, changer `LEGAL_LAST_UPDATE` dans
+   `src/app/infos/legal-documents.ts`.
+
+### Activer la publicité (AdSense)
+
+1. Faire approuver le site dans AdSense, puis dans « Confidentialité et messages », créer le message
+   RGPD (CMP certifiée TCF, exigée par Google pour diffuser dans l'EEE et au Royaume-Uni).
+2. Dans `src/environments/environment*.ts` : `enabled: true`, `client: 'ca-pub-…'`, et les
+   identifiants de blocs dans `slots`. Garder `cmp: 'google'` ; `internal` affiche le bandeau de
+   l'application, à réserver à une régie qui l'accepte.
+3. Décommenter la ligne de `src/ads.txt` avec l'identifiant éditeur.
+4. Élargir la CSP de `firebase.json` (le service worker se réinstalle seul, voir
+   `scripts/stamp-sw-csp.mjs`), puis vérifier la console du navigateur :
+   - `script-src` : `https://pagead2.googlesyndication.com https://*.googlesyndication.com
+https://fundingchoicesmessages.google.com https://*.adtrafficquality.google
+https://www.googletagservices.com https://www.google.com`
+   - `frame-src` : `https://googleads.g.doubleclick.net https://*.googlesyndication.com
+https://www.google.com https://fundingchoicesmessages.google.com https://*.adtrafficquality.google`
+   - `connect-src` : `https://*.googlesyndication.com https://*.doubleclick.net
+https://*.google.com https://fundingchoicesmessages.google.com https://*.adtrafficquality.google`
+   - `img-src` : `https:` (les annonces viennent de nombreux domaines)
+5. Changer `LEGAL_LAST_UPDATE` : les pages Confidentialité et Cookies changent de contenu.
+
+Une nouvelle finalité (mesure d'audience par exemple) impose d'incrémenter `CONSENT_VERSION` et de
+compléter les pages Confidentialité et Cookies.
+
+</details>
+
+<details>
   <summary>Qualité et tests</summary>
 
 ### Socle technique
@@ -146,7 +201,7 @@ les requêtes de vue par `viewChild()` : aucun décorateur de ce type ne subsist
 
 ### Couverture
 
-La suite compte 659 tests, exécutés à chaque push. La couverture est verrouillée : le
+La suite compte 714 tests, exécutés à chaque push. La couverture est verrouillée : le
 lancement échoue sous 99 % des instructions, 97 % des branches, 99 % des fonctions et 99 % des
 lignes. Elle ne peut donc plus baisser sans que la CI le refuse.
 

@@ -42,5 +42,12 @@ export const routes: Routes = [
       import('./admin/admin.component').then((m) => m.AdminComponent),
     canActivate: [adminGuard],
   },
+  // Sans garde : les documents legaux doivent rester lisibles par tous,
+  // connectes ou non.
+  {
+    path: 'infos/:infoType',
+    loadComponent: () =>
+      import('./infos/infos.component').then((m) => m.InfosComponent),
+  },
   { path: '**', redirectTo: 'accueil', pathMatch: 'full' },
 ];

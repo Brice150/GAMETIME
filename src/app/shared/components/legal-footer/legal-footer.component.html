@@ -1,0 +1,13 @@
+<footer class="legal-footer">
+  <nav aria-label="Informations légales">
+    @for (document of documents; track document.key) {
+      <a [routerLink]="'/infos/' + document.key">{{ document.shortTitle }}</a>
+    }
+    @if (consent.required) {
+      <button type="button" (click)="consent.openPreferences()">
+        Gérer les cookies
+      </button>
+    }
+  </nav>
+  <p>© {{ year }} Game Time · Service gratuit</p>
+</footer>

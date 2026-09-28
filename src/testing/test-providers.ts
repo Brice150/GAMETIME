@@ -17,7 +17,6 @@ import { InvitationService } from '../app/core/services/invitation.service';
 import { LocalStorageService } from '../app/core/services/local-storage.service';
 import { NotificationService } from '../app/core/services/notification.service';
 import { PlayerService } from '../app/core/services/player.service';
-import { ProfileService } from '../app/core/services/profile.service';
 import { PwaInstallService } from '../app/core/services/pwa-install.service';
 import { PwaUpdateService } from '../app/core/services/pwa-update.service';
 import { RoomService } from '../app/core/services/room.service';
@@ -101,7 +100,6 @@ export function appTestProviders(
         updatePlayerFields: () => of(undefined),
         resetPlayersState: () => of(undefined),
         deletePlayer: () => of(undefined),
-        deleteUserPlayer: () => of(undefined),
       },
     },
     {
@@ -199,16 +197,14 @@ export function appTestProviders(
       },
     },
     {
-      provide: ProfileService,
-      useValue: { deleteProfile: () => of(undefined) },
-    },
-    {
       provide: GameApiService,
       useValue: {
         submitRound: () => EMPTY,
         claimGoal: () => EMPTY,
         manageFriendship: () => of(undefined),
         linkGuestAccount: () => of({ migrated: false }),
+        deleteAccount: () => of(undefined),
+        exportMyData: () => of({}),
       },
     },
     {

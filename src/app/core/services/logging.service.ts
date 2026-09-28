@@ -57,8 +57,9 @@ export class LoggingService {
       stack: stack?.slice(0, 4000) ?? null,
       url: window.location.href,
       userAgent: navigator.userAgent,
+      // L'identifiant suffit a retrouver le compte : l'email n'est pas
+      // conserve (minimisation des donnees).
       userId: currentUser?.uid ?? null,
-      email: currentUser?.email ?? null,
       createdAt: serverTimestamp(),
     }).catch(() => undefined);
   }

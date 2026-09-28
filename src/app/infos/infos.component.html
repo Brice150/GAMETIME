@@ -1,0 +1,52 @@
+<article class="page">
+  <header class="page-head">
+    <span class="eyebrow">Informations légales</span>
+    <h1>{{ current().title }}</h1>
+    <p>{{ current().subtitle }}</p>
+  </header>
+
+  <div class="content">
+    @switch (current().key) {
+      @case ('cgu') {
+        <app-cgu [enterprise]="enterprise" />
+      }
+      @case ('confidentialite') {
+        <app-privacy [enterprise]="enterprise" />
+      }
+      @case ('cookies') {
+        <app-cookies [enterprise]="enterprise" />
+      }
+      @default {
+        <app-mentions-legales [enterprise]="enterprise" />
+      }
+    }
+    <p class="last-update">Dernière mise à jour : {{ lastUpdate }}</p>
+  </div>
+
+  <nav class="more" aria-label="Autres documents">
+    <span class="eyebrow">Les autres documents</span>
+    <div class="more-grid">
+      @for (item of others(); track item.key) {
+        <a class="more-card" [routerLink]="'/infos/' + item.key">
+          <span class="more-icon">
+            <i class="bx {{ item.icon }}" aria-hidden="true"></i>
+          </span>
+          <span class="more-text">
+            <span class="more-name">{{ item.title }}</span>
+            <span class="more-sub">{{ item.subtitle }}</span>
+          </span>
+          <i class="bx bx-chevron-right" aria-hidden="true"></i>
+        </a>
+      }
+    </div>
+  </nav>
+
+  <div class="button-container">
+    <a class="back" routerLink="/" title="Retour à l’accueil">
+      <i class="bx bxs-home" aria-hidden="true"></i>
+      <span class="text">Retour à l’accueil</span>
+    </a>
+  </div>
+</article>
+
+<app-legal-footer />

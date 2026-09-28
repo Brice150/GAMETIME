@@ -1,0 +1,111 @@
+<p>
+  Un cookie ou traceur est une information enregistrée sur votre appareil
+  (cookie, stockage local du navigateur, base IndexedDB…) et relue lors de vos
+  visites. La loi n’impose de recueillir votre consentement que pour les
+  traceurs qui ne sont pas indispensables au service (article 82 de la loi
+  Informatique et Libertés).
+</p>
+
+<h2>1. Traceurs indispensables</h2>
+<p>
+  Ils sont nécessaires au fonctionnement de Game Time et sont exemptés de
+  consentement. Aucun n’est utilisé à des fins publicitaires ou de mesure
+  d’audience.
+</p>
+<ul>
+  <li>
+    <strong>Session de connexion</strong> (base IndexedDB de Firebase
+    Authentication) : vous garder connecté. Supprimée à la déconnexion.
+  </li>
+  <li>
+    <strong>Cache du jeu</strong> (base IndexedDB de Firestore, service worker
+    et son cache) : charger l’application rapidement et l’installer sur votre
+    écran d’accueil.
+  </li>
+  <li><code>theme</code> : thème clair ou sombre choisi.</li>
+  <li>
+    <code>invitationNotifications</code> : activation des notifications
+    d’invitation.
+  </li>
+  <li>
+    <code>pwaInstallDismissed</code> : ne plus proposer l’installation de
+    l’application.
+  </li>
+  <li>
+    <code>tries</code>, <code>startAgainNumber</code>, <code>roomId</code>,
+    <code>roundTimer</code> : reprendre la partie en cours après un
+    rechargement.
+  </li>
+  @if (consent.required) {
+    <li>
+      <code>consent</code> : mémoriser votre choix concernant les cookies
+      publicitaires, pendant 6 mois.
+    </li>
+  }
+</ul>
+<p>
+  La connexion avec Google ou GitHub ouvre une fenêtre de ce fournisseur, qui y
+  dépose ses propres cookies selon sa politique.
+</p>
+
+<h2>2. Mesure d’audience</h2>
+<p>Game Time ne réalise aucune mesure d’audience.</p>
+
+<h2>3. Publicité</h2>
+@if (consent.required) {
+  <p>
+    Game Time est financé par la publicité, affichée par Google AdSense. Avec
+    votre accord, Google et ses partenaires déposent des cookies (par exemple
+    <code>__gads</code>, <code>__gpi</code>, ou <code>IDE</code> sur le domaine
+    doubleclick.net) pour choisir des annonces selon vos centres d’intérêt,
+    limiter leur répétition, mesurer leur affichage et détecter la fraude. Leur
+    durée de vie n’excède pas 13 mois.
+  </p>
+  @if (consent.usesGoogleCmp) {
+    <p>
+      Votre choix est recueilli par le message de consentement de Google,
+      certifié selon le standard européen TCF. Si vous refusez, seules des
+      annonces non personnalisées peuvent être affichées, sans cookie utilisé à
+      des fins de personnalisation. Refuser n’a aucune conséquence sur le jeu.
+    </p>
+  } @else {
+    <p>
+      Si vous refusez, aucun script publicitaire n’est chargé et aucun de ces
+      cookies n’est déposé. Refuser n’a aucune conséquence sur le jeu.
+    </p>
+  }
+  <p>
+    Vous pouvez modifier votre choix à tout moment :
+    <button type="button" class="link" (click)="consent.openPreferences()">
+      gérer mes choix de cookies</button
+    >.
+  </p>
+} @else {
+  <p>
+    Game Time n’affiche actuellement aucune publicité et n’utilise aucun traceur
+    publicitaire : aucun consentement n’est donc demandé. Si des publicités sont
+    ajoutées, un bandeau vous demandera votre accord avant tout dépôt de
+    traceur, et cette page sera mise à jour.
+  </p>
+}
+
+<h2>4. Contenus tiers</h2>
+<p>
+  Les drapeaux et logos du jeu sont chargés depuis flagcdn.com et Brandfetch.
+  Ces services ne déposent pas de cookie via Game Time, mais reçoivent votre
+  adresse IP lors du téléchargement des images.
+</p>
+
+<h2>5. Gérer les traceurs depuis votre navigateur</h2>
+<p>
+  Vous pouvez effacer à tout moment les données enregistrées par Game Time
+  depuis les paramètres de votre navigateur (rubrique « Cookies et données de
+  site »). Cela vous déconnecte, et un compte invité non lié à Google ou GitHub
+  est alors perdu.
+</p>
+<p>
+  Pour toute question :
+  <a [href]="'mailto:' + enterprise().email">{{ enterprise().email }}</a
+  >. Plus d’informations dans la
+  <a routerLink="/infos/confidentialite">politique de confidentialité</a>.
+</p>

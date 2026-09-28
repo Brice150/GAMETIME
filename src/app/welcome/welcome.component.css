@@ -469,6 +469,22 @@ section {
   text-align: center;
 }
 
+.welcome-auth .legal-notice {
+  margin-top: 20px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-3);
+}
+
+.legal-notice a {
+  color: var(--text-2);
+  text-decoration: underline;
+}
+
+.legal-notice a:hover {
+  color: var(--accent-bright);
+}
+
 .auth-buttons {
   width: 100%;
   display: flex;

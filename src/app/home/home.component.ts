@@ -20,6 +20,8 @@ import { ToastrHelperService } from '../core/services/toastr-helper.service';
 import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
 import { JoinRoomComponent } from './join-room/join-room.component';
 
+import { environment } from '../../environments/environment';
+import { AdSlotComponent } from '../shared/components/ad-slot/ad-slot.component';
 @Component({
   selector: 'app-home',
   imports: [
@@ -28,12 +30,14 @@ import { JoinRoomComponent } from './join-room/join-room.component';
     MatProgressSpinnerModule,
     MedalsNumberPipe,
     JoinRoomComponent,
+    AdSlotComponent,
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent {
+  readonly adSlot = environment.ads.slots.home;
   readonly loading = signal(false);
   playerService = inject(PlayerService);
   roomService = inject(RoomService);
