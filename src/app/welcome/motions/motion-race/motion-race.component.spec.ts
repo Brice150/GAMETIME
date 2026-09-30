@@ -34,6 +34,20 @@ describe('MotionRaceComponent', () => {
     expect(component.positions()).toEqual([1, 0, 2]);
   });
 
+  it('allume la pastille a la place de la lettre dans le mot', () => {
+    component.reset();
+    component.score(0, 1);
+    component.score(0, 2);
+    fixture.detectChanges();
+    const dots = Array.from(
+      (fixture.nativeElement as HTMLElement)
+        .querySelectorAll('.row')[0]
+        .querySelectorAll('.dot'),
+    ).map((dot) => dot.classList.contains('is-on'));
+
+    expect(dots).toEqual([true, false, true, false, false]);
+  });
+
   it('laisse devant le premier arrive a egalite', () => {
     component.score(1, 1);
     component.score(0, 2);

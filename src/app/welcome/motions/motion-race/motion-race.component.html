@@ -24,7 +24,7 @@
       <span class="name">{{ racer.name }} {{ racer.animal }}</span>
       <span class="dots">
         @for (slot of slots; track $index) {
-          <span class="dot" [class.is-on]="$index < found()[i]"></span>
+          <span class="dot" [class.is-on]="isFound(i, $index)"></span>
         }
       </span>
     </li>
