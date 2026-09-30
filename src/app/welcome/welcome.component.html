@@ -9,7 +9,18 @@
       Jeux de réflexion multijoueur
     </span>
     <h1>
-      <span class="word">Game</span> <span class="word accent">Time</span>
+      <span class="word">Game</span>
+      <span class="word accent">
+        Time
+        <svg
+          class="underline"
+          viewBox="0 0 200 20"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          <path d="M4 14 C 50 4, 120 4, 196 10" pathLength="1" />
+        </svg>
+      </span>
     </h1>
     <h2>Quand réfléchir devient amusant !</h2>
     <p class="hero-text">
@@ -40,23 +51,30 @@
         <i class="bx bx-check-circle" aria-hidden="true"></i> Jouable en invité
       </span>
     </div>
+    <div class="hero-aurora" aria-hidden="true">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
   </div>
 
   <div class="stats-band reveal" #reveal>
     <div class="stat">
-      <span class="num">6</span>
+      <span class="num" [appCountUp]="6">6</span>
       <span class="label">jeux</span>
     </div>
     <div class="stat">
-      <span class="num">3</span>
+      <span class="num" [appCountUp]="3">3</span>
       <span class="label">univers</span>
     </div>
     <div class="stat">
-      <span class="num">6</span>
+      <span class="num" [appCountUp]="6">6</span>
       <span class="label">essais par manche</span>
     </div>
     <div class="stat">
-      <span class="num">0 €</span>
+      <span class="num" [appCountUp]="0" [countFrom]="30" countSuffix=" €"
+        >0 €</span
+      >
       <span class="label">pour jouer</span>
     </div>
   </div>
@@ -72,12 +90,11 @@
   <div class="features">
     <div class="feature" #reveal>
       <div class="feature-visual">
-        <img
-          [src]="imagePath + 'welcome/Multijoueur.webp'"
-          alt="Classement en direct pendant une partie multijoueur"
-          fetchpriority="high"
-          decoding="async"
-        />
+        @defer (on viewport; prefetch on idle) {
+          <app-motion-race></app-motion-race>
+        } @placeholder {
+          <div class="motion-placeholder"></div>
+        }
       </div>
       <div class="feature-text">
         <span class="feature-label">
@@ -108,23 +125,21 @@
         </span>
       </div>
       <div class="feature-visual">
-        <img
-          [src]="imagePath + 'welcome/Salon.webp'"
-          alt="Salon d’attente avec le code de la partie et les joueurs présents"
-          loading="lazy"
-          decoding="async"
-        />
+        @defer (on viewport; prefetch on idle) {
+          <app-motion-lobby></app-motion-lobby>
+        } @placeholder {
+          <div class="motion-placeholder"></div>
+        }
       </div>
     </div>
 
     <div class="feature" #reveal>
       <div class="feature-visual">
-        <img
-          [src]="imagePath + 'welcome/Vote.webp'"
-          alt="Vote des joueurs pour choisir le prochain jeu"
-          loading="lazy"
-          decoding="async"
-        />
+        @defer (on viewport; prefetch on idle) {
+          <app-motion-vote></app-motion-vote>
+        } @placeholder {
+          <div class="motion-placeholder"></div>
+        }
       </div>
       <div class="feature-text">
         <span class="feature-label">
@@ -156,23 +171,21 @@
         </span>
       </div>
       <div class="feature-visual">
-        <img
-          [src]="imagePath + 'welcome/Classement.webp'"
-          alt="Classement des joueurs et médailles obtenues"
-          loading="lazy"
-          decoding="async"
-        />
+        @defer (on viewport; prefetch on idle) {
+          <app-motion-ranking></app-motion-ranking>
+        } @placeholder {
+          <div class="motion-placeholder"></div>
+        }
       </div>
     </div>
 
     <div class="feature" #reveal>
       <div class="feature-visual">
-        <img
-          [src]="imagePath + 'welcome/Motus.webp'"
-          alt="Grille de jeu avec les lettres bien placées en vert"
-          loading="lazy"
-          decoding="async"
-        />
+        @defer (on viewport; prefetch on idle) {
+          <app-motion-grid></app-motion-grid>
+        } @placeholder {
+          <div class="motion-placeholder"></div>
+        }
       </div>
       <div class="feature-text">
         <span class="feature-label">
@@ -187,23 +200,23 @@
           rien du tout.
         </span>
         <div class="game-pills">
-          <span class="game-pill">
+          <span class="game-pill" style="--i: 0">
             <i class="bx bxs-objects-horizontal-left" aria-hidden="true"></i>
             Motus
           </span>
-          <span class="game-pill">
+          <span class="game-pill" style="--i: 1">
             <i class="bx bx-shuffle" aria-hidden="true"></i> Anagrammes
           </span>
-          <span class="game-pill">
+          <span class="game-pill" style="--i: 2">
             <i class="bx bxs-flag" aria-hidden="true"></i> Drapeaux
           </span>
-          <span class="game-pill">
+          <span class="game-pill" style="--i: 3">
             <i class="bx bxs-landmark" aria-hidden="true"></i> Capitales
           </span>
-          <span class="game-pill">
+          <span class="game-pill" style="--i: 4">
             <i class="bx bxs-package" aria-hidden="true"></i> Marques
           </span>
-          <span class="game-pill">
+          <span class="game-pill" style="--i: 5">
             <i class="bx bx-atom" aria-hidden="true"></i> Éléments
           </span>
         </div>
@@ -225,12 +238,11 @@
         </span>
       </div>
       <div class="feature-visual">
-        <img
-          [src]="imagePath + 'welcome/Installation.webp'"
-          alt="Game Time installé sur l’écran d’accueil d’un téléphone"
-          loading="lazy"
-          decoding="async"
-        />
+        @defer (on viewport; prefetch on idle) {
+          <app-motion-install></app-motion-install>
+        } @placeholder {
+          <div class="motion-placeholder"></div>
+        }
       </div>
     </div>
   </div>
@@ -296,7 +308,7 @@
         <button
           type="button"
           title="Continuer en invité"
-          class="guest"
+          class="guest shine"
           (click)="continueAsGuest()"
         >
           <i class="bx bxs-user-circle" aria-hidden="true"></i>

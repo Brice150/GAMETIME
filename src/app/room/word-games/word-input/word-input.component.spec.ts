@@ -252,6 +252,32 @@ describe('WordInputComponent', () => {
     expect(component.tries.at(-1)?.letter.join('')).toBe('CHAT');
   });
 
+  it('fait onduler la reponse d une manche gagnee', async () => {
+    await build('CHAT');
+    fixture.detectChanges();
+
+    component.inputValue.set('CHAT');
+    component.submitAnswer();
+    fixture.detectChanges();
+
+    const rows = fixture.nativeElement.querySelectorAll('.previous');
+    expect(component.won).toBe(true);
+    expect(rows[rows.length - 1].classList).toContain('is-won');
+  });
+
+  it('ne fait pas onduler la reponse d une manche perdue', async () => {
+    await build('CHAT');
+
+    for (let attempt = 0; attempt < 6; attempt++) {
+      component.inputValue.set('ZZZZ');
+      component.addTry();
+    }
+    fixture.detectChanges();
+
+    expect(component.won).toBe(false);
+    expect(fixture.nativeElement.querySelector('.is-won')).toBeNull();
+  });
+
   it('prefixe la saisie de la premiere lettre quand l indice est actif', async () => {
     await build('CHAT', true);
 
@@ -338,6 +364,22 @@ describe('WordInputComponent', () => {
 
       expect(error).toHaveBeenCalledWith('Tentative vide');
       expect(component.tries).toEqual([]);
+    });
+
+    it('fait trembler la saisie refusee, jusqu a la fin du mouvement', async () => {
+      await build('CHAT');
+      fixture.detectChanges();
+
+      component.inputValue.set('');
+      component.submitAnswer();
+      fixture.detectChanges();
+      const wrap: HTMLElement =
+        fixture.nativeElement.querySelector('.input-wrap');
+      expect(wrap.classList).toContain('shake');
+
+      wrap.dispatchEvent(new Event('animationend'));
+      fixture.detectChanges();
+      expect(wrap.classList).not.toContain('shake');
     });
 
     it('refuse une tentative de mauvaise longueur', async () => {

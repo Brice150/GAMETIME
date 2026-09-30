@@ -38,6 +38,21 @@ describe('WaitingRoomComponent', () => {
     TestBed.resetTestingModule();
   });
 
+  it('dit par ou chaque joueur est arrive', async () => {
+    const fixture = await build([
+      buildPlayer(),
+      buildPlayer({ id: 'p2', userId: 'u2', joinedVia: 'code' }),
+      buildPlayer({ id: 'p3', userId: 'u3', joinedVia: 'link' }),
+      buildPlayer({ id: 'p4', userId: 'u4', joinedVia: null }),
+    ]);
+    const labels = [
+      ...(fixture.nativeElement as HTMLElement).querySelectorAll('.player'),
+    ].map((row) => row.querySelector('.via')?.textContent?.trim() ?? null);
+
+    // L'hote a cree la room ; un joueur sans canal connu n'affiche rien.
+    expect(labels.slice(0, 4)).toEqual(['hôte', 'code', 'lien', null]);
+  });
+
   it('propose le vote des qu un autre joueur est la', async () => {
     const fixture = await build([
       buildPlayer(),

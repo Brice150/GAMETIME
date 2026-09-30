@@ -1,0 +1,180 @@
+/* Mouvements de la page d'accueil, a part des styles de mise en page. */
+
+/* Entree en cascade : chaque ligne du hero arrive un peu apres la
+   precedente. Le titre, lui, arrive mot par mot. Images cles sans `to` :
+   une fois jouees, elles ne retiennent pas le `transform` du survol. */
+.hero > :not(h1, .hero-aurora) {
+  animation: welcome-in 0.7s var(--ease) backwards;
+}
+
+.hero > .badge {
+  animation-delay: 0.05s;
+}
+
+.hero > h2 {
+  animation-delay: 0.45s;
+}
+
+.hero > .hero-text {
+  animation-delay: 0.55s;
+}
+
+.hero > .hero-tags {
+  animation-delay: 0.65s;
+}
+
+.hero > .hero-trust {
+  animation-delay: 0.75s;
+}
+
+.hero h1 .word {
+  position: relative;
+  display: inline-block;
+  animation: welcome-word 0.8s var(--ease) backwards;
+}
+
+.hero h1 .word:nth-child(1) {
+  animation-delay: 0.12s;
+}
+
+.hero h1 .word:nth-child(2) {
+  animation-delay: 0.24s;
+}
+
+/* Trait dessine sous « Time », une fois le mot pose. */
+.hero h1 .underline {
+  position: absolute;
+  left: -2%;
+  bottom: -0.2em;
+  width: 104%;
+  height: 0.28em;
+  overflow: visible;
+}
+
+.hero h1 .underline path {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 5;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: welcome-draw 0.9s var(--ease) 0.8s forwards;
+}
+
+@keyframes welcome-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+@keyframes welcome-word {
+  from {
+    opacity: 0;
+    transform: translateY(0.35em);
+    filter: blur(8px);
+  }
+}
+
+@keyframes welcome-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Halos ambres qui derivent lentement derriere le hero. Le masque fond les
+   bords : sans lui, le cadre coupe net les taches floues. */
+.hero-aurora {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(closest-side, #000 55%, transparent);
+  mask-image: radial-gradient(closest-side, #000 55%, transparent);
+}
+
+.hero-aurora span {
+  position: absolute;
+  width: 46%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  filter: blur(48px);
+  animation: welcome-drift 18s ease-in-out infinite alternate;
+}
+
+.hero-aurora span:nth-child(1) {
+  top: 5%;
+  left: 8%;
+  background: var(--glow-1);
+}
+
+.hero-aurora span:nth-child(2) {
+  top: 30%;
+  right: 6%;
+  background: var(--glow-2);
+  animation-duration: 22s;
+  animation-direction: alternate-reverse;
+}
+
+.hero-aurora span:nth-child(3) {
+  bottom: 0;
+  left: 32%;
+  background: var(--glow-3);
+  animation-duration: 26s;
+}
+
+@keyframes welcome-drift {
+  to {
+    transform: translate(12%, 10%) scale(1.15);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero h1 .underline path {
+    stroke-dashoffset: 0;
+    animation: none;
+  }
+
+  .hero-aurora span {
+    animation: none;
+  }
+}
+
+/* Reflet qui balaie regulierement l'appel principal. */
+.auth-buttons button.shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-buttons button.shine::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.45) 50%,
+    transparent 65%
+  );
+  transform: translateX(-100%);
+  animation: welcome-shine 5s ease-in-out 2.4s infinite;
+  pointer-events: none;
+}
+
+@keyframes welcome-shine {
+  0% {
+    transform: translateX(-100%);
+  }
+  30%,
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-buttons button.shine::after {
+    display: none;
+  }
+}

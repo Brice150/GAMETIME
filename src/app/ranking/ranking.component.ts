@@ -17,6 +17,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { games, gamesByCategory } from '../../assets/data/games';
 import { Player } from '../core/interfaces/player';
+import {
+  LocalStorageService,
+  MedalsSnapshot,
+} from '../core/services/local-storage.service';
 import { PlayerService } from '../core/services/player.service';
 import { ToastrHelperService } from '../core/services/toastr-helper.service';
 import { getTotalMedalsNumber } from '../core/utils/medals.util';
@@ -28,6 +32,7 @@ import { SuccessComponent } from '../success/success.component';
 
 import { environment } from '../../environments/environment';
 import { AdSlotComponent } from '../shared/components/ad-slot/ad-slot.component';
+import { FlipDirective } from '../shared/directives/flip.directive';
 @Component({
   selector: 'app-ranking',
   imports: [
@@ -42,6 +47,7 @@ import { AdSlotComponent } from '../shared/components/ad-slot/ad-slot.component'
     TotalMedalsNumberPipe,
     SuccessComponent,
     AdSlotComponent,
+    FlipDirective,
   ],
   templateUrl: './ranking.component.html',
   styleUrl: './ranking.component.css',
@@ -62,6 +68,62 @@ export class RankingComponent implements OnInit {
   // est propose par defaut des que le joueur a au moins un ami.
   readonly scope = signal<'amis' | 'tous'>('amis');
   private readonly players = signal<Player[]>([]);
+  private readonly localStorageService = inject(LocalStorageService);
+  // Medailles a la visite precedente : ce qui a ete gagne depuis explique
+  // qui monte au classement.
+  private readonly baseline = signal<MedalsSnapshot | null>(
+    this.localStorageService.getMedalsSnapshot(),
+  );
+
+  // « +5 · Drapeaux » : medailles gagnees depuis la derniere visite, et le
+  // jeu qui en a rapporte le plus. Sur un jeu precis, le seul compte de ce jeu.
+  readonly gains = computed<Record<string, { medals: number; game: string }>>(
+    () => {
+      const baseline = this.baseline();
+      const selected = this.gameSelected();
+      const gains: Record<string, { medals: number; game: string }> = {};
+
+      if (!baseline) {
+        return gains;
+      }
+
+      for (const player of this.players()) {
+        const previous = player.userId ? baseline[player.userId] : undefined;
+
+        if (!previous) {
+          continue;
+        }
+
+        const deltas = this.games
+          .map((game) => ({
+            game,
+            medals:
+              this.medalsFor(player, game.key) - (previous[game.key] ?? 0),
+          }))
+          .filter((delta) => delta.medals > 0);
+
+        if (selected !== 'general') {
+          const delta = deltas.find((item) => item.game.key === selected);
+          if (delta) {
+            gains[player.userId!] = { medals: delta.medals, game: '' };
+          }
+          continue;
+        }
+
+        if (deltas.length) {
+          const best = deltas.reduce((top, item) =>
+            item.medals > top.medals ? item : top,
+          );
+          gains[player.userId!] = {
+            medals: deltas.reduce((sum, item) => sum + item.medals, 0),
+            game: best.game.label,
+          };
+        }
+      }
+
+      return gains;
+    },
+  );
 
   readonly hasFriends = computed(
     () => !!this.playerService.currentPlayerSig()?.friendIds?.length,
@@ -127,6 +189,13 @@ export class RankingComponent implements OnInit {
         next: (players) => {
           this.players.set(players);
 
+          // Premiere visite : les gains se comptent a partir de maintenant.
+          const snapshot = this.snapshot(players);
+          if (!this.baseline()) {
+            this.baseline.set(snapshot);
+          }
+          this.localStorageService.saveMedalsSnapshot(snapshot);
+
           if (!this.hasFriends()) {
             this.scope.set('tous');
           }
@@ -138,6 +207,22 @@ export class RankingComponent implements OnInit {
           this.toastrHelper.handleError(error);
         },
       });
+  }
+
+  private snapshot(players: Player[]): MedalsSnapshot {
+    return Object.fromEntries(
+      players
+        .filter((player) => !!player.userId)
+        .map((player) => [
+          player.userId!,
+          Object.fromEntries(
+            this.games.map((game) => [
+              game.key,
+              this.medalsFor(player, game.key),
+            ]),
+          ),
+        ]),
+    );
   }
 
   private medalsFor(player: Player, gameName: string): number {

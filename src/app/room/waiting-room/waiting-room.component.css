@@ -23,6 +23,15 @@
   gap: 8px;
 }
 
+/* Chaque joueur qui rejoint arrive en glissant dans la liste. */
+.players .container {
+  animation: gt-drop 0.45s var(--ease) backwards;
+}
+
+.players .player .end > i.voted {
+  animation: gt-pop 0.4s var(--ease-spring) backwards;
+}
+
 .players .player {
   width: min(360px, 92vw);
   padding: 14px 16px;
@@ -62,6 +71,19 @@
   overflow: hidden;
   text-overflow: ellipsis;
   text-align: left;
+}
+
+.players .player .via {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+.players .player .via i {
+  font-size: 15px;
 }
 
 .players .player .end {

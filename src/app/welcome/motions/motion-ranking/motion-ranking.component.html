@@ -1,0 +1,43 @@
+<span class="standing">
+  Vous êtes
+  <strong
+    >{{ rank() }}<sup>{{ rank() === 1 ? 'er' : 'e' }}</sup></strong
+  >
+  / {{ total }}
+</span>
+
+<ol class="board">
+  @for (player of players(); track player.name; let i = $index) {
+    <li class="row" [class.is-me]="i === me" [style.--pos]="positions()[i]">
+      <span class="rank">
+        @if (trophy(i); as color) {
+          <i class="bx bxs-trophy {{ color }}" aria-hidden="true"></i>
+        } @else {
+          {{ positions()[i] + 1 }}
+        }
+      </span>
+      <span class="name">{{ player.name }} {{ player.animal }}</span>
+      @if (i === me) {
+        @if (win(); as last) {
+          @for (burst of [last.id]; track burst) {
+            <span class="gain">+{{ last.medals }} · {{ last.game }}</span>
+          }
+        }
+      }
+      <span class="pill" [class.is-accent]="i === me">
+        {{ player.medals }}
+        <i class="bx bxs-medal" aria-hidden="true"></i>
+      </span>
+    </li>
+  }
+</ol>
+
+@if (unlocked()) {
+  <span class="achievement">
+    <i class="bx bxs-award" aria-hidden="true"></i>
+    <span>
+      <strong>Succès débloqué</strong>
+      Cap des 2000 médailles
+    </span>
+  </span>
+}

@@ -110,7 +110,9 @@ export class HomeComponent {
               );
             }
 
-            this.router.navigate([`/room/${room.id!}`]);
+            this.router.navigate([`/room/${room.id!}`], {
+              state: { joinedVia: 'code' },
+            });
           } else {
             this.toastrHelper.error('Aucune room trouvée avec ce code');
           }

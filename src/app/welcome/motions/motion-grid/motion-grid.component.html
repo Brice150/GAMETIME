@@ -1,0 +1,30 @@
+@for (current of [puzzle()]; track current.game) {
+  <span class="clue">
+    <i class="bx {{ current.icon }}" aria-hidden="true"></i>
+    <strong>{{ current.game }}</strong>
+    <span class="separator" aria-hidden="true"></span>
+    {{ current.clue }}
+  </span>
+}
+
+<div class="grid">
+  <div class="line input">
+    @for (letter of input(); track $index) {
+      <span class="letter" [class.is-empty]="!letter">{{ letter }}</span>
+    }
+  </div>
+
+  @for (attempt of attempts(); track attempt.word) {
+    <div class="line" [class.is-solved]="solved() && $first">
+      @for (letter of attempt.word.split(''); track $index) {
+        <span
+          class="letter"
+          [class.is-revealed]="$index < attempt.revealed"
+          [class]="$index < attempt.revealed ? attempt.states[$index] : ''"
+        >
+          {{ letter }}
+        </span>
+      }
+    </div>
+  }
+</div>

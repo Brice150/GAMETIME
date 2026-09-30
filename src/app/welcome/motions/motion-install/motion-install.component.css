@@ -1,0 +1,203 @@
+:host {
+  /* Contour du telephone : sombre dans les deux themes, comme un vrai. */
+  --bezel: light-dark(#1c1710, #2e281d);
+}
+
+.phone {
+  width: 178px;
+  height: 254px;
+  padding: 7px;
+  border: 1px solid var(--border-2);
+  border-radius: 30px;
+  background: var(--bezel);
+  box-shadow: var(--shadow-2);
+}
+
+.screen {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 24px;
+  background:
+    radial-gradient(120% 60% at 0% 0%, var(--accent-soft), transparent 70%),
+    var(--bg-deep);
+}
+
+.status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 22px;
+  padding: 0 14px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-1);
+}
+
+.notch {
+  width: 46px;
+  height: 12px;
+  border-radius: var(--r-pill);
+  background: var(--bezel);
+}
+
+.icons {
+  display: flex;
+  gap: 2px;
+  font-size: 12px;
+}
+
+.apps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px 8px;
+  padding: 14px 12px;
+}
+
+.app {
+  --tone: 0;
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  background: var(--surface-3);
+  opacity: calc(0.55 + var(--tone) * 0.12);
+}
+
+.app.is-free {
+  opacity: 0;
+}
+
+.app.is-game {
+  display: flex;
+  justify-content: center;
+  opacity: 1;
+  background: none;
+  animation: install-land 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.app.is-game img {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px var(--accent-glow);
+}
+
+.app.is-game small {
+  position: absolute;
+  top: calc(100% + 2px);
+  font-size: 7px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--text-1);
+}
+
+@keyframes install-land {
+  from {
+    opacity: 0;
+    transform: translateY(-40px) scale(0.3);
+  }
+}
+
+.dock {
+  position: absolute;
+  inset: auto 8px 8px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding: 7px;
+  border-radius: 16px;
+  background: var(--surface-1);
+}
+
+/* Proposition d'installation, en feuille qui monte du bas. */
+.sheet {
+  position: absolute;
+  inset: auto 6px 6px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 8px 8px;
+  padding: 10px;
+  border-radius: 18px;
+  background: var(--surface-solid);
+  box-shadow: var(--shadow-2);
+  transform: translateY(115%);
+  transition: transform 0.5s var(--ease);
+}
+
+.sheet.is-open {
+  transform: translateY(0);
+}
+
+.sheet img {
+  border-radius: 8px;
+}
+
+.sheet-text {
+  display: flex;
+  flex-direction: column;
+  font-size: 8px;
+  color: var(--text-2);
+}
+
+.sheet-text strong {
+  font-size: 10px;
+  color: var(--text-1);
+}
+
+.install {
+  grid-column: 1 / -1;
+  padding: 6px;
+  border-radius: var(--r-pill);
+  background: var(--accent-gradient);
+  color: var(--on-accent);
+  font-size: 10px;
+  font-weight: 700;
+  text-align: center;
+  transition: transform 0.15s var(--ease);
+}
+
+.install.is-pressed {
+  transform: scale(0.92);
+}
+
+/* Invitation en notification, qui descend du haut. */
+.notification {
+  position: absolute;
+  inset: 26px 6px auto;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 8px;
+  border-radius: 14px;
+  background: var(--bg-veil);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-1);
+  font-size: 8px;
+  color: var(--text-2);
+  opacity: 0;
+  transform: translateY(-140%);
+  transition:
+    transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.3s var(--ease);
+}
+
+.notification.is-open {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.notification img {
+  border-radius: 6px;
+}
+
+.notification span {
+  display: flex;
+  flex-direction: column;
+}
+
+.notification strong {
+  font-size: 9px;
+  color: var(--text-1);
+}

@@ -1,6 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { RoundTimer } from '../interfaces/round-timer';
 import { WordTry } from '../interfaces/word-try';
+
+// Medailles de chaque joueur, jeu par jeu, a la derniere visite du classement.
+export type MedalsSnapshot = Record<string, Record<string, number>>;
 import { UserService } from './user.service';
 
 @Injectable({ providedIn: 'root' })
@@ -11,6 +14,7 @@ export class LocalStorageService {
   private readonly roomIdKey = 'roomId';
   private readonly timerKey = 'roundTimer';
   private readonly pwaInstallDismissedKey = 'pwaInstallDismissed';
+  private readonly medalsSnapshotKey = 'medalsSnapshot';
 
   private getScopedKey(baseKey: string): string {
     const userId = this.userService.auth.currentUser?.uid ?? 'anonymous';
@@ -109,6 +113,30 @@ export class LocalStorageService {
 
   setPwaInstallDismissed(): void {
     localStorage.setItem(this.pwaInstallDismissedKey, 'true');
+  }
+
+  getMedalsSnapshot(): MedalsSnapshot | null {
+    const item = localStorage.getItem(
+      this.getScopedKey(this.medalsSnapshotKey),
+    );
+    if (!item) return null;
+    try {
+      return JSON.parse(item) as MedalsSnapshot;
+    } catch {
+      return null;
+    }
+  }
+
+  // Simple confort d'affichage : un stockage plein ne doit rien casser.
+  saveMedalsSnapshot(snapshot: MedalsSnapshot): void {
+    try {
+      localStorage.setItem(
+        this.getScopedKey(this.medalsSnapshotKey),
+        JSON.stringify(snapshot),
+      );
+    } catch {
+      // Quota depasse : les gains ne s'afficheront pas a la prochaine visite.
+    }
   }
 
   newGame(roomId: string, startAgainNumber = 0): void {

@@ -108,6 +108,17 @@ mat-form-field {
   margin-top: 24px;
 }
 
+/* Les lignes arrivent en cascade ; au-dela de la douzaine, elles sont hors
+   de l'ecran et n'attendent plus. */
+.players .player {
+  animation: gt-rise 0.45s var(--ease) backwards;
+  animation-delay: calc(min(var(--i, 0), 12) * 40ms);
+}
+
+.description .number {
+  animation: gt-pop 0.45s var(--ease-spring) backwards;
+}
+
 .players .player {
   display: flex;
   align-items: center;
@@ -165,6 +176,20 @@ mat-form-field {
   overflow: hidden;
   text-overflow: ellipsis;
   text-align: left;
+}
+
+.players .player .gain {
+  order: 2;
+  flex-shrink: 0;
+  padding: 2px 9px;
+  border-radius: var(--r-pill);
+  background: var(--success-soft);
+  color: var(--success);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  animation: gt-pop 0.45s var(--ease-spring) backwards;
+  animation-delay: calc(min(var(--i, 0), 12) * 40ms + 0.3s);
 }
 
 .players .player .space {

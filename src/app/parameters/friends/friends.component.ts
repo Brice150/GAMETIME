@@ -127,7 +127,9 @@ export class FriendsComponent implements OnInit {
 
   joinRoom(room: Room): void {
     this.localStorageService.newGame(room.id!);
-    this.router.navigate(['/room', room.id!]);
+    this.router.navigate(['/room', room.id!], {
+      state: { joinedVia: 'friend' },
+    });
   }
 
   private watchFriendRooms(): void {

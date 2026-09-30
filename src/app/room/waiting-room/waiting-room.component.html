@@ -11,7 +11,8 @@ sont dans la meme piece, le lire a voix haute est le chemin le plus court. -->
   <i class="bx bxs-copy-alt"></i>
 </button>
 
-<div class="players">
+<!-- Un joueur qui part laisse les autres remonter en douceur. -->
+<div class="players" [appFlip]="players()">
   @for (otherPlayer of players(); track otherPlayer.userId) {
     <div class="container">
       <div
@@ -22,9 +23,17 @@ sont dans la meme piece, le lire a voix haute est le chemin le plus court. -->
           <span class="username"
             >{{ otherPlayer.username }} {{ otherPlayer.animal }}</span
           >
+          <!-- Par ou le joueur est arrive : on sait qui a tape le code, qui
+          a suivi le lien. -->
+          @if (arrival(otherPlayer); as via) {
+            <span class="via">
+              <i class="bx {{ via.icon }}" aria-hidden="true"></i>
+              {{ via.label }}
+            </span>
+          }
           <div class="end">
             @if (otherPlayer.vote && room().userId !== otherPlayer.userId) {
-              <i class="bx bxs-check-circle" title="A voté"></i>
+              <i class="bx bxs-check-circle voted" title="A voté"></i>
             } @else if (room().userId !== otherPlayer.userId) {
               <i
                 class="bx bxs-x-circle"

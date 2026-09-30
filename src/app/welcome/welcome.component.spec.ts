@@ -16,14 +16,25 @@ const credential = (isAnonymous = false) => ({
 /**
  * `IntersectionObserver` de jsdom n'observe rien : celui-ci retient son
  * rappel, pour que le test decide lui-meme qu'un bloc entre dans le champ.
+ * Les blocs `@defer` et les compteurs en creent aussi : celui des
+ * apparitions se reconnait a son seuil.
  */
 class CapturingObserver {
-  static last: CapturingObserver | undefined;
+  static instances: CapturingObserver[] = [];
   readonly observed: Element[] = [];
   readonly unobserved: Element[] = [];
 
-  constructor(readonly callback: IntersectionObserverCallback) {
-    CapturingObserver.last = this;
+  static get reveal(): CapturingObserver | undefined {
+    return CapturingObserver.instances.find(
+      (observer) => observer.options?.threshold === 0.2,
+    );
+  }
+
+  constructor(
+    readonly callback: IntersectionObserverCallback,
+    readonly options?: IntersectionObserverInit,
+  ) {
+    CapturingObserver.instances.push(this);
   }
 
   observe(element: Element): void {
@@ -62,7 +73,7 @@ describe('WelcomeComponent', () => {
   }
 
   beforeEach(() => {
-    CapturingObserver.last = undefined;
+    CapturingObserver.instances = [];
     globalThis.IntersectionObserver =
       CapturingObserver as unknown as typeof IntersectionObserver;
   });
@@ -87,14 +98,14 @@ describe('WelcomeComponent', () => {
     it('observe chaque bloc a reveler', async () => {
       const component = await build();
 
-      expect(CapturingObserver.last?.observed.length).toBe(
+      expect(CapturingObserver.reveal?.observed.length).toBe(
         component.revealed().length,
       );
     });
 
     it('revele un bloc entre dans le champ, et cesse de l observer', async () => {
       await build();
-      const observer = CapturingObserver.last!;
+      const observer = CapturingObserver.reveal!;
       const visible = observer.observed[0] as HTMLElement;
       const offscreen = observer.observed[1] as HTMLElement;
 
@@ -119,7 +130,7 @@ describe('WelcomeComponent', () => {
         override(UserService, { warmUpSignInPopup: warmUp }),
       ]);
 
-      expect(CapturingObserver.last).toBeUndefined();
+      expect(CapturingObserver.reveal).toBeUndefined();
       expect(warmUp).not.toHaveBeenCalled();
     });
   });

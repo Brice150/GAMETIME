@@ -108,6 +108,13 @@ tbody tr:nth-child(even) .response {
   line-height: 1;
 }
 
+/* Les trophees et chaque reponse rendue apparaissent d'un rebond. */
+.podium i,
+td i.bx-check,
+td i.bx-x {
+  animation: gt-pop 0.45s var(--ease-spring) backwards;
+}
+
 .podium .order {
   display: inline-flex;
   align-items: center;

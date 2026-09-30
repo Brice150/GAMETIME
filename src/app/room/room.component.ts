@@ -30,7 +30,7 @@ import {
 import { anyGameVoteKey, voteMap } from '../../assets/data/games';
 import { goals } from '../../assets/data/goals';
 
-import { Player } from '../core/interfaces/player';
+import { JoinChannel, Player } from '../core/interfaces/player';
 import { Room } from '../core/interfaces/room';
 import { RoomForm } from '../core/interfaces/room-form';
 import { RoundAnswer } from '../core/interfaces/round-answer';
@@ -53,7 +53,10 @@ import { ResultsBoardComponent } from './results-board/results-board.component';
 import { WaitingRoomComponent } from './waiting-room/waiting-room.component';
 import { WordGamesComponent } from './word-games/word-games.component';
 
-const NEXT_ROUND_DELAY_MS = 1000;
+// Laisse les lettres du dernier essai se retourner, et la vague du mot
+// trouve se jouer, avant la manche suivante. Le meme pour tous : le
+// classement au temps reste equitable.
+const NEXT_ROUND_DELAY_MS = 1600;
 
 @Component({
   selector: 'app-room',
@@ -91,6 +94,11 @@ export class RoomComponent implements OnInit {
   readonly isFinishing = signal(false);
   goals = goals;
   readonly wordGamesComponent = viewChild.required(WordGamesComponent);
+  // Canal d'arrivee, transmis par la page d'ou vient le joueur. Une adresse
+  // ouverte telle quelle vaut un lien partage.
+  readonly joinedVia: JoinChannel =
+    (this.router.currentNavigation()?.extras.state?.['joinedVia'] as
+      JoinChannel | undefined) ?? 'link';
 
   ngOnInit(): void {
     const room$ = this.activatedRoute.params.pipe(
@@ -189,7 +197,15 @@ export class RoomComponent implements OnInit {
 
       this.roomService
         .addPlayerToRoom(this.room.id, currentUserId)
-        .pipe(takeUntilDestroyed(this.destroyRef))
+        .pipe(
+          switchMap(() =>
+            this.playerService.updatePlayerFields(
+              this.playerService.currentPlayerSig()?.id,
+              { joinedVia: this.joinedVia },
+            ),
+          ),
+          takeUntilDestroyed(this.destroyRef),
+        )
         .subscribe({
           next: () => {
             this.loading.set(false);

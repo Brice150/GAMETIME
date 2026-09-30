@@ -16,14 +16,36 @@
         >
           <i class="{{ option.icon }}"></i>
           <span class="label">{{ option.label }}</span>
-          @if (voteCounts()[option.key]) {
-            <span class="count">{{ voteCounts()[option.key] }}</span>
+          @if (voteCounts()[option.key]; as count) {
+            <!-- Recree a chaque voix, pour rejouer l'apparition. -->
+            @for (value of [count]; track value) {
+              <span class="count">{{ value }}</span>
+            }
           }
         </button>
       }
     </div>
   </div>
 }
+<!-- Qui a vote, d'un coup d'oeil : un animal par votant, coche une fois sa
+voix donnee. -->
+<ul class="voters" aria-label="Votants">
+  @for (voter of voters(); track voter.userId) {
+    <li
+      class="voter"
+      [class.has-voted]="!!voter.vote"
+      [attr.data-name]="voter.username"
+      [attr.aria-label]="
+        voter.username + (voter.vote ? ' a voté' : ' n’a pas voté')
+      "
+    >
+      <span aria-hidden="true">{{ voter.animal }}</span>
+      @if (voter.vote) {
+        <i class="bx bxs-check-circle" aria-hidden="true"></i>
+      }
+    </li>
+  }
+</ul>
 <span class="vote-status">
   {{ votedCount() }} / {{ voters().length }}
   {{ voters().length > 1 ? 'joueurs ont voté' : 'joueur a voté' }}

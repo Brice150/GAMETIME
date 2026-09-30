@@ -1,4 +1,5 @@
 import { EnvironmentProviders, Provider, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Timestamp } from '@angular/fire/firestore';
 import { EMPTY, of, Subject, throwError } from 'rxjs';
@@ -287,6 +288,33 @@ describe('RoomComponent', () => {
       expect(leaveOthers).toHaveBeenCalledWith('r1');
       expect(addPlayer).toHaveBeenCalledWith('r1', 'u1');
       expect(component.loading()).toBe(false);
+    });
+
+    it('retient qu un joueur arrive par une adresse est venu par un lien', async () => {
+      const component = await build();
+      const update = vi.spyOn(component.playerService, 'updatePlayerFields');
+
+      component.handleRoom(buildRoom({ playerIds: ['u2'] }));
+
+      expect(update).toHaveBeenCalledWith('p1', { joinedVia: 'link' });
+    });
+
+    it('retient le canal transmis par la page d origine', async () => {
+      await TestBed.configureTestingModule({
+        imports: [RoomComponent],
+        providers: appTestProviders(),
+      }).compileComponents();
+      Object.defineProperty(TestBed.inject(Router), 'currentNavigation', {
+        value: () => ({ extras: { state: { joinedVia: 'code' } } }),
+      });
+      const component =
+        TestBed.createComponent(RoomComponent).componentInstance;
+      const update = vi.spyOn(component.playerService, 'updatePlayerFields');
+
+      component.handleRoom(buildRoom({ playerIds: ['u2'] }));
+
+      expect(component.joinedVia).toBe('code');
+      expect(update).toHaveBeenCalledWith('p1', { joinedVia: 'code' });
     });
 
     it('signale un echec d inscription', async () => {
@@ -600,7 +628,7 @@ describe('RoomComponent', () => {
         won: false,
       });
 
-      vi.advanceTimersByTime(1000);
+      vi.advanceTimersByTime(1600);
       expect(next).toHaveBeenCalled();
     });
 

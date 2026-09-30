@@ -66,6 +66,32 @@ describe('LocalStorageService', () => {
     expect(service.getTries()).toBeNull();
   });
 
+  describe('medailles de la derniere visite', () => {
+    it('relit ce qui a ete retenu', () => {
+      service.saveMedalsSnapshot({ u2: { motus: 3 } });
+
+      expect(service.getMedalsSnapshot()).toEqual({ u2: { motus: 3 } });
+    });
+
+    it('rend null sans visite precedente ou sur une valeur illisible', () => {
+      expect(service.getMedalsSnapshot()).toBeNull();
+
+      localStorage.setItem('medalsSnapshot:u1', '{pas du json');
+      expect(service.getMedalsSnapshot()).toBeNull();
+    });
+
+    it('ignore un stockage plein', () => {
+      vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+        throw new DOMException('plein', 'QuotaExceededError');
+      });
+
+      expect(() =>
+        service.saveMedalsSnapshot({ u2: { motus: 3 } }),
+      ).not.toThrow();
+      vi.restoreAllMocks();
+    });
+  });
+
   it('rend null quand rien n a ete range', () => {
     expect(service.getTries()).toBeNull();
     expect(service.getRoomId()).toBeNull();

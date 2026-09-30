@@ -1,0 +1,39 @@
+<div class="head">
+  <span class="stage-title">Manche 2 / 3</span>
+  <span class="timer">
+    <i class="bx bx-time-five" aria-hidden="true"></i>
+    {{ clock() }}
+  </span>
+</div>
+
+<ol class="board">
+  @for (racer of racers; track racer.name; let i = $index) {
+    <li
+      class="row"
+      [class.is-me]="i === 0"
+      [class.is-done]="found()[i] === slots.length"
+      [style.--pos]="positions()[i]"
+    >
+      <span class="rank">
+        @if (trophy(i); as color) {
+          <i class="bx bxs-trophy {{ color }}" aria-hidden="true"></i>
+        } @else {
+          {{ positions()[i] + 1 }}
+        }
+      </span>
+      <span class="name">{{ racer.name }} {{ racer.animal }}</span>
+      <span class="dots">
+        @for (slot of slots; track $index) {
+          <span class="dot" [class.is-on]="$index < found()[i]"></span>
+        }
+      </span>
+    </li>
+  }
+</ol>
+
+@if (winTime(); as time) {
+  <span class="flash">
+    <i class="bx bxs-check-circle" aria-hidden="true"></i>
+    Mot trouvé en {{ time }} !
+  </span>
+}

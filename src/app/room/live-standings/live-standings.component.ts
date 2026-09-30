@@ -14,15 +14,19 @@ import { interval } from 'rxjs';
 import { Player } from '../../core/interfaces/player';
 import { Room } from '../../core/interfaces/room';
 import { LocalStorageService } from '../../core/services/local-storage.service';
+import { FlipDirective } from '../../shared/directives/flip.directive';
 import { DurationPipe } from '../../shared/pipes/duration.pipe';
 
 // Le chrono affiche les dixiemes : rafraichi plus lentement, le chiffre
 // sautait de deux en deux.
 const TICK_MS = 100;
+// Au-dela, une pastille par lettre ne tient plus sur la ligne : le compte
+// s'affiche en chiffres.
+export const MAX_LETTER_DOTS = 10;
 
 @Component({
   selector: 'app-live-standings',
-  imports: [CommonModule, DurationPipe],
+  imports: [CommonModule, DurationPipe, FlipDirective],
   templateUrl: './live-standings.component.html',
   styleUrl: './live-standings.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -51,10 +55,23 @@ export class LiveStandingsComponent implements OnInit {
         lettersLabel: progress
           ? `${progress.lettersFound}/${progress.lettersTotal} lettres`
           : null,
+        // Une pastille par lettre du mot, pleine une fois trouvee.
+        letterDots:
+          progress && progress.lettersTotal <= MAX_LETTER_DOTS
+            ? Array.from(
+                { length: progress.lettersTotal },
+                (unused, index) => index < progress.lettersFound,
+              )
+            : null,
         isMe: !!currentPlayerId && player.userId === currentPlayerId,
       };
     });
   });
+
+  // La manche du joueur lui-meme, en tete du classement.
+  readonly myStep = computed(
+    () => this.standings().find((entry) => entry.isMe)?.step ?? null,
+  );
 
   constructor() {
     interval(TICK_MS)

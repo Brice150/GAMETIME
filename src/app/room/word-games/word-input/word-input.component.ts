@@ -49,6 +49,9 @@ export class WordInputComponent {
   readonly emitEvent = output<RoundAnswer>();
   readonly progressEvent = output<number>();
   isOver = false;
+  // Manche gagnee : la ligne de la reponse fait une vague.
+  won = false;
+  readonly shaking = signal(false);
   readonly maxTries = MAX_TRIES;
   readonly alphabet = ALPHABET;
   // Etat connu de chaque lettre de l alphabet : sans ce recapitulatif, il faut
@@ -94,6 +97,7 @@ export class WordInputComponent {
     }
 
     this.isOver = false;
+    this.won = false;
     const tries = this.localStorageService.getTries();
     const startAgainNumber = this.localStorageService.getStartAgainNumber();
     const roomId = this.localStorageService.getRoomId();
@@ -200,15 +204,20 @@ export class WordInputComponent {
           this.addTry();
         }
       } else {
-        this.toastrHelper.error('Tentative invalide');
+        this.refuse('Tentative invalide');
       }
     } else {
-      this.toastrHelper.error('Tentative vide');
+      this.refuse('Tentative vide');
     }
 
     this.inputValue.set(
       this.room().showFirstLetter ? this.word().charAt(0) : '',
     );
+  }
+
+  private refuse(message: string): void {
+    this.toastrHelper.error(message);
+    this.shaking.set(true);
   }
 
   addTry(): void {
@@ -264,6 +273,7 @@ export class WordInputComponent {
     };
     this.tries.push(response);
     this.isOver = true;
+    this.won = stepWon;
     setTimeout(() => {
       this.inputValue.set('');
       this.localStorageService.saveTries([]);

@@ -17,12 +17,18 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router, RouterLink } from '@angular/router';
 import { map, Observable, switchMap } from 'rxjs';
 import { UserCredential } from '@angular/fire/auth';
-import { environment } from '../../environments/environment';
 import { PlayerService } from '../core/services/player.service';
 import { ToastrHelperService } from '../core/services/toastr-helper.service';
 import { UserService } from '../core/services/user.service';
 import { LegalFooterComponent } from '../shared/components/legal-footer/legal-footer.component';
 import { ThemeToggleComponent } from '../shared/components/theme-toggle/theme-toggle.component';
+import { CountUpDirective } from './motions/count-up.directive';
+import { MotionGridComponent } from './motions/motion-grid/motion-grid.component';
+import { MotionInstallComponent } from './motions/motion-install/motion-install.component';
+import { MotionLobbyComponent } from './motions/motion-lobby/motion-lobby.component';
+import { MotionRaceComponent } from './motions/motion-race/motion-race.component';
+import { MotionRankingComponent } from './motions/motion-ranking/motion-ranking.component';
+import { MotionVoteComponent } from './motions/motion-vote/motion-vote.component';
 
 @Component({
   selector: 'app-welcome',
@@ -32,13 +38,19 @@ import { ThemeToggleComponent } from '../shared/components/theme-toggle/theme-to
     RouterLink,
     ThemeToggleComponent,
     LegalFooterComponent,
+    CountUpDirective,
+    MotionRaceComponent,
+    MotionLobbyComponent,
+    MotionVoteComponent,
+    MotionRankingComponent,
+    MotionGridComponent,
+    MotionInstallComponent,
   ],
   templateUrl: './welcome.component.html',
-  styleUrl: './welcome.component.css',
+  styleUrls: ['./welcome.component.css', './welcome-motion.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WelcomeComponent implements OnInit, AfterViewInit {
-  imagePath: string = environment.imagePath;
   userService = inject(UserService);
   playerService = inject(PlayerService);
   router = inject(Router);

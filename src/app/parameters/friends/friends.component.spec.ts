@@ -216,7 +216,9 @@ describe('FriendsComponent', () => {
       component.joinRoom(buildRoom({ id: 'r9' }));
 
       expect(newGame).toHaveBeenCalledWith('r9');
-      expect(navigate).toHaveBeenCalledWith(['/room', 'r9']);
+      expect(navigate).toHaveBeenCalledWith(['/room', 'r9'], {
+        state: { joinedVia: 'friend' },
+      });
     });
   });
 

@@ -1,11 +1,24 @@
-<div class="chrono">
-  <i class="bx bx-time-five"></i>
-  <span class="value">{{ elapsedMs() | duration }}</span>
+<div class="head">
+  @if (myStep(); as step) {
+    <span class="stage-title"
+      >Manche {{ step }} / {{ room().responses.length }}</span
+    >
+  }
+  <span class="chrono">
+    <i class="bx bx-time-five" aria-hidden="true"></i>
+    <span class="value">{{ elapsedMs() | duration }}</span>
+  </span>
 </div>
 
-<div class="rows">
+<!-- Les lignes glissent a leur nouvelle place quand un joueur en double
+un autre. -->
+<div class="rows" [appFlip]="standings()">
   @for (entry of standings(); track entry.player.userId) {
-    <div class="row" [ngClass]="{ me: entry.isMe }">
+    <div
+      class="row"
+      [class.me]="entry.isMe"
+      [class.done]="!!entry.player.finishDate"
+    >
       <div class="podium">
         @if (entry.rank === 1) {
           <i class="bx bxs-trophy" style="color: var(--gold)"></i>
@@ -17,23 +30,36 @@
           <span class="order">{{ entry.rank }}</span>
         }
       </div>
-      <span class="username"
-        >{{ entry.player.username }} {{ entry.player.animal }}</span
-      >
-      <span class="wins">{{ entry.wins }} / {{ entry.total }}</span>
+      <span class="identity">
+        <span class="username"
+          >{{ entry.player.username }} {{ entry.player.animal }}</span
+        >
+        <span class="step">
+          @if (entry.player.finishDate) {
+            Terminé
+          } @else {
+            Manche {{ entry.step }}
+          }
+        </span>
+      </span>
       <span class="state">
         @if (entry.player.finishDate) {
-          <i class="bx bxs-flag-checkered"></i>
+          <i class="bx bxs-flag-checkered" aria-hidden="true"></i>
           <span>{{ entry.player.durationMs | duration }}</span>
-        } @else {
-          <span
-            >Manche {{ entry.step }}
-            @if (entry.lettersLabel) {
-              · {{ entry.lettersLabel }}
+        } @else if (entry.letterDots; as dots) {
+          <span class="dots" [attr.aria-label]="entry.lettersLabel">
+            @for (found of dots; track $index) {
+              <span class="dot" [class.on]="found"></span>
             }
           </span>
+        } @else if (entry.lettersLabel) {
+          <span>{{ entry.lettersLabel }}</span>
         }
       </span>
+      <!-- Recree a chaque manche gagnee, pour rejouer l'apparition. -->
+      @for (wins of [entry.wins]; track wins) {
+        <span class="wins">{{ wins }} / {{ entry.total }}</span>
+      }
     </div>
   }
 </div>

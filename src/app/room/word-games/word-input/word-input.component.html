@@ -1,11 +1,12 @@
 <div class="main-container">
   <div class="container">
-    @for (try of tries; track $index) {
+    @for (try of tries; track $index; let last = $last) {
       <div class="previous-container">
-        <div class="previous">
+        <div class="previous" [class.is-won]="won && last">
           @for (letter of try.letter; track $index; let i = $index) {
             <span
               class="letter"
+              [style.--i]="i"
               [ngClass]="{
                 wellPlaced: try.isWellPlaced[i],
                 wrongPlaced: try.isWrongPlaced[i],
@@ -27,7 +28,12 @@
       </div>
     }
     <form (ngSubmit)="submitAnswer()">
-      <div class="input-wrap">
+      <!-- Tremble quand l'essai est refuse. -->
+      <div
+        class="input-wrap"
+        [class.shake]="shaking()"
+        (animationend)="shaking.set(false)"
+      >
         <!-- Le correcteur du telephone reecrivait la tentative, et le clavier
         proposait des mots sur ce qu il faut justement deviner.
         Entre deux manches le champ passe en lecture seule plutot que

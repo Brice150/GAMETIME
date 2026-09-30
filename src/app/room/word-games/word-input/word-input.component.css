@@ -55,6 +55,54 @@ form {
   text-transform: uppercase;
 }
 
+/* Chaque essai arrive en haut de la liste, puis ses lettres se retournent
+   une a une pour reveler leur etat. */
+.previous-container {
+  animation: gt-drop 0.35s var(--ease) backwards;
+}
+
+/* Comme une tuile : la lettre arrive grise, se retourne, et montre sa
+   couleur en revenant face au joueur. Le remplissage `backwards` la garde
+   grise tant que son tour n'est pas venu. */
+.previous {
+  perspective: 600px;
+}
+
+.previous .letter {
+  animation: letter-reveal 0.55s var(--ease) backwards;
+  animation-delay: calc(var(--i, 0) * 110ms);
+}
+
+@keyframes letter-reveal {
+  0% {
+    transform: rotateX(0deg);
+    color: var(--text-3);
+    text-shadow: none;
+    text-decoration-color: transparent;
+  }
+  50% {
+    transform: rotateX(90deg);
+    color: var(--text-3);
+    text-shadow: none;
+    text-decoration-color: transparent;
+  }
+  80% {
+    transform: rotateX(-12deg) scale(1.08);
+  }
+}
+
+/* Le mot trouve : une vague court sur les lettres une fois retournees. */
+.previous.is-won .letter {
+  animation:
+    letter-reveal 0.55s var(--ease) backwards,
+    gt-wave 0.5s var(--ease);
+  animation-delay: calc(var(--i, 0) * 110ms), calc(var(--i, 0) * 70ms + 0.75s);
+}
+
+.input-wrap.shake {
+  animation: gt-shake 0.4s var(--ease);
+}
+
 .previous {
   justify-content: flex-start;
   background: var(--surface-1);
@@ -186,6 +234,11 @@ form {
 }
 
 .alphabet .key {
+  transition:
+    color var(--speed) var(--ease),
+    background var(--speed) var(--ease),
+    border-color var(--speed) var(--ease),
+    opacity var(--speed) var(--ease);
   display: inline-flex;
   align-items: center;
   justify-content: center;

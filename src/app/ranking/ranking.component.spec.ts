@@ -1,13 +1,17 @@
 import { EnvironmentProviders, Provider, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   appTestProviders,
   buildPlayer,
   overrideProvider as override,
 } from '../../testing/test-providers';
 import { Player } from '../core/interfaces/player';
+import {
+  LocalStorageService,
+  MedalsSnapshot,
+} from '../core/services/local-storage.service';
 import { PlayerService } from '../core/services/player.service';
 import { RankingComponent } from './ranking.component';
 
@@ -60,6 +64,55 @@ describe('RankingComponent', () => {
 
   it('se cree', async () => {
     expect(await build()).toBeTruthy();
+  });
+
+  describe('progression depuis la derniere visite', () => {
+    const storage = (snapshot: MedalsSnapshot | null) => {
+      const save = vi.fn();
+      return {
+        save,
+        provider: override(LocalStorageService, {
+          getMedalsSnapshot: () => snapshot,
+          saveMedalsSnapshot: save,
+        }),
+      };
+    };
+
+    it('ne montre rien a la premiere visite, et retient les medailles', async () => {
+      const { save, provider } = storage(null);
+      const component = await build([withPlayers(me), provider]);
+
+      expect(component.gains()).toEqual({});
+      expect(save).toHaveBeenCalledWith(
+        expect.objectContaining({
+          u1: expect.objectContaining({ motus: 5, drapeaux: 5 }),
+        }),
+      );
+    });
+
+    it('explique la montee par le total gagne et le jeu qui a le plus rapporte', async () => {
+      const { provider } = storage({
+        u1: { motus: 4, drapeaux: 2 },
+        u2: { motus: 20, drapeaux: 1 },
+      });
+      const component = await build([withPlayers(me), provider]);
+
+      expect(component.gains()['u1']).toEqual({ medals: 4, game: 'Drapeaux' });
+      // Rien de gagne, ou absent a la visite precedente : pas de mention.
+      expect(component.gains()['u2']).toBeUndefined();
+      expect(component.gains()['u3']).toBeUndefined();
+    });
+
+    it('ne compte que le jeu choisi', async () => {
+      const { provider } = storage({ u1: { motus: 4, drapeaux: 2 } });
+      const component = await build([withPlayers(me), provider]);
+
+      component.gameSelected.set('motus');
+      expect(component.gains()['u1']).toEqual({ medals: 1, game: '' });
+
+      component.gameSelected.set('marques');
+      expect(component.gains()['u1']).toBeUndefined();
+    });
   });
 
   describe('perimetre du classement', () => {

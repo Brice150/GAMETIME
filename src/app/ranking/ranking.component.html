@@ -77,26 +77,30 @@
     @if (currentPlayerPosition(); as position) {
       <div class="description">
         <span class="text-description">Vous êtes</span>
-        <div class="number">
-          <span
-            [ngStyle]="{
-              color:
-                position === 1
-                  ? 'var(--gold)'
-                  : position === 2
-                    ? 'var(--silver)'
-                    : position === 3
-                      ? 'var(--bronze)'
-                      : 'var(--accent-bright)',
-            }"
-          >
-            {{ position }}<sup>{{ position | ordinal }}</sup>
-          </span>
-          <span> / {{ sortedPlayers().length }}</span>
-        </div>
+        <!-- Recree a chaque changement de rang, pour rejouer l'apparition. -->
+        @for (rank of [position]; track rank) {
+          <div class="number">
+            <span
+              [ngStyle]="{
+                color:
+                  position === 1
+                    ? 'var(--gold)'
+                    : position === 2
+                      ? 'var(--silver)'
+                      : position === 3
+                        ? 'var(--bronze)'
+                        : 'var(--accent-bright)',
+              }"
+            >
+              {{ position }}<sup>{{ position | ordinal }}</sup>
+            </span>
+            <span> / {{ sortedPlayers().length }}</span>
+          </div>
+        }
       </div>
     }
-    <div class="players">
+    <!-- Changer de jeu reordonne la liste : les lignes glissent a leur place. -->
+    <div class="players" [appFlip]="sortedPlayers()">
       @for (
         otherPlayer of sortedPlayers();
         track otherPlayer.userId;
@@ -104,6 +108,7 @@
       ) {
         <div
           class="player"
+          [style.--i]="i"
           [ngClass]="{
             'alt-color':
               otherPlayer.userId !== playerService.currentPlayerSig()?.userId,
@@ -112,6 +117,24 @@
           <span class="username"
             >{{ otherPlayer.username }} {{ otherPlayer.animal }}</span
           >
+          <!-- Pourquoi il monte : ce qu'il a gagne depuis la derniere visite. -->
+          @if (gains()[otherPlayer.userId!]; as gain) {
+            <span
+              class="gain"
+              [attr.aria-label]="
+                '+' +
+                gain.medals +
+                ' médailles' +
+                (gain.game ? ' en ' + gain.game : '') +
+                ' depuis votre dernière visite'
+              "
+            >
+              +{{ gain.medals }}
+              @if (gain.game) {
+                · {{ gain.game }}
+              }
+            </span>
+          }
           <div class="podium">
             @if (i + 1 === 1) {
               <i class="bx bxs-trophy" style="color: var(--gold)"></i>

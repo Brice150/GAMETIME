@@ -7,7 +7,7 @@ import {
   buildPlayer,
   overrideProvider as override,
 } from '../testing/test-providers';
-import { AppComponent } from './app.component';
+import { AppComponent, SHELL_FADE_MS } from './app.component';
 import { NotificationService } from './core/services/notification.service';
 import { PlayerService } from './core/services/player.service';
 import { PwaInstallService } from './core/services/pwa-install.service';
@@ -36,6 +36,11 @@ describe('AppComponent', () => {
     loader.id = 'app-shell-loader';
     document.body.appendChild(loader);
     return loader;
+  }
+
+  /** Laisse le temps au fondu de l'ecran de chargement de se terminer. */
+  function fadeOut(): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, SHELL_FADE_MS));
   }
 
   afterEach(() => {
@@ -77,6 +82,8 @@ describe('AppComponent', () => {
       const loader = addShellLoader();
       const component = await build();
 
+      expect(loader.classList).toContain('is-leaving');
+      await fadeOut();
       expect(loader.isConnected).toBe(false);
       expect(component.userService.currentUserSig()).toBeNull();
       expect(component.playerService.currentPlayerSig()).toBeNull();
@@ -121,9 +128,17 @@ describe('AppComponent', () => {
           user$: throwError(() => new Error('refus')),
         }),
       ]);
+      await fadeOut();
 
       expect(loader.isConnected).toBe(false);
       expect(component).toBeTruthy();
+    });
+
+    it('retire l ecran de chargement sans fondu au prerendu', async () => {
+      const loader = addShellLoader();
+      await build([{ provide: PLATFORM_ID, useValue: 'server' }]);
+
+      expect(loader.isConnected).toBe(false);
     });
   });
 

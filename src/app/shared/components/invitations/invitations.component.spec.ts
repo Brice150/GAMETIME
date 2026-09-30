@@ -207,7 +207,9 @@ describe('InvitationsComponent', () => {
       expect(remove).toHaveBeenCalledWith('i1');
       expect(component.invitations()).toEqual([]);
       expect(newGame).toHaveBeenCalledWith('r1');
-      expect(navigate).toHaveBeenCalledWith(['/room/r1']);
+      expect(navigate).toHaveBeenCalledWith(['/room/r1'], {
+        state: { joinedVia: 'invitation' },
+      });
     });
 
     it('ignore une invitation sans identifiant', async () => {

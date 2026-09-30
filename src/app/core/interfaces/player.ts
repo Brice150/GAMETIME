@@ -1,6 +1,11 @@
 import { RoundProgress } from './round-progress';
 import { Stat } from './stat';
 
+// Comment le joueur est entre dans sa room : l'hote la cree, les autres
+// tapent le code, suivent un lien, acceptent une invitation ou rejoignent un
+// ami.
+export type JoinChannel = 'code' | 'link' | 'invitation' | 'friend';
+
 export interface Player {
   id: string;
   userId?: string;
@@ -21,4 +26,5 @@ export interface Player {
   // Laisser ses amis voir qu'on est dans une salle. Absent vaut actif : les
   // fiches creees avant ce reglage restent visibles.
   shareActivity?: boolean;
+  joinedVia?: JoinChannel | null;
 }

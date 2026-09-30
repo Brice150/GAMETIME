@@ -1,0 +1,116 @@
+:host {
+  justify-content: flex-start;
+  padding-top: 20px;
+}
+
+.clue {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 14px;
+  border: 1px solid var(--accent-border);
+  border-radius: var(--r-pill);
+  background: var(--accent-soft);
+  color: var(--text-2);
+  font-size: 13px;
+  white-space: nowrap;
+  animation: stage-drop 0.45s var(--ease);
+}
+
+.clue i {
+  font-size: 16px;
+  color: var(--accent-bright);
+}
+
+.clue strong {
+  color: var(--accent-bright);
+}
+
+.separator {
+  width: 1px;
+  height: 14px;
+  background: var(--accent-border);
+}
+
+.grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: min(100%, 320px);
+}
+
+/* Meme typographie que la grille du jeu : chasse fixe, capitales. */
+.line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  font-family: ui-monospace, 'Courier New', monospace;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-3);
+  animation: stage-drop 0.35s var(--ease);
+  transition:
+    border-color var(--speed) var(--ease),
+    box-shadow var(--speed) var(--ease);
+}
+
+.line.input {
+  border-color: var(--accent-bright);
+  background: var(--surface-3);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+  color: var(--text-1);
+  animation: none;
+}
+
+.line.is-solved {
+  border-color: var(--success-border);
+  box-shadow: 0 0 0 4px var(--success-soft);
+}
+
+.letter {
+  display: inline-flex;
+  justify-content: center;
+  width: 16px;
+  line-height: 1.2;
+}
+
+.letter.is-empty {
+  border-bottom: 2px solid var(--text-3);
+  height: 20px;
+}
+
+/* Retournement a la revelation, comme une tuile qu'on retourne. */
+.letter.wellPlaced,
+.letter.wrongPlaced,
+.letter.absent {
+  animation: grid-flip 0.4s var(--ease);
+}
+
+.letter.wellPlaced {
+  color: var(--success);
+  text-shadow: 0 0 12px var(--success-glow);
+  text-decoration: underline solid currentColor 3px;
+  text-underline-offset: 5px;
+}
+
+.letter.wrongPlaced {
+  color: var(--danger);
+  text-shadow: 0 0 12px var(--danger-glow);
+  text-decoration: underline dotted currentColor 3px;
+  text-underline-offset: 5px;
+}
+
+.letter.absent {
+  color: var(--text-3);
+}
+
+@keyframes grid-flip {
+  from {
+    transform: rotateX(90deg);
+  }
+}

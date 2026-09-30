@@ -100,7 +100,9 @@ export class InvitationsComponent implements OnInit {
   join(invitation: Invitation): void {
     this.dismiss(invitation);
     this.localStorageService.newGame(invitation.roomId);
-    this.router.navigate([`/room/${invitation.roomId}`]);
+    this.router.navigate([`/room/${invitation.roomId}`], {
+      state: { joinedVia: 'invitation' },
+    });
   }
 
   dismiss(invitation: Invitation): void {

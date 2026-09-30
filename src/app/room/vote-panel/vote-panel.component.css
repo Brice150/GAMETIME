@@ -64,7 +64,8 @@
     transform var(--speed) var(--ease),
     background var(--speed) var(--ease),
     border-color var(--speed) var(--ease),
-    color var(--speed) var(--ease);
+    color var(--speed) var(--ease),
+    box-shadow var(--speed) var(--ease);
 }
 
 .vote-option i {
@@ -106,8 +107,84 @@
   font-weight: 700;
 }
 
+.vote-option .count {
+  animation: gt-pop 0.4s var(--ease-spring) backwards;
+}
+
 .vote-option:not(.selected) .count {
   background: var(--accent-soft);
+}
+
+.voters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.voter {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1.5px dashed var(--border-2);
+  border-radius: 50%;
+  font-size: 20px;
+  opacity: 0.55;
+  transition:
+    opacity var(--speed) var(--ease),
+    border-color var(--speed) var(--ease),
+    background var(--speed) var(--ease);
+}
+
+.voter.has-voted {
+  border-style: solid;
+  border-color: var(--success-border);
+  background: var(--surface-2);
+  opacity: 1;
+}
+
+.voter i {
+  position: absolute;
+  right: -5px;
+  bottom: -3px;
+  border-radius: 50%;
+  background: var(--bg-base);
+  color: var(--success);
+  font-size: 17px;
+  animation: gt-pop 0.35s var(--ease-spring) backwards;
+}
+
+/* Le pseudo en infobulle au survol. */
+.voter::after {
+  content: attr(data-name);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  padding: 3px 10px;
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-pill);
+  background: var(--surface-solid);
+  box-shadow: var(--shadow-1);
+  color: var(--text-1);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, 4px);
+  transition:
+    opacity var(--speed) var(--ease),
+    transform var(--speed) var(--ease);
+}
+
+.voter:hover::after {
+  opacity: 1;
+  transform: translate(-50%, 0);
 }
 
 .vote-status {

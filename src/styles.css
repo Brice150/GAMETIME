@@ -397,6 +397,54 @@ body::before {
   animation: gt-rise 0.5s var(--ease) both;
 }
 
+/* Mouvements du jeu, repris des animations de la page d'accueil. Images
+   cles sans `to` : une fois jouees, elles ne retiennent aucun style. */
+:root {
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Ce qui apparait : une voix, un trophee, une reponse. */
+@keyframes gt-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+
+/* Ce qui arrive dans une liste : un joueur, une ligne. */
+@keyframes gt-drop {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.97);
+  }
+}
+
+/* Une lettre qu'on retourne pour reveler son etat. */
+@keyframes gt-flip {
+  from {
+    transform: rotateX(90deg);
+  }
+}
+
+/* Un essai refuse. */
+@keyframes gt-shake {
+  20%,
+  60% {
+    transform: translateX(-6px);
+  }
+  40%,
+  80% {
+    transform: translateX(6px);
+  }
+}
+
+/* Le mot trouve : les lettres sautent l'une apres l'autre. */
+@keyframes gt-wave {
+  40% {
+    transform: translateY(-9px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

@@ -8,11 +8,21 @@ import {
 } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { voteGroups } from '../../../assets/data/games';
-import { Player } from '../../core/interfaces/player';
+import { JoinChannel, Player } from '../../core/interfaces/player';
 import { Room } from '../../core/interfaces/room';
 import { ToastrHelperService } from '../../core/services/toastr-helper.service';
+import { FlipDirective } from '../../shared/directives/flip.directive';
 import { TotalMedalsNumberPipe } from '../../shared/pipes/total-medals-number.pipe';
 import { VotePanelComponent } from '../vote-panel/vote-panel.component';
+
+const ARRIVALS: Record<JoinChannel | 'host', { icon: string; label: string }> =
+  {
+    host: { icon: 'bxs-crown', label: 'hôte' },
+    code: { icon: 'bxs-key', label: 'code' },
+    link: { icon: 'bx-link', label: 'lien' },
+    invitation: { icon: 'bxs-envelope', label: 'invitation' },
+    friend: { icon: 'bxs-group', label: 'ami' },
+  };
 
 @Component({
   selector: 'app-waiting-room',
@@ -21,12 +31,22 @@ import { VotePanelComponent } from '../vote-panel/vote-panel.component';
     MatProgressSpinnerModule,
     TotalMedalsNumberPipe,
     VotePanelComponent,
+    FlipDirective,
   ],
   templateUrl: './waiting-room.component.html',
   styleUrl: './waiting-room.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WaitingRoomComponent {
+  // L'hote a cree la room ; les autres disent par ou ils sont entres.
+  arrival(player: Player): { icon: string; label: string } | null {
+    if (player.userId === this.room().userId) {
+      return ARRIVALS.host;
+    }
+
+    return player.joinedVia ? ARRIVALS[player.joinedVia] : null;
+  }
+
   toastrHelper = inject(ToastrHelperService);
   room = input.required<Room>();
   player = input.required<Player>();

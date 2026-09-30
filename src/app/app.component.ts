@@ -23,6 +23,9 @@ import { NotificationService } from './core/services/notification.service';
 import { PlayerService } from './core/services/player.service';
 import { ToastrHelperService } from './core/services/toastr-helper.service';
 
+// Duree du fondu de l'ecran de chargement, alignee sur index.html.
+export const SHELL_FADE_MS = 320;
+
 @Component({
   selector: 'app-root',
   imports: [
@@ -102,8 +105,23 @@ export class AppComponent implements OnInit {
   // Le document est injecté plutôt que pris du global : au prérendu il n'y a
   // pas de `document`, et l'écran est ainsi retiré du HTML produit — la page
   // pregenerée n'a rien à masquer, son contenu est déjà là.
+  //
+  // Dans le navigateur, l'écran s'efface en fondu avant d'être retiré ; au
+  // prérendu il part tout de suite, sans quoi il resterait dans le HTML.
   removeShellLoader(): void {
-    this.document.getElementById('app-shell-loader')?.remove();
+    const loader = this.document.getElementById('app-shell-loader');
+
+    if (!loader) {
+      return;
+    }
+
+    if (!this.isBrowser) {
+      loader.remove();
+      return;
+    }
+
+    loader.classList.add('is-leaving');
+    setTimeout(() => loader.remove(), SHELL_FADE_MS);
   }
 
   logout(): void {

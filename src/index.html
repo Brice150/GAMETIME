@@ -301,6 +301,12 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        transition: opacity 0.32s ease;
+      }
+
+      #app-shell-loader.is-leaving {
+        opacity: 0;
+        pointer-events: none;
       }
 
       #app-shell-loader .loader-inner {
@@ -397,6 +403,23 @@
         }
       }
     </style>
+    <!-- Sans JavaScript, rien ne declenche les apparitions au defilement de
+    la page d'accueil prerendue : son contenu doit rester lisible. -->
+    <noscript>
+      <style>
+        .reveal,
+        .feature,
+        .welcome-auth {
+          opacity: 1 !important;
+        }
+
+        .reveal,
+        .feature-text,
+        .feature-visual {
+          transform: none !important;
+        }
+      </style>
+    </noscript>
   </head>
   <body class="mat-typography">
     <div id="app-shell-loader">

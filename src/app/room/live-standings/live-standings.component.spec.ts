@@ -11,7 +11,10 @@ import {
 import { Player } from '../../core/interfaces/player';
 import { Room } from '../../core/interfaces/room';
 import { LocalStorageService } from '../../core/services/local-storage.service';
-import { LiveStandingsComponent } from './live-standings.component';
+import {
+  LiveStandingsComponent,
+  MAX_LETTER_DOTS,
+} from './live-standings.component';
 
 describe('LiveStandingsComponent', () => {
   async function buildFixture(
@@ -91,6 +94,73 @@ describe('LiveStandingsComponent', () => {
       ]);
 
       expect(component.standings()[0].lettersLabel).toBe('2/5 lettres');
+    });
+
+    it('dessine une pastille par lettre, pleine une fois trouvee', async () => {
+      const fixture = await buildFixture([
+        buildPlayer({
+          currentRoundProgress: {
+            stepIndex: 0,
+            lettersFound: 2,
+            lettersTotal: 5,
+          },
+        }),
+      ]);
+      const element: HTMLElement = fixture.nativeElement;
+
+      expect(fixture.componentInstance.standings()[0].letterDots).toEqual([
+        true,
+        true,
+        false,
+        false,
+        false,
+      ]);
+      expect(element.querySelectorAll('.dot')).toHaveLength(5);
+      expect(element.querySelectorAll('.dot.on')).toHaveLength(2);
+    });
+
+    it('compte les lettres en chiffres pour un mot trop long', async () => {
+      const fixture = await buildFixture([
+        buildPlayer({
+          currentRoundProgress: {
+            stepIndex: 0,
+            lettersFound: 4,
+            lettersTotal: MAX_LETTER_DOTS + 2,
+          },
+        }),
+      ]);
+
+      expect(fixture.componentInstance.standings()[0].letterDots).toBeNull();
+      expect(
+        fixture.nativeElement.querySelector('.state').textContent,
+      ).toContain('4/12 lettres');
+    });
+
+    it('annonce la manche du joueur en tete du classement', async () => {
+      const fixture = await buildFixture([
+        buildPlayer({ currentRoomWins: [true] }),
+      ]);
+
+      expect(fixture.componentInstance.myStep()).toBe(2);
+      expect(
+        fixture.nativeElement.querySelector('.stage-title').textContent,
+      ).toContain('Manche 2 / 3');
+    });
+
+    it('ne donne aucune manche a un spectateur absent du classement', async () => {
+      const component = await build([buildPlayer({ userId: 'autre' })]);
+
+      expect(component.myStep()).toBeNull();
+    });
+
+    it('signale un joueur qui a termine', async () => {
+      const fixture = await buildFixture([
+        buildPlayer({ finishDate: new Date(), durationMs: 65000 }),
+      ]);
+      const row: HTMLElement = fixture.nativeElement.querySelector('.row');
+
+      expect(row.classList).toContain('done');
+      expect(row.textContent).toContain('Terminé');
     });
 
     it('n annonce aucune lettre pour une manche passee, finie ou vide', async () => {

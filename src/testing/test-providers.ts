@@ -132,6 +132,8 @@ export function appTestProviders(
         getStartAgainNumber: () => null,
         getRoomId: () => null,
         getElapsedMs: () => null,
+        getMedalsSnapshot: () => null,
+        saveMedalsSnapshot: noop,
         getPwaInstallDismissed: () => true,
         setPwaInstallDismissed: noop,
         saveTries: noop,

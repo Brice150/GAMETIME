@@ -1,0 +1,52 @@
+<div class="phone">
+  <div class="screen">
+    <div class="status">
+      <span>9:41</span>
+      <span class="notch"></span>
+      <span class="icons">
+        <i class="bx bx-wifi" aria-hidden="true"></i>
+        <i class="bx bxs-battery" aria-hidden="true"></i>
+      </span>
+    </div>
+
+    <div class="apps">
+      @for (app of apps; track app) {
+        @if (app === freeSlot) {
+          @if (installed()) {
+            <span class="app is-game">
+              <img [src]="logo" alt="" width="36" height="36" />
+              <small>Game Time</small>
+            </span>
+          } @else {
+            <span class="app is-free"></span>
+          }
+        } @else {
+          <span class="app" [style.--tone]="app % 4"></span>
+        }
+      }
+    </div>
+
+    <div class="dock">
+      @for (app of [0, 1, 2, 3]; track app) {
+        <span class="app" [style.--tone]="3 - app"></span>
+      }
+    </div>
+
+    <div class="notification" [class.is-open]="notified()">
+      <img [src]="logo" alt="" width="26" height="26" />
+      <span>
+        <strong>Game Time</strong>
+        Léa 🦊 vous invite à jouer
+      </span>
+    </div>
+
+    <div class="sheet" [class.is-open]="sheet()">
+      <img [src]="logo" alt="" width="34" height="34" />
+      <span class="sheet-text">
+        <strong>Installer Game Time</strong>
+        Sans passer par un magasin
+      </span>
+      <span class="install" [class.is-pressed]="pressed()">Installer</span>
+    </div>
+  </div>
+</div>

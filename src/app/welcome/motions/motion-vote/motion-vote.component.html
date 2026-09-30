@@ -1,0 +1,44 @@
+<span class="stage-title">À quoi joue-t-on ?</span>
+
+<div class="games">
+  @for (game of games; track game.id) {
+    <span
+      class="game"
+      [class.is-leading]="leader() === game.id"
+      [class.is-winner]="launched() && leader() === game.id"
+    >
+      <i class="bx {{ game.icon }}" aria-hidden="true"></i>
+      {{ game.label }}
+      @if (counts()[game.id]; as count) {
+        <!-- Recree a chaque voix pour rejouer l'apparition. -->
+        @for (value of [count]; track value) {
+          <span class="count">{{ value }}</span>
+        }
+      }
+    </span>
+  }
+</div>
+
+<div class="voters">
+  @for (voter of voters; track $index) {
+    <span class="voter" [class.has-voted]="hasVoted($index)">
+      {{ voter }}
+      @if (hasVoted($index)) {
+        <i class="bx bxs-check-circle" aria-hidden="true"></i>
+      }
+    </span>
+  }
+</div>
+
+<div class="footer">
+  @if (launched()) {
+    <span class="launch">
+      <i class="bx bx-play" aria-hidden="true"></i>
+      Lancer · {{ leaderLabel() }}
+    </span>
+  } @else {
+    <span class="tally">
+      {{ cast().length }} / {{ voters.length }} joueurs ont voté
+    </span>
+  }
+</div>

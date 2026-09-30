@@ -28,6 +28,20 @@ describe('VotePanelComponent', () => {
     return fixture;
   }
 
+  it('montre l animal de chaque votant, coche une fois sa voix donnee', () => {
+    const fixture = build('other', 'host');
+    const voters = [
+      ...(fixture.nativeElement as HTMLElement).querySelectorAll('.voter'),
+    ];
+
+    expect(voters).toHaveLength(2);
+    expect(
+      voters.map((voter) => voter.classList.contains('has-voted')),
+    ).toEqual([true, false]);
+    expect(voters[0].getAttribute('aria-label')).toContain('a voté');
+    expect(voters[1].getAttribute('aria-label')).toContain('n’a pas voté');
+  });
+
   it('compte les votes exprimes et ignore les joueurs muets', () => {
     const component = build('host').componentInstance;
 

@@ -107,7 +107,9 @@ describe('HomeComponent', () => {
       component.joinRoom('ABCD');
 
       expect(newGame).toHaveBeenCalledWith('r7');
-      expect(navigate).toHaveBeenCalledWith(['/room/r7']);
+      expect(navigate).toHaveBeenCalledWith(['/room/r7'], {
+        state: { joinedVia: 'code' },
+      });
       expect(component.loading()).toBe(false);
     });
 

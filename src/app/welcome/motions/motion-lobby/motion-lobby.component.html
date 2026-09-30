@@ -1,0 +1,45 @@
+<div class="room-code" [class.is-copied]="copied()">
+  <span class="label">Code de la partie</span>
+  <span class="code">
+    @for (letter of slots; track $index) {
+      <span class="char" [class.is-typed]="$index < typed()">
+        {{ $index < typed() ? letter : '' }}
+      </span>
+    }
+  </span>
+  <i
+    class="bx"
+    [class.bxs-copy-alt]="!copied()"
+    [class.bx-check]="copied()"
+    aria-hidden="true"
+  ></i>
+  @if (copied()) {
+    <span class="copied">Copié</span>
+  }
+</div>
+
+<div class="players">
+  @for (player of players(); track player.name) {
+    <div class="player" [class.is-host]="player.via === 'host'">
+      <span class="username">{{ player.name }} {{ player.animal }}</span>
+      @if (player.via !== 'host') {
+        <span class="via">
+          <i
+            class="bx"
+            [class.bxs-key]="player.via === 'code'"
+            [class.bx-link]="player.via === 'link'"
+            aria-hidden="true"
+          ></i>
+          {{ player.via === 'code' ? 'code' : 'lien' }}
+        </span>
+      }
+      <span class="pill" [class.is-accent]="player.via === 'host'">
+        {{ player.medals }}
+        <i class="bx bxs-medal" aria-hidden="true"></i>
+      </span>
+    </div>
+  }
+  <div class="player waiting">
+    <span class="spinner"></span>
+  </div>
+</div>

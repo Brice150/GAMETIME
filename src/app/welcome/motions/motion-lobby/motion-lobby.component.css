@@ -1,0 +1,142 @@
+.room-code {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  border: 1px solid var(--accent-border);
+  border-radius: var(--r-md);
+  background: var(--accent-soft);
+  transition: box-shadow var(--speed) var(--ease);
+}
+
+.room-code.is-copied {
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+.room-code .label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.code {
+  display: flex;
+  gap: 5px;
+}
+
+/* Une case par caractere, soulignee tant qu'elle est vide : la largeur du
+   bloc ne bouge pas pendant la frappe. */
+.char {
+  display: grid;
+  place-items: end center;
+  width: 17px;
+  height: 28px;
+  border-bottom: 2px solid var(--border-2);
+  font-family: ui-monospace, 'Courier New', monospace;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--accent-bright);
+}
+
+.char.is-typed {
+  border-color: transparent;
+  animation: stage-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.room-code i {
+  font-size: 18px;
+  color: var(--text-2);
+}
+
+.room-code.is-copied i {
+  color: var(--success);
+}
+
+.copied {
+  position: absolute;
+  top: -12px;
+  right: -8px;
+  padding: 2px 8px;
+  border-radius: var(--r-pill);
+  background: var(--success);
+  color: var(--on-success);
+  font-size: 11px;
+  font-weight: 700;
+  animation: stage-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.players {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: min(100%, 340px);
+  margin-top: 4px;
+}
+
+.player {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 42px;
+  padding: 0 12px;
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  animation: stage-drop 0.5s var(--ease);
+}
+
+.player.is-host {
+  border-color: var(--accent-border);
+  background:
+    linear-gradient(135deg, var(--accent-tint), var(--accent-tint-2)),
+    var(--surface-solid);
+  animation: none;
+}
+
+.username {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.via {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+.via i {
+  font-size: 14px;
+}
+
+.player.waiting {
+  justify-content: center;
+  border-style: dashed;
+  background: transparent;
+  animation: none;
+}
+
+.spinner {
+  width: 22px;
+  height: 22px;
+  border: 3px solid var(--accent-soft);
+  border-top-color: var(--accent-deep);
+  border-radius: 50%;
+  animation: lobby-spin 0.9s linear infinite;
+}
+
+@keyframes lobby-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
