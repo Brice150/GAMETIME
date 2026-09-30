@@ -14,6 +14,7 @@ import { gameMap } from '../../../assets/data/games';
 import { Player } from '../../core/interfaces/player';
 import { Room } from '../../core/interfaces/room';
 import { RoundAnswer } from '../../core/interfaces/round-answer';
+import { LetterDot } from '../../core/interfaces/round-progress';
 import { RoundResult } from '../../core/interfaces/round-result';
 import { LocalStorageService } from '../../core/services/local-storage.service';
 import { WordInputComponent } from './word-input/word-input.component';
@@ -54,6 +55,7 @@ export class WordGamesComponent implements OnInit {
     lettersFound: number;
     lettersMisplaced: number;
     lettersTotal: number;
+    letterDots: LetterDot[];
   }>();
 
   ngOnInit(): void {
@@ -64,11 +66,16 @@ export class WordGamesComponent implements OnInit {
     this.finishedStepEvent.emit(answer);
   }
 
-  handleProgress(progress: { found: number; misplaced: number }): void {
+  handleProgress(progress: {
+    found: number;
+    misplaced: number;
+    dots: LetterDot[];
+  }): void {
     this.progressEvent.emit({
       lettersFound: progress.found,
       lettersMisplaced: progress.misplaced,
       lettersTotal: this.response().length,
+      letterDots: progress.dots,
     });
   }
 

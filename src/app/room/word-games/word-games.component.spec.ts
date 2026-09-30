@@ -156,12 +156,17 @@ describe('WordGamesComponent', () => {
       const emitted = vi.fn();
       component.progressEvent.subscribe(emitted);
 
-      component.handleProgress({ found: 2, misplaced: 1 });
+      component.handleProgress({
+        found: 2,
+        misplaced: 1,
+        dots: ['found', 'misplaced', 'found', 'empty'],
+      });
 
       expect(emitted).toHaveBeenCalledWith({
         lettersFound: 2,
         lettersMisplaced: 1,
         lettersTotal: 4,
+        letterDots: ['found', 'misplaced', 'found', 'empty'],
       });
     });
   });

@@ -157,6 +157,27 @@ describe('LiveStandingsComponent', () => {
       ]);
     });
 
+    it('garde la place des lettres dans la grille du joueur', async () => {
+      const component = await build([
+        buildPlayer({
+          currentRoundProgress: {
+            stepIndex: 0,
+            lettersFound: 1,
+            lettersMisplaced: 1,
+            lettersTotal: 4,
+            letterDots: ['empty', 'misplaced', 'empty', 'found'],
+          },
+        }),
+      ]);
+
+      expect(component.standings()[0].letterDots).toEqual([
+        'empty',
+        'misplaced',
+        'empty',
+        'found',
+      ]);
+    });
+
     it('borne la manche affichee au nombre de manches de la partie', async () => {
       const component = await build([
         buildPlayer({ currentRoomWins: [true, true, true] }),

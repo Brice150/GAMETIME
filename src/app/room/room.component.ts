@@ -34,7 +34,7 @@ import { JoinChannel, Player } from '../core/interfaces/player';
 import { Room } from '../core/interfaces/room';
 import { RoomForm } from '../core/interfaces/room-form';
 import { RoundAnswer } from '../core/interfaces/round-answer';
-import { RoundProgress } from '../core/interfaces/round-progress';
+import { LetterDot, RoundProgress } from '../core/interfaces/round-progress';
 import { RoundResult } from '../core/interfaces/round-result';
 
 import { LocalStorageService } from '../core/services/local-storage.service';
@@ -488,6 +488,7 @@ export class RoomComponent implements OnInit {
     lettersFound: number;
     lettersMisplaced?: number;
     lettersTotal: number;
+    letterDots?: LetterDot[];
   }): void {
     const currentPlayer = this.playerService.currentPlayerSig();
 
@@ -500,6 +501,8 @@ export class RoomComponent implements OnInit {
       lettersFound: progress.lettersFound,
       lettersMisplaced: progress.lettersMisplaced ?? 0,
       lettersTotal: progress.lettersTotal,
+      // Firestore refuse un champ `undefined` : il n'est ecrit que s'il existe.
+      ...(progress.letterDots && { letterDots: progress.letterDots }),
     };
 
     currentPlayer.currentRoundProgress = currentRoundProgress;

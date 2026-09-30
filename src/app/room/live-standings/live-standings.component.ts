@@ -13,6 +13,7 @@ import { Timestamp } from '@angular/fire/firestore';
 import { interval } from 'rxjs';
 import { Player } from '../../core/interfaces/player';
 import { Room } from '../../core/interfaces/room';
+import { LetterDot } from '../../core/interfaces/round-progress';
 import { LocalStorageService } from '../../core/services/local-storage.service';
 import { FlipDirective } from '../../shared/directives/flip.directive';
 import { DurationPipe } from '../../shared/pipes/duration.pipe';
@@ -23,8 +24,6 @@ const TICK_MS = 100;
 // Au-dela, une pastille par lettre ne tient plus sur la ligne : le compte
 // s'affiche en chiffres.
 export const MAX_LETTER_DOTS = 10;
-
-export type LetterDot = 'found' | 'misplaced' | 'empty';
 
 @Component({
   selector: 'app-live-standings',
@@ -63,19 +62,23 @@ export class LiveStandingsComponent implements OnInit {
           lettersLabel: progress
             ? `${progress.lettersFound}/${progress.lettersTotal} lettres`
             : null,
-          // Une pastille par lettre du mot : verte si trouvee, rouge si reperee
-          // mais mal placee. Les vertes passent devant.
+          // Une pastille par lettre du mot, a la place ou le joueur la voit
+          // dans sa grille : verte si trouvee, rouge si reperee mais mal
+          // placee. Une fiche plus ancienne, sans positions, groupe les
+          // vertes devant.
           letterDots:
             progress && progress.lettersTotal <= MAX_LETTER_DOTS
-              ? Array.from(
-                  { length: progress.lettersTotal },
-                  (unused, index): LetterDot =>
-                    index < found
-                      ? 'found'
-                      : index < found + misplaced
-                        ? 'misplaced'
-                        : 'empty',
-                )
+              ? progress.letterDots?.length === progress.lettersTotal
+                ? progress.letterDots
+                : Array.from(
+                    { length: progress.lettersTotal },
+                    (unused, index): LetterDot =>
+                      index < found
+                        ? 'found'
+                        : index < found + misplaced
+                          ? 'misplaced'
+                          : 'empty',
+                  )
               : null,
           isMe: !!currentPlayerId && player.userId === currentPlayerId,
         };
