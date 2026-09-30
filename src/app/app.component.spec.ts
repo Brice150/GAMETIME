@@ -7,7 +7,13 @@ import {
   buildPlayer,
   overrideProvider as override,
 } from '../testing/test-providers';
-import { AppComponent, SHELL_FADE_MS } from './app.component';
+import { Subject } from 'rxjs';
+import { NavigationEnd, Router } from '@angular/router';
+import {
+  AppComponent,
+  SHELL_FADE_MS,
+  SHELL_LOADER_TIMEOUT_MS,
+} from './app.component';
 import { NotificationService } from './core/services/notification.service';
 import { PlayerService } from './core/services/player.service';
 import { PwaInstallService } from './core/services/pwa-install.service';
@@ -134,11 +140,48 @@ describe('AppComponent', () => {
       expect(component).toBeTruthy();
     });
 
-    it('retire l ecran de chargement sans fondu au prerendu', async () => {
+    it('garde l ecran de chargement dans la page prerendue', async () => {
       const loader = addShellLoader();
       await build([{ provide: PLATFORM_ID, useValue: 'server' }]);
 
-      expect(loader.isConnected).toBe(false);
+      expect(loader.isConnected).toBe(true);
+      expect(loader.classList).not.toContain('is-leaving');
+    });
+
+    it('attend que le routeur ait fini, redirection comprise', async () => {
+      const loader = addShellLoader();
+      const events = new Subject<unknown>();
+      let navigating = true;
+      await TestBed.configureTestingModule({
+        imports: [AppComponent],
+        providers: appTestProviders(),
+      }).compileComponents();
+      const router = TestBed.inject(Router);
+      Object.defineProperty(router, 'currentNavigation', {
+        value: () => (navigating ? {} : null),
+      });
+      Object.defineProperty(router, 'events', { value: events });
+
+      TestBed.createComponent(AppComponent).detectChanges();
+      expect(loader.classList).not.toContain('is-leaving');
+
+      navigating = false;
+      events.next(new NavigationEnd(1, '/', '/accueil'));
+      await new Promise((resolve) => setTimeout(resolve));
+
+      expect(loader.classList).toContain('is-leaving');
+    });
+
+    it('finit par afficher l application si la session ne repond pas', async () => {
+      vi.useFakeTimers();
+      const loader = addShellLoader();
+      await build([override(UserService, { user$: new Subject() })]);
+
+      expect(loader.classList).not.toContain('is-leaving');
+
+      vi.advanceTimersByTime(SHELL_LOADER_TIMEOUT_MS);
+      expect(loader.classList).toContain('is-leaving');
+      vi.useRealTimers();
     });
   });
 

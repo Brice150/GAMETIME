@@ -65,6 +65,98 @@ describe('LiveStandingsComponent', () => {
       ]);
     });
 
+    it('classe a l avancee : manche atteinte, puis lettres trouvees', async () => {
+      const progress = (lettersFound: number, lettersMisplaced = 0) => ({
+        stepIndex: 1,
+        lettersFound,
+        lettersMisplaced,
+        lettersTotal: 5,
+      });
+      const component = await build([
+        // Deux bonnes reponses, mais encore en manche 2 : pas en tete.
+        buildPlayer({
+          id: 'a',
+          userId: 'a',
+          currentRoomWins: [true],
+          currentRoundProgress: progress(1),
+        }),
+        buildPlayer({ id: 'b', userId: 'b', currentRoomWins: [false, false] }),
+        buildPlayer({
+          id: 'c',
+          userId: 'c',
+          currentRoomWins: [false],
+          currentRoundProgress: progress(1, 2),
+        }),
+        buildPlayer({
+          id: 'd',
+          userId: 'd',
+          currentRoomWins: [false],
+          currentRoundProgress: progress(3),
+        }),
+      ]);
+
+      expect(component.standings().map((entry) => entry.player.id)).toEqual([
+        'b',
+        'd',
+        'c',
+        'a',
+      ]);
+    });
+
+    it('place devant le premier arrive au bout', async () => {
+      const component = await build([
+        buildPlayer({
+          id: 'lent',
+          userId: 'lent',
+          currentRoomWins: [true, true, true],
+          finishDate: new Date(),
+          durationMs: 90000,
+        }),
+        buildPlayer({
+          id: 'vif',
+          userId: 'vif',
+          currentRoomWins: [false, false, false],
+          finishDate: new Date(),
+          durationMs: 40000,
+        }),
+      ]);
+
+      expect(component.standings().map((entry) => entry.player.id)).toEqual([
+        'vif',
+        'lent',
+      ]);
+    });
+
+    it('montre la manche atteinte, pas le score', async () => {
+      const fixture = await buildFixture([
+        buildPlayer({ currentRoomWins: [false] }),
+      ]);
+
+      expect(
+        fixture.nativeElement.querySelector('.wins').textContent,
+      ).toContain('Manche 2/3');
+    });
+
+    it('dessine en rouge les lettres mal placees, apres les vertes', async () => {
+      const component = await build([
+        buildPlayer({
+          currentRoundProgress: {
+            stepIndex: 0,
+            lettersFound: 1,
+            lettersMisplaced: 2,
+            lettersTotal: 4,
+          },
+        }),
+      ]);
+
+      expect(component.standings()[0].letterDots).toEqual([
+        'found',
+        'misplaced',
+        'misplaced',
+        'empty',
+      ]);
+    });
+
     it('borne la manche affichee au nombre de manches de la partie', async () => {
       const component = await build([
         buildPlayer({ currentRoomWins: [true, true, true] }),
@@ -109,14 +201,14 @@ describe('LiveStandingsComponent', () => {
       const element: HTMLElement = fixture.nativeElement;
 
       expect(fixture.componentInstance.standings()[0].letterDots).toEqual([
-        true,
-        true,
-        false,
-        false,
-        false,
+        'found',
+        'found',
+        'empty',
+        'empty',
+        'empty',
       ]);
       expect(element.querySelectorAll('.dot')).toHaveLength(5);
-      expect(element.querySelectorAll('.dot.on')).toHaveLength(2);
+      expect(element.querySelectorAll('.dot.found')).toHaveLength(2);
     });
 
     it('compte les lettres en chiffres pour un mot trop long', async () => {
@@ -160,7 +252,7 @@ describe('LiveStandingsComponent', () => {
       const row: HTMLElement = fixture.nativeElement.querySelector('.row');
 
       expect(row.classList).toContain('done');
-      expect(row.textContent).toContain('Terminé');
+      expect(row.querySelector('.bxs-flag-checkered')).toBeTruthy();
     });
 
     it('n annonce aucune lettre pour une manche passee, finie ou vide', async () => {

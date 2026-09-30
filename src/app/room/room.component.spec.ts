@@ -745,11 +745,16 @@ describe('RoomComponent', () => {
       const player = currentPlayer(component, buildPlayer());
       const update = vi.spyOn(component.playerService, 'updatePlayerFields');
 
-      component.publishProgress({ lettersFound: 2, lettersTotal: 5 });
+      component.publishProgress({
+        lettersFound: 2,
+        lettersMisplaced: 1,
+        lettersTotal: 5,
+      });
 
       expect(player.currentRoundProgress).toEqual({
         stepIndex: 0,
         lettersFound: 2,
+        lettersMisplaced: 1,
         lettersTotal: 5,
       });
       expect(update).toHaveBeenCalled();

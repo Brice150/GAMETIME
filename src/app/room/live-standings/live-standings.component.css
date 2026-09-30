@@ -163,11 +163,21 @@
     border-color var(--speed) var(--ease);
 }
 
-.dot.on {
+.dot.found,
+.dot.misplaced {
+  animation: gt-pop 0.35s var(--ease-spring) backwards;
+}
+
+.dot.found {
   border-color: var(--success);
   background: var(--success);
   box-shadow: 0 0 8px var(--success-glow);
-  animation: gt-pop 0.35s var(--ease-spring) backwards;
+}
+
+.dot.misplaced {
+  border-color: var(--danger);
+  background: var(--danger);
+  box-shadow: 0 0 8px var(--danger-glow);
 }
 
 .wins {

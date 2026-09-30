@@ -53,11 +53,6 @@ import { ResultsBoardComponent } from './results-board/results-board.component';
 import { WaitingRoomComponent } from './waiting-room/waiting-room.component';
 import { WordGamesComponent } from './word-games/word-games.component';
 
-// Laisse les lettres du dernier essai se retourner, et la vague du mot
-// trouve se jouer, avant la manche suivante. Le meme pour tous : le
-// classement au temps reste equitable.
-const NEXT_ROUND_DELAY_MS = 1600;
-
 @Component({
   selector: 'app-room',
   imports: [
@@ -93,7 +88,8 @@ export class RoomComponent implements OnInit {
   userKickedOut = false;
   readonly isFinishing = signal(false);
   goals = goals;
-  readonly wordGamesComponent = viewChild.required(WordGamesComponent);
+  // Absente hors partie lancee.
+  readonly wordGamesComponent = viewChild(WordGamesComponent);
   // Canal d'arrivee, transmis par la page d'ou vient le joueur. Une adresse
   // ouverte telle quelle vaut un lien partage.
   readonly joinedVia: JoinChannel =
@@ -364,6 +360,10 @@ export class RoomComponent implements OnInit {
       this.stampFinish(currentPlayer);
     }
 
+    // La manche suivante s'ouvre tout de suite : son bandeau rappelle le
+    // resultat de celle-ci, inutile de le faire attendre au joueur.
+    this.handlePlayerNextAction(round.won, stepIndex);
+
     this.gameApi
       .submitRound(
         this.room.id!,
@@ -375,14 +375,24 @@ export class RoomComponent implements OnInit {
       .subscribe({
         next: (result) => {
           // Le serveur a le dernier mot : en jeu honnete son verdict rejoint
-          // celui affiche, la manche n'ayant pas a attendre la reponse.
+          // celui affiche, qui n'a pas attendu la reponse.
           currentPlayer.currentRoomWins[stepIndex] = result.won;
           this.announceGoal(result.medalsNumber, result.won);
-          this.handlePlayerNextAction(result.won, stepIndex);
+
+          if (result.won !== round.won) {
+            this.lastRound.set({
+              stepIndex,
+              response: this.room.responses[stepIndex],
+              won: result.won,
+            });
+          }
         },
         error: (error: HttpErrorResponse) => {
+          // La manche n'est pas enregistree : on y revient.
           currentPlayer.currentRoomWins.splice(stepIndex);
           this.playerService.currentPlayerSig.set({ ...currentPlayer });
+          this.lastRound.set(null);
+          this.wordGamesComponent()?.new();
           this.toastrHelper.error(
             "La manche n'a pas pu être enregistrée : " + error.message,
           );
@@ -467,13 +477,16 @@ export class RoomComponent implements OnInit {
       return;
     }
 
-    timer(NEXT_ROUND_DELAY_MS)
+    // Un tour plus tard : la grille vide d'abord ses essais enregistres, sans
+    // quoi la manche suivante les reprendrait.
+    timer(0)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.wordGamesComponent()?.new());
   }
 
   publishProgress(progress: {
     lettersFound: number;
+    lettersMisplaced?: number;
     lettersTotal: number;
   }): void {
     const currentPlayer = this.playerService.currentPlayerSig();
@@ -485,6 +498,7 @@ export class RoomComponent implements OnInit {
     const currentRoundProgress: RoundProgress = {
       stepIndex: currentPlayer.currentRoomWins.length,
       lettersFound: progress.lettersFound,
+      lettersMisplaced: progress.lettersMisplaced ?? 0,
       lettersTotal: progress.lettersTotal,
     };
 

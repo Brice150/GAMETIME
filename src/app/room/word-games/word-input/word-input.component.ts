@@ -47,7 +47,7 @@ export class WordInputComponent {
   readonly inputValue = signal('');
   tries: WordTry[] = [];
   readonly emitEvent = output<RoundAnswer>();
-  readonly progressEvent = output<number>();
+  readonly progressEvent = output<{ found: number; misplaced: number }>();
   isOver = false;
   // Manche gagnee : la ligne de la reponse fait une vague.
   won = false;
@@ -157,7 +157,18 @@ export class WordInputComponent {
     }
 
     this.letterStates.set(states);
-    this.progressEvent.emit(this.foundPositions.size);
+    // Mal placees : lettres reperees dans le mot, sans place trouvee. Bornees
+    // aux cases encore vides du mot.
+    const misplaced = Object.values(states).filter(
+      (state) => state === 'wrongPlaced',
+    ).length;
+    this.progressEvent.emit({
+      found: this.foundPositions.size,
+      misplaced: Math.min(
+        misplaced,
+        this.word().length - this.foundPositions.size,
+      ),
+    });
   }
 
   onKeyDown(event: KeyboardEvent) {

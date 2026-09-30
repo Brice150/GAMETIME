@@ -32,15 +32,6 @@ sont dans la meme piece, le lire a voix haute est le chemin le plus court. -->
             </span>
           }
           <div class="end">
-            @if (otherPlayer.vote && room().userId !== otherPlayer.userId) {
-              <i class="bx bxs-check-circle voted" title="A voté"></i>
-            } @else if (room().userId !== otherPlayer.userId) {
-              <i
-                class="bx bxs-x-circle"
-                title="N'a pas voté"
-                style="color: var(--danger)"
-              ></i>
-            }
             <div class="medals">
               <span class="victory-number">{{
                 otherPlayer | totalMedalsNumber

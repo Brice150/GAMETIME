@@ -403,10 +403,15 @@
         }
       }
     </style>
-    <!-- Sans JavaScript, rien ne declenche les apparitions au defilement de
-    la page d'accueil prerendue : son contenu doit rester lisible. -->
+    <!-- Sans JavaScript, ni l'ecran de chargement ne se retire, ni les
+    apparitions au defilement ne se declenchent : le contenu prerendu doit
+    rester lisible. -->
     <noscript>
       <style>
+        #app-shell-loader {
+          display: none !important;
+        }
+
         .reveal,
         .feature,
         .welcome-auth {

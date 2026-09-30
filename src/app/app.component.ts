@@ -10,8 +10,14 @@ import {
   PLATFORM_ID,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Router, RouterOutlet } from '@angular/router';
-import { of, switchMap } from 'rxjs';
+import {
+  NavigationCancel,
+  NavigationEnd,
+  NavigationError,
+  Router,
+  RouterOutlet,
+} from '@angular/router';
+import { filter, of, switchMap, take } from 'rxjs';
 import { ConsentService } from './core/services/consent.service';
 import { PwaInstallService } from './core/services/pwa-install.service';
 import { PwaUpdateService } from './core/services/pwa-update.service';
@@ -25,6 +31,9 @@ import { ToastrHelperService } from './core/services/toastr-helper.service';
 
 // Duree du fondu de l'ecran de chargement, alignee sur index.html.
 export const SHELL_FADE_MS = 320;
+// Filet de securite : si la session ne se resout jamais (reseau coupe),
+// l'application finit par s'afficher.
+export const SHELL_LOADER_TIMEOUT_MS = 8000;
 
 @Component({
   selector: 'app-root',
@@ -59,13 +68,19 @@ export class AppComponent implements OnInit {
     if (this.isBrowser) {
       this.pwaUpdateService.init();
       this.pwaInstallService.init();
+
+      const fallback = setTimeout(
+        () => this.removeShellLoader(),
+        SHELL_LOADER_TIMEOUT_MS,
+      );
+      this.destroyRef.onDestroy(() => clearTimeout(fallback));
     }
 
     this.userService.user$
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         switchMap((user) => {
-          this.removeShellLoader();
+          this.revealWhenSettled();
 
           if (user) {
             this.userService.currentUserSig.set({
@@ -92,31 +107,46 @@ export class AppComponent implements OnInit {
           }
         },
         error: (error: HttpErrorResponse) => {
-          this.removeShellLoader();
+          this.revealWhenSettled();
           this.toastrHelper.handleError(error);
         },
       });
   }
 
   // L'écran de chargement inline (index.html) reste affiché tant que Firebase
-  // n'a pas résolu la session : cela évite un écran vide, puis un saut de mise
-  // en page au moment où le header apparaît.
-  //
-  // Le document est injecté plutôt que pris du global : au prérendu il n'y a
-  // pas de `document`, et l'écran est ainsi retiré du HTML produit — la page
-  // pregenerée n'a rien à masquer, son contenu est déjà là.
-  //
-  // Dans le navigateur, l'écran s'efface en fondu avant d'être retiré ; au
-  // prérendu il part tout de suite, sans quoi il resterait dans le HTML.
-  removeShellLoader(): void {
-    const loader = this.document.getElementById('app-shell-loader');
-
-    if (!loader) {
+  // n'a pas résolu la session, puis tant que le routeur n'a pas fini : un
+  // joueur connecté est redirigé de la page d'accueil vers /accueil, et ne
+  // doit pas l'apercevoir au passage.
+  private revealWhenSettled(): void {
+    if (!this.router.currentNavigation()) {
+      this.removeShellLoader();
       return;
     }
 
-    if (!this.isBrowser) {
-      loader.remove();
+    this.router.events
+      .pipe(
+        filter(
+          (event) =>
+            event instanceof NavigationEnd ||
+            event instanceof NavigationCancel ||
+            event instanceof NavigationError,
+        ),
+        take(1),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      // Un tour plus tard : une redirection annule la navigation en cours et
+      // n'en lance une autre qu'ensuite.
+      .subscribe(() => setTimeout(() => this.revealWhenSettled()));
+  }
+
+  // Au prérendu, l'écran reste dans le HTML produit : la page ne s'affiche
+  // qu'une fois la session connue. Le document est injecté plutôt que pris du
+  // global, faute de `document` au prérendu. Dans le navigateur, l'écran
+  // s'efface en fondu avant d'être retiré.
+  removeShellLoader(): void {
+    const loader = this.document.getElementById('app-shell-loader');
+
+    if (!loader || !this.isBrowser) {
       return;
     }
 

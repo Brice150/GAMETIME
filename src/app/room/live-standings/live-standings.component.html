@@ -34,13 +34,6 @@ un autre. -->
         <span class="username"
           >{{ entry.player.username }} {{ entry.player.animal }}</span
         >
-        <span class="step">
-          @if (entry.player.finishDate) {
-            Terminé
-          } @else {
-            Manche {{ entry.step }}
-          }
-        </span>
       </span>
       <span class="state">
         @if (entry.player.finishDate) {
@@ -48,17 +41,18 @@ un autre. -->
           <span>{{ entry.player.durationMs | duration }}</span>
         } @else if (entry.letterDots; as dots) {
           <span class="dots" [attr.aria-label]="entry.lettersLabel">
-            @for (found of dots; track $index) {
-              <span class="dot" [class.on]="found"></span>
+            @for (dot of dots; track $index) {
+              <span class="dot {{ dot }}"></span>
             }
           </span>
         } @else if (entry.lettersLabel) {
           <span>{{ entry.lettersLabel }}</span>
         }
       </span>
-      <!-- Recree a chaque manche gagnee, pour rejouer l'apparition. -->
-      @for (wins of [entry.wins]; track wins) {
-        <span class="wins">{{ wins }} / {{ entry.total }}</span>
+      <!-- La manche atteinte, pas le score : il reste la surprise des
+      resultats. Recree a chaque manche, pour rejouer l'apparition. -->
+      @for (step of [entry.step]; track step) {
+        <span class="wins">Manche {{ step }}/{{ entry.total }}</span>
       }
     </div>
   }

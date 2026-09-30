@@ -104,7 +104,7 @@ describe('WordInputComponent', () => {
   it('cumule les lettres trouvees d un essai a l autre', async () => {
     await build('CHAT');
     const found: number[] = [];
-    component.progressEvent.subscribe((count) => found.push(count));
+    component.progressEvent.subscribe((progress) => found.push(progress.found));
 
     component.inputValue.set('CHUT');
     component.addTry();
@@ -112,6 +112,24 @@ describe('WordInputComponent', () => {
     component.addTry();
 
     expect(found).toEqual([3, 4]);
+  });
+
+  it('compte les lettres mal placees, dans la limite des cases vides', async () => {
+    await build('CHAT');
+    const progress: { found: number; misplaced: number }[] = [];
+    component.progressEvent.subscribe((value) => progress.push(value));
+
+    component.inputValue.set('TACH');
+    component.addTry();
+    component.inputValue.set('CHTA');
+    component.addTry();
+
+    // TACH : quatre lettres presentes, aucune a sa place. CHTA : C et H
+    // trouves, il ne reste que deux cases pour les mal placees.
+    expect(progress).toEqual([
+      { found: 0, misplaced: 4 },
+      { found: 2, misplaced: 2 },
+    ]);
   });
 
   it('classe chaque lettre essayee : bien placee, mal placee ou exclue', async () => {

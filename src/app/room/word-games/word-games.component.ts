@@ -52,6 +52,7 @@ export class WordGamesComponent implements OnInit {
   readonly finishedStepEvent = output<RoundAnswer>();
   readonly progressEvent = output<{
     lettersFound: number;
+    lettersMisplaced: number;
     lettersTotal: number;
   }>();
 
@@ -63,9 +64,10 @@ export class WordGamesComponent implements OnInit {
     this.finishedStepEvent.emit(answer);
   }
 
-  handleProgress(lettersFound: number): void {
+  handleProgress(progress: { found: number; misplaced: number }): void {
     this.progressEvent.emit({
-      lettersFound,
+      lettersFound: progress.found,
+      lettersMisplaced: progress.misplaced,
       lettersTotal: this.response().length,
     });
   }

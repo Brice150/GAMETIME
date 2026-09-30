@@ -24,6 +24,8 @@ const TICK_MS = 100;
 // s'affiche en chiffres.
 export const MAX_LETTER_DOTS = 10;
 
+export type LetterDot = 'found' | 'misplaced' | 'empty';
+
 @Component({
   selector: 'app-live-standings',
   imports: [CommonModule, DurationPipe, FlipDirective],
@@ -38,34 +40,46 @@ export class LiveStandingsComponent implements OnInit {
   readonly currentPlayerId = input<string | undefined>(undefined);
   readonly elapsedMs = signal<number | null>(null);
 
-  // Les joueurs arrivent deja classes par la page room.
+  // Pendant la partie, on se classe a l'avancee, pas au score : la manche
+  // atteinte, puis les lettres trouvees. Le score n'est revele qu'aux
+  // resultats, ou le plus rapide n'est pas forcement le mieux classe.
   readonly standings = computed(() => {
     const total = this.room().responses?.length ?? 0;
     const currentPlayerId = this.currentPlayerId();
 
-    return this.players().map((player, index) => {
-      const progress = this.currentProgress(player);
+    return [...this.players()]
+      .sort((a, b) => this.compare(a, b))
+      .map((player, index) => {
+        const progress = this.currentProgress(player);
+        const found = progress?.lettersFound ?? 0;
+        const misplaced = progress?.lettersMisplaced ?? 0;
 
-      return {
-        player,
-        rank: index + 1,
-        wins: player.currentRoomWins.filter(Boolean).length,
-        step: Math.min(player.currentRoomWins.length + 1, total),
-        total,
-        lettersLabel: progress
-          ? `${progress.lettersFound}/${progress.lettersTotal} lettres`
-          : null,
-        // Une pastille par lettre du mot, pleine une fois trouvee.
-        letterDots:
-          progress && progress.lettersTotal <= MAX_LETTER_DOTS
-            ? Array.from(
-                { length: progress.lettersTotal },
-                (unused, index) => index < progress.lettersFound,
-              )
+        return {
+          player,
+          rank: index + 1,
+          wins: player.currentRoomWins.filter(Boolean).length,
+          step: Math.min(player.currentRoomWins.length + 1, total),
+          total,
+          lettersLabel: progress
+            ? `${progress.lettersFound}/${progress.lettersTotal} lettres`
             : null,
-        isMe: !!currentPlayerId && player.userId === currentPlayerId,
-      };
-    });
+          // Une pastille par lettre du mot : verte si trouvee, rouge si reperee
+          // mais mal placee. Les vertes passent devant.
+          letterDots:
+            progress && progress.lettersTotal <= MAX_LETTER_DOTS
+              ? Array.from(
+                  { length: progress.lettersTotal },
+                  (unused, index): LetterDot =>
+                    index < found
+                      ? 'found'
+                      : index < found + misplaced
+                        ? 'misplaced'
+                        : 'empty',
+                )
+              : null,
+          isMe: !!currentPlayerId && player.userId === currentPlayerId,
+        };
+      });
   });
 
   // La manche du joueur lui-meme, en tete du classement.
@@ -81,6 +95,25 @@ export class LiveStandingsComponent implements OnInit {
 
   ngOnInit(): void {
     this.elapsedMs.set(this.readElapsed());
+  }
+
+  private compare(a: Player, b: Player): number {
+    const rounds = b.currentRoomWins.length - a.currentRoomWins.length;
+    if (rounds) {
+      return rounds;
+    }
+
+    // Tous deux au bout : le premier arrive devant.
+    if (a.finishDate && b.finishDate) {
+      return (a.durationMs ?? Infinity) - (b.durationMs ?? Infinity);
+    }
+
+    const progressA = this.currentProgress(a);
+    const progressB = this.currentProgress(b);
+    return (
+      (progressB?.lettersFound ?? 0) - (progressA?.lettersFound ?? 0) ||
+      (progressB?.lettersMisplaced ?? 0) - (progressA?.lettersMisplaced ?? 0)
+    );
   }
 
   private currentProgress(player: Player) {
