@@ -16,15 +16,14 @@ import { Room } from '../../core/interfaces/room';
 import { LocalStorageService } from '../../core/services/local-storage.service';
 import { FlipDirective } from '../../shared/directives/flip.directive';
 import { DurationPipe } from '../../shared/pipes/duration.pipe';
+import { currentRoundProgress, letterDots, lettersLabel } from '../letter-dots';
+
+export { MAX_LETTER_DOTS } from '../letter-dots';
+export type { LetterDot } from '../letter-dots';
 
 // Le chrono affiche les dixiemes : rafraichi plus lentement, le chiffre
 // sautait de deux en deux.
 const TICK_MS = 100;
-// Au-dela, une pastille par lettre ne tient plus sur la ligne : le compte
-// s'affiche en chiffres.
-export const MAX_LETTER_DOTS = 10;
-
-export type LetterDot = 'found' | 'misplaced' | 'empty';
 
 @Component({
   selector: 'app-live-standings',
@@ -50,9 +49,7 @@ export class LiveStandingsComponent implements OnInit {
     return [...this.players()]
       .sort((a, b) => this.compare(a, b))
       .map((player, index) => {
-        const progress = this.currentProgress(player);
-        const found = progress?.lettersFound ?? 0;
-        const misplaced = progress?.lettersMisplaced ?? 0;
+        const progress = currentRoundProgress(player);
 
         return {
           player,
@@ -60,23 +57,8 @@ export class LiveStandingsComponent implements OnInit {
           wins: player.currentRoomWins.filter(Boolean).length,
           step: Math.min(player.currentRoomWins.length + 1, total),
           total,
-          lettersLabel: progress
-            ? `${progress.lettersFound}/${progress.lettersTotal} lettres`
-            : null,
-          // Une pastille par lettre du mot : verte si trouvee, rouge si reperee
-          // mais mal placee. Les vertes passent devant.
-          letterDots:
-            progress && progress.lettersTotal <= MAX_LETTER_DOTS
-              ? Array.from(
-                  { length: progress.lettersTotal },
-                  (unused, index): LetterDot =>
-                    index < found
-                      ? 'found'
-                      : index < found + misplaced
-                        ? 'misplaced'
-                        : 'empty',
-                )
-              : null,
+          lettersLabel: lettersLabel(progress),
+          letterDots: letterDots(progress),
           isMe: !!currentPlayerId && player.userId === currentPlayerId,
         };
       });
@@ -108,27 +90,12 @@ export class LiveStandingsComponent implements OnInit {
       return (a.durationMs ?? Infinity) - (b.durationMs ?? Infinity);
     }
 
-    const progressA = this.currentProgress(a);
-    const progressB = this.currentProgress(b);
+    const progressA = currentRoundProgress(a);
+    const progressB = currentRoundProgress(b);
     return (
       (progressB?.lettersFound ?? 0) - (progressA?.lettersFound ?? 0) ||
       (progressB?.lettersMisplaced ?? 0) - (progressA?.lettersMisplaced ?? 0)
     );
-  }
-
-  private currentProgress(player: Player) {
-    const progress = player.currentRoundProgress;
-
-    if (
-      player.finishDate ||
-      !progress ||
-      !progress.lettersTotal ||
-      progress.stepIndex !== player.currentRoomWins.length
-    ) {
-      return null;
-    }
-
-    return progress;
   }
 
   private readElapsed(): number | null {

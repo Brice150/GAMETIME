@@ -1,3 +1,5 @@
+/* Meme dessin que le classement en direct : une carte par joueur, rang en
+   pastille ou trophee, puis le verdict de chaque mot. */
 :host {
   display: flex;
   justify-content: center;
@@ -15,112 +17,60 @@
   color: var(--text-3);
 }
 
-.board-scroll {
-  width: min(880px, 94%);
-  overflow-x: auto;
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(620px, 94%);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 14px;
   border: 1px solid var(--border-1);
   border-radius: var(--r-lg);
   background: var(--surface-solid);
   box-shadow: var(--shadow-1);
+  transition:
+    border-color var(--speed) var(--ease),
+    box-shadow var(--speed) var(--ease);
 }
 
-.board {
-  width: 100%;
-  border-collapse: collapse;
+.card.me {
+  border-color: var(--accent-border);
+  background:
+    linear-gradient(135deg, var(--accent-tint), var(--accent-tint-2)),
+    var(--surface-solid);
 }
 
-.board th,
-.board td {
-  padding: 10px 12px;
-  text-align: center;
-  vertical-align: middle;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--text-1);
+.card.spectating {
+  opacity: 0.75;
 }
 
-thead tr {
-  background: var(--surface-solid);
-}
-
-thead th {
-  border-bottom: 1px solid var(--border-1);
-}
-
-tbody tr {
-  background: var(--surface-solid);
-}
-
-/* --surface-2 est quasi blanc en theme clair : le zebrage ne se verrait pas. */
-tbody tr:nth-child(even) {
-  background: var(--surface-3);
-}
-
-/* Fond opaque obligatoire : sinon les colonnes defilent visiblement derriere. */
-.corner,
-.response {
-  position: sticky;
-  left: 0;
-  z-index: 2;
-  min-width: 128px;
-  max-width: 180px;
-  text-align: left;
-  background-color: var(--surface-solid);
-  border-right: 1px solid var(--border-1);
-}
-
-tbody tr:nth-child(even) .response {
-  background-image: linear-gradient(var(--surface-3), var(--surface-3));
-}
-
-.corner {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-3);
-}
-
-.response span {
-  display: block;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  text-transform: uppercase;
-}
-
-.player-col {
-  min-width: 136px;
-}
-
-.head {
+.card-head {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 12px;
 }
 
 .podium {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  width: 30px;
+  flex-shrink: 0;
   font-size: 26px;
   line-height: 1;
-}
-
-/* Les trophees et chaque reponse rendue apparaissent d'un rebond. */
-.podium i,
-td i.bx-check,
-td i.bx-x {
-  animation: gt-pop 0.45s var(--ease-spring) backwards;
 }
 
 .podium .order {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   border-radius: var(--r-pill);
   background: var(--surface-3);
   color: var(--text-2);
@@ -128,36 +78,128 @@ td i.bx-x {
   font-weight: 700;
 }
 
-.head .username {
-  max-width: 130px;
-  font-size: 15px;
+.identity {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+
+.username {
+  font-size: 16px;
   font-weight: 600;
+  color: var(--text-1);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.player-col:not(.me) .medals {
-  background: var(--surface-3);
-  color: var(--text-1);
-  box-shadow: none;
+.card.me .username {
+  color: var(--accent-bright);
 }
 
-.head .time {
+.state {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
   font-size: 13px;
   font-weight: 500;
   color: var(--text-2);
+  font-variant-numeric: tabular-nums;
 }
 
-.head .pending {
-  font-size: 18px;
+.state .finish {
+  font-size: 15px;
+  color: var(--success);
+}
+
+.state .pending {
+  font-size: 16px;
   color: var(--text-3);
+}
+
+.step {
+  padding: 1px 8px;
+  border-radius: var(--r-pill);
+  background: var(--surface-3);
+  color: var(--text-1);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.spectator {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 10px;
+  border-radius: var(--r-pill);
+  background: var(--surface-3);
+  color: var(--text-3);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.spectator i {
+  font-size: 15px;
+}
+
+.dots {
+  display: flex;
+  gap: 4px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border: 1.5px solid var(--border-2);
+  border-radius: 50%;
+  transition:
+    background var(--speed) var(--ease),
+    border-color var(--speed) var(--ease);
+}
+
+.dot.found,
+.dot.misplaced {
+  animation: gt-pop 0.35s var(--ease-spring) backwards;
+}
+
+.dot.found {
+  border-color: var(--success);
+  background: var(--success);
+  box-shadow: 0 0 8px var(--success-glow);
+}
+
+.dot.misplaced {
+  border-color: var(--danger);
+  background: var(--danger);
+  box-shadow: 0 0 8px var(--danger-glow);
+}
+
+.score {
+  flex-shrink: 0;
+  padding: 3px 12px;
+  border-radius: var(--r-pill);
+  background: var(--surface-3);
+  color: var(--text-1);
+  font-size: 15px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.card.me .score {
+  background: var(--accent-gradient);
+  color: var(--on-accent);
+  box-shadow: 0 4px 14px var(--accent-glow);
 }
 
 .remove {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   width: 30px;
   height: 30px;
   padding: 0;
@@ -180,50 +222,96 @@ td i.bx-x {
   color: #fff;
 }
 
-th.player-col.me,
-td.me {
-  background: var(--accent-tint);
+.words {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-th.player-col.me .username {
-  color: var(--accent-bright);
-}
-
-tbody td i {
-  font-size: 24px;
-}
-
-@media screen and (max-width: 550px) {
-  .board th,
-  .board td {
-    padding: 8px 10px;
-  }
-
-  .corner,
-  .response {
-    min-width: 108px;
-  }
-
-  .player-col {
-    min-width: 120px;
-  }
-}
-
-.head .spectator {
+.word {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 2px 10px;
+  max-width: 100%;
+  padding: 3px 10px 3px 6px;
+  border: 1px solid var(--border-1);
   border-radius: var(--r-pill);
   background: var(--surface-3);
-  color: var(--text-3);
-  font-size: 12px;
+  color: var(--text-2);
+  font-size: 13px;
   font-weight: 600;
-  white-space: nowrap;
 }
 
-.head .spectator i {
-  font-size: 15px;
+.word i {
+  flex-shrink: 0;
+  font-size: 17px;
+  line-height: 1;
+}
+
+.word .response {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.word.won {
+  border-color: var(--success-border);
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.word.lost {
+  border-color: var(--danger-border);
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.word.current {
+  border-color: var(--accent-border);
+  background: var(--accent-tint);
+  color: var(--accent-bright);
+}
+
+.word.pending {
+  opacity: 0.55;
+}
+
+/* Les trophees, le score et chaque verdict apparaissent d'un rebond. */
+.podium i,
+.score,
+.step,
+.state .finish,
+.word.won i,
+.word.lost i {
+  animation: gt-pop 0.45s var(--ease-spring) backwards;
+}
+
+@media screen and (max-width: 420px) {
+  .card {
+    padding: 10px 12px;
+  }
+
+  .card-head {
+    gap: 10px;
+  }
+
+  .username {
+    font-size: 15px;
+  }
+
+  .dots {
+    gap: 3px;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+  }
 }
 
 .vote {

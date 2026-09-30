@@ -1,90 +1,101 @@
 <span class="title">Résultats</span>
 
-<div class="board-scroll">
-  <table class="board">
-    <thead>
-      <tr>
-        <th class="corner" scope="col">Réponses</th>
-        @for (entry of standings(); track entry.player.userId) {
-          <th
-            class="player-col"
-            scope="col"
-            [ngClass]="{ me: entry.player.userId === currentPlayerId() }"
+<!-- Les cartes glissent a leur nouvelle place quand un joueur encore en
+course en double un autre. -->
+<div class="rows" [appFlip]="standings()">
+  @for (entry of standings(); track entry.player.userId) {
+    <article
+      class="card"
+      [class.me]="entry.isMe"
+      [class.done]="!!entry.player.finishDate && !entry.isSpectator"
+      [class.spectating]="entry.isSpectator"
+    >
+      <div class="card-head">
+        <div class="podium">
+          @if (standings().length > 1 && entry.rank === 1) {
+            <i class="bx bxs-trophy" style="color: var(--gold)"></i>
+          } @else if (standings().length > 1 && entry.rank === 2) {
+            <i class="bx bxs-trophy" style="color: var(--silver)"></i>
+          } @else if (standings().length > 1 && entry.rank === 3) {
+            <i class="bx bxs-trophy" style="color: var(--bronze)"></i>
+          } @else {
+            <span class="order">{{ entry.rank }}</span>
+          }
+        </div>
+
+        <div class="identity">
+          <span class="username"
+            >{{ entry.player.username }} {{ entry.player.animal }}</span
           >
-            <div class="head">
-              @if (standings().length > 1) {
-                <div class="podium">
-                  @if (entry.rank === 1) {
-                    <i class="bx bxs-trophy" style="color: var(--gold)"></i>
-                  } @else if (entry.rank === 2) {
-                    <i class="bx bxs-trophy" style="color: var(--silver)"></i>
-                  } @else if (entry.rank === 3) {
-                    <i class="bx bxs-trophy" style="color: var(--bronze)"></i>
-                  } @else {
-                    <span class="order">{{ entry.rank }}</span>
-                  }
-                </div>
-              }
-              <span class="username"
-                >{{ entry.player.username }} {{ entry.player.animal }}</span
+          <span class="state">
+            @if (entry.isSpectator) {
+              <span class="spectator" title="Arrivé après la fin"
+                ><i class="bx bx-glasses"></i> Spectateur</span
               >
-              <div class="medals">
-                <span class="victory-number"
-                  >{{ entry.wins }} / {{ room().responses.length }}</span
-                >
-              </div>
-              @if (entry.isSpectator) {
-                <span class="spectator" title="Arrivé après la fin"
-                  ><i class="bx bx-glasses"></i> Spectateur</span
-                >
-              } @else if (entry.player.finishDate) {
-                <span class="time">{{
-                  entry.player.durationMs | duration
-                }}</span>
+            } @else if (entry.player.finishDate) {
+              <i class="bx bxs-flag-checkered finish" aria-hidden="true"></i>
+              <span>{{ entry.player.durationMs | duration }}</span>
+            } @else {
+              <!-- Recree a chaque manche, pour rejouer l'apparition. -->
+              @for (step of [entry.step]; track step) {
+                <span class="step">Manche {{ step }}/{{ entry.total }}</span>
+              }
+              @if (entry.letterDots; as dots) {
+                <span class="dots" [attr.aria-label]="entry.lettersLabel">
+                  @for (dot of dots; track $index) {
+                    <span class="dot {{ dot }}"></span>
+                  }
+                </span>
+              } @else if (entry.lettersLabel) {
+                <span>{{ entry.lettersLabel }}</span>
               } @else {
                 <i class="bx bx-loader-alt bx-spin pending"></i>
               }
-              @if (isHost() && entry.player.userId !== currentPlayerId()) {
-                <button
-                  type="button"
-                  class="remove"
-                  (click)="delete(entry.player)"
-                  title="Supprimer"
-                >
-                  <i class="bx bxs-trash"></i>
-                </button>
-              }
-            </div>
-          </th>
+            }
+          </span>
+        </div>
+
+        <span class="score" title="Mots trouvés"
+          >{{ entry.wins }} / {{ entry.total }}</span
+        >
+
+        @if (isHost() && !entry.isMe) {
+          <button
+            type="button"
+            class="remove"
+            (click)="delete(entry.player)"
+            title="Supprimer"
+          >
+            <i class="bx bxs-trash"></i>
+          </button>
         }
-      </tr>
-    </thead>
-    <tbody>
-      @for (response of room().responses; track $index; let i = $index) {
-        <tr>
-          <th class="response" scope="row">
-            <span>{{ response }}</span>
-          </th>
-          @for (entry of standings(); track entry.player.userId) {
-            <td [ngClass]="{ me: entry.player.userId === currentPlayerId() }">
-              @if (entry.isSpectator) {
-                <i class="bx bx-minus" style="color: var(--text-3)"></i>
-              } @else if (entry.player.currentRoomWins[i] === true) {
-                <i class="bx bx-check" style="color: var(--success)"></i>
-              } @else if (entry.player.currentRoomWins[i] === false) {
-                <i class="bx bx-x" style="color: var(--danger)"></i>
-              } @else {
-                <i
-                  class="bx bx-loader-alt bx-spin"
-                  style="color: var(--accent-bright)"
-                ></i>
+      </div>
+
+      @if (!entry.isSpectator) {
+        <ul class="words">
+          @for (word of entry.words; track $index) {
+            <li class="word {{ word.state }}">
+              @switch (word.state) {
+                @case ('won') {
+                  <i class="bx bx-check" aria-label="Trouvé"></i>
+                }
+                @case ('lost') {
+                  <i class="bx bx-x" aria-label="Raté"></i>
+                }
+                @case ('current') {
+                  <i class="bx bx-loader-alt bx-spin" aria-label="En cours"></i>
+                }
+                @default {
+                  <i class="bx bx-time-five" aria-label="À venir"></i>
+                }
               }
-            </td>
+              <span class="response">{{ word.response }}</span>
+            </li>
           }
-        </tr>
+        </ul>
       }
-    </tbody>
-  </table>
+    </article>
+  }
 </div>
 
 @if (canVote() && players().length > 1) {

@@ -110,6 +110,57 @@ describe('ResultsBoardComponent', () => {
     expect(component.standings().map((entry) => entry.wins)).toEqual([2, 1]);
   });
 
+  it('donne le verdict de chaque mot et la manche en cours', () => {
+    build(buildRoom(['host', 'other']), [
+      buildPlayer({
+        id: 'p1',
+        userId: 'host',
+        currentRoomWins: [true, false],
+        finishDate: new Date(),
+      }),
+      buildPlayer({
+        id: 'p2',
+        userId: 'other',
+        currentRoomWins: [false],
+        currentRoundProgress: {
+          stepIndex: 1,
+          lettersFound: 2,
+          lettersMisplaced: 1,
+          lettersTotal: 5,
+        },
+      }),
+    ]);
+
+    const [host, other] = component.standings();
+    expect(host.words.map((word) => word.state)).toEqual(['won', 'lost']);
+    expect(host.letterDots).toBeNull();
+    expect(other.words.map((word) => word.state)).toEqual(['lost', 'current']);
+    expect(other.step).toBe(2);
+    expect(other.letterDots).toEqual([
+      'found',
+      'found',
+      'misplaced',
+      'empty',
+      'empty',
+    ]);
+  });
+
+  it('ignore une avancee restee sur une manche precedente', () => {
+    build(buildRoom(['host']), [
+      buildPlayer({
+        userId: 'host',
+        currentRoomWins: [true],
+        currentRoundProgress: {
+          stepIndex: 0,
+          lettersFound: 4,
+          lettersTotal: 4,
+        },
+      }),
+    ]);
+
+    expect(component.standings()[0].letterDots).toBeNull();
+  });
+
   it('reconnait l hote, seul a pouvoir relancer', () => {
     build(buildRoom(['host']), [buildPlayer({ userId: 'host' })]);
     expect(component.isHost()).toBe(true);
