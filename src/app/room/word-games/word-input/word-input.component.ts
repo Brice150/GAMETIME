@@ -17,6 +17,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { RoundAnswer } from '../../../core/interfaces/round-answer';
 import { Room } from '../../../core/interfaces/room';
+import { LetterDot } from '../../../core/interfaces/round-progress';
 import { WordTry } from '../../../core/interfaces/word-try';
 import { LocalStorageService } from '../../../core/services/local-storage.service';
 import { ToastrHelperService } from '../../../core/services/toastr-helper.service';
@@ -47,7 +48,11 @@ export class WordInputComponent {
   readonly inputValue = signal('');
   tries: WordTry[] = [];
   readonly emitEvent = output<RoundAnswer>();
-  readonly progressEvent = output<{ found: number; misplaced: number }>();
+  readonly progressEvent = output<{
+    found: number;
+    misplaced: number;
+    dots: LetterDot[];
+  }>();
   isOver = false;
   // Manche gagnee : la ligne de la reponse fait une vague.
   won = false;
@@ -157,18 +162,41 @@ export class WordInputComponent {
     }
 
     this.letterStates.set(states);
-    // Mal placees : lettres reperees dans le mot, sans place trouvee. Bornees
-    // aux cases encore vides du mot.
-    const misplaced = Object.values(states).filter(
-      (state) => state === 'wrongPlaced',
-    ).length;
+    const dots = this.letterDots(states);
     this.progressEvent.emit({
       found: this.foundPositions.size,
-      misplaced: Math.min(
-        misplaced,
-        this.word().length - this.foundPositions.size,
-      ),
+      misplaced: dots.filter((dot) => dot === 'misplaced').length,
+      dots,
     });
+  }
+
+  // Une case par lettre du mot, a la place ou le joueur la voit dans sa
+  // grille : verte si trouvee, rouge a l'endroit ou il a essaye une lettre
+  // presente mais mal placee. Le dernier essai l'emporte, et chaque lettre
+  // mal placee ne colore qu'une case, restee vide.
+  private letterDots(states: Record<string, LetterState>): LetterDot[] {
+    const dots = Array.from(
+      { length: this.word().length },
+      (unused, index): LetterDot =>
+        this.foundPositions.has(index) ? 'found' : 'empty',
+    );
+    const placed = new Set<string>();
+
+    for (const previousTry of [...this.tries].reverse()) {
+      previousTry.letter.forEach((letter, index) => {
+        if (
+          previousTry.isWrongPlaced[index] &&
+          states[letter] === 'wrongPlaced' &&
+          dots[index] === 'empty' &&
+          !placed.has(letter)
+        ) {
+          dots[index] = 'misplaced';
+          placed.add(letter);
+        }
+      });
+    }
+
+    return dots;
   }
 
   onKeyDown(event: KeyboardEvent) {

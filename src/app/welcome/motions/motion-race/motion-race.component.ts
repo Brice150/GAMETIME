@@ -13,12 +13,15 @@ import {
 export interface Racer {
   name: string;
   animal: string;
+  // Cases du mot dans l'ordre ou le joueur les trouve : comme en partie, la
+  // pastille s'allume a la place de la lettre dans le mot.
+  letters: number[];
 }
 
 export const RACERS: Racer[] = [
-  { name: 'Vous', animal: '🐱' },
-  { name: 'Léa', animal: '🦊' },
-  { name: 'Tom', animal: '🐧' },
+  { name: 'Vous', animal: '🐱', letters: [2, 0, 4, 1, 3] },
+  { name: 'Léa', animal: '🦊', letters: [0, 3, 1, 4, 2] },
+  { name: 'Tom', animal: '🐧', letters: [4, 1, 2, 0, 3] },
 ];
 export const WORD_LENGTH = 5;
 // Qui trouve une lettre, dans l'ordre : Lea mene, puis se fait doubler.
@@ -98,6 +101,12 @@ export class MotionRaceComponent implements MotionScript {
       }
       this.finishers.update((finishers) => [...finishers, racer]);
     }
+  }
+
+  isFound(racer: number, slot: number): boolean {
+    return this.racers[racer].letters
+      .slice(0, this.found()[racer])
+      .includes(slot);
   }
 
   // Or pour le premier a finir, argent pour le second.

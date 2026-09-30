@@ -3,6 +3,7 @@ import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RoundAnswer } from '../../../core/interfaces/round-answer';
 import { Room } from '../../../core/interfaces/room';
+import { LetterDot } from '../../../core/interfaces/round-progress';
 import { WordTry } from '../../../core/interfaces/word-try';
 import { LocalStorageService } from '../../../core/services/local-storage.service';
 import { ToastrHelperService } from '../../../core/services/toastr-helper.service';
@@ -126,9 +127,29 @@ describe('WordInputComponent', () => {
 
     // TACH : quatre lettres presentes, aucune a sa place. CHTA : C et H
     // trouves, il ne reste que deux cases pour les mal placees.
-    expect(progress).toEqual([
+    expect(
+      progress.map(({ found, misplaced }) => ({ found, misplaced })),
+    ).toEqual([
       { found: 0, misplaced: 4 },
       { found: 2, misplaced: 2 },
+    ]);
+  });
+
+  it('place chaque pastille a l endroit de la lettre dans la grille', async () => {
+    await build('CHAT');
+    const dots: LetterDot[][] = [];
+    component.progressEvent.subscribe((value) => dots.push(value.dots));
+
+    // H mal placee en 1re case, T trouve en 4e.
+    component.inputValue.set('HUUT');
+    component.addTry();
+    // Le dernier essai deplace le H en 3e case ; A mal placee en 2e.
+    component.inputValue.set('XAHX');
+    component.addTry();
+
+    expect(dots).toEqual([
+      ['misplaced', 'empty', 'empty', 'found'],
+      ['empty', 'misplaced', 'misplaced', 'found'],
     ]);
   });
 
