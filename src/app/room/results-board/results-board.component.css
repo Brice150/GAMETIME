@@ -321,3 +321,34 @@
   width: min(880px, 94%);
   margin-top: 28px;
 }
+
+/* Grand ecran : les resultats a gauche, le vote pour la suite a droite,
+   plutot qu'une longue colonne au milieu de l'ecran. */
+@media screen and (min-width: 1024px) {
+  :host(.with-vote) {
+    display: grid;
+    grid-template-columns: minmax(0, 620px) minmax(380px, 480px);
+    grid-template-rows: auto 1fr;
+    justify-content: center;
+    align-items: start;
+    column-gap: 56px;
+    padding: 0 24px;
+  }
+
+  :host(.with-vote) .title {
+    grid-column: 1;
+    justify-self: center;
+  }
+
+  :host(.with-vote) .rows {
+    grid-column: 1;
+    width: 100%;
+  }
+
+  :host(.with-vote) .vote {
+    grid-column: 2;
+    grid-row: 1 / 3;
+    width: 100%;
+    margin-top: 0;
+  }
+}

@@ -26,6 +26,9 @@ export type WordState = 'won' | 'lost' | 'current' | 'pending';
   templateUrl: './results-board.component.html',
   styleUrl: './results-board.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  // Meme condition que le vote dans le gabarit : sur grand ecran, il passe
+  // a droite des resultats.
+  host: { '[class.with-vote]': 'canVote() && players().length > 1' },
 })
 export class ResultsBoardComponent {
   room = input.required<Room>();
