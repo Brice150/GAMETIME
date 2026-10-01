@@ -7,6 +7,15 @@ section .content {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+section .content .column {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
   gap: 12px;
   width: 100%;
 }
@@ -228,4 +237,23 @@ section .content .share-native:hover {
 
 section .content .share-native i {
   font-size: 22px;
+}
+
+/* Grand ecran : la fenetre s'elargit plutot que de s'allonger, amis et
+   partage cote a cote (la largeur maximale est levee a l'ouverture). */
+@media screen and (min-width: 900px) {
+  section {
+    width: min(860px, 92vw);
+  }
+
+  section .content {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    gap: 28px;
+  }
+
+  section .content .friends {
+    max-height: 440px;
+  }
 }

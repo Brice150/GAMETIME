@@ -19,3 +19,32 @@ mat-spinner:not(.ai) {
   left: 50%;
   transform: translate(-50%, -50%);
 }
+
+.game-layout {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* Grand ecran : sans publicite sur les cotes, le classement en direct
+   prend la colonne de gauche et reste visible pendant que les essais
+   s'allongent a droite. */
+@media screen and (min-width: 960px) {
+  .game-layout {
+    display: grid;
+    grid-template-columns: minmax(300px, 380px) minmax(420px, 520px);
+    justify-content: center;
+    align-items: start;
+    gap: 56px;
+    padding: 0 24px;
+  }
+
+  .game-layout app-live-standings {
+    position: sticky;
+    top: 84px;
+    width: 100%;
+    margin-bottom: 0;
+  }
+}

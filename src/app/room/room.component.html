@@ -3,19 +3,22 @@
     @if (room.isStarted) {
       @if (!isResultPageActive()) {
         <!-- Les joueurs ne sont pas forcement cote a cote : le chrono et le
-        classement provisoire remplacent ce qu'ils voyaient de l'ecran voisin. -->
-        <app-live-standings
-          [room]="room"
-          [players]="players"
-          [currentPlayerId]="playerService.currentPlayerSig()!.userId"
-        ></app-live-standings>
-        <app-word-games
-          [room]="room"
-          [player]="playerService.currentPlayerSig()!"
-          [lastRound]="lastRound()"
-          (finishedStepEvent)="updatePlayerGame($event)"
-          (progressEvent)="publishProgress($event)"
-        ></app-word-games>
+        classement provisoire remplacent ce qu'ils voyaient de l'ecran voisin.
+        Sur grand ecran, le classement passe a gauche du jeu. -->
+        <div class="game-layout">
+          <app-live-standings
+            [room]="room"
+            [players]="players"
+            [currentPlayerId]="playerService.currentPlayerSig()!.userId"
+          ></app-live-standings>
+          <app-word-games
+            [room]="room"
+            [player]="playerService.currentPlayerSig()!"
+            [lastRound]="lastRound()"
+            (finishedStepEvent)="updatePlayerGame($event)"
+            (progressEvent)="publishProgress($event)"
+          ></app-word-games>
+        </div>
       } @else {
         <app-results-board
           [room]="room"

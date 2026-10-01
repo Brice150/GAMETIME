@@ -36,6 +36,9 @@ const ARRIVALS: Record<JoinChannel | 'host', { icon: string; label: string }> =
   templateUrl: './waiting-room.component.html',
   styleUrl: './waiting-room.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  // Meme condition que le vote dans le gabarit : sur grand ecran, il passe
+  // a droite des joueurs.
+  host: { '[class.with-vote]': 'players().length > 1' },
 })
 export class WaitingRoomComponent {
   // L'hote a cree la room ; les autres disent par ou ils sont entres.

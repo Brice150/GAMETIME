@@ -1,87 +1,93 @@
 <section mat-dialog-content>
   <h1>Inviter des joueurs</h1>
 
+  <!-- Deux colonnes sur grand ecran : les amis a gauche, le partage a
+  droite, au lieu d'une longue fenetre a faire defiler. -->
   <div class="content">
-    <span class="section-title">Vos amis</span>
-    @if (!loadingFriends()) {
-      <div class="friends">
-        @for (friend of friends(); track friend.id) {
-          <div class="row">
-            <span class="username"
-              >{{ friend.username }} {{ friend.animal }}</span
+    <div class="column">
+      <span class="section-title">Vos amis</span>
+      @if (!loadingFriends()) {
+        <div class="friends">
+          @for (friend of friends(); track friend.id) {
+            <div class="row">
+              <span class="username"
+                >{{ friend.username }} {{ friend.animal }}</span
+              >
+              @if (isInRoom(friend)) {
+                <span class="tag"
+                  ><i class="bx bxs-check-circle"></i> Dans la room</span
+                >
+              } @else if (isInvited(friend)) {
+                <span class="tag pending"
+                  ><i class="bx bx-time-five"></i> Invité</span
+                >
+              } @else {
+                <button
+                  type="button"
+                  class="invite"
+                  title="Inviter"
+                  (click)="invite(friend)"
+                >
+                  <i class="bx bxs-user-plus"></i>
+                  <span class="text">Inviter</span>
+                </button>
+              }
+            </div>
+          }
+          @if (!friends().length) {
+            <span class="empty"
+              >Vous n'avez pas encore d'amis. Ajoutez-en depuis vos
+              paramètres.</span
             >
-            @if (isInRoom(friend)) {
-              <span class="tag"
-                ><i class="bx bxs-check-circle"></i> Dans la room</span
-              >
-            } @else if (isInvited(friend)) {
-              <span class="tag pending"
-                ><i class="bx bx-time-five"></i> Invité</span
-              >
-            } @else {
-              <button
-                type="button"
-                class="invite"
-                title="Inviter"
-                (click)="invite(friend)"
-              >
-                <i class="bx bxs-user-plus"></i>
-                <span class="text">Inviter</span>
-              </button>
-            }
-          </div>
-        }
-        @if (!friends().length) {
-          <span class="empty"
-            >Vous n'avez pas encore d'amis. Ajoutez-en depuis vos
-            paramètres.</span
-          >
-        }
-      </div>
-    } @else {
-      <mat-spinner diameter="34"></mat-spinner>
-    }
+          }
+        </div>
+      } @else {
+        <mat-spinner diameter="34"></mat-spinner>
+      }
+    </div>
 
-    <span class="section-title">Ou partagez la partie</span>
-    @if (canShare) {
-      <button type="button" class="share-native" (click)="share()">
-        <i class="bx bxs-share-alt"></i>
-        <span>Partager la partie</span>
-      </button>
-    }
-    <div class="element">
-      <span class="title"
-        >Ce code : <span class="code">{{ roomCode() }}</span></span
-      >
-      <button
-        type="button"
-        title="Copier code"
-        (click)="copyCode()"
-        class="share"
-      >
-        <i class="bx bxs-copy-alt"></i>
-      </button>
-    </div>
-    <div class="element">
-      <span class="title">Ou l'url :</span>
-      <button
-        type="button"
-        title="Copier url"
-        (click)="copyLink()"
-        class="share"
-      >
-        <i class="bx bx-link"></i>
-      </button>
-    </div>
-    <div class="element qr-code">
-      <span class="title">Ou le QR code :</span>
-      <qrcode
-        [qrdata]="link()"
-        [width]="200"
-        [errorCorrectionLevel]="'M'"
-        [colorDark]="'#7c2d12'"
-        [colorLight]="'#ffffff'"
-      ></qrcode>
+    <div class="column">
+      <span class="section-title">Ou partagez la partie</span>
+      @if (canShare) {
+        <button type="button" class="share-native" (click)="share()">
+          <i class="bx bxs-share-alt"></i>
+          <span>Partager la partie</span>
+        </button>
+      }
+      <div class="element">
+        <span class="title"
+          >Ce code : <span class="code">{{ roomCode() }}</span></span
+        >
+        <button
+          type="button"
+          title="Copier code"
+          (click)="copyCode()"
+          class="share"
+        >
+          <i class="bx bxs-copy-alt"></i>
+        </button>
+      </div>
+      <div class="element">
+        <span class="title">Ou l'url :</span>
+        <button
+          type="button"
+          title="Copier url"
+          (click)="copyLink()"
+          class="share"
+        >
+          <i class="bx bx-link"></i>
+        </button>
+      </div>
+      <div class="element qr-code">
+        <span class="title">Ou le QR code :</span>
+        <qrcode
+          [qrdata]="link()"
+          [width]="200"
+          [errorCorrectionLevel]="'M'"
+          [colorDark]="'#7c2d12'"
+          [colorLight]="'#ffffff'"
+        ></qrcode>
+      </div>
     </div>
   </div>
 

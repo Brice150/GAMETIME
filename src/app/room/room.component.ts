@@ -814,7 +814,12 @@ export class RoomComponent implements OnInit {
   }
 
   multiplayer(): void {
-    this.dialog.open(MultiplayerDialogComponent, { data: this.room });
+    // Material borne les dialogues a 560px : sur grand ecran, la fenetre
+    // d'invitation passe sur deux colonnes et deborderait sur la droite.
+    this.dialog.open(MultiplayerDialogComponent, {
+      data: this.room,
+      maxWidth: '92vw',
+    });
   }
 
   shouldShowPlayButton(): boolean {
