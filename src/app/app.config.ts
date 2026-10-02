@@ -14,7 +14,7 @@ import { getApp, initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import {
   initializeAppCheck,
   provideAppCheck,
-  ReCaptchaV3Provider,
+  ReCaptchaEnterpriseProvider,
 } from '@angular/fire/app-check';
 import { getAuth, GoogleAuthProvider, provideAuth } from '@angular/fire/auth';
 import { initializeFirestore, provideFirestore } from '@angular/fire/firestore';
@@ -65,7 +65,9 @@ export const appConfig: ApplicationConfig = {
               ).FIREBASE_APPCHECK_DEBUG_TOKEN = true;
             }
             return initializeAppCheck(getApp(), {
-              provider: new ReCaptchaV3Provider(environment.recaptchaSiteKey),
+              provider: new ReCaptchaEnterpriseProvider(
+                environment.recaptchaSiteKey,
+              ),
               isTokenAutoRefreshEnabled: true,
             });
           }),
