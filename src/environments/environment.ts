@@ -2,6 +2,8 @@ export const environment = {
   production: false,
   imagePath: './assets/images/',
   functionsRegion: 'europe-west1',
+  // Cle de site reCAPTCHA v3 utilisee par Firebase App Check.
+  recaptchaSiteKey: '6LcFfJ0tAAAAANF-mtt-pjF0dv6oLnv2ghF2C3KG',
   // Cle publique Web Push, a copier depuis Firebase > Paramètres du projet >
   // Cloud Messaging > Certificats push Web. Vide : les notifications push
   // sont simplement desactivees.
