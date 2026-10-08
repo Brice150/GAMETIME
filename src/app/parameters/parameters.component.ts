@@ -22,6 +22,7 @@ import { ConfirmationDialogComponent } from '../shared/components/confirmation-d
 import { FriendsComponent } from './friends/friends.component';
 import { NotificationsCardComponent } from './notifications-card/notifications-card.component';
 import { PrivacyCardComponent } from './privacy-card/privacy-card.component';
+import { ThemeCardComponent } from './theme-card/theme-card.component';
 import { UserComponent } from './user/user.component';
 import { UserDialogComponent } from '../shared/components/user-dialog/user-dialog.component';
 import { Player } from '../core/interfaces/player';
@@ -40,6 +41,7 @@ import {
     FriendsComponent,
     NotificationsCardComponent,
     PrivacyCardComponent,
+    ThemeCardComponent,
   ],
   templateUrl: './parameters.component.html',
   styleUrl: './parameters.component.css',

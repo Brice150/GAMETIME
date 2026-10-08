@@ -44,36 +44,60 @@ describe('ThemeService', () => {
 
   it('suit le systeme quand rien n a ete choisi', () => {
     withSystemDark(false);
+    const themeService = service();
 
-    expect(service().theme()).toBe('light');
-    expect(document.documentElement.getAttribute('data-theme')).toBe('light');
+    expect(themeService.mode()).toBe('system');
+    expect(themeService.theme()).toBe('light');
+    expect(document.documentElement.hasAttribute('data-theme')).toBe(false);
   });
 
   it('prefere le choix memorise a la preference systeme', () => {
     localStorage.setItem('theme', 'light');
     withSystemDark(true);
+    const themeService = service();
 
-    expect(service().theme()).toBe('light');
+    expect(themeService.mode()).toBe('light');
+    expect(themeService.theme()).toBe('light');
+    expect(document.documentElement.getAttribute('data-theme')).toBe('light');
   });
 
   it('ignore une valeur memorisee qui ne designe aucun theme', () => {
     localStorage.setItem('theme', 'fuchsia');
 
-    expect(service().theme()).toBe('dark');
+    expect(service().mode()).toBe('system');
   });
 
-  it('bascule le theme et le memorise', () => {
+  it('impose un theme et le memorise', () => {
     const themeService = service();
 
-    themeService.toggle();
+    themeService.setMode('light');
 
     expect(themeService.theme()).toBe('light');
     expect(localStorage.getItem('theme')).toBe('light');
     expect(document.documentElement.getAttribute('data-theme')).toBe('light');
+  });
+
+  it('revient au systeme et oublie le choix', () => {
+    const themeService = service();
+    themeService.setMode('light');
+
+    themeService.setMode('system');
+
+    expect(themeService.theme()).toBe('dark');
+    expect(localStorage.getItem('theme')).toBeNull();
+    expect(document.documentElement.hasAttribute('data-theme')).toBe(false);
+  });
+
+  it('bascule vers l inverse du theme affiche', () => {
+    const themeService = service();
 
     themeService.toggle();
 
-    expect(themeService.theme()).toBe('dark');
+    expect(themeService.mode()).toBe('light');
+
+    themeService.toggle();
+
+    expect(themeService.mode()).toBe('dark');
     expect(localStorage.getItem('theme')).toBe('dark');
   });
 
@@ -97,18 +121,17 @@ describe('ThemeService', () => {
     expect(service().theme()).toBe('light');
   });
 
-  it('suit le systeme qui change tant qu aucun choix n est memorise', () => {
+  it('suit le systeme qui change en mode systeme', () => {
     const themeService = service();
 
     listeners.forEach((listener) => listener({ matches: false }));
 
     expect(themeService.theme()).toBe('light');
-    expect(document.documentElement.getAttribute('data-theme')).toBe('light');
   });
 
-  it('cesse de suivre le systeme des qu un choix est memorise', () => {
+  it('ignore le systeme qui change quand un theme est impose', () => {
     const themeService = service();
-    themeService.toggle();
+    themeService.setMode('light');
 
     listeners.forEach((listener) => listener({ matches: true }));
 
@@ -118,7 +141,7 @@ describe('ThemeService', () => {
   it('reste en sombre au prerendu, ou il n y a pas de navigateur a interroger', () => {
     const themeService = service('server');
 
-    themeService.toggle();
+    themeService.setMode('light');
 
     expect(themeService.theme()).toBe('dark');
     expect(localStorage.getItem('theme')).toBeNull();

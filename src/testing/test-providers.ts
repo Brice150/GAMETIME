@@ -219,7 +219,15 @@ export function appTestProviders(
     },
     {
       provide: ThemeService,
-      useValue: { theme: signal('dark'), toggle: noop },
+      useFactory: () => {
+        const mode = signal('system');
+        return {
+          theme: signal('dark'),
+          mode,
+          setMode: (value: string) => mode.set(value),
+          toggle: noop,
+        };
+      },
     },
     ...extra,
   ];
