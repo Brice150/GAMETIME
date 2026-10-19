@@ -23,12 +23,7 @@ import { MedalsNumberPipe } from '../shared/pipes/medals-number.pipe';
 
 @Component({
   selector: 'app-header',
-  imports: [
-    RouterModule,
-    MatButtonModule,
-    MatMenuModule,
-    MedalsNumberPipe,
-  ],
+  imports: [RouterModule, MatButtonModule, MatMenuModule, MedalsNumberPipe],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
