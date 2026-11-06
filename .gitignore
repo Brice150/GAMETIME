@@ -46,5 +46,5 @@ Thumbs.db
 *-debug.log
 .runtimeconfig.json
 
-# Claude Code local settings
-.claude/settings.local.json
+# Réglages locaux de Claude Code
+/.claude
