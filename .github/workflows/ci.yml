@@ -6,10 +6,11 @@ on:
   pull_request:
     branches: [main]
 
-# A new push on a branch cancels the run still in progress for that branch.
+# Un nouveau push sur une branche annule l'exécution encore en cours pour cette
+# branche, sauf sur main où le déploiement qui suit ne doit pas être interrompu.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   frontend:
@@ -37,3 +38,43 @@ jobs:
 
       - name: Build
         run: npm run build
+
+  deploy:
+    name: Deploy
+    needs: frontend
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            functions/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          npm ci --prefix functions
+
+      - name: Build
+        run: npm run build
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+
+      - name: Deploy to Firebase
+        run: >
+          npx --yes firebase-tools@14 deploy
+          --project game-time-64133
+          --only hosting,functions,firestore:rules
+          --non-interactive
+          --force
