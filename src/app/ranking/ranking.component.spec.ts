@@ -221,6 +221,80 @@ describe('RankingComponent', () => {
     });
   });
 
+  describe('pagination', () => {
+    // 25 joueurs, du plus titre (x0, 25 medailles) au moins titre (x24, 1).
+    const crowd = Array.from({ length: 25 }, (_, index) =>
+      buildPlayer({
+        id: `x${index}`,
+        userId: `ux${index}`,
+        username: `Joueur ${index}`,
+        stats: stats(25 - index, 0),
+      }),
+    );
+    const meAt = (index: number) => crowd[index];
+
+    it('decoupe le classement par pages de 10', async () => {
+      const component = await build([withPlayers(meAt(0), crowd)]);
+
+      expect(component.pageCount()).toBe(3);
+      expect(component.page()).toBe(1);
+      expect(component.pagedPlayers().map((player) => player.id)).toEqual(
+        crowd.slice(0, 10).map((player) => player.id),
+      );
+    });
+
+    it('ouvre sur la page du joueur courant', async () => {
+      const component = await build([withPlayers(meAt(14), crowd)]);
+
+      expect(component.currentPlayerPosition()).toBe(15);
+      expect(component.page()).toBe(2);
+      expect(component.pageStart()).toBe(10);
+      expect(component.pagedPlayers()).toContain(meAt(14));
+    });
+
+    it('navigue entre les pages sans sortir des bornes', async () => {
+      const component = await build([withPlayers(meAt(0), crowd)]);
+
+      component.goToPage(3);
+      expect(component.pagedPlayers().map((player) => player.id)).toEqual(
+        crowd.slice(20).map((player) => player.id),
+      );
+
+      component.goToPage(9);
+      expect(component.page()).toBe(3);
+
+      component.goToPage(0);
+      expect(component.page()).toBe(1);
+    });
+
+    it('revient a la position du joueur', async () => {
+      const component = await build([withPlayers(meAt(24), crowd)]);
+
+      component.goToPage(1);
+      expect(component.page()).toBe(1);
+
+      component.goToCurrentPlayer();
+      expect(component.page()).toBe(3);
+    });
+
+    it('se recale sur le joueur quand le jeu change', async () => {
+      const component = await build([withPlayers(meAt(0), crowd)]);
+
+      component.goToPage(3);
+      // Tout le monde a 0 en drapeaux : l'ordre initial est conserve.
+      component.gameSelected.set('drapeaux');
+
+      expect(component.page()).toBe(1);
+    });
+
+    it('n affiche qu une page pour un petit classement', async () => {
+      const component = await build([withPlayers(me)]);
+
+      expect(component.pageCount()).toBe(1);
+      expect(component.pagedPlayers().length).toBe(3);
+    });
+  });
+
   it('bascule entre classement et succes', async () => {
     const component = await build([withPlayers(me)]);
 
