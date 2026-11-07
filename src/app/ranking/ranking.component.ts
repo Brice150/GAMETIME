@@ -6,8 +6,10 @@ import {
   computed,
   DestroyRef,
   inject,
+  linkedSignal,
   OnInit,
   signal,
+  untracked,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -33,6 +35,9 @@ import { SuccessComponent } from '../success/success.component';
 import { environment } from '../../environments/environment';
 import { AdSlotComponent } from '../shared/components/ad-slot/ad-slot.component';
 import { FlipDirective } from '../shared/directives/flip.directive';
+
+export const PAGE_SIZE = 10;
+
 @Component({
   selector: 'app-ranking',
   imports: [
@@ -180,6 +185,55 @@ export class RankingComponent implements OnInit {
 
     return entries;
   });
+
+  // Au-dela de quelques dizaines de joueurs, la liste complete devient
+  // illisible : on la decoupe en pages.
+  readonly pageSize = PAGE_SIZE;
+
+  readonly pageCount = computed(() =>
+    Math.max(1, Math.ceil(this.sortedPlayers().length / this.pageSize)),
+  );
+
+  // Page de la position du joueur courant, ou la premiere s'il n'est pas
+  // classe.
+  readonly currentPlayerPage = computed(() => {
+    const position = this.currentPlayerPosition();
+    return position ? Math.ceil(position / this.pageSize) : 1;
+  });
+
+  // Changer de jeu ou de perimetre ramene sur la page du joueur courant. Les
+  // mises a jour en direct de la collection, elles, ne deplacent pas la page
+  // consultee.
+  private readonly requestedPage = linkedSignal({
+    source: () => ({
+      scope: this.scope(),
+      game: this.gameSelected(),
+      loading: this.loading(),
+    }),
+    computation: () => untracked(this.currentPlayerPage),
+  });
+
+  // Bornee : la liste peut raccourcir sous la page affichee.
+  readonly page = computed(() =>
+    Math.min(Math.max(1, this.requestedPage()), this.pageCount()),
+  );
+
+  readonly pageStart = computed(() => (this.page() - 1) * this.pageSize);
+
+  readonly pagedPlayers = computed(() =>
+    this.sortedPlayers().slice(
+      this.pageStart(),
+      this.pageStart() + this.pageSize,
+    ),
+  );
+
+  goToPage(page: number): void {
+    this.requestedPage.set(Math.min(Math.max(1, page), this.pageCount()));
+  }
+
+  goToCurrentPlayer(): void {
+    this.goToPage(this.currentPlayerPage());
+  }
 
   ngOnInit(): void {
     this.playerService

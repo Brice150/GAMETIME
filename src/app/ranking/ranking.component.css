@@ -199,6 +199,82 @@ mat-form-field {
   flex-shrink: 0;
 }
 
+/* Pagination */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.pagination button,
+button.me {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-1);
+  background: var(--surface-1);
+  color: var(--text-1);
+  cursor: pointer;
+  transition:
+    transform var(--speed) var(--ease),
+    border-color var(--speed) var(--ease),
+    opacity var(--speed) var(--ease);
+}
+
+.pagination button {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-pill);
+  font-size: 24px;
+}
+
+.pagination button.prev i {
+  transform: rotate(180deg);
+}
+
+.pagination button:hover:not(:disabled),
+button.me:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-2);
+}
+
+.pagination button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.pagination .page-info {
+  min-width: 110px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-1);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.pagination .page-info .total {
+  color: var(--text-3);
+  font-weight: 500;
+}
+
+button.me {
+  gap: 8px;
+  margin-top: 12px;
+  min-height: 36px;
+  padding: 0 16px;
+  border-radius: var(--r-pill);
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+button.me i {
+  font-size: 18px;
+  color: var(--accent-bright);
+}
+
 mat-spinner {
   position: absolute;
   top: 50%;
