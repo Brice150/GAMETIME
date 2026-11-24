@@ -1,13 +1,27 @@
 name: CI
 
+# Les vérifications tournent sur les pull requests ; le push sur main,
+# déjà vérifié par sa pull request, ne fait que construire et déployer.
+# Un changement qui ne touche ni l'application ni sa configuration ne lance
+# rien (documentation, réglages d'éditeur).
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - '**.md'
+      - '.vscode/**'
+      - '.claude/**'
+      - '.github/dependabot.yml'
   pull_request:
     branches: [main]
+    # `ready_for_review` relance la CI quand un brouillon est prêt.
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths-ignore:
+      - '**.md'
+      - '.vscode/**'
+      - '.claude/**'
+      - '.github/dependabot.yml'
 
-# Un nouveau push sur une branche annule l'exécution encore en cours pour cette
-# branche, sauf sur main où le déploiement qui suit ne doit pas être interrompu.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
@@ -15,18 +29,46 @@ concurrency:
 jobs:
   frontend:
     name: Frontend
+    # Un brouillon ne consomme pas de minutes : la CI part quand il est prêt.
+    if: github.event_name == 'pull_request' && !github.event.pull_request.draft
     runs-on: ubuntu-latest
+    # Garde-fou : un run bloqué s'arrête au lieu de brûler 6 h de minutes.
+    timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: '22'
-          cache: npm
+
+      # node_modules restauré tel quel : `npm ci` ne tourne que si le lockfile
+      # change. Le déploiement sur main écrit le même cache, qui sert ensuite
+      # à toutes les pull requests (un cache créé sur une pull request ne sert
+      # qu'à elle).
+      - name: Restore node_modules
+        id: modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: modules-${{ runner.os }}-node22-${{ hashFiles('package-lock.json') }}
 
       - name: Install dependencies
+        if: steps.modules.outputs.cache-hit != 'true'
         run: npm ci
 
+      # Cache de compilation Angular (activé en CI par `cli.cache.environment`
+      # dans angular.json) : les builds et les tests suivants repartent de la
+      # compilation précédente.
+      - name: Restore Angular cache
+        uses: actions/cache@v4
+        with:
+          path: .angular/cache
+          key: angular-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.sha }}
+          restore-keys: |
+            angular-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-
+
+      # Les contrôles rapides passent d'abord : une erreur de format ou de
+      # lint arrête le job avant les tests, l'étape la plus longue.
       - name: Check formatting
         run: npm run format:check
 
@@ -41,33 +83,54 @@ jobs:
 
   deploy:
     name: Deploy
-    needs: frontend
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     concurrency:
       group: deploy-production
       cancel-in-progress: false
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: '22'
-          cache: npm
-          cache-dependency-path: |
-            package-lock.json
-            functions/package-lock.json
+
+      - name: Restore node_modules
+        id: modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: modules-${{ runner.os }}-node22-${{ hashFiles('package-lock.json') }}
 
       - name: Install dependencies
-        run: |
-          npm ci
-          npm ci --prefix functions
+        if: steps.modules.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Restore functions/node_modules
+        id: functions-modules
+        uses: actions/cache@v4
+        with:
+          path: functions/node_modules
+          key: functions-modules-${{ runner.os }}-node22-${{ hashFiles('functions/package-lock.json') }}
+
+      - name: Install functions dependencies
+        if: steps.functions-modules.outputs.cache-hit != 'true'
+        run: npm ci --prefix functions
+
+      - name: Restore Angular cache
+        uses: actions/cache@v4
+        with:
+          path: .angular/cache
+          key: angular-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.sha }}
+          restore-keys: |
+            angular-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-
 
       - name: Build
         run: npm run build
 
       - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v2
+        uses: google-github-actions/auth@v3
         with:
           credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
 
