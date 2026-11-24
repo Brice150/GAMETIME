@@ -10,14 +10,11 @@
 <p>
   Nom / dénomination : <span class="value">{{ enterprise().name }}</span>
   <span class="todo">(EI)</span><br />
-  Forme juridique : <span class="value">{{ enterprise().legalStatus }}</span
-  ><br />
-  Adresse : <span class="todo">{{ enterprise().adress }}</span
-  ><br />
-  SIREN / SIRET : <span class="todo">{{ enterprise().siret }}</span
-  ><br />
-  RCS : <span class="todo">{{ enterprise().rcs }}</span
-  ><br />
+  Forme juridique :
+  <span class="value">{{ enterprise().legalStatus }}</span><br />
+  Adresse : <span class="todo">{{ enterprise().adress }}</span><br />
+  SIREN / SIRET : <span class="todo">{{ enterprise().siret }}</span><br />
+  RCS : <span class="todo">{{ enterprise().rcs }}</span><br />
   Email :
   <a [href]="'mailto:' + enterprise().email">{{ enterprise().email }}</a>
 </p>
@@ -30,16 +27,14 @@
 
 <h2>2. Directeur de la publication</h2>
 <p>
-  <span class="value">{{ enterprise().contactName }}</span
-  >, joignable à l’adresse
-  <a [href]="'mailto:' + enterprise().email">{{ enterprise().email }}</a
-  >.
+  <span class="value">{{ enterprise().contactName }}</span>, joignable à
+  l’adresse
+  <a [href]="'mailto:' + enterprise().email">{{ enterprise().email }}</a>.
 </p>
 
 <h2>3. Hébergeur</h2>
 <p>
-  <span class="value">{{ enterprise().hostName }}</span
-  ><br />
+  <span class="value">{{ enterprise().hostName }}</span><br />
   {{ enterprise().hostAdress }}<br />
   Téléphone : +353 1 436 1000
 </p>
